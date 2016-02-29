@@ -1,0 +1,15 @@
+<!-- embedding SWF -->
+<script type="text/javascript" src="<?php echo VIEW;?>js/swfobject.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var flashvars = {};
+        flashvars.xml_file = __url__('index', 'index', 'getXml');
+        var params = {};
+        params.wmode = "transparent";
+        var attributes = {};
+        attributes.id = "slider";
+        swfobject.embedSWF("<?php echo VIEW;?>swf/flashmo_225_bar_slider.swf", "flashmo_slider", "720", "280", "9.0.0", false, flashvars, params, attributes);
+    });
+</script>
+<!-- embedding SWF -->
+</head>

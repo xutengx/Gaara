@@ -5,8 +5,9 @@
  * Date: 2016/1/22 0022
  * Time: 10:09
  */
+namespace test;
 defined('IN_SYS')||exit('ACC Denied');
-class bokeModule extends Module{
+class bokeModule extends \Main\Module{
     protected $tablename    = 'article';
 //    public function getBoke(){
 //        //todo

@@ -1,5 +1,5 @@
 <?php
-namespace index;
+namespace test;
 defined('IN_SYS')||exit('ACC Denied');
 class indexContr extends \Main\Controller{
     public function indexDo(){

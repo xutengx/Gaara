@@ -7,4 +7,5 @@ require (ROOT . 'Main/loader.class.php');
 //公用方法
 require (ROOT . 'Main/func.class.php');
 
+//var_dump(IN_SYS);exit;
 \Main\route::Start();

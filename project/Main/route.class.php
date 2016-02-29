@@ -33,12 +33,11 @@ class route{
         self::$conf = conf::getins();
     }
     private static function getUrl(){
-        if( (!isset($_GET[PATH]) || empty($_GET[PATH])) && isset($_GET[MD5(IN_SYS)]) && !empty($_GET[MD5(IN_SYS)]) ) $_GET[PATH] = $_GET[MD5(IN_SYS)];
         if(isset($_GET[PATH]) && !empty($_GET[PATH])){
             $str            = $_GET[PATH];
             $str            = explode('?',$str);
             self::$url      = trim($str[0],'/');
-        }
+        }else self::$urlArr['application'] = substr_replace(IN_SYS, '',-4 ,4 ); // index.php -> index
     }
     private static function getController(){
         $ary_se     = explode('/', self::$url);

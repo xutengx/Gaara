@@ -1,5 +1,5 @@
 <?php
-namespace index;
+namespace test;
 defined('IN_SYS')||exit('ACC Denied');
 class userModule extends \Main\Module{
     // 核对此openid是否已经记录

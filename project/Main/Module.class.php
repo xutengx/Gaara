@@ -59,7 +59,7 @@ class Module extends Base{
         if(isset($data[$this->key])) {
             $sql = 'select '.$this->key.' from '.$this->table.' where '.$this->key.'="'.$data[$this->key].'"';
             if($this->db->getRow($sql)) return $this->updateByArray($data);
-        }else  return $this->insertByArray($data);
+        }return $this->insertByArray($data);
     }
     // 核对此openid是否已经记录
     // param 包含openid的一维数组 or openid
@@ -80,6 +80,7 @@ class Module extends Base{
             $sql = 'insert into '.$this->table.' (`name`,img,sex,openid) values ("'.$wechatinfo['nickname'].'","'.$wechatinfo['headimgurl'].'","'.$wechatinfo['sex'].'","'.$openid.'")';
         }
         else $sql = 'insert into '.$this->table.' (openid) values ("'.$wechatinfo.'")';
+        $openid = $openid ? $openid : $wechatinfo;
         if($this->db->execute($sql)) return $openid;
         return false;
     }

@@ -24,7 +24,7 @@ class Secure{
     // return bool
     public static function checkCsrftoken($csrftoken){
         $csrftoken = self::encrypt($csrftoken);
-        return ($_SERVER['HTTP_SCRFTOKEN'] == $csrftoken) ? true : false;
+        return (isset($_SERVER['HTTP_SCRFTOKEN']) && $_SERVER['HTTP_SCRFTOKEN'] == $csrftoken) ? true : false;
     }
     //特殊字符过滤
     public static function symbol($string,$is_strict=false){

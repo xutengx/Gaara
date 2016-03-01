@@ -6,7 +6,7 @@ class indexContr extends \Main\Controller{
         echo '<br/>bigin<br/>';
 //        $user = obj('test\t\test','true', 'rrrrrrr');
 //        $user2 = obj('userModule','admin');
-//        $user3 = obj('userModule','admin');
+        $user3 = obj('userModule','admin');
 //        var_dump($user===$user2);
 //        var_dump($user3===$user2);
 //        $obj = obj('tttContr');
@@ -19,7 +19,7 @@ class indexContr extends \Main\Controller{
     }
 }
 
-class tttContr extends \index\indexContr{
+class tttContr extends \test\indexContr{
     public function hello(){
         echo 'hello world';
     }

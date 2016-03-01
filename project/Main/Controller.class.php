@@ -115,10 +115,6 @@ class Controller extends Base{
         echo json_encode( array('state'=>$re, 'msg'=>$msg));
         return true;
     }
-    //
-    protected function secure(){
-
-    }
     protected function get($key, $match=false){
         $bool = F::get($key, $match);
         if($bool === false ) $this->ajaxbackWithMsg(0, $key.' 不合法!') && exit;

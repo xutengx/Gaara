@@ -10,6 +10,8 @@ $_CFG['sessionLife']= 3600*24*7;            // session 时效性  // 全局SESSI
 
 //$_CFG['appid']= 'wx996bd5d838d5d827';
 //$_CFG['appsecret']= 'd3927177ebc315da18681dd9876ed073';
+//$_CFG['appid_test']= 'wxf104d7a120384fec';
+//$_CFG['appsecret_test']= '10b05e039778ec7fdb6344b969ed4c1e';
 //$_CFG['host']= '10.4.17.219';
 //$_CFG['user']= 'root';
 //$_CFG['pwd']='Huawei$123#_';

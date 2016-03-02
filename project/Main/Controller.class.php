@@ -227,7 +227,7 @@ class Controller extends Base{
         }else{
             $code = F::get('code');
             //获取授权
-            $auth = obj('\Expand\Wechat',false, APPID, APPSECRET);
+            $auth = $this->wechatTest();
             if($code === null){
                 $redirect_uri = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'];
                 $redirect_uri = str_replace(IN_SYS, 'getInfoOnWechat.php', $redirect_uri);
@@ -243,6 +243,16 @@ class Controller extends Base{
                 $this->main_getInfo();
             }
         }
+    }
+
+    /**
+     * 在以http://wx.****** 访问时,启用回调为wx的appid
+     * 在以http://poster.****** 访问时,启用回调为poster的appid
+     * @return object
+     */
+    private function wechatTest(){
+        if($_SERVER['HTTP_HOST'] == 'wx.issmart.com.cn') return obj('\Expand\Wechat',false, APPID_TEST, APPSECRET_TEST);
+        return obj('\Expand\Wechat',false, APPID, APPSECRET);
     }
     // php分页
     public function page(){

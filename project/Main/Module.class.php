@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2015/12/21 0021
- * Time: 17:14
- */
 namespace Main;
 defined('IN_SYS')||exit('ACC Denied');
 class Module extends Base{
@@ -22,6 +16,9 @@ class Module extends Base{
 
     final protected function __construct(){
         $this->db   = sql::getins();
+        $this->get_thisTable();
+    }
+    final protected function get_thisTable(){
         $classname = get_class($this);
         $classname = substr($classname,strrpos($classname,'\\')+1);
         if($this->tablename == '') $this->tablename=strtr($classname, array('Module'=>''));
@@ -85,11 +82,6 @@ class Module extends Base{
         return false;
     }
     final public function __call($fun, $par=null){
-        if(in_array(strtolower($fun),array('table','where','order','limit','page','alias','having','group','lock','distinct'),true)) {
-            // 连贯操作的实现
-            $this->action[strtolower($fun)] =   $par[0];
-            return $this;
-        }
         if(!method_exists($this->db, $fun)) throw new \Main\Exception('方法没定义!');
         if($par !== null){
             $parstr ='' ;
@@ -100,10 +92,6 @@ class Module extends Base{
             $parstr = ltrim($parstr, ',');
             $code = 'return $this->db->{$fun}('.$parstr.');';
             return eval($code);
-        }else return $this->db->{$fun}($this->makeSql());
-    }
-    final public function makeSql(){
-
-
+        }
     }
 }

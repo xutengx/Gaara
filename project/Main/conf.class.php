@@ -36,6 +36,10 @@ class conf{
         define('SESSIONLIFE', $this->data['sessionLife']);
         define('APPID', $this->data['appid']);
         define('APPSECRET', $this->data['appsecret']);
+        if(isset($this->data['appid_test'])){
+            define('APPID_TEST', $this->data['appid_test']);
+            define('APPSECRET_TEST', $this->data['appsecret_test']);
+        }
     }
     private function set(){
         date_default_timezone_set($this->data['timezone']);

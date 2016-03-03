@@ -165,7 +165,7 @@ class Controller extends Base{
         // js string模板解析
         $template = 'String.prototype.temp = function(obj){return this.replace(/\$\w+\$/gi,function(matchs){var returns = obj[matchs.replace(/\$/g, "")];return (returns + "") == "undefined"? "": returns;});};';
         // js 路由方法
-        $str = 'function __url__(Application, Controller, method){if(arguments.length==1){Controller=Application;Application="'.APP.'";method="indexDo";}else if(arguments.length==2) {method=Controller;Controller=Application;Application="'.APP.'";} var url=window.location.protocol+"//"+window.location.host+window.location.pathname+"?'.PATH.'="+Application+"/"+Controller+"/"+method+"/"; return url;}';
+        $str = 'function __url__(Application, Controller, method){if(arguments.length==1){method=Application;Controller="'.$classname.'";Application="'.APP.'";}else if(arguments.length==2) {method=Controller;Controller=Application;Application="'.APP.'";} var url=window.location.protocol+"//"+window.location.host+window.location.pathname+"?'.PATH.'="+Application+"/"+Controller+"/"+method+"/"; return url;}';
         echo '<script>'.$str,$this->cache,$ajax,$template.'</script>';
         $this->cache = ';';
         return true;

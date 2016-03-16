@@ -72,69 +72,67 @@ class Image {
         imagedestroy ( $resData );
         return true;
     }
-//对上传图片进行缩放
-    public function zoom($percent1 = 1, $percent2 = 2, $percent3 = 3, $dir = "./upload/") {
-        if (! empty ( $_POST )) {
-            $imgArrData = array (
-                ".png",
-                ".jpeg",
-                ".jpg",
-                ".gif"
-            );
-            $suffix = strrchr ( $_FILES ['wj'] ['name'], "." );
-            if (! in_array ( $suffix, $imgArrData )) {
-                exit ( '只能上传图片' );
-            }
 
-            $arrData = getimagesize ( $_FILES ['wj'] ['tmp_name'] );
+    /**
+     * 对图片进行缩放
+     * @param $file(图片绝对路径全称)
+     * @param int $size (图片目标大小)
+     * @param int $new_w (图片目标宽度, 高度则按比例适应)
+     * return 原文件名 or false
+     */
+    public function zoom($file, $size=100, $new_w = 500) {
+        // 清除缓存
+        clearstatcache();
+        if(ceil(filesize($file)/1000) > $size ){
+            $arrData = getimagesize($file);
             switch ($arrData [2]) {
                 case 1 :
-                    $src_image = imagecreatefromgif ( $_FILES ['wj'] ['tmp_name'] );
+                    $pic_creat = imagecreatefromgif ( $file );
+                    $fun = 'gif';
                     break;
                 case 2 :
-                    $src_image = imagecreatefromjpeg ( $_FILES ['wj'] ['tmp_name'] );
+                    $pic_creat = imagecreatefromjpeg ( $file );
+                    $fun = 'jpeg';
                     break;
                 case 3 :
-                    $src_image = imagecreatefrompng ( $_FILES ['wj'] ['tmp_name'] );
+                    $pic_creat = imagecreatefrompng ( $file );
+                    $fun = 'png';
                     break;
-                default :
-                    die ( '上传文件有误' );
+                default:
+                    return false;
                     break;
             }
-
-            if (! file_exists ( $dir )) {
-                mkdir ( $dir ) or die ( '创建目录失败' );
-            }
-
             $src_w = $arrData [0];
             $src_h = $arrData [1];
+            if( $src_w > $new_w){
+                $new_h = ( 500 / $src_w ) * $src_h;
+                $dst_image = imagecreatetruecolor ( $new_w, $new_h );
+                imagecopyresampled ( $dst_image, $pic_creat, 0, 0, 0, 0, $new_w, $new_h, $src_w, $src_h );
+//                unlink($file);
+                $f = 'image'.$fun;
+                $f ( $dst_image, $file );
+                // 清除缓存
+                clearstatcache();
+                if(ceil(filesize($file)/1000) > $size) {
+                    var_dump(ceil(filesize($file)/1000));
+                    return $this->zoom($file);
+                }
+                else
+                    return $file;
+            }else {
+                unlink($file);
+                $f = 'image'.$fun;
+                $f($pic_creat, $file, 6);
+                imagedestroy($pic_creat);
 
-            $dst_w = $src_w / $percent1;
-            $dst_h = $src_h / $percent1;
-
-            $dst_image = imagecreatetruecolor ( $dst_w, $dst_h );
-            imagecopyresampled ( $dst_image, $src_image, 0, 0, 0, 0, $dst_w, $dst_h, $src_w, $src_h );
-            $filName = $dir . uniqid ( "big_" ) . ".png";
-            imagepng ( $dst_image, $filName );
-            $this->waterMark ( $filName, $filName );
-
-            $dst_w = $src_w / $percent2;
-            $dst_h = $src_h / $percent2;
-            $dst_image = imagecreatetruecolor ( $dst_w, $dst_h );
-            imagecopyresampled ( $dst_image, $src_image, 0, 0, 0, 0, $dst_w, $dst_h, $src_w, $src_h );
-            imagepng ( $dst_image, $dir . uniqid ( "small_" ) . ".png" );
-
-            $dst_w = $src_w / $percent3;
-            $dst_h = $src_h / $percent3;
-            $dst_image = imagecreatetruecolor ( $dst_w, $dst_h );
-            imagecopyresampled ( $dst_image, $src_image, 0, 0, 0, 0, $dst_w, $dst_h, $src_w, $src_h );
-            imagepng ( $dst_image, $dir . uniqid ( "min_" ) . ".png" );
-
-            imagedestroy ( $src_image );
-            imagedestroy ( $dst_image );
-
-        }
+                // 清除缓存
+                clearstatcache();
+                if(ceil(filesize($file)/1000) > $size) return $this->zoom($file);
+                else  return $file;
+            }
+        }else return $file;
     }
+
 //打水印
     public function waterMark($filName, $dirName, $alpha = 0, $wz = "www.23php.com版权所有") {
         $arrData = getimagesize ( $filName );
@@ -160,7 +158,7 @@ class Image {
     }
     // 生成2维码
     public function newUrl($url, $dir=false){
-        $dir = $dir?$dir:$this->makeFilename('data','png');
+        $dir = $dir?$dir:$this->makeFilename('data/weima/','png');
         if($dir && $url ){
             $errorCorrectionLevel = 'L';//容错级别
             $matrixPointSize = 6;//生成图片大小
@@ -192,46 +190,6 @@ class Image {
         }
         //输出图片
         imagepng($QR, 'hello.png');
-    }
-
-    // 压缩图片
-    // test
-    public function base_imgSlimming(){
-        // 源文件
-        $filename = '1.jpg';
-        // 设置最大宽高
-        $width = 640;
-        $height = 1000;
-        // Content type
-        header('Content-Type: image/jpeg');
-
-        // 获取新尺寸
-        list($width_orig, $height_orig) = getimagesize($filename);
-        $ratio_orig = $width_orig/$height_orig;
-        if ($width/$height > $ratio_orig) {
-            $width = $height*$ratio_orig;
-        } else {
-            $height = $width/$ratio_orig;
-        }
-
-        // 重新取样
-        $image_p = imagecreatetruecolor($width, $height);
-        $image = imagecreatefromjpeg($filename);
-        imagecopyresampled($image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
-
-        // 输出
-        imagejpeg($image_p, null, 100);
-    }
-    // 压缩图片
-    // test
-    public function base_imgSlimming2(){
-        // 源文件
-        $filename = '1.jpg';
-
-        header('Content-Type: image/jpeg');
-        $image=imagecreatefromjpeg($filename);
-        imagejpeg($image,'123.jpg',30);//注意后面那个数字0，这里即压缩等级，参数范围：0-100*/
-        imagedestroy($image);
     }
     /**
      * 交换2个参数, 使得$first总是较大的

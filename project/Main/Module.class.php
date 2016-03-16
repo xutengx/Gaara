@@ -24,6 +24,9 @@ class Module extends Base{
         if($this->tablename == '') $this->tablename=strtr($classname, array('Module'=>''));
         $this->table = $this->db->tablepre.$this->tablename;
     }
+    public function tbname(){
+        return $this->table;
+    }
     final protected function __clone(){exit;}
     public static function getins(){
         if(static::$ins instanceof static || (static::$ins = new static)) return static::$ins;

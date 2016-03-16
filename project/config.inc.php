@@ -22,7 +22,7 @@ $_CFG['appsecret']= 'd4624c36b6795d1d99dcf0547af5443d';         // 全局APPSECR
 $_CFG['host']= '127.0.0.1';
 $_CFG['user']= 'root';
 $_CFG['pwd']='root';
-$_CFG['db'] = 'Boke';
+$_CFG['db'] = 'test';
 
 $_CFG['tablepre'] = 'boke_';
 $_CFG['keytable'] = 'boke_user';

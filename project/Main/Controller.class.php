@@ -39,7 +39,7 @@ class Controller extends Base{
         if(static::$ins instanceof static || (static::$ins = new static)) return static::$ins;
     }
     public function indexDo(){
-        echo 'hello world !';
+        $this->display();
     }
     // 设置session
     protected function main_session_start(){
@@ -132,6 +132,22 @@ class Controller extends Base{
         if($bool === null ) throw new Exception('尝试获取post中的"'.$key.'"没有成功!');
         return $bool;
     }
+    /**
+     * 按数组接受POST参数 再封装$this->post()
+     * 例:$_POST['name']='zhangsang',$_POST['age']=18  则 return array('name'=>'zhangsang','age'=>18)
+     * 若存在'name'预定义验证规则(F::getFilterArr()中),则验证;要使用自定义验证,请用$this->post单独验证
+     * @return array
+     * @throws Exception
+     */
+    protected function arrayPost(){
+        $arrayKey = array();
+        foreach(F::$post as $k=>$v){
+            if(in_array($k, F::getFilterArr()) && !is_array($k)){
+                $arrayKey[$k] = $this->post($k, $k);
+            }else $arrayKey[$k] = $this->post($k);
+        }
+        return $arrayKey;
+    }
     protected function cookie($key, $match=false){
         $bool = F::cookie($key, $match);
         if($bool === false ) $this->ajaxbackWithMsg(0, $key.' 不合法!') && exit;
@@ -210,6 +226,7 @@ class Controller extends Base{
     // 生成随机文件名
     protected function makeFilename($dir, $ext, $id=123){
         $dir = $dir?trim($dir,'/').'/':'./';
+        if(!is_dir($dir)) $this->base_mkdir($dir);
         $ext = trim($ext,'.');
         $dir .= uniqid($id);
         $dir .='.'.$ext;
@@ -253,10 +270,6 @@ class Controller extends Base{
     private function wechatTest(){
         if($_SERVER['HTTP_HOST'] == 'wx.issmart.com.cn') return obj('\Expand\Wechat',false, APPID_TEST, APPSECRET_TEST);
         return obj('\Expand\Wechat',false, APPID, APPSECRET);
-    }
-    // php分页
-    public function page(){
-
     }
     // 微信授权前的 Session 校验,之后将自动授权,以及记录数据 和 Session
     final protected function main_checkSessionUser($is = false){

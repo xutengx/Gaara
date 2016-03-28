@@ -113,12 +113,8 @@ class Image {
                 $f ( $dst_image, $file );
                 // 清除缓存
                 clearstatcache();
-                if(ceil(filesize($file)/1000) > $size) {
-                    var_dump(ceil(filesize($file)/1000));
-                    return $this->zoom($file);
-                }
-                else
-                    return $file;
+                if(ceil(filesize($file)/1000) > $size) return $this->zoom($file);
+                else return $file;
             }else {
                 unlink($file);
                 $f = 'image'.$fun;

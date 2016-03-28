@@ -11,8 +11,6 @@ class Module extends Base{
     protected $key          = 'id';
     // 表名
     protected $table        = '';
-    // 链式操作
-    protected $action       = array();
 
     final protected function __construct(){
         $this->db   = sql::getins();
@@ -33,7 +31,7 @@ class Module extends Base{
     }
     // 以数组形式 insert 一条数据
     // return 新数据的主键
-    public function insertByArray($cols, $addslashes=true) {
+    public function insertData($cols, $addslashes=true) {
         $fileds = '';
         $values = '';
         foreach ($cols as $f => $v) {
@@ -45,7 +43,7 @@ class Module extends Base{
         return $this->db->lastInsertId($sql);
     }
     //以数组形式 update 一条数据,条件为 表主键
-    public function updateByArray($cols, $addslashes=true) {
+    public function updateData($cols, $addslashes=true) {
         $fileds = '';
         foreach ($cols as $f => $v) {
             if ($addslashes) $v = addslashes($v);
@@ -58,8 +56,20 @@ class Module extends Base{
     public function modifyData($data){
         if(isset($data[$this->key])) {
             $sql = 'select '.$this->key.' from '.$this->table.' where '.$this->key.'="'.$data[$this->key].'"';
-            if($this->db->getRow($sql)) return $this->updateByArray($data);
-        }return $this->insertByArray($data);
+            if($this->db->getRow($sql)) return $this->updateData($data);
+        }return $this->insertData($data);
+    }
+
+    public function selAll($where = false){
+        $where = $where ? ' where '.$where : '';
+        $sql = 'select * from '.$this->table.' '.$where;
+        return $this->getAll($sql);
+    }
+
+    public function selRow($where = false){
+        $where = is_numeric($where) ? ' where `'.$this->key.'`="'.$where.'" ': ($where ? ' where '.$where : '') ;
+        $sql = 'select * from '.$this->table.' '.$where;
+        return $this->getRow($sql);
     }
     // 核对此openid是否已经记录
     // param 包含openid的一维数组 or openid
@@ -75,11 +85,12 @@ class Module extends Base{
     // param 包含openid的一维数组 or openid
     // return string or false
     final public function main_newUser($wechatinfo){
+        if(!$wechatinfo) return false;
         if(is_array($wechatinfo)) {
             $openid = $wechatinfo['openid'];
-            $sql = 'insert into '.$this->table.' (`name`,img,sex,openid) values ("'.$wechatinfo['nickname'].'","'.$wechatinfo['headimgurl'].'","'.$wechatinfo['sex'].'","'.$openid.'")';
+            $sql = 'insert into '.$this->table.' (`name`,`img`,`sex`,`openid`) values ("'.$wechatinfo['nickname'].'","'.$wechatinfo['headimgurl'].'","'.$wechatinfo['sex'].'","'.$openid.'")';
         }
-        else $sql = 'insert into '.$this->table.' (openid) values ("'.$wechatinfo.'")';
+        else $sql = 'insert into '.$this->table.' (`openid`) values ("'.$wechatinfo.'")';
         $openid = $openid ? $openid : $wechatinfo;
         if($this->db->execute($sql)) return $openid;
         return false;

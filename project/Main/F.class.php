@@ -101,4 +101,8 @@ class F{
         }
         return $q;
     }
+    // 外部获取 预定义验证规则
+    public static function getFilterArr(){
+        return self::$filterArr;
+    }
 }

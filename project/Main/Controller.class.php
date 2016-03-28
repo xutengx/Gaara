@@ -248,28 +248,41 @@ class Controller extends Base{
             if($code === null){
                 $redirect_uri = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'];
                 $redirect_uri = str_replace(IN_SYS, 'getInfoOnWechat.php', $redirect_uri);
-                $state  = "STATE";
                 $method = $is ? 'get_authorize_url2':'get_authorize_url';
-                $url    = $auth->{$method}($redirect_uri, $state);
+                $url    = $auth->{$method}($redirect_uri);
                 header("Location:".$url); //跳转get_authorize_url2()设好的url，跳转后会跳转回上面指定的url中并且带上code变量，用get方法获取即可
             }
             else{
                 $res = $auth -> get_access_token($code);// get_access_token()方法能够获取openid，access_token等信息
-                $userinfo = $auth->get_user_info($res['access_token'], $res['openid']);
-                $this->wechatinfo = $userinfo;
+                $explicit = F::cookie('explicit');
+                if($explicit) $this->wechatinfo = $auth->get_user_info($res['access_token'], $res['openid']);
+                else $this->wechatinfo = $res['openid'];
                 $this->main_getInfo();
             }
         }
     }
 
     /**
+     * 存在$_SESSION['tid'], 查询对应appid
      * 在以http://wx.****** 访问时,启用回调为wx的appid
      * 在以http://poster.****** 访问时,启用回调为poster的appid
      * @return object
      */
     private function wechatTest(){
-        if($_SERVER['HTTP_HOST'] == 'wx.issmart.com.cn') return obj('\Expand\Wechat',false, APPID_TEST, APPSECRET_TEST);
-        return obj('\Expand\Wechat',false, APPID, APPSECRET);
+        try{
+            if($tid = F::session('themeid')) {
+                $re = obj('themeModule')->selRow($tid);
+                if($re['isdefault'] == 1) {
+                    loop : if($_SERVER['HTTP_HOST'] == 'wx.issmart.com.cn') return obj('\Expand\Wechat',false, APPID_TEST, APPSECRET_TEST);
+                    return obj('\Expand\Wechat',false, APPID, APPSECRET);
+                }else {
+                    $res = obj('platformModule','admin')->selRow($re['platformid']);
+                    return obj('\Expand\Wechat',false, $res['appid'], $res['appsecret']);
+                }
+            }else goto loop;
+        }catch(Exception $e){
+            goto loop;
+        }
     }
     // 微信授权前的 Session 校验,之后将自动授权,以及记录数据 和 Session
     final protected function main_checkSessionUser($is = false){
@@ -278,6 +291,7 @@ class Controller extends Base{
         if($obj->main_checkUser($openid)) return $openid;
         else {
             $this->set_cookie('Location', $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], time()+60); // 记录url,完成授权后跳转
+            $this->set_cookie('explicit', $is, time()+60); // 记录 是否显式授权
             $this->getInfoOnWechatProfessional($is);
         }
     }
@@ -291,17 +305,5 @@ class Controller extends Base{
             header('Location:'.$location);
         }
         else exit('微信授权失误!');
-    }
-    // 模块间重定向
-    final protected function main_headerTo($app='index', $contr='index', $method='indexDo', array $pars=array()){
-        $str = '';
-        if(!empty($pars)){
-            foreach($pars as $k=>$v){
-                $str .= '/'.$k.'/'.$v;
-            }
-        }
-        $where = IN_SYS.'?'.PATH.'='.$app.'/'.$contr.'/'.$method.$str;
-        header('Location:'.$where);
-        exit;
     }
 }

@@ -101,7 +101,7 @@ class Controller extends Base{
     }
     //用于ajax返回
     protected function ajaxback($re){
-        if($re !== false && $re !== null && $re !== 0) echo json_encode( array('state'=>'1', 'data'=>$re));
+        if($re !== false && $re !== null && $re !== 0 &&  $re !== -1) echo json_encode( array('state'=>1, 'data'=>$re));
         else echo json_encode( array('state'=>'0'));
         return true;
     }
@@ -115,50 +115,15 @@ class Controller extends Base{
         echo json_encode( array('state'=>$re, 'msg'=>$msg));
         return true;
     }
-    protected function get($key, $match=false){
-        $bool = F::get($key, $match);
-        if($bool === false ) $this->ajaxbackWithMsg(0, $key.' 不合法!') && exit;
-        if($bool === null ) throw new Exception('尝试获取get中的"'.$key.'"没有成功!');
-        return $bool;
-    }
-    // 仅接受自定义ajax的post请求
-    protected function post($key, $match=false, $msg=false){
-        if(!Secure::checkCsrftoken( $this->classname )) $this->ajaxbackWithMsg(0, 'csrf防护中!') && exit;
-        $bool = F::post($key, $match);
-        if($bool === false ) {
-            $msg = $msg ? $msg : $key.' 不合法!';
-            $this->ajaxbackWithMsg(0, $msg) && exit;
-        }
-        if($bool === null ) throw new Exception('尝试获取post中的"'.$key.'"没有成功!');
-        return $bool;
-    }
-    /**
-     * 按数组接受POST参数 再封装$this->post()
-     * 例:$_POST['name']='zhangsang',$_POST['age']=18  则 return array('name'=>'zhangsang','age'=>18)
-     * 若存在'name'预定义验证规则(F::getFilterArr()中),则验证;要使用自定义验证,请用$this->post单独验证
-     * @return array
-     * @throws Exception
-     */
-    protected function arrayPost(){
-        $arrayKey = array();
-        foreach(F::$post as $k=>$v){
-            if(in_array($k, F::getFilterArr()) && !is_array($k)){
-                $arrayKey[$k] = $this->post($k, $k);
-            }else $arrayKey[$k] = $this->post($k);
-        }
-        return $arrayKey;
-    }
-    protected function cookie($key, $match=false){
-        $bool = F::cookie($key, $match);
-        if($bool === false ) $this->ajaxbackWithMsg(0, $key.' 不合法!') && exit;
-        if($bool === null ) throw new Exception('尝试获取cookie中的"'.$key.'"没有成功!');
-        return $bool;
-    }
-    protected function session($key, $match=false){
-        $bool = F::session($key, $match);
-        if($bool === false ) $this->ajaxbackWithMsg(0, $key.' 不合法!') && exit;
-        if($bool === null ) throw new Exception('尝试获取session中的"'.$key.'"没有成功!');
-        return $bool;
+    // 以组件方式引入html
+    final protected function template($file=false){
+        $classname =  str_replace('Contr','',get_class($this));
+        $app = explode('\\', $classname);
+        $file = $file ? $file : $app[1];
+        $this->assignPhp('T_VIEW','Application/'.$app[0].'/View/');
+        $DATA = $this->phparray;
+        include ROOT.'Application/'.$app[0].'/View/template/'.$file.'.html';
+        echo '<script>'.$this->cache.'</script>';
     }
     // 写入script路由方法,js赋值,并引入html文件
     final protected function display($file=false){
@@ -248,8 +213,9 @@ class Controller extends Base{
             if($code === null){
                 $redirect_uri = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'];
                 $redirect_uri = str_replace(IN_SYS, 'getInfoOnWechat.php', $redirect_uri);
+//                echo $redirect_uri;exit;
                 $method = $is ? 'get_authorize_url2':'get_authorize_url';
-                $url    = $auth->{$method}($redirect_uri);
+                $url    = $auth->{$method}($redirect_uri,'STATE');
                 header("Location:".$url); //跳转get_authorize_url2()设好的url，跳转后会跳转回上面指定的url中并且带上code变量，用get方法获取即可
             }
             else{
@@ -304,6 +270,44 @@ class Controller extends Base{
             $_SESSION['openid'] = $openid;
             header('Location:'.$location);
         }
-        else exit('微信授权失误!');
+        else exit('微信授权失误!请关闭网页后重试!');
+    }
+
+    final public function __call($fun, $par=array()){
+
+        if(in_array(strtolower($fun), array('post','put','delete'), true)){
+            if(!Secure::checkCsrftoken( $this->classname )) $this->ajaxbackWithMsg(0, 'csrf防护中!') && exit;
+            loop : if(!empty($par)){
+                $match = isset($par[1]) ? ',$par[1]' : false ;
+                $code = 'return \Main\F::{$fun}("'.$par[0].'"'.$match.');';
+                $bool = eval($code);
+
+                if($bool === false ) {
+                    $msg = isset($par[2]) ? $par[2] : $par[0].' 不合法!';
+                    $this->ajaxbackWithMsg(0, $msg) && exit;
+                }else if($bool === null ) throw new Exception('尝试获取'.$fun.'中的"'.$par[0].'"没有成功!');
+                else return $bool;
+            }else {
+                /**
+                 * 按数组接受POST参数 再封装$this->post($par);
+                 * 例:$_POST['name']='zhangsang',$_POST['age']=18  则 return array('name'=>'zhangsang','age'=>18)
+                 * 若存在'name'预定义验证规则(F::getFilterArr()中),则验证;要使用自定义验证,请用$this->post单独验证
+                 * @return array
+                 * @throws Exception
+                 */
+                $arrayKey = array();
+                $code = 'return \Main\F::${$fun};';
+                $array = eval($code);
+                if($array === null)  throw new Exception('尝试获取'.$fun.'中的数据没有成功!');
+                foreach($array as $k=>$v){
+                    if(array_key_exists($k,F::getFilterArr()) && !is_array($k)){
+                        $arrayKey[$k] = $this->{$fun}($k, $k);
+                    }else $arrayKey[$k] = $this->{$fun}($k);
+                }
+                return $arrayKey;
+            }
+        }else if(in_array(strtolower($fun), array('get','session','cookie'), true)){
+            goto loop;
+        }
     }
 }

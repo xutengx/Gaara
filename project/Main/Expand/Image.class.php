@@ -80,11 +80,13 @@ class Image {
      * @param int $new_w (图片目标宽度, 高度则按比例适应)
      * return 原文件名 or false
      */
-    public function zoom($file, $size=100, $new_w = 500) {
+    public function zoom($file, $size=50, $new_w = 500) {
         // 清除缓存
         clearstatcache();
         if(ceil(filesize($file)/1000) > $size ){
             $arrData = getimagesize($file);
+            // 1 = GIF，2 = JPG，3 = PNG，4 = SWF，5 = PSD，6 = BMP，7 = TIFF(intel byte order)，8 = TIFF(motorola byte order)，9 = JPC，10 = JP2，11 = JPX，12 = JB2，13 = SWC，14 = IFF，15 = WBMP，16 = XBM
+//            var_dump($arrData);
             switch ($arrData [2]) {
                 case 1 :
                     $pic_creat = imagecreatefromgif ( $file );
@@ -116,15 +118,17 @@ class Image {
                 if(ceil(filesize($file)/1000) > $size) return $this->zoom($file);
                 else return $file;
             }else {
-                unlink($file);
-                $f = 'image'.$fun;
-                $f($pic_creat, $file, 6);
-                imagedestroy($pic_creat);
-
-                // 清除缓存
-                clearstatcache();
-                if(ceil(filesize($file)/1000) > $size) return $this->zoom($file);
-                else  return $file;
+//                unlink($file);
+                if($fun == 'jpeg' || $fun == 'png'){
+                    imagejpeg($pic_creat, $file, 44);
+                    imagedestroy($pic_creat);
+                    // 清除缓存
+                    clearstatcache();
+                    if(ceil(filesize($file)/1000) > $size) return $this->zoom($file);
+                    else return $file;
+                }else if($fun == 'gif') {
+                    return $file;
+                }
             }
         }else return $file;
     }

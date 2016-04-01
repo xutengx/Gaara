@@ -141,8 +141,8 @@ class Controller extends Base{
         $this->assign('view', VIEW);
         $this->assign('contr', $classname );
         $this->assign('method', $method);
-        // 引入ajax发送中的蒙层
-        \Main\template::ajaxSending();
+        // 公用view
+        \Main\template::includeFiles();
         // 防scrf的ajax(基于jquery), 接受post提交数据前.先验证http头中的 csrftoken
         $ajax = Secure::newAjax($classname);
         // js string模板解析

@@ -21,6 +21,13 @@ class template {
         include ROOT.'Main/Views/tpl/'.self::$jumpTo.'.html';
         exit;
     }
+    public static function includeFiles(){
+        echo VIEW_INCLUDE;
+        self::ajaxSending();
+    }
+    /**
+     *  Controller->display();
+     */
     public static function ajaxSending(){
         include ROOT.'Main/Views/tpl/'.self::$ajaxSending.'.html';
     }

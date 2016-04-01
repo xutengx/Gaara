@@ -7,12 +7,14 @@ class indexContr extends \Main\Controller{
     }
     public function test(){
         $id = $this->get('id');
+        var_dump(obj('userObj'));
 //        echo 'success!!!!!!!'.$id;
         $this->display('test');
     }
     public function test1(){
         $data = array('state'=>1,'msg'=>'ok!!');
         sleep(5);
+//        var_dump($data);
         $this->returnMsg(1,'ok!!!!!');
     }
 }

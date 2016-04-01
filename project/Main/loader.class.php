@@ -66,6 +66,7 @@ class obj{
             }else $classname = $class;
             if (strtolower(substr($class, -5)) == 'contr')  self::includeWithException(ROOT.'Application/'.$app.'/Controller/'.$classname.'.class.php');
             else if (strtolower(substr($class, -6)) == 'module')  self::includeWithException(ROOT.'Application/'.$app.'/Module/'.$classname.'.class.php');
+            else if (strtolower(substr($class, -3)) == 'obj')  self::includeWithException(ROOT.'Application/'.$app.'/Object/'.$classname.'.class.php');
             else if (strtolower(substr($class, -4))=='tool')  self::includeWithException(ROOT . 'tool/'. $classname . '.class.php');
             else  {
                 $parameter = explode('\\', $class);
@@ -93,7 +94,7 @@ class obj{
     }
     // 判断 $class 类型
     private static function checkClass($class){
-        if(strtolower(substr($class, -5))=='contr' || strtolower(substr($class, -6))=='module') return true;
+        if(strtolower(substr($class, -5))=='contr' || strtolower(substr($class, -6))=='module' || strtolower(substr($class, -3))=='obj') return true;
         else return false;
     }
     // 缓存其他 class 的单例并返回实例

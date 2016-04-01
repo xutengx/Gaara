@@ -16,6 +16,7 @@ class conf{
         $this->data = $_CFG;						//配置文件信息,读过来,赋给data属性
         $this->makeDefine();
         $this->set();
+        $this->includeFiles();
     }
     final protected function __clone(){				//反克隆
         exit();
@@ -43,7 +44,49 @@ class conf{
     }
     private function set(){
         date_default_timezone_set($this->data['timezone']);
-        if(file_exists('Main/Views/javascript/jquery-1.12.2.min.js'))
-            define('JQUERY', '<script src="Main/Views/javascript/jquery-1.12.2.min.js"></script>');
+    }
+    private function includeFiles(){
+        $includeDir = 'Main/Views/include';
+        $files = $this->getFiles($includeDir);
+        $str = '';
+        foreach($files as $k=>$v){
+            $ext = strrchr($v , '.');
+            switch ($ext) {
+                case '.js' :
+                    $str .= '<script src="'.$v.'"></script>';
+                    break;
+                case '.css' :
+                    $str .= '<link rel="stylesheet" href="'.$v.'" />';
+                    break;
+                case '.ico' :
+                    $str .= '<link rel="shortcut icon" href="'.$v.'" type="image/x-icon">';
+                    break;
+                default:
+                    break;
+            }
+        }
+        define('VIEW_INCLUDE',$str);
+    }
+
+    /**
+     * @param $dirName 文件夹
+     * @return array 返回文件夹下的所有文件 组成的一维数组
+     * @throws Exception
+     */
+    private function getFiles($dirName){
+        $arr = array();
+        if (is_dir($dirName) && $dir_arr = scandir($dirName)){
+            foreach($dir_arr as $k=>$v){
+                if($v == '.' || $v == '..'){}
+                else{
+                    if(is_dir($dirName.'/'.$v)){
+                        $arr = array_merge($arr,  $this->getFiles($dirName.'/'.$v));
+                    }else {
+                        $arr[] = $dirName.'/'. $v;
+                    }
+                }
+            }
+            return $arr;
+        }else throw new Exception($dirName.' 并非可读路径!');
     }
 }

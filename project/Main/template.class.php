@@ -7,8 +7,21 @@
  */
 namespace Main;
 class template {
+    // 跳转中间页面
+    private static $jumpTo =  'jumpTo';
+    // ajax发送中的蒙层
+    private static $ajaxSending =  'ajaxSending';
+
     public static function show($file){
         include ROOT.'Application/'.APP.'/View/template/'.$file.'.html';
         return true;
+    }
+    public static function jumpTo($message, $jumpUrl='index?path=index/index/indexDo/'){
+        $waitSecond = 3;
+        include ROOT.'Main/Views/tpl/'.self::$jumpTo.'.html';
+        exit;
+    }
+    public static function ajaxSending(){
+        include ROOT.'Main/Views/tpl/'.self::$ajaxSending.'.html';
     }
 }

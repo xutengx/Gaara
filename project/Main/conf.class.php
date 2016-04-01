@@ -43,5 +43,7 @@ class conf{
     }
     private function set(){
         date_default_timezone_set($this->data['timezone']);
+        if(file_exists('Main/Views/javascript/jquery-1.12.2.min.js'))
+            define('JQUERY', '<script src="Main/Views/javascript/jquery-1.12.2.min.js"></script>');
     }
 }

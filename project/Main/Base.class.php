@@ -173,8 +173,9 @@ class Base{
         $this->base_absoluteDir($dir);
         if(is_dir(dirname($dir)) || $this->base_mkdir(dirname($dir))) return mkdir($dir, $mode);
     }
+
     // 模块间重定向
-    final protected function base_headerTo($app='index', $contr='index', $method='indexDo', array $pars=array()){
+    final protected function base_headerTo($msg='跳转中!',$app='index', $contr='index', $method='indexDo', array $pars=array()){
         $str = '';
         if(!empty($pars)){
             foreach($pars as $k=>$v){
@@ -182,7 +183,6 @@ class Base{
             }
         }
         $where = IN_SYS.'?'.PATH.'='.$app.'/'.$contr.'/'.$method.$str;
-        header('Location:'.$where);
-        exit;
+        \Main\template::jumpTo($msg, $where);
     }
 }

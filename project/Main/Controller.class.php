@@ -99,21 +99,22 @@ class Controller extends Base{
     protected function cacheClear($App = '', $Contr = '', $Func = ''){
         $this->phpcache->clearCache($App, $Contr, $Func);
     }
-    //用于ajax返回
-    protected function ajaxback($re){
-        if($re !== false && $re !== null && $re !== 0 &&  $re !== -1) echo json_encode( array('state'=>1, 'data'=>$re));
-        else echo json_encode( array('state'=>'0'));
-        return true;
-    }
     /**
      * echo json数据
+     * 原ajaxbackWithMsg()
      * @param $re 状态标记
      * @param $msg 状态描述
      * @return bool
      */
-    protected function ajaxbackWithMsg($re=1, $msg=''){
-        echo json_encode( array('state'=>$re, 'msg'=>$msg));
-        return true;
+    protected function returnMsg($re=1, $msg='fail!'){
+        exit(json_encode( array('state'=>$re, 'msg'=>$msg)));
+    }
+    // 用于ajax返回
+    // 原ajaxback()
+    protected function returnData($re){
+        if ($re !== false && $re !== null && $re !== 0 && $re !== -1) {
+            exit(json_encode(array('state' => 1, 'data' => $re)));
+        } else $this->returnMsg(0);
     }
     // 以组件方式引入html
     final protected function template($file=false){
@@ -140,7 +141,8 @@ class Controller extends Base{
         $this->assign('view', VIEW);
         $this->assign('contr', $classname );
         $this->assign('method', $method);
-
+        // 引入ajax发送中的蒙层
+        \Main\template::ajaxSending();
         // 防scrf的ajax(基于jquery), 接受post提交数据前.先验证http头中的 csrftoken
         $ajax = Secure::newAjax($classname);
         // js string模板解析
@@ -276,7 +278,7 @@ class Controller extends Base{
     final public function __call($fun, $par=array()){
 
         if(in_array(strtolower($fun), array('post','put','delete'), true)){
-            if(!Secure::checkCsrftoken( $this->classname )) $this->ajaxbackWithMsg(0, 'csrf防护中!') && exit;
+            if(!Secure::checkCsrftoken( $this->classname ))  $this->returnMsg(0, 'csrf防护中!') ;
             loop : if(!empty($par)){
                 $match = isset($par[1]) ? ',$par[1]' : false ;
                 $code = 'return \Main\F::{$fun}("'.$par[0].'"'.$match.');';
@@ -284,7 +286,7 @@ class Controller extends Base{
 
                 if($bool === false ) {
                     $msg = isset($par[2]) ? $par[2] : $par[0].' 不合法!';
-                    $this->ajaxbackWithMsg(0, $msg) && exit;
+                    $this->returnMsg(0, $msg);
                 }else if($bool === null ) throw new Exception('尝试获取'.$fun.'中的"'.$par[0].'"没有成功!');
                 else return $bool;
             }else {

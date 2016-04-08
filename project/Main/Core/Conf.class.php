@@ -5,13 +5,14 @@
  * Date: 2015/12/21 0021
  * Time: 17:12
  */
-namespace Main;
+namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
-class conf{
-    protected static $ins = null;
+class Conf{
+//    protected static $ins = null;
     protected $data = array();
+    protected $includeDir =  'Main/Views/include';
 
-    final protected function __construct(){
+    final public function __construct(){
         include   (ROOT.'config.inc.php');
         $this->data = $_CFG;						//配置文件信息,读过来,赋给data属性
         $this->makeDefine();
@@ -21,9 +22,9 @@ class conf{
     final protected function __clone(){				//反克隆
         exit();
     }
-    public static function getins(){
-        if((self::$ins instanceof self) || (self::$ins = new self()))  return self::$ins;
-    }
+//    public static function getins(){
+//        if((self::$ins instanceof self) || (self::$ins = new self()))  return self::$ins;
+//    }
     public function __get($key){					//用魔术方法,读取data内的信息
         if(array_key_exists($key, $this->data)) return $this->data[$key];
         else return null;
@@ -46,8 +47,7 @@ class conf{
         date_default_timezone_set($this->data['timezone']);
     }
     private function includeFiles(){
-        $includeDir = 'Main/Views/include';
-        $files = $this->getFiles($includeDir);
+        $files = $this->getFiles($this->includeDir);
         $str = '';
         foreach($files as $k=>$v){
             $ext = strrchr($v , '.');

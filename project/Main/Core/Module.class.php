@@ -1,10 +1,9 @@
 <?php
-namespace Main;
+namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 class Module extends Base{
-    protected static $ins   = null;
     // 引入sql类
-    protected $db           = null;
+    public $db           = null;
     // 表名,不包含表前缀
     protected $tablename    = '';
     // 主键的字段
@@ -13,7 +12,8 @@ class Module extends Base{
     protected $table        = '';
 
     final protected function __construct(){
-        $this->db   = sql::getins();
+//        $this->db   = Mysql::getins();
+        $this->db   = obj('Mysql');
         $this->get_thisTable();
     }
     final protected function get_thisTable(){
@@ -26,9 +26,6 @@ class Module extends Base{
         return $this->table;
     }
     final protected function __clone(){exit;}
-    public static function getins(){
-        if(static::$ins instanceof static || (static::$ins = new static)) return static::$ins;
-    }
     // 以数组形式 insert 一条数据
     // return 新数据的主键
     public function insertData($cols, $addslashes=true) {
@@ -96,7 +93,7 @@ class Module extends Base{
         return false;
     }
     final public function __call($fun, $par=null){
-        if(!method_exists($this->db, $fun)) throw new \Main\Exception('方法没定义!');
+        if(!method_exists($this->db, $fun)) throw new \Main\Core\Exception('方法没定义!');
         if($par !== null){
             $parstr ='' ;
             $par = array_values($par);

@@ -1,11 +1,11 @@
 <?php
-namespace Main;
+namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
-class Base{
+class Tool{
     // 路径 转 绝对路径
     // param string &$dir
-    // return void
-    final protected function base_absoluteDir(&$dir){
+    // return string
+    final public function absoluteDir(&$dir){
         $system = php_uname('s');
         $dir = str_replace('\\','/',trim($dir));
         if(substr($system,0,5) === 'Linux'){
@@ -17,8 +17,8 @@ class Base{
         }else exit('未兼容的操作系统!');
     }
     // 分割下载
-    final protected function base_download2($path, $name, $showname){
-        $this->base_absoluteDir($path);
+    final public function download2($path, $name, $showname){
+        $this->absoluteDir($path);
         $filename = $path.$name;
         $file  = $filename;
         if (FALSE!== ($handler = fopen($file, 'r')))
@@ -40,8 +40,8 @@ class Base{
     }
     // 推送下载文件
     // param  路径  文件名
-    final protected function base_download($path, $name){
-        $this->base_absoluteDir($path);
+    final public function download($path, $name){
+        $this->absoluteDir($path);
         $filename = $path.$name;
         $file = fopen($filename,"r");
         header("Content-type: application/octet-stream");
@@ -54,7 +54,7 @@ class Base{
     }
     // curl发送post请求
     // test
-    final protected function base_sendPost($url, array $data=array()){
+    final public function sendPost($url, array $data=array()){
         //初始化
         $curl = curl_init();
         //设置抓取的url
@@ -76,7 +76,7 @@ class Base{
     }
     // curl发送get请求
     // test
-    final protected function base_sendGet($url, array $data=array()){
+    final public function sendGet($url, array $data=array()){
         //初始化
         $curl = curl_init();
         //设置抓取的url
@@ -94,7 +94,7 @@ class Base{
     }
     //参数1：访问的URL，参数2：post数据(不填则为GET)，参数3：提交的$cookies,参数4：是否返回$cookies
     // test
-    final protected function base_request($url,$post='',$cookie='', $returnCookie=0){
+    final public function request($url,$post='',$cookie='', $returnCookie=0){
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)');
@@ -128,14 +128,14 @@ class Base{
     }
     // 递归删除 目录(绝对路径)下的所有文件,不包括自身
     // return void
-    final protected function base_delDirAndFile($dirName){
-        $this->base_absoluteDir($dirName);
+    final public function delDirAndFile($dirName){
+        $this->absoluteDir($dirName);
         if (is_dir($dirName) && $dir_arr = scandir($dirName)){
             foreach($dir_arr as $k=>$v){
                 if($v == '.' || $v == '..'){}
                 else{
                     if(is_dir($dirName.'/'.$v)){
-                        $this->base_delDirAndFile($dirName.'/'.$v);
+                        $this->delDirAndFile($dirName.'/'.$v);
                         rmdir($dirName.'/'.$v);
                     }else unlink($dirName.'/'.$v);
                 }
@@ -146,14 +146,14 @@ class Base{
     // param string $fileName 文件名
     // param string $text 内容
     // return bool
-    final protected function base_printInFile($fileName, $text){
+    final public function printInFile($fileName, $text){
         //if( ! $fileName || ! $text ) return false;
-        $this->base_absoluteDir($fileName);
+        $this->absoluteDir($fileName);
         if(strripos($fileName, '/') === (strlen($fileName) - 1)) return false;      // filename 为路径,而不是文件名
         if(!file_exists($fileName)){
-            if(is_dir(dirname($fileName)) || $this->base_mkdir(dirname($fileName))) touch($fileName);
+            if(is_dir(dirname($fileName)) || $this->__mkdir(dirname($fileName))) touch($fileName);
         }
-        if( $fp = fopen( $fileName, "w" ) ) {
+        if( $fp = fopen( $fileName, "wb" ) ) {
             flock($fp, LOCK_EX | LOCK_NB);
             if(fwrite( $fp, $text ) ) {
                 fclose($fp);
@@ -169,20 +169,8 @@ class Base{
     // param string $dir 目录名
     // param string $mode 目录权限
     // return void
-    final protected function base_mkdir($dir, $mode = 0777 ){
-        $this->base_absoluteDir($dir);
-        if(is_dir(dirname($dir)) || $this->base_mkdir(dirname($dir))) return mkdir($dir, $mode);
-    }
-
-    // 模块间重定向
-    final protected function base_headerTo($msg='跳转中!',$app='index', $contr='index', $method='indexDo', array $pars=array()){
-        $str = '';
-        if(!empty($pars)){
-            foreach($pars as $k=>$v){
-                $str .= '/'.$k.'/'.$v;
-            }
-        }
-        $where = IN_SYS.'?'.PATH.'='.$app.'/'.$contr.'/'.$method.$str;
-        \Main\template::jumpTo($msg, $where);
+    final public function __mkdir($dir, $mode = 0777 ){
+        $this->absoluteDir($dir);
+        if(is_dir(dirname($dir)) || $this->__mkdir(dirname($dir))) return mkdir($dir, $mode);
     }
 }

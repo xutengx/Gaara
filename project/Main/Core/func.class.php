@@ -18,8 +18,8 @@ function obj($obj, $app=true){
     $arr = func_get_args();
     unset($arr[0]);
     unset($arr[1]);
-    if(empty($arr)) return \Main\obj::get($obj, $app);
-    else return \Main\obj::get($obj, $app, $arr);
+    if(empty($arr)) return \Main\Core\loader::get($obj, $app);
+    else return \Main\Core\loader::get($obj, $app, $arr);
 }
 
 /**
@@ -27,7 +27,7 @@ function obj($obj, $app=true){
  * @param string $template 引入模板名
  */
 function template($template=''){
-    if($template) \Main\template::show($template);
+    if($template) \Main\Core\template::show($template);
     else throw new \Exception('引入模板名有误!');
 }
 

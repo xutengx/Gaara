@@ -1,5 +1,5 @@
 <?php
-namespace Main;
+namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 class Cache {
     // 缓存目录
@@ -11,19 +11,19 @@ class Cache {
     // 缓存扩展名
     private  $cacheFileExt     = "html";
 
-    private static $ins = null;
+//    private static $ins = null;
 
     /*
      * 构造函数
      * int $time 缓存更新时间
      */
-    final protected function __construct($time = false){
+    final public function __construct($time = false){
         $this->cacheRoot = ROOT.'data/Cache/' . APP . 'App';
         if((int)$time) $this->cacheLimitTime = $time;
     }
-    public static function getins($time){
-        if((self::$ins instanceof self) || (self::$ins = new self($time))) return self::$ins;
-    }
+//    public static function getins($time){
+//        if((self::$ins instanceof self) || (self::$ins = new self($time))) return self::$ins;
+//    }
     // 页面缓存
     public function htmlCacheCheck($contr, $key='default', $cacheTime=false){
         $key = $key  ? $key : 'default';

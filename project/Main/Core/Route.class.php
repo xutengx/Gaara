@@ -5,9 +5,9 @@
  * Date: 2015/12/21 0021
  * Time: 17:12
  */
-namespace Main;
+namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
-class route{
+class Route{
     public static $conf       = null;
     private static $url;
     private static $urlArr = array(
@@ -30,7 +30,8 @@ class route{
         self::doMethod();
     }
     private static function getConf(){
-        self::$conf = conf::getins();
+//        self::$conf = conf::getins();
+        self::$conf = obj('conf');
     }
     private static function getUrl(){
         if( (!isset($_GET[PATH]) || empty($_GET[PATH])) && isset($_GET[MD5(IN_SYS)]) && !empty($_GET[MD5(IN_SYS)]) ) $_GET[PATH] = $_GET[MD5(IN_SYS)];
@@ -60,7 +61,7 @@ class route{
             define('VIEW','Application/'.self::$urlArr['application'].'/View/');
             self::$urlArr['pramers'] = array_merge(self::$urlArr['pramers'], self::$urlPars);
             self::filterPars();
-            $obj        = obj::get($contr);
+            $obj        = loader::get($contr);
             $func = method_exists($obj,self::$urlArr['method'] ) ? self::$urlArr['method'] : 'indexDo';
             $obj->$func();
         }else header('Location:'.IN_SYS);
@@ -86,6 +87,6 @@ class route{
     }
     // 参数过滤
     private static function filterPars(){
-        F::getins(self::$urlArr['pramers']);
+       obj('F',true,self::$urlArr['pramers']);
     }
 }

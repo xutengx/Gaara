@@ -5,10 +5,9 @@
  * Date: 2015/12/21 0021
  * Time: 17:13
  */
-namespace Main;
+namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 class Controller extends Base{
-    protected static $ins        = null;
     // 引入sql类
     protected $db         = null;
     // 引入cache类
@@ -25,18 +24,15 @@ class Controller extends Base{
     protected $classname = null;
 
     final public function __construct(){
-        $this->phpcache = Cache::getins(0);
+        $this->phpcache = obj('\Main\Core\Cache',true,0);
         //设置session
-        $this->session = session::getins();
+        $this->session = obj('\Main\Core\Session');
 
         $strarr = array(APP.'\\'=>'','Contr'=>'');
         $this->classname = strtr(get_class($this), $strarr);
         $this->construct();
     }
     protected function construct(){
-    }
-    public static function getins(){
-        if(static::$ins instanceof static || (static::$ins = new static)) return static::$ins;
     }
     public function indexDo(){
         $this->display();
@@ -48,7 +44,7 @@ class Controller extends Base{
     }
     // 事务开启 begin;
     protected function sqlBegin(){
-        $this->db = sql::getins();
+        $this->db = obj('Mysql');
         $sql = 'begin';
         $this->db->query($sql);
     }
@@ -135,22 +131,25 @@ class Controller extends Base{
         $method = $debug[1]['function'];
 
         $DATA = $this->phparray;
-        include ROOT.'Application/'.APP.'/View/'.$file.'.html';
         $this->assign('path',PATH);
         $this->assign('in_sys',IN_SYS);
         $this->assign('view', VIEW);
         $this->assign('contr', $classname );
         $this->assign('method', $method);
         // 公用view
-        \Main\template::includeFiles();
+        obj('Template')::includeFiles();
+        // 一键form提交
+        obj('Template')::submitData();
         // 防scrf的ajax(基于jquery), 接受post提交数据前.先验证http头中的 csrftoken
-        $ajax = Secure::newAjax($classname);
+        $ajax = obj('Secure')->newAjax($classname);
         // js string模板解析
         $template = 'String.prototype.temp = function(obj){return this.replace(/\$\w+\$/gi,function(matchs){var returns = obj[matchs.replace(/\$/g, "")];return (returns + "") == "undefined"? "": returns;});};';
         // js 路由方法
         $str = 'function __url__(Application, Controller, method){if(arguments.length==1){method=Application;Controller="'.$classname.'";Application="'.APP.'";}else if(arguments.length==2) {method=Controller;Controller=Application;Application="'.APP.'";} var url=window.location.protocol+"//"+window.location.host+window.location.pathname+"?'.PATH.'="+Application+"/"+Controller+"/"+method+"/"; return url;}';
         echo '<script>'.$str,$this->cache,$ajax,$template.'</script>';
         $this->cache = ';';
+
+        include ROOT.'Application/'.APP.'/View/'.$file.'.html';
         return true;
     }
     // 缓存js赋值 string
@@ -168,7 +167,7 @@ class Controller extends Base{
     // cookie即时生效
     protected function set_cookie($var, $value = '', $time = 0, $path = '', $domain = '', $s = false){
         $_COOKIE[$var] = $value;
-        F::set_cookie($var , $value);
+        obj('F')::set_cookie($var , $value);
         if (is_array($value)) {
             foreach ($value as $k => $v) {
                 setcookie($var . '[' . $k . ']', $v, $time, $path, $domain, $s);
@@ -209,7 +208,7 @@ class Controller extends Base{
             echo '<p>请在微信中打开</p>';
             //exit();
         }else{
-            $code = F::get('code');
+            $code = obj('F')::get('code');
             //获取授权
             $auth = $this->wechatTest();
             if($code === null){
@@ -222,7 +221,7 @@ class Controller extends Base{
             }
             else{
                 $res = $auth -> get_access_token($code);// get_access_token()方法能够获取openid，access_token等信息
-                $explicit = F::cookie('explicit');
+                $explicit = obj('F')::cookie('explicit');
                 if($explicit) $this->wechatinfo = $auth->get_user_info($res['access_token'], $res['openid']);
                 else $this->wechatinfo = $res['openid'];
                 $this->main_getInfo();
@@ -238,7 +237,7 @@ class Controller extends Base{
      */
     private function wechatTest(){
         try{
-            if($tid = F::session('themeid')) {
+            if($tid = obj('\Main\Core\F')::session('themeid')) {
                 $re = obj('themeModule')->selRow($tid);
                 if($re['isdefault'] == 1) {
                     loop : if($_SERVER['HTTP_HOST'] == 'wx.issmart.com.cn') return obj('\Expand\Wechat',false, APPID_TEST, APPSECRET_TEST);
@@ -254,7 +253,7 @@ class Controller extends Base{
     }
     // 微信授权前的 Session 校验,之后将自动授权,以及记录数据 和 Session
     final protected function main_checkSessionUser($is = false){
-        $openid = F::session('openid');
+        $openid = obj('F')::session('openid');
         $obj    = obj('userModule');
         if($obj->main_checkUser($openid)) return $openid;
         else {
@@ -268,7 +267,7 @@ class Controller extends Base{
         $obj = obj('userModule');
         $openid = ( $openid = $obj->main_checkUser($this->wechatinfo) ) ? $openid : $obj->main_newUser($this->wechatinfo);
         if($openid) {
-            $location = F::cookie('Location');
+            $location = obj('F')::cookie('Location');
             $_SESSION['openid'] = $openid;
             header('Location:'.$location);
         }
@@ -278,10 +277,10 @@ class Controller extends Base{
     final public function __call($fun, $par=array()){
 
         if(in_array(strtolower($fun), array('post','put','delete'), true)){
-            if(!Secure::checkCsrftoken( $this->classname ))  $this->returnMsg(0, 'csrf防护中!') ;
+            if(!obj('Secure')::checkCsrftoken( $this->classname ))  $this->returnMsg(0, 'csrf防护中!') ;
             loop : if(!empty($par)){
                 $match = isset($par[1]) ? ',$par[1]' : false ;
-                $code = 'return \Main\F::{$fun}("'.$par[0].'"'.$match.');';
+                $code = 'return obj(\'F\')::{$fun}("'.$par[0].'"'.$match.');';
                 $bool = eval($code);
 
                 if($bool === false ) {
@@ -298,7 +297,7 @@ class Controller extends Base{
                  * @throws Exception
                  */
                 $arrayKey = array();
-                $code = 'return \Main\F::${$fun};';
+                $code = 'return obj(\'F\')::${$fun};';
                 $array = eval($code);
                 if($array === null)  throw new Exception('尝试获取'.$fun.'中的数据没有成功!');
                 foreach($array as $k=>$v){

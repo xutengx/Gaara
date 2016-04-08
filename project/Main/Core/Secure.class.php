@@ -5,7 +5,7 @@
  * Date: 2016/2/22 0022
  * Time: 11:05
  */
-namespace Main;
+namespace Main\Core;
 class Secure{
     //延伸的md5方法
     public static function md5($string){

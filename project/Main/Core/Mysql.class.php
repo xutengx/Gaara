@@ -5,16 +5,16 @@
  * Date: 2015/12/21 0021
  * Time: 17:13
  */
-namespace Main;
+namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
-class sql{
-    private static $ins = null;
+class Mysql{
+//    private static $ins = null;
     private $conn       = null;
     public  $conf       = array();
     public  $tablepre   = null;
 
-    final private function __construct(){
-        $this->conf = conf::getins();
+    final public function __construct(){
+        $this->conf = obj('Conf');
         $this->connect($this->conf->host, $this->conf->user, $this->conf->pwd);
         $this->setchar($this->conf->char);
         $this->select_db($this->conf->db);
@@ -27,9 +27,9 @@ class sql{
     final private function __clone(){
         exit();
     }
-    public static function getins(){
-        if((self::$ins instanceof self) || (self::$ins = new self())) return self::$ins;
-    }
+//    public static function getins(){
+//        if((self::$ins instanceof self) || (self::$ins = new self())) return self::$ins;
+//    }
     private function creatDB(){
         $arr = explode(";", trim($this->conf->sql));
         if($arr[count($arr) - 1] == '') unset($arr[count($arr) - 1]);
@@ -61,7 +61,7 @@ class sql{
         }
         catch(Exception $e){
             $error = mysqli_error($this->conn);
-            log::write($sql."\r\n".$error);
+            obj('\Main\Core\Log')::write($sql."\r\n".$error);
             if(ini_get('display_errors')) echo ('query error 已经记录 :</br>'.$sql."</br>".$error."</br>");
         }
         return $rs;

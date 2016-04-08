@@ -5,14 +5,14 @@
  * Date: 2015/12/21 0021
  * Time: 17:14
  */
-namespace Main;
+namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 // 原filter类, 数据来源过滤
 class F{
     public static $post;
     public static $get;
     public static $cookie;
-    private static $ins = null;
+//    private static $ins = null;
     private static $filterArr = array(
         'email' => '/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/',
         'email2' => '/^[0-9a-z][_.0-9a-z-]{0,31}@([0-9a-z][0-9a-z-]{0,30}[0-9a-z]\.){1,4}[a-z]{2,4}$/i',
@@ -35,7 +35,7 @@ class F{
 
     );
 
-    final private function __construct($par){
+    final public function __construct($par){
         $this->filterMake($par);
     }
     final private function __clone(){}
@@ -60,9 +60,9 @@ class F{
         if(isset($_SESSION[$key])) return $filter ? self::filterMatch($_SESSION[$key], $filter) : $_SESSION[$key];
         else return null;
     }
-    public static function getins($par){
-        if(self::$ins instanceof self || self::$ins = new self($par)) return self::$ins;
-    }
+//    public static function getins($par=null){
+//        if(self::$ins instanceof self || self::$ins = new self($par)) return self::$ins;
+//    }
     public static function set_cookie($k, $v){
         self::$cookie[$k] = $v;
     }
@@ -102,6 +102,89 @@ class F{
             }
         }
         return $q;
+    }
+
+    /**
+     * @param $string 原字符串
+     * @param $length 目标长度
+     * @param bool|false $havedot 多余展示符,false则没有, 如 ...
+     * @param string $charset
+     * @return mixed|string
+     */
+    public static function cutstr($string, $length, $havedot = false, $charset = 'utf8'){
+        if (strtolower($charset) == 'gbk') $charset = 'gbk';
+        else $charset = 'utf8';
+        if (strlen($string) <= $length)  return $string;
+        if (function_exists('mb_strcut'))  $string = mb_substr($string, 0, $length, $charset);
+        else {
+            $pre = '{%';  $end = '%}';
+            $string = str_replace(array('&amp;', '&quot;', '&lt;', '&gt;'), array($pre . '&' . $end, $pre . '"' . $end, $pre . '<' . $end, $pre . '>' . $end), $string);
+            $strcut = '';
+            $strlen = strlen($string);
+            $n = $tn = $noc = 0;
+            if ($charset == 'utf8') {
+                while ($n < $strlen) {
+                    $t = ord($string[$n]);
+                    if ($t == 9 || $t == 10 || (32 <= $t && $t <= 126)) {
+                        $tn = 1;
+                        $n++;
+                        $noc++;
+                    } elseif (194 <= $t && $t <= 223) {
+                        $tn = 2;
+                        $n += 2;
+                        $noc++;
+                    } elseif (224 <= $t && $t <= 239) {
+                        $tn = 3;
+                        $n += 3;
+                        $noc++;
+                    } elseif (240 <= $t && $t <= 247) {
+                        $tn = 4;
+                        $n += 4;
+                        $noc++;
+                    } elseif (248 <= $t && $t <= 251) {
+                        $tn = 5;
+                        $n += 5;
+                        $noc++;
+                    } elseif ($t == 252 || $t == 253) {
+                        $tn = 6;
+                        $n += 6;
+                        $noc++;
+                    } else {
+                        $n++;
+                    }
+                    if ($noc >= $length) {
+                        break;
+                    }
+                }
+                if ($noc > $length) {
+                    $n -= $tn;
+                }
+                $strcut = substr($string, 0, $n);
+            } else {
+                while ($n < $strlen) {
+                    $t = ord($string[$n]);
+                    if ($t > 127) {
+                        $tn = 2;
+                        $n += 2;
+                        $noc++;
+                    } else {
+                        $tn = 1;
+                        $n++;
+                        $noc++;
+                    }
+                    if ($noc >= $length) {
+                        break;
+                    }
+                }
+                if ($noc > $length) {
+                    $n -= $tn;
+                }
+                $strcut = substr($string, 0, $n);
+            }
+            $string = str_replace(array($pre . '&' . $end, $pre . '"' . $end, $pre . '<' . $end, $pre . '>' . $end), array('&amp;', '&quot;', '&lt;', '&gt;'), $strcut);
+        }
+        if ($havedot) $string = $string . $havedot;
+        return $string;
     }
     // 外部获取 预定义验证规则
     public static function getFilterArr(){

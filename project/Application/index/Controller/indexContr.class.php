@@ -1,20 +1,16 @@
 <?php
 namespace index;
 defined('IN_SYS')||exit('ACC Denied');
-class indexContr extends \Main\Controller{
+class indexContr extends \Business\businessController{
     public function indexDo(){
-        $this->base_headerTo('我要走远了!','index','index','test',array('id'=>123));
-    }
-    public function test(){
-        $id = $this->get('id');
-        var_dump(obj('userObj'));
-//        echo 'success!!!!!!!'.$id;
+        $t1 = obj('userModule');
+        $t2 = obj('userObj');
         $this->display('test');
     }
-    public function test1(){
-        $data = array('state'=>1,'msg'=>'ok!!');
-        sleep(5);
+    public function test(){
+        $data = $this->post();
 //        var_dump($data);
-        $this->returnMsg(1,'ok!!!!!');
+//        var_dump($_FILES);
+        $this->returnData($data);
     }
 }

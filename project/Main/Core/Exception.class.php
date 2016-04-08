@@ -1,5 +1,5 @@
 <?php
-namespace Main;
+namespace Main\Core;
 class Exception extends \Exception{
     protected $code_map = array(
         // 自动加载
@@ -22,7 +22,7 @@ class Exception extends \Exception{
         $str =  explode('#',$str);
         if($str[0] == '') unset($str[0]);
         $str = array_values($str);
-        $this->message .= '</br>系统检测问题所在 : '.$str[6];
+        $this->message .= '</br>系统检测问题所在 : '.$str[4];
         $this->message .= '</br>原异常 : '.$this->getTraceAsString();
     }
 }

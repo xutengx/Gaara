@@ -3,9 +3,9 @@ defined('IN_SYS')|| define('IN_SYS', substr(str_replace('\\','/',__FILE__),strrp
 defined('ROOT')||define('ROOT',str_replace('\\','/',dirname(__FILE__)).'/');
 
 //自动加载类
-require (ROOT . 'Main/loader.class.php');
+require (ROOT . 'Main/Core/Loader.class.php');
 //公用方法
-require (ROOT . 'Main/func.class.php');
+require (ROOT . 'Main/Core/func.class.php');
 
 //var_dump(IN_SYS);exit;
-\Main\route::Start();
+\Main\Core\Route::Start();

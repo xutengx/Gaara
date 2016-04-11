@@ -41,7 +41,7 @@
 </form>
 <form id="form!!1231" action="">
     <div>
-        <input id="ttt" type="button" value="test" onclick="test();">
+        <input type="button" value="test" onclick="test();">
         <div  style="width:800px;height:1028px;"></div>
         <input type="button" value="test" onclick="test();">
         <div  style="width:800px;height:1028px;"></div>
@@ -58,18 +58,16 @@
 <script>
     $("input[type=button]").submitData('test',function(re){
         console.log(re);
-    },'post');
+    });
     var test = function(){
 //        sendAjax()
-        $.ajax({
-            url:__url__('test'),
-            data:{'test':'test','type':'put'},
-            type:'put',
-            dataType:'json',
-            success:function(re){
-                console.log(re);
-            }
-        })
+//        $.ajax({
+//            url:__url__('test1'),
+//            dataType:'json',
+//            success:function(re){
+//                console.log(re);
+//            }
+//        })
     }
     //$(document).ajaxStart(function(){
 //    $("#PHP_fullMask").css("display","block");

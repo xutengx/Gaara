@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2016/1/21 0021
- * Time: 19:05
- */
 namespace Main\Core;
-class Session extends Base{
+class Session{
     final public function __construct(){
         $this->start_session();
     }

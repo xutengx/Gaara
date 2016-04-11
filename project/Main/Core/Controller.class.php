@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2015/12/21 0021
- * Time: 17:13
- */
 namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 class Controller extends Base{
@@ -15,24 +9,32 @@ class Controller extends Base{
     // 引入session类
     protected $session   = null;
     // 缓存js赋值
-    private $cache        = ';';
+    protected $cache        = ';';
     // 缓存php赋值
-    private $phparray        = array();
+    protected $phparray        = array();
     // 缓存微信授权返回值
     protected $wechatinfo  = array();
+    // 当前Contr所在app名
+    protected $app = null;
     // 当前Contr名
     protected $classname = null;
 
     final public function __construct(){
-        $this->phpcache = obj('\Main\Core\Cache',true,0);
+        $this->phpcache = obj('\Main\Core\Cache',true,1);
         //设置session
         $this->session = obj('\Main\Core\Session');
 
-        $strarr = array(APP.'\\'=>'','Contr'=>'');
-        $this->classname = strtr(get_class($this), $strarr);
+        $this->setClassname();
+
         $this->construct();
     }
     protected function construct(){
+    }
+    private function setClassname(){
+        $classname =  str_replace('Contr','',get_class($this));
+        $app = explode('\\', $classname);
+        $this->app = $app[0];
+        $this->classname = $app[1];
     }
     public function indexDo(){
         $this->display();
@@ -58,43 +60,6 @@ class Controller extends Base{
         $sql = 'rollback';
         $this->db->query($sql);
     }
-    // 开启页面缓存区域 参数应为用户唯一id
-    protected function cacheHtmlStart($key='default',$cacheTime=false){
-        $classname = str_replace('Contr', '',get_class($this));
-        $this->phpcache->htmlCacheCheck($classname, $key, $cacheTime);
-
-    }
-    // 结束页面缓存区域
-    protected function cacheHtmlEnd(){
-        $this->phpcache->htmlCacheOut();
-    }
-    // 开启数据缓存区域
-    // param array $arr 标记参数数组
-    // param int $cacheTime 独立缓存时间
-    // return void
-    protected function cacheDataStart(array $arr=array(), $cacheTime = false){
-        $classname = str_replace('Contr', '',get_class($this));
-        $debug = debug_backtrace();
-        // 方法名,为调用此方法的最近级别函数
-        $functionName = $debug[1]['function'];
-        $key    = '';
-        if( !isset($arr) || empty($arr) )  $key = 'default';
-        else {
-            foreach($arr as $k=>$v){
-                $key .= $key ? '_'.$v : $v;
-            }
-        }
-        $this->phpcache->dataCacheCheck($classname, $functionName, $key, $cacheTime);
-    }
-    // 结束数据缓存区域
-    protected function cacheDataEnd(){
-        $this->phpcache->dataCacheOut();
-    }
-    // 清除指定缓存
-    // param 不指定则清除所有缓存
-    protected function cacheClear($App = '', $Contr = '', $Func = ''){
-        $this->phpcache->clearCache($App, $Contr, $Func);
-    }
     /**
      * echo json数据
      * 原ajaxbackWithMsg()
@@ -103,29 +68,28 @@ class Controller extends Base{
      * @return bool
      */
     protected function returnMsg($re=1, $msg='fail!'){
-        exit(json_encode( array('state'=>$re, 'msg'=>$msg)));
+        echo json_encode( array('state'=>$re, 'msg'=>$msg));
     }
     // 用于ajax返回
     // 原ajaxback()
     protected function returnData($re){
         if ($re !== false && $re !== null && $re !== 0 && $re !== -1) {
-            exit(json_encode(array('state' => 1, 'data' => $re)));
+            echo json_encode(array('state' => 1, 'data' => $re));
         } else $this->returnMsg(0);
     }
     // 以组件方式引入html
     final protected function template($file=false){
-        $classname =  str_replace('Contr','',get_class($this));
-        $app = explode('\\', $classname);
-        $file = $file ? $file : $app[1];
-        $this->assignPhp('T_VIEW','Application/'.$app[0].'/View/');
+//        $classname =  str_replace('Contr','',get_class($this));
+//        $app = explode('\\', $classname);
+        $file = $file ? $file : $this->classname;
+        $this->assignPhp('T_VIEW','Application/'.$this->app.'/View/');
         $DATA = $this->phparray;
-        include ROOT.'Application/'.$app[0].'/View/template/'.$file.'.html';
+        include ROOT.'Application/'.$this->app.'/View/template/'.$file.'.html';
         echo '<script>'.$this->cache.'</script>';
     }
     // 写入script路由方法,js赋值,并引入html文件
     final protected function display($file=false){
-        $classname = $this->classname;
-        $file = $file ? $file : $classname;
+        $file = $file ? $file : $this->classname;
         $debug = debug_backtrace();
         // 方法名,为调用此方法的最近级别函数
         $method = $debug[1]['function'];
@@ -134,22 +98,23 @@ class Controller extends Base{
         $this->assign('path',PATH);
         $this->assign('in_sys',IN_SYS);
         $this->assign('view', VIEW);
-        $this->assign('contr', $classname );
+        $this->assign('contr', $this->classname );
         $this->assign('method', $method);
         // 公用view
         obj('Template')::includeFiles();
         // 一键form提交
         obj('Template')::submitData();
         // 防scrf的ajax(基于jquery), 接受post提交数据前.先验证http头中的 csrftoken
-        $ajax = obj('Secure')->newAjax($classname);
+        $ajax = obj('Secure')->newAjax($this->classname);
         // js string模板解析
         $template = 'String.prototype.temp = function(obj){return this.replace(/\$\w+\$/gi,function(matchs){var returns = obj[matchs.replace(/\$/g, "")];return (returns + "") == "undefined"? "": returns;});};';
         // js 路由方法
-        $str = 'function __url__(Application, Controller, method){if(arguments.length==1){method=Application;Controller="'.$classname.'";Application="'.APP.'";}else if(arguments.length==2) {method=Controller;Controller=Application;Application="'.APP.'";} var url=window.location.protocol+"//"+window.location.host+window.location.pathname+"?'.PATH.'="+Application+"/"+Controller+"/"+method+"/"; return url;}';
+        $str = 'function __url__(Application, Controller, method){if(arguments.length==1){method=Application;Controller="'.$this->classname.'";Application="'.$this->app.'";}else if(arguments.length==2) {method=Controller;Controller=Application;Application="'.$this->app.'";} var url=window.location.protocol+"//"+window.location.host+window.location.pathname+"?'.PATH.'="+Application+"/"+Controller+"/"+method+"/"; return url;}';
         echo '<script>'.$str,$this->cache,$ajax,$template.'</script>';
         $this->cache = ';';
-
-        include ROOT.'Application/'.APP.'/View/'.$file.'.html';
+        if(file_exists(ROOT.'Application/'.APP.'/View/'.$file.'.html'))
+            include ROOT.'Application/'.APP.'/View/'.$file.'.html';
+        else throw new Exception(ROOT.'Application/'.APP.'/View/'.$file.'.html'.'不存在!');
         return true;
     }
     // 缓存js赋值 string
@@ -192,7 +157,7 @@ class Controller extends Base{
     // 生成随机文件名
     protected function makeFilename($dir, $ext, $id=123){
         $dir = $dir?trim($dir,'/').'/':'./';
-        if(!is_dir($dir)) $this->base_mkdir($dir);
+        if(!is_dir($dir)) obj('\Main\Core\Tool')->__mkdir($dir);
         $ext = trim($ext,'.');
         $dir .= uniqid($id);
         $dir .='.'.$ext;
@@ -275,7 +240,6 @@ class Controller extends Base{
     }
 
     final public function __call($fun, $par=array()){
-
         if(in_array(strtolower($fun), array('post','put','delete'), true)){
             if(!obj('Secure')::checkCsrftoken( $this->classname ))  $this->returnMsg(0, 'csrf防护中!') ;
             loop : if(!empty($par)){
@@ -309,6 +273,19 @@ class Controller extends Base{
             }
         }else if(in_array(strtolower($fun), array('get','session','cookie'), true)){
             goto loop;
+        }else if(method_exists($this->phpcache, $fun)) {
+            $debug = debug_backtrace();
+            $functionName = $debug[1]['function'];
+            $parstr ='' ;
+            if(!empty($par)){
+                $par = array_values($par);
+                for($i = 0 ; $i < count($par) ; $i++){
+                    $parstr .= ',$par['.$i.']';
+                }
+                $parstr = ltrim($parstr, ',');
+            }else $parstr = '\'\'' ;
+            $code = 'return $this->phpcache->{$fun}($this->app,$this->classname,$functionName,'.$parstr.');';
+            return eval($code);
         }
     }
 }

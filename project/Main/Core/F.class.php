@@ -11,6 +11,8 @@ defined('IN_SYS')||exit('ACC Denied');
 class F{
     public static $post;
     public static $get;
+    public static $put;
+    public static $delete;
     public static $cookie;
 //    private static $ins = null;
     private static $filterArr = array(
@@ -43,6 +45,7 @@ class F{
         self::$get = self::_addslashes(self::_htmlspecialchars($par));
         self::$post = self::_addslashes(self::_htmlspecialchars($_POST));
         self::$cookie = self::_addslashes(self::_htmlspecialchars($_COOKIE));
+        self::getPUTorDELETE();
     }
     public static function get($key, $filter = false){
         if(isset(self::$get[$key]))  return $filter ? self::filterMatch(self::$get[$key], $filter) : self::$get[$key];
@@ -50,6 +53,14 @@ class F{
     }
     public static function post($key, $filter = false){
         if(isset(self::$post[$key])) return $filter ? self::filterMatch(self::$post[$key], $filter) : self::$post[$key];
+        else return null;
+    }
+    public static function put($key, $filter = false){
+        if(isset(self::$put[$key])) return $filter ? self::filterMatch(self::$put[$key], $filter) : self::$put[$key];
+        else return null;
+    }
+    public static function delete($key, $filter = false){
+        if(isset(self::$delete[$key])) return $filter ? self::filterMatch(self::$delete[$key], $filter) : self::$delete[$key];
         else return null;
     }
     public static function cookie($key, $filter = false){
@@ -65,6 +76,13 @@ class F{
 //    }
     public static function set_cookie($k, $v){
         self::$cookie[$k] = $v;
+    }
+    private static function getPUTorDELETE(){
+        if ('PUT' == $_SERVER['REQUEST_METHOD']) {
+            parse_str(file_get_contents('php://input'), self::$put);
+        }else if('DELETE' == $_SERVER['REQUEST_METHOD']) {
+            parse_str(file_get_contents('php://input'), self::$delete);
+        }
     }
 
     /**

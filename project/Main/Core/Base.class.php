@@ -9,6 +9,6 @@ class Base{
     // 模块间重定向
     final protected function headerTo($msg='跳转中!',$where,$jump=true){
         $where = IN_SYS.'?'.PATH.'='.$where;
-        $jump ? obj('template')::jumpTo($msg, $where) : header('location:'.$where);
+        $jump ? obj('template')->jumpTo($msg, $where) : header('location:'.$where);
     }
 }

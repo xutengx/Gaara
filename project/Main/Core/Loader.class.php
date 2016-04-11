@@ -32,6 +32,7 @@ class Loader{
         'secure'=>'\Main\Core\Secure',
         'template'=>'\Main\Core\Template',
         'log'=>'\Main\Core\Log',
+        'tool'=>'\Main\Core\Tool',
     );
     // 查看预存的class引用路径
     public static function showMap(){

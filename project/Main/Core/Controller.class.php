@@ -101,9 +101,9 @@ class Controller extends Base{
         $this->assign('contr', $this->classname );
         $this->assign('method', $method);
         // 公用view
-        obj('Template')::includeFiles();
+        obj('Template')->includeFiles();
         // 一键form提交
-        obj('Template')::submitData();
+        obj('Template')->submitData();
         // 防scrf的ajax(基于jquery), 接受post提交数据前.先验证http头中的 csrftoken
         $ajax = obj('Secure')->newAjax($this->classname);
         // js string模板解析
@@ -132,7 +132,7 @@ class Controller extends Base{
     // cookie即时生效
     protected function set_cookie($var, $value = '', $time = 0, $path = '', $domain = '', $s = false){
         $_COOKIE[$var] = $value;
-        obj('F')::set_cookie($var , $value);
+        obj('F')->set_cookie($var , $value);
         if (is_array($value)) {
             foreach ($value as $k => $v) {
                 setcookie($var . '[' . $k . ']', $v, $time, $path, $domain, $s);
@@ -173,7 +173,7 @@ class Controller extends Base{
             echo '<p>请在微信中打开</p>';
             //exit();
         }else{
-            $code = obj('F')::get('code');
+            $code = obj('F')->get('code');
             //获取授权
             $auth = $this->wechatTest();
             if($code === null){
@@ -186,7 +186,7 @@ class Controller extends Base{
             }
             else{
                 $res = $auth -> get_access_token($code);// get_access_token()方法能够获取openid，access_token等信息
-                $explicit = obj('F')::cookie('explicit');
+                $explicit = obj('F')->cookie('explicit');
                 if($explicit) $this->wechatinfo = $auth->get_user_info($res['access_token'], $res['openid']);
                 else $this->wechatinfo = $res['openid'];
                 $this->main_getInfo();
@@ -202,7 +202,7 @@ class Controller extends Base{
      */
     private function wechatTest(){
         try{
-            if($tid = obj('\Main\Core\F')::session('themeid')) {
+            if($tid = obj('\Main\Core\F')->session('themeid')) {
                 $re = obj('themeModule')->selRow($tid);
                 if($re['isdefault'] == 1) {
                     loop : if($_SERVER['HTTP_HOST'] == 'wx.issmart.com.cn') return obj('\Expand\Wechat',false, APPID_TEST, APPSECRET_TEST);
@@ -218,7 +218,7 @@ class Controller extends Base{
     }
     // 微信授权前的 Session 校验,之后将自动授权,以及记录数据 和 Session
     final protected function main_checkSessionUser($is = false){
-        $openid = obj('F')::session('openid');
+        $openid = obj('F')->session('openid');
         $obj    = obj('userModule');
         if($obj->main_checkUser($openid)) return $openid;
         else {
@@ -232,7 +232,7 @@ class Controller extends Base{
         $obj = obj('userModule');
         $openid = ( $openid = $obj->main_checkUser($this->wechatinfo) ) ? $openid : $obj->main_newUser($this->wechatinfo);
         if($openid) {
-            $location = obj('F')::cookie('Location');
+            $location = obj('F')->cookie('Location');
             $_SESSION['openid'] = $openid;
             header('Location:'.$location);
         }
@@ -240,11 +240,11 @@ class Controller extends Base{
     }
 
     final public function __call($fun, $par=array()){
-        if(in_array(strtolower($fun), array('post','put','delete'), true)){
-            if(!obj('Secure')::checkCsrftoken( $this->classname ))  $this->returnMsg(0, 'csrf防护中!') ;
+        if(in_array(strtolower($fun), array('post','put','delete'))){
+            if(!obj('Secure')->checkCsrftoken( $this->classname ))  $this->returnMsg(0, 'csrf防护中!') ;
             loop : if(!empty($par)){
                 $match = isset($par[1]) ? ',$par[1]' : false ;
-                $code = 'return obj(\'F\')::{$fun}("'.$par[0].'"'.$match.');';
+                $code = 'return obj(\'F\')->{$fun}("'.$par[0].'"'.$match.');';
                 $bool = eval($code);
 
                 if($bool === false ) {
@@ -256,22 +256,22 @@ class Controller extends Base{
                 /**
                  * 按数组接受POST参数 再封装$this->post($par);
                  * 例:$_POST['name']='zhangsang',$_POST['age']=18  则 return array('name'=>'zhangsang','age'=>18)
-                 * 若存在'name'预定义验证规则(F::getFilterArr()中),则验证;要使用自定义验证,请用$this->post单独验证
+                 * 若存在'name'预定义验证规则(F->getFilterArr()中),则验证;要使用自定义验证,请用$this->post单独验证
                  * @return array
                  * @throws Exception
                  */
                 $arrayKey = array();
-                $code = 'return obj(\'F\')::${$fun};';
+                $code = 'return obj(\'F\')->${$fun};';
                 $array = eval($code);
                 if($array === null)  throw new Exception('尝试获取'.$fun.'中的数据没有成功!');
                 foreach($array as $k=>$v){
-                    if(array_key_exists($k,F::getFilterArr()) && !is_array($k)){
+                    if(array_key_exists($k,obj('F')->getFilterArr()) && !is_array($k)){
                         $arrayKey[$k] = $this->{$fun}($k, $k);
                     }else $arrayKey[$k] = $this->{$fun}($k);
                 }
                 return $arrayKey;
             }
-        }else if(in_array(strtolower($fun), array('get','session','cookie'), true)){
+        }else if(in_array(strtolower($fun), array('get','session','cookie'))){
             goto loop;
         }else if(method_exists($this->phpcache, $fun)) {
             $debug = debug_backtrace();
@@ -286,6 +286,6 @@ class Controller extends Base{
             }else $parstr = '\'\'' ;
             $code = 'return $this->phpcache->{$fun}($this->app,$this->classname,$functionName,'.$parstr.');';
             return eval($code);
-        }
+        }else throw new Exception('未定义的方法:'.$fun.'!');
     }
 }

@@ -9,13 +9,13 @@ namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 // 原filter类, 数据来源过滤
 class F{
-    public static $post;
-    public static $get;
-    public static $put;
-    public static $delete;
-    public static $cookie;
-//    private static $ins = null;
-    private static $filterArr = array(
+    public   $post;
+    public   $get;
+    public   $put;
+    public   $delete;
+    public   $cookie;
+//    private   $ins = null;
+    private   $filterArr = array(
         'email' => '/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/',
         'email2' => '/^[0-9a-z][_.0-9a-z-]{0,31}@([0-9a-z][0-9a-z-]{0,30}[0-9a-z]\.){1,4}[a-z]{2,4}$/i',
         'url'   => '/^[a-zA-z]+://(\w+(-\w+)*)(\.(\w+(-\w+)*))*(\?\S*)?$/',
@@ -42,46 +42,46 @@ class F{
     }
     final private function __clone(){}
     private function filterMake($par){
-        self::$get = self::_addslashes(self::_htmlspecialchars($par));
-        self::$post = self::_addslashes(self::_htmlspecialchars($_POST));
-        self::$cookie = self::_addslashes(self::_htmlspecialchars($_COOKIE));
-        self::getPUTorDELETE();
+        $this->get = $this->_addslashes($this->_htmlspecialchars($par));
+        $this->post = $this->_addslashes($this->_htmlspecialchars($_POST));
+        $this->cookie = $this->_addslashes($this->_htmlspecialchars($_COOKIE));
+        $this->getPUTorDELETE();
     }
-    public static function get($key, $filter = false){
-        if(isset(self::$get[$key]))  return $filter ? self::filterMatch(self::$get[$key], $filter) : self::$get[$key];
+    public   function get($key, $filter = false){
+        if(isset($this->get[$key]))  return $filter ? $this->filterMatch($this->get[$key], $filter) : $this->get[$key];
         else return null;
     }
-    public static function post($key, $filter = false){
-        if(isset(self::$post[$key])) return $filter ? self::filterMatch(self::$post[$key], $filter) : self::$post[$key];
+    public   function post($key, $filter = false){
+        if(isset($this->post[$key])) return $filter ? $this->filterMatch($this->post[$key], $filter) : $this->post[$key];
         else return null;
     }
-    public static function put($key, $filter = false){
-        if(isset(self::$put[$key])) return $filter ? self::filterMatch(self::$put[$key], $filter) : self::$put[$key];
+    public   function put($key, $filter = false){
+        if(isset($this->put[$key])) return $filter ? $this->filterMatch($this->put[$key], $filter) : $this->put[$key];
         else return null;
     }
-    public static function delete($key, $filter = false){
-        if(isset(self::$delete[$key])) return $filter ? self::filterMatch(self::$delete[$key], $filter) : self::$delete[$key];
+    public   function delete($key, $filter = false){
+        if(isset($this->delete[$key])) return $filter ? $this->filterMatch($this->delete[$key], $filter) : $this->delete[$key];
         else return null;
     }
-    public static function cookie($key, $filter = false){
-        if(isset(self::$cookie[$key])) return $filter ? self::filterMatch(self::$cookie[$key], $filter) : self::$cookie[$key];
+    public   function cookie($key, $filter = false){
+        if(isset($this->cookie[$key])) return $filter ? $this->filterMatch($this->cookie[$key], $filter) : $this->cookie[$key];
         else return null;
     }
-    public static function session($key, $filter = false){
-        if(isset($_SESSION[$key])) return $filter ? self::filterMatch($_SESSION[$key], $filter) : $_SESSION[$key];
+    public   function session($key, $filter = false){
+        if(isset($_SESSION[$key])) return $filter ? $this->filterMatch($_SESSION[$key], $filter) : $_SESSION[$key];
         else return null;
     }
-//    public static function getins($par=null){
-//        if(self::$ins instanceof self || self::$ins = new self($par)) return self::$ins;
+//    public   function getins($par=null){
+//        if($this->ins instanceof self || $this->ins = new self($par)) return $this->ins;
 //    }
-    public static function set_cookie($k, $v){
-        self::$cookie[$k] = $v;
+    public   function set_cookie($k, $v){
+        $this->cookie[$k] = $v;
     }
-    private static function getPUTorDELETE(){
+    private   function getPUTorDELETE(){
         if ('PUT' == $_SERVER['REQUEST_METHOD']) {
-            parse_str(file_get_contents('php://input'), self::$put);
+            parse_str(file_get_contents('php://input'), $this->put);
         }else if('DELETE' == $_SERVER['REQUEST_METHOD']) {
-            parse_str(file_get_contents('php://input'), self::$delete);
+            parse_str(file_get_contents('php://input'), $this->delete);
         }
     }
 
@@ -91,32 +91,32 @@ class F{
      * @param string $filter 匹配规则
      * @return mixed or false
      */
-    private static function filterMatch($str, $filter){
+    private   function filterMatch($str, $filter){
         if(strtolower($filter === 'xss') ){
             return Secure::xss($str, 'filter'); // 返回过滤后的$str
         }else {
-            $filter = array_key_exists($filter, self::$filterArr) ? self::$filterArr[$filter] : $filter;
+            $filter = array_key_exists($filter, $this->filterArr) ? $this->filterArr[$filter] : $filter;
             return preg_match($filter, $str) ? $str : false ;
         }
     }
-    private static function _addslashes($arr){
+    private   function _addslashes($arr){
         $q = array();
         foreach($arr as $k=>$v){
             if(is_string($v)){
                 $q[addslashes($k)] = addslashes($v);
             }else if (is_array($v)){
-                $q[addslashes($k)] = self::_addslashes($v);
+                $q[addslashes($k)] = $this->_addslashes($v);
             }
         }
         return $q;
     }
-    private static function _htmlspecialchars($arr){
+    private   function _htmlspecialchars($arr){
         $q = array();
         foreach($arr as $k=>$v){
             if(is_string($v)){
                 $q[($k)] = htmlspecialchars($v);
             }else if (is_array($v)){
-                $q[($k)] = self::_htmlspecialchars($v);
+                $q[($k)] = $this->_htmlspecialchars($v);
             }
         }
         return $q;
@@ -129,7 +129,7 @@ class F{
      * @param string $charset
      * @return mixed|string
      */
-    public static function cutstr($string, $length, $havedot = false, $charset = 'utf8'){
+    public   function cutstr($string, $length, $havedot = false, $charset = 'utf8'){
         if (strtolower($charset) == 'gbk') $charset = 'gbk';
         else $charset = 'utf8';
         if (strlen($string) <= $length)  return $string;
@@ -205,7 +205,7 @@ class F{
         return $string;
     }
     // 外部获取 预定义验证规则
-    public static function getFilterArr(){
-        return self::$filterArr;
+    public   function getFilterArr(){
+        return $this->filterArr;
     }
 }

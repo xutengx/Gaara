@@ -8,39 +8,39 @@
 namespace Main\Core;
 class Template {
     // 跳转中间页面
-    private static $jumpTo =  'jumpTo';
+    private   $jumpTo =  'jumpTo';
     // ajax发送中的蒙层
-    private static $ajaxSending =  'ajaxSending';
+    private   $ajaxSending =  'ajaxSending';
     // 数据检测
-    private static $submitData =  'submitData';
+    private   $submitData =  'submitData';
 
-    public static function show($file){
+    public   function show($file){
         include ROOT.'Application/'.APP.'/View/template/'.$file.'.html';
         return true;
     }
     // 跳转中间页
-    public static function jumpTo($message, $jumpUrl='index?path=index/index/indexDo/'){
+    public   function jumpTo($message, $jumpUrl='index?path=index/index/indexDo/'){
         $waitSecond = 3;
-        include ROOT.'Main/Views/tpl/'.self::$jumpTo.'.html';
+        include ROOT.'Main/Views/tpl/'.$this->jumpTo.'.html';
         exit;
     }
     // 自动加载静态文件
-    public static function includeFiles(){
+    public   function includeFiles(){
         // 声明于 Conf.class.php->includeFiles() ;
         echo VIEW_INCLUDE;
-        self::ajaxSending();
+        $this->ajaxSending();
     }
     /**
      *  ajax发送过程蒙层
      *  Controller->display();
      */
-    public static function ajaxSending(){
-        include ROOT.'Main/Views/tpl/'.self::$ajaxSending.'.html';
+    public   function ajaxSending(){
+        include ROOT.'Main/Views/tpl/'.$this->ajaxSending.'.html';
     }
     /**
      *
      */
-    public static function submitData(){
-        include ROOT.'Main/Views/tpl/'.self::$submitData.'.html';
+    public   function submitData(){
+        include ROOT.'Main/Views/tpl/'.$this->submitData.'.html';
     }
 }

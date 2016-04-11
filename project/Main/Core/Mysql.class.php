@@ -61,7 +61,7 @@ class Mysql{
         }
         catch(Exception $e){
             $error = mysqli_error($this->conn);
-            obj('\Main\Core\Log')::write($sql."\r\n".$error);
+            obj('\Main\Core\Log')->write($sql."\r\n".$error);
             if(ini_get('display_errors')) echo ('query error 已经记录 :</br>'.$sql."</br>".$error."</br>");
         }
         return $rs;

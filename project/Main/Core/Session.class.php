@@ -5,7 +5,7 @@ class Session{
         $this->start_session();
     }
     public function start_session(){
-        if(!is_dir(SESSIONPATH)) $this->base_mkdir(SESSIONPATH);
+        if(!is_dir(SESSIONPATH)) obj('tool')->__mkdir(SESSIONPATH);
         session_save_path(SESSIONPATH);
         session_set_cookie_params(SESSIONLIFE);
         session_cache_expire(SESSIONLIFE);

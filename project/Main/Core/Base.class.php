@@ -2,7 +2,7 @@
 namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 class Base{
-    protected static $ins        = null;
+    protected static $ins  = null;
     public static function getins(){
         if(static::$ins instanceof static || (static::$ins = new static)) return static::$ins;
     }

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2016/2/16 0016
- * Time: 15:17
- */
 namespace Expand;
 defined('IN_SYS') || exit('ACC Denied');
 class Image {

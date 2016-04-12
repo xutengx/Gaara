@@ -165,6 +165,28 @@ class Tool{
         }
         return false;
     }
+
+    /**
+     * @param $dirName 文件夹
+     * @return array 返回文件夹下的所有文件 组成的一维数组
+     * @throws Exception
+     */
+    final public function getFiles($dirName){
+        $arr = array();
+        if (is_dir($dirName) && $dir_arr = scandir($dirName)){
+            foreach($dir_arr as $k=>$v){
+                if($v == '.' || $v == '..'){}
+                else{
+                    if(is_dir($dirName.'/'.$v)){
+                        $arr = array_merge($arr,  $this->getFiles($dirName.'/'.$v));
+                    }else {
+                        $arr[] = $dirName.'/'. $v;
+                    }
+                }
+            }
+            return $arr;
+        }else throw new Exception($dirName.' 并非可读路径!');
+    }
     // 递归创建目录
     // param string $dir 目录名
     // param string $mode 目录权限

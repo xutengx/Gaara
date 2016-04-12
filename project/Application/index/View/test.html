@@ -18,12 +18,14 @@
         <input type="file" name="f22" >
         <input type="radio" name="sex" value="nan" >
         <input type="radio" name="sex" value="lv" >
+        <input type="radio" name="sex" value="other" >
         <input type="checkbox" name="checkbox" value="1" >
         <input type="checkbox" name="checkbox" value="2" >
         <input type="checkbox" name="checkbox" value="3" >
         <input type="checkbox" name="checkbox" value="4" >
         <input type="checkbox" name="checkbox" value="5" >
-        <input type="checkbox" name="checkbox" value="6" >
+        <input type="checkbox" name="checkbox" value="other" >
+        <input type="text" name="checkbox3" value="checkbox-other" >
         <input type="checkbox" name="checkbox2" value="5" >
         <input type="checkbox" name="checkbox2" value="6" >
         <select name="t1"><option value="1"/>1<option value="2"/>2<option value="3"/>3</select>
@@ -58,18 +60,18 @@
 <script>
     $("input[type=button]").submitData('test',function(re){
         console.log(re);
-    },'post');
+    });
     var test = function(){
 //        sendAjax()
-        $.ajax({
-            url:__url__('test'),
-            data:{'test':'test','type':'put'},
-            type:'put',
-            dataType:'json',
-            success:function(re){
-                console.log(re);
-            }
-        })
+//        $.ajax({
+//            url:__url__('test'),
+//            data:{'test':'test','type':'put'},
+//            type:'put',
+//            dataType:'json',
+//            success:function(re){
+//                console.log(re);
+//            }
+//        })
     }
     //$(document).ajaxStart(function(){
 //    $("#PHP_fullMask").css("display","block");

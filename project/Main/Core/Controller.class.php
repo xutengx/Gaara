@@ -69,6 +69,7 @@ class Controller extends Base{
      */
     protected function returnMsg($re=1, $msg='fail!'){
         echo json_encode( array('state'=>$re, 'msg'=>$msg));
+        return true;
     }
     // 用于ajax返回
     // 原ajaxback()
@@ -76,6 +77,7 @@ class Controller extends Base{
         if ($re !== false && $re !== null && $re !== 0 && $re !== -1) {
             echo json_encode(array('state' => 1, 'data' => $re));
         } else $this->returnMsg(0);
+        return true;
     }
     // 以组件方式引入html
     final protected function template($file=false){
@@ -102,15 +104,11 @@ class Controller extends Base{
         $this->assign('method', $method);
         // 公用view
         obj('Template')->includeFiles();
-        // 一键form提交
-        obj('Template')->submitData();
         // 防scrf的ajax(基于jquery), 接受post提交数据前.先验证http头中的 csrftoken
-        $ajax = obj('Secure')->newAjax($this->classname);
-        // js string模板解析
-        $template = 'String.prototype.temp = function(obj){return this.replace(/\$\w+\$/gi,function(matchs){var returns = obj[matchs.replace(/\$/g, "")];return (returns + "") == "undefined"? "": returns;});};';
+        $ajax = obj('Secure')->csrfAjax($this->classname);
         // js 路由方法
         $str = 'function __url__(Application, Controller, method){if(arguments.length==1){method=Application;Controller="'.$this->classname.'";Application="'.$this->app.'";}else if(arguments.length==2) {method=Controller;Controller=Application;Application="'.$this->app.'";} var url=window.location.protocol+"//"+window.location.host+window.location.pathname+"?'.PATH.'="+Application+"/"+Controller+"/"+method+"/"; return url;}';
-        echo '<script>'.$str,$this->cache,$ajax,$template.'</script>';
+        echo '<script>'.$str,$this->cache,$ajax.'</script>';
         $this->cache = ';';
         if(file_exists(ROOT.'Application/'.APP.'/View/'.$file.'.html'))
             include ROOT.'Application/'.APP.'/View/'.$file.'.html';
@@ -238,10 +236,33 @@ class Controller extends Base{
         }
         else exit('微信授权失误!请关闭网页后重试!');
     }
+    protected function cacheFunc($func,$cacheTime){
+        $pars = func_get_args();
+        $parstr = '';
+        unset($pars[0]);
+        unset($pars[1]);
+        $par = array_values($pars);
+        for($i = 0 ; $i < count($par) ; $i++){
+            $parstr .= ',$par['.$i.']';
+        }
+        $parstr = ltrim($parstr, ',');
+        if(is_array($func)) {
+            foreach($func as $k=>$v){
+                $code = 'return obj($k)->{$v}('.$parstr.');';
+                $bool = eval($code);
+                return $bool;
+            }
+        }else {
+//            $code = 'return obj($this->classname.\'Contr\')->{$func}('.$parstr.');';
+            $code = 'return $this->{$func}('.$parstr.');';
+            $bool = eval($code);
+            return $bool;
+        }
+    }
 
     final public function __call($fun, $par=array()){
         if(in_array(strtolower($fun), array('post','put','delete'))){
-            if(!obj('Secure')->checkCsrftoken( $this->classname ))  $this->returnMsg(0, 'csrf防护中!') ;
+            if(!obj('Secure')->checkCsrftoken( $this->classname ))  $this->returnMsg(0, '页面已过期,请刷新!!') && exit ;
             loop : if(!empty($par)){
                 $match = isset($par[1]) ? ',$par[1]' : false ;
                 $code = 'return obj(\'F\')->{$fun}("'.$par[0].'"'.$match.');';
@@ -261,13 +282,13 @@ class Controller extends Base{
                  * @throws Exception
                  */
                 $arrayKey = array();
-                $code = 'return obj(\'F\')->${$fun};';
+                $code = 'return obj(\'F\')->{$fun};';
                 $array = eval($code);
                 if($array === null)  throw new Exception('尝试获取'.$fun.'中的数据没有成功!');
                 foreach($array as $k=>$v){
                     if(array_key_exists($k,obj('F')->getFilterArr()) && !is_array($k)){
-                        $arrayKey[$k] = $this->{$fun}($k, $k);
-                    }else $arrayKey[$k] = $this->{$fun}($k);
+                        $arrayKey[$k] = obj('F')->{$fun}($k, $k);
+                    }else $arrayKey[$k] = obj('F')->{$fun}($k);
                 }
                 return $arrayKey;
             }

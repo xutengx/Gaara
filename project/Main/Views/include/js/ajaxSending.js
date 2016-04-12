@@ -1,11 +1,6 @@
-<div id="PHP_fullMask" style="display: none;width:100%;height:100%;background-color:#FBFBFB;opacity:0.8;-webkit-opacity:0.8;z-index:2;position:absolute;top:0;left:0;">
-    <div style=" text-align: center ;display: block;margin: 0 auto;top: 23%;position:  relative;">
-        <img src="Main/Views/imgs/load.gif" >
-        <p style="text-align: center;color: #0000ff;font-weight: bold;position: relative;z-index: 2;top: -5%">正在努力发送中...</p>
-    </div>
-</div>
-<script>
-$(document).ajaxStart(function(){
+$(document).ready(function(){
+    $('body').append('<div id="PHP_fullMask" style="display: none;width:100%;height:100%;background-color:#FBFBFB;opacity:0.8;-webkit-opacity:0.8;z-index:2;position:absolute;top:0;left:0;"><div style=" text-align: center ;display: block;margin: 0 auto;top: 23%;position:  relative;"> <img src="Main/Views/imgs/load.gif" ><p style="text-align: center;color: #0000ff;font-weight: bold;position: relative;z-index: 2;top: -5%">正在努力发送中...</p></div></div>')
+}).ajaxStart(function(){
     $("#PHP_fullMask").css({
         "display":"block",
         "top":$(document).scrollTop(),
@@ -30,4 +25,3 @@ $(document).ajaxStart(function(){
         "overflow":"auto"
     });
 });
-</script>

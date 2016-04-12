@@ -10,7 +10,6 @@ class Cache {
     private  $cacheFileName    = "";
     // 缓存扩展名
     private  $cacheFileExt     = "html";
-
     final public function __construct($time = 30){
         $this->cacheRoot = ROOT.'data/Cache/';
         $this->cacheLimitTime = (int)$time;
@@ -28,6 +27,10 @@ class Cache {
                 exit;
             }
         }
+    }
+    // 缓存方法
+    public function caheCall($func,$pars,$time){
+
     }
     // 缓存结束 正常输出 页面缓存 并写入文件
     public function caheEnd(){

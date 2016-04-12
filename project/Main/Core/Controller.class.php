@@ -20,7 +20,7 @@ class Controller extends Base{
     protected $classname = null;
 
     final public function __construct(){
-        $this->phpcache = obj('\Main\Core\Cache',true,1);
+        $this->phpcache = obj('\Main\Core\Cache',true,30);
         //设置session
         $this->session = obj('\Main\Core\Session');
 
@@ -236,28 +236,51 @@ class Controller extends Base{
         }
         else exit('微信授权失误!请关闭网页后重试!');
     }
-    protected function cacheFunc($func,$cacheTime){
+
+    /**
+     * 缓存开启缓存后的所有输出
+     * @param $keyArray array|string 索引key
+     * @param bool|false|int $cacheTime 有效时间
+     * @return mixed
+     */
+    protected function cacheBegin($keyArray='', $cacheTime=false){
+        $debug = debug_backtrace();
+        $functionName = $debug[1]['function'];
+        return $this->phpcache->cacheBegin($this->app,$this->classname,$functionName, $keyArray, $cacheTime);
+    }
+
+    /**
+     * 以缓存方式呼叫一个对象的方法
+     * @param string $func 执行方法 如 'getUserById' 外部调用应为public , $this可以调用protected ;注 private均不能
+     * @param object $obj 执行对象 如 obj('testModule','admin'), 自身请用 $this
+     * @param bool|true $cacheTime 有效时间 如 30 使用true表示全局有效时间
+     * @param 其他参数,如 3 会直接传入执行方法
+     * @return mixed
+     */
+    protected function cacheCall($func,$obj=false,$cacheTime=true){
+        $obj = $obj ? $obj : $this;
+        if($cacheTime === true ) $cacheTime = false;
         $pars = func_get_args();
         $parstr = '';
         unset($pars[0]);
         unset($pars[1]);
+        unset($pars[2]);
         $par = array_values($pars);
-        for($i = 0 ; $i < count($par) ; $i++){
-            $parstr .= ',$par['.$i.']';
-        }
-        $parstr = ltrim($parstr, ',');
-        if(is_array($func)) {
-            foreach($func as $k=>$v){
-                $code = 'return obj($k)->{$v}('.$parstr.');';
-                $bool = eval($code);
-                return $bool;
+        if(!empty($par)){
+            for($i = 0 ; $i < count($par) ; $i++){
+                $parstr .= ',$par['.$i.']';
             }
-        }else {
-//            $code = 'return obj($this->classname.\'Contr\')->{$func}('.$parstr.');';
-            $code = 'return $this->{$func}('.$parstr.');';
-            $bool = eval($code);
-            return $bool;
-        }
+            $parstr = ltrim($parstr, ',');
+        }else $par = '';
+        $code = 'return $obj->{$func}('.$parstr.');';
+        $app = explode('\\', $obj->getThis());
+        if($ss = obj('cache')->cacheCall($app[0], $app[1], $func, $par, $cacheTime) )
+            return $ss;
+        $bool = eval($code);
+        return obj('cache')->funcEnd($bool);
+    }
+    protected function cacheClear($namespace='', $Contr='', $Func=''){
+        $this->phpcache->cacheClear($namespace, $Contr, $Func);
     }
 
     final public function __call($fun, $par=array()){
@@ -294,19 +317,6 @@ class Controller extends Base{
             }
         }else if(in_array(strtolower($fun), array('get','session','cookie'))){
             goto loop;
-        }else if(method_exists($this->phpcache, $fun)) {
-            $debug = debug_backtrace();
-            $functionName = $debug[1]['function'];
-            $parstr ='' ;
-            if(!empty($par)){
-                $par = array_values($par);
-                for($i = 0 ; $i < count($par) ; $i++){
-                    $parstr .= ',$par['.$i.']';
-                }
-                $parstr = ltrim($parstr, ',');
-            }else $parstr = '\'\'' ;
-            $code = 'return $this->phpcache->{$fun}($this->app,$this->classname,$functionName,'.$parstr.');';
-            return eval($code);
-        }else throw new Exception('未定义的方法:'.$fun.'!');
+        }else  throw new Exception('未定义的方法:'.$fun.'!');
     }
 }

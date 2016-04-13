@@ -30,7 +30,7 @@ class Controller extends Base{
     }
     protected function construct(){
     }
-    private function setClassname(){
+    protected function setClassname(){
         $classname =  str_replace('Contr','',get_class($this));
         $app = explode('\\', $classname);
         $this->app = $app[0];
@@ -198,7 +198,7 @@ class Controller extends Base{
      * 在以http://poster.****** 访问时,启用回调为poster的appid
      * @return object
      */
-    private function wechatTest(){
+    protected function wechatTest(){
         try{
             if($tid = obj('\Main\Core\F')->session('themeid')) {
                 $re = obj('themeModule')->selRow($tid);
@@ -248,7 +248,6 @@ class Controller extends Base{
         $functionName = $debug[1]['function'];
         return $this->phpcache->cacheBegin($this->app,$this->classname,$functionName, $keyArray, $cacheTime);
     }
-
     /**
      * 以缓存方式呼叫一个对象的方法
      * @param string $func 执行方法 如 'getUserById' 外部调用应为public , $this可以调用protected ;注 private均不能

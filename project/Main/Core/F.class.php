@@ -92,8 +92,11 @@ class F{
      * @return mixed or false
      */
     private   function filterMatch($str, $filter){
-        if(strtolower($filter === 'xss') ){
-            return Secure::xss($str, 'filter'); // 返回过滤后的$str
+        if(strtolower($filter === 'xssf')){
+            return obj('secure')->xssCheck($str, 'filter');
+        }
+        else if(strtolower($filter === 'xss') ){
+            return obj('secure')->xssCheck($str, 'check'); // 返回过滤后的$str
         }else {
             $filter = array_key_exists($filter, $this->filterArr) ? $this->filterArr[$filter] : $filter;
             return preg_match($filter, $str) ? $str : false ;
@@ -110,7 +113,7 @@ class F{
         }
         return $q;
     }
-    private   function _htmlspecialchars($arr){
+    private  function _htmlspecialchars($arr){
         $q = array();
         foreach($arr as $k=>$v){
             if(is_string($v)){

@@ -84,8 +84,8 @@ class Secure{
     }
 
     //xss检测（check）、过滤（filter）
-    public function xss($string,$mode='check'){
-        $regexp_list = include(ROOT.'Main/Conf/Secure/Xss.conf.php');
+    public function xssCheck($string,$mode='check'){
+        $regexp_list = include_once(ROOT.'Main/Conf/Secure/Xss.conf.php');
         if ($mode === 'check') {
             $risk=0;
             foreach ($regexp_list as $regexp) {
@@ -95,7 +95,8 @@ class Secure{
             }
             return $risk;
         }
-        return preg_replace($regexp_list,'',$string);
+        return obj('HTMLPurifier')->purify($string);
+//            preg_replace($regexp_list,'',$string);
     }
 
     //判断是否异步请求

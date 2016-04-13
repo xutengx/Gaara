@@ -4,7 +4,7 @@ defined('IN_SYS')||exit('ACC Denied');
 class indexContr extends \Business\businessController{
     public $phparray = 11231231;
     public function indexDo(){
-        $this->cacheBegin('',3);
+//        $this->cacheBegin('',3);
 //        ob_start();
 //        var_dump(222222222);
 //        $cacheContent = ob_get_contents();
@@ -13,17 +13,17 @@ class indexContr extends \Business\businessController{
 //        var_dump( $cacheContent);
 //        exit;
 //        var_dump($this->getThis());
-        $arr = $this->cacheCall('testFuncCache');
-        $arr = $this->cacheCall('test',obj('userObj'),true,'eeeee','qwe');
-        $arr = $this->cacheCall('selRow',obj('userModule','admin'),false, '1');
-        var_dump($arr);
+//        $arr = $this->cacheCall('testFuncCache');
+//        $arr = $this->cacheCall('test',obj('userObj'),true,'eeeee','qwe');
+//        $arr = $this->cacheCall('selRow',obj('userModule','admin'),false, '1');
+//        var_dump($arr);
 //            $this->testFuncCache('par1','par2');
 //       $this->dddd();
 //        $this->test();
-//        $this->display('test');
+        $this->display('test');
     }
     public function test(){
-        $data = $this->post();
+        $data = $this->post('textarea1','xssf');
 //        var_dump($data);
 //        var_dump($_FILES);
         $this->returnData($data);

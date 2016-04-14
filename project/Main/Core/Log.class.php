@@ -14,13 +14,13 @@ class Log{
     }
     // 备份日志
     private function bak(){
-        $log = $this->LOGDIR . $this->LOGFILE;
-        $bak = $this->LOGDIR . date('ymd') . '_' . time() .'_' . mt_rand(10000,99999).'.bak';
+        $log = $this::LOGDIR . $this::LOGFILE;
+        $bak = $this::LOGDIR . date('ymd') . '_' . time() .'_' . mt_rand(10000,99999).'.bak';
         return rename($log,$bak);
     }
     // 读取并判断日志的大小
     private function createlog(){
-        $log = $this->LOGDIR . $this->LOGFILE;
+        $log = $this::LOGDIR . $this::LOGFILE;
         if(!file_exists($log)){
             if(is_dir(dirname($log)) || $this->_mkdir(dirname($log))) touch($log);
             return $log;

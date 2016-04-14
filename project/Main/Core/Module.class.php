@@ -10,9 +10,10 @@ class Module extends Base{
     protected $key          = 'id';
     // 表名
     protected $table        = '';
+    // 表字段
+    protected $attribute = array();
 
     final protected function __construct(){
-//        $this->db   = Mysql::getins();
         $this->db   = obj('Mysql');
         $this->get_thisTable();
     }
@@ -93,16 +94,18 @@ class Module extends Base{
         return false;
     }
     final public function __call($fun, $par=null){
-        if(!method_exists($this->db, $fun)) throw new \Main\Core\Exception('方法没定义!');
-        if($par !== null){
-            $parstr ='' ;
-            $par = array_values($par);
-            for($i = 0 ; $i < count($par) ; $i++){
-                $parstr .= ',$par['.$i.']';
+        if(method_exists($this->db, $fun)) {
+            if($par !== null){
+                $parstr ='' ;
+                $par = array_values($par);
+                for($i = 0 ; $i < count($par) ; $i++){
+                    $parstr .= ',$par['.$i.']';
+                }
+                $parstr = ltrim($parstr, ',');
+                $code = 'return $this->db->{$fun}('.$parstr.');';
+                return eval($code);
             }
-            $parstr = ltrim($parstr, ',');
-            $code = 'return $this->db->{$fun}('.$parstr.');';
-            return eval($code);
         }
+        else throw new \Main\Core\Exception('方法没定义!');
     }
 }

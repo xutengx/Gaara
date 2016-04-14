@@ -137,30 +137,6 @@ class Controller extends Base{
             }
         } else setcookie($var, $value, $time, $path, $domain, $s);
     }
-    // 人性化相对时间
-    protected function friendlyDate($sTime, $format='Y-m-d H:i'){
-        $dTime      =   time() - $sTime;
-        $state      =   $dTime>0?'前':'后';
-        $dTime      =   abs($dTime);
-        if($dTime < 60 ){
-            return $dTime . ' 秒'.$state;
-        } else if($dTime < 3600 ){
-            return intval($dTime/60) . ' 分钟'.$state;
-        } else if($dTime < 3600*24 ){
-            return intval($dTime/3600) . ' 小时'.$state;
-        } else if($dTime < 3600*24*7 ){
-            return intval($dTime/(3600*24)) . ' 天'.$state;
-        } else return date($format, $sTime);
-    }
-    // 生成随机文件名
-    protected function makeFilename($dir, $ext, $id=123){
-        $dir = $dir?trim($dir,'/').'/':'./';
-        if(!is_dir($dir)) obj('\Main\Core\Tool')->__mkdir($dir);
-        $ext = trim($ext,'.');
-        $dir .= uniqid($id);
-        $dir .='.'.$ext;
-        return $dir;
-    }
     // 微信授权,$is = 0 为静默授权
     // 配合 getInfoOnWechat.php 入口文件使用, 防止路由参数导致的手机不兼容
     // return 用户信息 $this->wechatinfo
@@ -173,7 +149,7 @@ class Controller extends Base{
         }else{
             $code = obj('F')->get('code');
             //获取授权
-            $auth = $this->wechatTest();
+            $auth = obj('\Expand\Wechat',false, APPID, APPSECRET);
             if($code === null){
                 $redirect_uri = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'];
                 $redirect_uri = str_replace(IN_SYS, 'getInfoOnWechat.php', $redirect_uri);
@@ -189,29 +165,6 @@ class Controller extends Base{
                 else $this->wechatinfo = $res['openid'];
                 $this->main_getInfo();
             }
-        }
-    }
-
-    /**
-     * 存在$_SESSION['tid'], 查询对应appid
-     * 在以http://wx.****** 访问时,启用回调为wx的appid
-     * 在以http://poster.****** 访问时,启用回调为poster的appid
-     * @return object
-     */
-    protected function wechatTest(){
-        try{
-            if($tid = obj('\Main\Core\F')->session('themeid')) {
-                $re = obj('themeModule')->selRow($tid);
-                if($re['isdefault'] == 1) {
-                    loop : if($_SERVER['HTTP_HOST'] == 'wx.issmart.com.cn') return obj('\Expand\Wechat',false, APPID_TEST, APPSECRET_TEST);
-                    return obj('\Expand\Wechat',false, APPID, APPSECRET);
-                }else {
-                    $res = obj('platformModule','admin')->selRow($re['platformid']);
-                    return obj('\Expand\Wechat',false, $res['appid'], $res['appsecret']);
-                }
-            }else goto loop;
-        }catch(Exception $e){
-            goto loop;
         }
     }
     // 微信授权前的 Session 校验,之后将自动授权,以及记录数据 和 Session

@@ -20,7 +20,7 @@ class Loader{
 //        'Main\template'=>'Main/Core/template.class.php',
 //        'Main\Exception'=>'Main/Core/Exception.class.php',
 //        'Main\Object'=>'Main/Core/Object.class.php',
-        'HTMLPurifier'=>'Main/Conf/Secure/htmlpurifier-4.7.0/library/HTMLPurifier.includes.php',
+        'HTMLPurifier'=>'Main/Support/Secure/htmlpurifier-4.7.0/library/HTMLPurifier.includes.php',
         'QRcode'    =>'Main/Support/Image/QRcode.class.php',
     );
     // class简称

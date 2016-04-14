@@ -187,6 +187,31 @@ class Tool{
             return $arr;
         }else throw new Exception($dirName.' 并非可读路径!');
     }
+
+    // 人性化相对时间
+    final public function friendlyDate($sTime, $format='Y-m-d H:i'){
+        $dTime      =   time() - $sTime;
+        $state      =   $dTime>0?'前':'后';
+        $dTime      =   abs($dTime);
+        if($dTime < 60 ){
+            return $dTime . ' 秒'.$state;
+        } else if($dTime < 3600 ){
+            return intval($dTime/60) . ' 分钟'.$state;
+        } else if($dTime < 3600*24 ){
+            return intval($dTime/3600) . ' 小时'.$state;
+        } else if($dTime < 3600*24*7 ){
+            return intval($dTime/(3600*24)) . ' 天'.$state;
+        } else return date($format, $sTime);
+    }
+    // 生成随机文件名
+    final public function makeFilename($dir, $ext, $id=123){
+        $dir = $dir?trim($dir,'/').'/':'./';
+        if(!is_dir($dir)) obj('\Main\Core\Tool')->__mkdir($dir);
+        $ext = trim($ext,'.');
+        $dir .= uniqid($id);
+        $dir .='.'.$ext;
+        return $dir;
+    }
     // 递归创建目录
     // param string $dir 目录名
     // param string $mode 目录权限

@@ -32,10 +32,6 @@ class Secure{
             if( $time > time() ) return true;
         }
         return false;
-
-
-//        $csrftoken =  $this->decrypt($csrftoken);
-//        return (isset($_SERVER['HTTP_SCRFTOKEN']) && $_SERVER['HTTP_SCRFTOKEN'] == $csrftoken) ? true : false;
     }
     //特殊字符过滤
     public function symbol($string,$is_strict=false){
@@ -62,7 +58,6 @@ class Secure{
         }
         return base64_encode($data);
     }
-
     //解密
     public function decrypt($string,$key=''){
         $key = $key ? md5($key) : md5($this->key);
@@ -82,7 +77,6 @@ class Secure{
         }
         return $data;
     }
-
     //xss检测（check）、过滤（filter）
     public function xssCheck($string,$mode='check'){
         $regexp_list = include_once(ROOT.'Main/Conf/Secure/Xss.conf.php');
@@ -96,9 +90,7 @@ class Secure{
             return $risk;
         }
         return obj('HTMLPurifier')->purify($string);
-//            preg_replace($regexp_list,'',$string);
     }
-
     //判断是否异步请求
     public function is_ajax(){
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && (strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')) return true;

@@ -10,6 +10,7 @@
 
 <form id="form!!!" action="">
     <div>
+        <a href=""> <div></div></a>
         <input type="text" name="name" value="test" >
         <input type="password" name="passwd" value="test" >
         <input type="text" name="age" value="12" >
@@ -18,6 +19,7 @@
         <input type="file" name="f22" >
         <input type="radio" name="sex" value="nan" >
         <input type="radio" name="sex" value="lv" >
+        <input type="test" name="sex" value="other-sex-xxxxxxxxxxxxxxxxxx" >
         <input type="radio" name="sex" value="other" >
         <input type="checkbox" name="checkbox" value="1" >
         <input type="checkbox" name="checkbox" value="2" >
@@ -25,7 +27,7 @@
         <input type="checkbox" name="checkbox" value="4" >
         <input type="checkbox" name="checkbox" value="5" >
         <input type="checkbox" name="checkbox" value="other" >
-        <input type="text" name="checkbox3" value="checkbox-other" >
+        <input type="text" name="checkbox" value="checkbox-other" >
         <input type="checkbox" name="checkbox2" value="5" >
         <input type="checkbox" name="checkbox2" value="6" >
         <select name="t1"><option value="1"/>1<option value="2"/>2<option value="3"/>3</select>
@@ -33,7 +35,7 @@
         <select name="t3"><option value="1"/>1<option value="2"/>2<option value="3"/>3</select>
         <textarea  id="" cols="30" rows="10" name="textarea1">11111111111</textarea>
         <textarea id="" cols="30" rows="10" name="textarea2">222222222222</textarea>
-        <input type="button" value="test" onclick="test();">
+        <input id="asd" type="button" value="test" onclick="test();">
         <div  style="width:800px;height:1028px;"></div>
         <input type="button" value="test" onclick="test();">
         <div  style="width:800px;height:1028px;"></div>
@@ -58,9 +60,10 @@
 
 </body>
 <script>
-    $("input[type=button]").submitData('test',function(re){
-        console.log(re);
-    });
+    $('#asd').submitData();
+//    $("input[type=button]").submitData('test',function(re){
+//        console.log(re);
+//    });
     var test = function(){
 //        sendAjax()
 //        $.ajax({

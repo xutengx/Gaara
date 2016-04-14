@@ -9,15 +9,14 @@ namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 class Conf{
     protected $data = array();
+    // 多配置选取关键字
+    protected $key = '_test';
 
     final public function __construct(){
-        include   (ROOT.'config.inc.php');
-        $this->data = $_CFG;						//配置文件信息,读过来,赋给data属性
+        $this->choose();
+        $this->getConfig();
         $this->makeDefine();
         $this->set();
-    }
-    final protected function __clone(){				//反克隆
-        exit();
     }
     public function __get($key){					//用魔术方法,读取data内的信息
         if(array_key_exists($key, $this->data)) return $this->data[$key];
@@ -32,12 +31,37 @@ class Conf{
         define('SESSIONLIFE', $this->data['sessionLife']);
         define('APPID', $this->data['appid']);
         define('APPSECRET', $this->data['appsecret']);
-        if(isset($this->data['appid_test'])){
-            define('APPID_TEST', $this->data['appid_test']);
-            define('APPSECRET_TEST', $this->data['appsecret_test']);
-        }
+        define('DEBUG', $this->data['debug']);
     }
     private function set(){
         date_default_timezone_set($this->data['timezone']);
+        if(DEBUG == true) ini_set('display_errors', 1);
+        else ini_set('display_errors', 0);
+    }
+    public function getCreateDb(){
+        return require(ROOT.'db.inc.php'); //配置文件信息,读过来,赋给data属性
+    }
+
+    /**
+     *  当前应用的配置
+     */
+    private function getConfig(){
+        $data =  require(ROOT.'config.inc.php'); //配置文件信息,读过来,赋给data属性
+        foreach($data as $k=>$v){
+            if (strpos($k, $this->key)){
+                $this->data[str_ireplace($this->key,'',$k)] =  $data[$k];
+            }else if(!isset($this->data[$k])){
+                $this->data[$k] =  $data[$k];
+            }
+        }
+    }
+    // 多配置共存时,选择拥由后缀的项优先级最高;
+    // 设定当前应用的配置
+    private function choose(){
+        if($_SERVER['HTTP_HOST'] == 'poster.issmart.com.cn'){
+            $this->key = '_poster';
+        }else if($_SERVER['HTTP_HOST'] == 'wx.issmart.com.cn'){
+            $this->key = '_wx';
+        }
     }
 }

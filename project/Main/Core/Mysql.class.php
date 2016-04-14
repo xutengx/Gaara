@@ -8,7 +8,6 @@
 namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 class Mysql{
-//    private static $ins = null;
     private $conn       = null;
     public  $conf       = array();
     public  $tablepre   = null;
@@ -27,11 +26,8 @@ class Mysql{
     final private function __clone(){
         exit();
     }
-//    public static function getins(){
-//        if((self::$ins instanceof self) || (self::$ins = new self())) return self::$ins;
-//    }
     private function creatDB(){
-        $arr = explode(";", trim($this->conf->sql));
+        $arr = explode(";", trim($this->conf->getCreateDb()));
         if($arr[count($arr) - 1] == '') unset($arr[count($arr) - 1]);
         $this->query('use '.$this->conf->db);
         foreach ($arr as $k=>$v) {
@@ -62,14 +58,15 @@ class Mysql{
         catch(Exception $e){
             $error = mysqli_error($this->conn);
             obj('\Main\Core\Log')->write($sql."\r\n".$error);
-            if(ini_get('display_errors')) echo ('query error 已经记录 :</br>'.$sql."</br>".$error."</br>");
+            if(DEBUG) echo ('query error 已经记录 :</br>'.$sql."</br>".$error."</br>");
         }
         return $rs;
     }
     // 执行无返回sql.如update.return 受影响的行数
     public function execute($sql) {
-        $this->query($sql);
-        return mysqli_affected_rows($this->conn);
+        if($this->query($sql))
+            return mysqli_affected_rows($this->conn);
+        return false;
     }
     // return int 上次sql影响的一个主键
     public function lastInsertId($sql){

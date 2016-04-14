@@ -30,7 +30,6 @@ class Route{
         self::doMethod();
     }
     private static function getConf(){
-//        self::$conf = conf::getins();
         self::$conf = obj('conf');
     }
     private static function getUrl(){

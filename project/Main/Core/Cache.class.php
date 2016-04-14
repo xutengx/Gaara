@@ -46,7 +46,7 @@ class Cache {
             $this->saveFile( $this->cacheFileName, $cacheContent );
     }
     // 缓存方法
-    public function cacheCall($app,$class,$func,$keyArray,$cacheTime=false){
+    public function cacheCall($app, $class, $func, $keyArray, $cacheTime = false){
         $this->cacheFuncFileName = $this->makeCaheNameForCall($app, $class, $func, $keyArray);
         if (file_exists($this->cacheFuncFileName) && $this->cacheLimitTime !== 0) {
             $cTime = $this->getFileCreateTime($this->cacheFuncFileName);

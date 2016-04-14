@@ -91,7 +91,7 @@ class F{
      * @param string $filter 匹配规则
      * @return mixed or false
      */
-    private   function filterMatch($str, $filter){
+    private function filterMatch($str, $filter){
         if(strtolower($filter === 'xssf')){
             return obj('secure')->xssCheck($str, 'filter');
         }

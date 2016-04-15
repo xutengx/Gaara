@@ -9,8 +9,6 @@ namespace Main\Core;
 class Template {
     // 跳转中间页面
     private   $jumpTo =  'jumpTo';
-    // 自动引入
-    const autoloadDir =  'Main/Views/include/autoload';
     // js引入
     const jsDir =  'Main/Views/include/js';
     // js min版本引入
@@ -32,7 +30,6 @@ class Template {
     public function includeFiles(){
         $this->includeFile(self::jqueryDir);
         MINJS ? $this->includeFile(self::minjsDir) : $this->includeFile(self::jsDir);
-        $this->includeFile(self::autoloadDir);
     }
     private function includeFile($dir){
         $files = obj('Tool')->getFiles($dir);

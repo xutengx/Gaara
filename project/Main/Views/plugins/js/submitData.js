@@ -1,5 +1,5 @@
 ;$.fn.extend({
-    submitData:function(method,callback) {
+    submitData_base:function(method,callback) {
         method = arguments[0] || 'submitData';
         var url = ( method.indexOf('/') == -1) ? __url__(method) :  method ;
         callback = arguments[1] || function (re) {

@@ -24,6 +24,7 @@ return [
     'pwd_test'=>'root',
     'db_test'=>'test',
     'debug'=>true,
+    'minjs'=>true,
 
 
     'tablepre'=>'boke_',

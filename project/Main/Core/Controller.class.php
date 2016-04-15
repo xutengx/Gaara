@@ -102,17 +102,24 @@ class Controller extends Base{
         $this->assign('view', VIEW);
         $this->assign('contr', $this->classname );
         $this->assign('method', $method);
-        // 公用view
-        obj('Template')->includeFiles();
         // 防scrf的ajax(基于jquery), 接受post提交数据前.先验证http头中的 csrftoken
         $ajax = obj('Secure')->csrfAjax($this->classname);
         // js 路由方法
         $str = 'function __url__(Application, Controller, method){if(arguments.length==1){method=Application;Controller="'.$this->classname.'";Application="'.$this->app.'";}else if(arguments.length==2) {method=Controller;Controller=Application;Application="'.$this->app.'";} var url=window.location.protocol+"//"+window.location.host+window.location.pathname+"?'.PATH.'="+Application+"/"+Controller+"/"+method+"/"; return url;}';
+        echo <<<EEE
+<!DOCTYPE html>
+<html lang="zh-CN" xml:lang='zh-CN' xmlns='http://www.w3.org/1999/xhtml'>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+EEE;
+        // 公用view
+        obj('Template')->includeFiles();
         echo '<script>'.$str,$this->cache,$ajax.'</script>';
-        $this->cache = ';';
-        if(file_exists(ROOT.'Application/'.APP.'/View/'.$file.'.html'))
+        $this->cache = ';';       if(file_exists(ROOT.'Application/'.APP.'/View/'.$file.'.html'))
             include ROOT.'Application/'.APP.'/View/'.$file.'.html';
         else throw new Exception(ROOT.'Application/'.APP.'/View/'.$file.'.html'.'不存在!');
+        echo <<<EEE
+</html>
+EEE;
         return true;
     }
     // 缓存js赋值 string

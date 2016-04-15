@@ -7,13 +7,7 @@ class indexContr extends \Business\businessController{
         $this->me = obj('userObj')->init(obj('userModule'), 1);
     }
     public function indexDo(){
-//        var_dump($this->me);
-//        $oldname = $this->me->name;
-//        $this->me->name = 'zhangsangwwsssw';
-//        var_dump($oldname);
-//        var_dump($this->me->save());
-//        var_dump($this->me->name);
-        $this->display('test');
+        $this->display();
     }
     public function submitData(){
         $this->returnData(obj('userModule')->modifyData($this->post()));

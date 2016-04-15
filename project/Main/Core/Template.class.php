@@ -9,22 +9,33 @@ namespace Main\Core;
 class Template {
     // 跳转中间页面
     private   $jumpTo =  'jumpTo';
-    // 公共引入
-    private $includeDir =  'Main/Views/include';
+    // 自动引入
+    const autoloadDir =  'Main/Views/include/autoload';
+    // js引入
+    const jsDir =  'Main/Views/include/js';
+    // js min版本引入
+    const minjsDir =  'Main/Views/include/minjs';
+    // jquery引入
+    const jqueryDir =  'Main/Views/include/jquery';
 
     public   function show($file){
         include ROOT.'Application/'.APP.'/View/template/'.$file.'.html';
         return true;
     }
     // 跳转中间页
-    public   function jumpTo($message, $jumpUrl='index?path=index/index/indexDo/'){
+    public function jumpTo($message, $jumpUrl='index?path=index/index/indexDo/'){
         $waitSecond = 3;
         include ROOT.'Main/Views/tpl/'.$this->jumpTo.'.html';
         exit;
     }
     // 自动加载静态文件
     public function includeFiles(){
-        $files = obj('Tool')->getFiles($this->includeDir);
+        $this->includeFile(self::jqueryDir);
+        MINJS ? $this->includeFile(self::minjsDir) : $this->includeFile(self::jsDir);
+        $this->includeFile(self::autoloadDir);
+    }
+    private function includeFile($dir){
+        $files = obj('Tool')->getFiles($dir);
         $str = '';
         foreach($files as $k=>$v){
             $ext = strrchr($v , '.');

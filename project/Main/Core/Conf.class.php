@@ -32,6 +32,7 @@ class Conf{
         define('APPID', $this->data['appid']);
         define('APPSECRET', $this->data['appsecret']);
         define('DEBUG', $this->data['debug']);
+        define('MINJS', $this->data['minjs']);
     }
     private function set(){
         date_default_timezone_set($this->data['timezone']);
@@ -41,7 +42,6 @@ class Conf{
     public function getCreateDb(){
         return require(ROOT.'db.inc.php'); //配置文件信息,读过来,赋给data属性
     }
-
     /**
      *  当前应用的配置
      */

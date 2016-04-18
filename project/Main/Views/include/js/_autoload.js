@@ -1,3 +1,4 @@
+;String.prototype.temp = function(obj){return this.replace(/\$\w+\$/gi,function(matchs){var returns = obj[matchs.replace(/\$/g, "")];return (returns + "") == "undefined"? "": returns;});};
 jQuery.extend({
     urls : [],
     getScriptWithCache:function(url,callback){
@@ -14,18 +15,23 @@ jQuery.extend({
                 dataType: "script"
             });
         }else callback();
+    },
+    getinfo: function () {
+        $.getScriptWithCache("Main/Views/plugins/js/submitData.js", function(){
+            $.getinfo_base();
+        });
     }
 });
 $.fn.extend({
     submitData:function(method,callback) {
         var $this = $(this);
-        $.getScriptWithCache("Main/Views/include/js/submitData.js", function(){
+        $.getScriptWithCache("Main/Views/plugins/js/submitData.js", function(){
             $this.submitData_base(method,callback);
         });
     },
     copy: function (obj, callback) {
         var $this = $(this);
-        $.getScriptWithCache("Main/Views/include/js/ZeroClipboard.min.js", function(){
+        $.getScriptWithCache("Main/Views/plugins/js/ZeroClipboard.min.js", function(){
             $this.copy_base(obj,callback);
         });
     }

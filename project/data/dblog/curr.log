@@ -102,3 +102,63 @@ Unknown column 'checkbox' in 'field list'
 INSERT INTO boke_user (checkbox,checkbox2,sex,name,passwd,age,tel,textarea1,textarea2,t1,t2,t3) VALUES ('','','','test','test','12','13324422424','11111111111','222222222222','1','1','1')
 Unknown column 'checkbox' in 'field list'
 
+2016-04-15 17:33:24
+INSERT INTO boke_user (checkbox,checkbox2,sex,name,passwd,age,tel,textarea1,textarea2,t1,t2,t3) VALUES ('','','','test','test','12','13324422424','11111111111','222222222222','1','1','1')
+Unknown column 'checkbox' in 'field list'
+
+2016-04-18 15:07:41
+INSERT INTO boke_user (checkbox,checkbox2,sex,name,passwd,age,tel,textarea1,textarea2,t1,t2,t3) VALUES ('','','','','test','12','13324422424','11111111111','222222222222','1','1','1')
+Unknown column 'checkbox' in 'field list'
+
+2016-04-18 15:39:09
+INSERT INTO boke_user (checkbox,checkbox2,sex,name,passwd,age,tel,textarea1,textarea2,t1,t2,t3) VALUES ('','','','test','test','12','13324422424','11111111111','222222222222','1','1','1')
+Unknown column 'checkbox' in 'field list'
+
+2016-04-18 15:39:39
+INSERT INTO boke_user (checkbox,checkbox2,sex,name,passwd,age,tel,textarea1,textarea2,t1,t2,t3) VALUES ('','','other-sex-xxxxxxxxxxxxxxxxxx','test','test','12','13324422424','11111111111','222222222222','1','1','1')
+Unknown column 'checkbox' in 'field list'
+
+2016-04-18 15:39:44
+INSERT INTO boke_user (checkbox,checkbox2,sex,name,passwd,age,tel,textarea1,textarea2,t1,t2,t3) VALUES ('checkbox-other','','other-sex-xxxxxxxxxxxxxxxxxx','test','test','12','13324422424','11111111111','222222222222','1','1','1')
+Unknown column 'checkbox' in 'field list'
+
+2016-04-18 15:40:42
+INSERT INTO boke_user (checkbox,checkbox2,sex,name,passwd,age,tel,textarea1,textarea2,t1,t2,t3) VALUES ('checkbox-other','','','test','test','12','13324422424','11111111111','222222222222','1','1','1')
+Unknown column 'checkbox' in 'field list'
+
+2016-04-18 15:41:46
+INSERT INTO boke_user (checkbox,checkbox2,sex,name,passwd,age,tel,textarea1,textarea2,t1,t2,t3) VALUES ('checkbox-other','','','test','test','12','13324422424','11111111111','222222222222','1','1','1')
+Unknown column 'checkbox' in 'field list'
+
+2016-04-18 15:41:50
+INSERT INTO boke_user (checkbox,checkbox2,sex,name,passwd,age,tel,textarea1,textarea2,t1,t2,t3) VALUES ('checkbox-other','','other-sex-xxxxxxxxxxxxxxxxxx','test','test','12','13324422424','11111111111','222222222222','1','1','1')
+Unknown column 'checkbox' in 'field list'
+
+2016-04-18 15:41:55
+INSERT INTO boke_user (checkbox,checkbox2,sex,name,passwd,age,tel,textarea1,textarea2,t1,t2,t3) VALUES ('checkbox-other','5,6','other-sex-xxxxxxxxxxxxxxxxxx','test','test','12','13324422424','11111111111','222222222222','1','1','1')
+Unknown column 'checkbox' in 'field list'
+
+2016-04-18 15:42:45
+INSERT INTO boke_user (checkbox,checkbox2,sex,name,passwd,age,tel,textarea1,textarea2,t1,t2,t3) VALUES ('5,checkbox-other惹确认','5,6','other-sex-xxxxxxxxxxxxxxxxxx','test','test','12','13324422424','11111111111','222222222222','1','1','1')
+Unknown column 'checkbox' in 'field list'
+
+2016-04-18 15:45:57
+INSERT INTO boke_user (checkbox,checkbox2,sex,name,passwd,age,tel,textarea1,textarea2,t1,t2,t3) VALUES ('checkbox-other方法','','','test','test','12','13324422424','11111111111','222222222222','1','1','1')
+Unknown column 'checkbox' in 'field list'
+
+2016-04-18 15:46:02
+INSERT INTO boke_user (checkbox,checkbox2,sex,name,passwd,age,tel,textarea1,textarea2,t1,t2,t3) VALUES ('5,checkbox-other方法','5,6','','test','test','12','13324422424','11111111111','222222222222','1','1','1')
+Unknown column 'checkbox' in 'field list'
+
+2016-04-18 15:47:29
+INSERT INTO boke_user (checkbox,checkbox2,sex,name,passwd,age,tel,textarea1,textarea2,t1,t2,t3) VALUES ('5,checkbox-other12','','','test','test','12','13324422424','11111111111','222222222222','1','1','1')
+Unknown column 'checkbox' in 'field list'
+
+2016-04-18 15:48:08
+INSERT INTO boke_user (checkbox,checkbox2,sex,name,passwd,age,tel,textarea1,textarea2,t1,t2,t3) VALUES ('checkbox-other11','','','test','test','12','13324422424','11111111111','222222222222','1','1','1')
+Unknown column 'checkbox' in 'field list'
+
+2016-04-18 15:48:29
+INSERT INTO boke_user (checkbox,checkbox2,sex,name,passwd,age,tel,textarea1,textarea2,t1,t2,t3) VALUES ('checkbox-other11','','','test','test','12','13324422424','11111111111','222222222222','1','1','1')
+Unknown column 'checkbox' in 'field list'
+

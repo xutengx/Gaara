@@ -104,10 +104,14 @@ $.fn.extend({
                         // 校验
                         if(!check(inputObj.filter('[type=text][name='+i+']'))) return false;
                         // 将text中的val用来替换 checkbox原值other
-                        inputCheckboxVal[i][inputCheckboxVal[i].indexOf('other')] = inputTextVal[i];
+                        inputCheckboxVal[i][inputCheckboxVal[i].indexOf('other')] = 'other:'+inputTextVal[i];
                     }
                     // 删除 text中的val
                     delete inputTextVal[i];
+                }
+                if(inputCheckboxVal[i] == ''){
+                    alert('多选项'+i+'不能留空哦!');
+                    return false;
                 }
                 fd.append(i, inputCheckboxVal[i]);
             }
@@ -116,9 +120,13 @@ $.fn.extend({
                     if (inputRadioVal[i] == 'other'){
                         // 校验
                         if(!check(inputObj.filter('[type=text][name='+i+']'))) return false;
-                        inputRadioVal[i] = inputTextVal[i];
+                        inputRadioVal[i] = 'other:'+inputTextVal[i];
                     }
                     delete inputTextVal[i];
+                }
+                if(inputRadioVal[i] == ''){
+                    alert('单选项'+i+'不能留空哦!');
+                    return false;
                 }
                 fd.append(i, inputRadioVal[i]);
             }

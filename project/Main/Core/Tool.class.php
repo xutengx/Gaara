@@ -172,6 +172,7 @@ class Tool{
      * @throws Exception
      */
     final public function getFiles($dirName){
+        $dirName = rtrim($dirName,'/');
         $arr = array();
         if (is_dir($dirName) && $dir_arr = scandir($dirName)){
             foreach($dir_arr as $k=>$v){

@@ -14,7 +14,7 @@
         <input type="file" name="f22" >
         <input type="radio" name="sex" value="nan" >
         <input type="radio" name="sex" value="lv" >
-        <input type="text" name="sex" value="other-sex-xxxxxxxxxxxxxxxxxx"  rule="/^\d{6}$/|msg:dadsaasd" />
+        <input type="text" name="sex" value="other-sex-xxxxxxxxxxxxxxxxxx"  />
         <input type="radio" name="sex" value="other"  rule="/^\d{6}$/" >
         <input type="checkbox" name="checkbox" value="1" >
         <input type="checkbox" name="checkbox" value="2" >
@@ -52,6 +52,10 @@
     $('#asd').submitData();
     $('#asd2').submitData();
     var test = function(){
+        console.log($(window).height());
+        $.ajax({
+
+        })
     }
     $('#fff').copy($('#rrr'));
 //    $.getinfo();

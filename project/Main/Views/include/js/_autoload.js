@@ -17,7 +17,7 @@ jQuery.extend({
         }else callback();
     },
     getinfo: function () {
-        $.getScriptWithCache("Main/Views/plugins/js/submitData.js", function(){
+        $.getScriptWithCache($.jsorminjs+"submitData.js", function(){
             $.getinfo_base();
         });
     }
@@ -25,13 +25,13 @@ jQuery.extend({
 $.fn.extend({
     submitData:function(method,callback) {
         var $this = $(this);
-        $.getScriptWithCache("Main/Views/plugins/js/submitData.js", function(){
+        $.getScriptWithCache($.jsorminjs+"submitData.js", function(){
             $this.submitData_base(method,callback);
         });
     },
     copy: function (obj, callback) {
         var $this = $(this);
-        $.getScriptWithCache("Main/Views/plugins/js/ZeroClipboard.min.js", function(){
+        $.getScriptWithCache($.jsorminjs+"ZeroClipboard.min.js", function(){
             $this.copy_base(obj,callback);
         });
     }

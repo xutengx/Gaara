@@ -8,11 +8,12 @@ class indexContr extends \Business\businessController{
     }
     public function indexDo(){
         $_SESSION['rr'] = 'rrr';
-        $this->display('test');
+        $this->display('index');
     }
     public function submitData(){
         $data = ($this->post());
-        var_dump($data);exit;
+        sleep(1);
+        $this->returnMsg(1,'w');exit;
         $this->returnData(obj('userModule')->modifyData($this->post()));
     }
 }

@@ -7,8 +7,14 @@ class indexContr extends \Business\businessController{
         $this->me = obj('userObj')->init(obj('userModule'), 1);
     }
     public function indexDo(){
-        $_SESSION['rr'] = 'rrr';
-        $this->display('index');
+        $this->display();
+    }
+    protected function test(){
+        $aa =  'echo缓存 : '.date('H:i:s',time());
+        echo $aa;
+//        echo $e;
+//        echo 123123123;
+//        return date('H:i:s',time());
     }
     public function submitData(){
         $data = ($this->post());

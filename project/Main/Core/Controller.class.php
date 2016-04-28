@@ -104,6 +104,21 @@ class Controller extends Base{
         $this->assign('method', $method);
         // 防scrf的ajax(基于jquery), 接受post提交数据前.先验证http头中的 csrftoken
         $ajax = obj('Secure')->csrfAjax($this->classname);
+        // 引入静态文件
+        obj('cache')->cacheCall($this,'staticJs',3600, MINJS);
+        // 重置
+        echo '<script>'.$ajax.'</script>';
+        $this->cache = ';';
+        if(file_exists(ROOT.'Application/'.APP.'/View/'.$file.'.html'))
+            include ROOT.'Application/'.APP.'/View/'.$file.'.html';
+        else throw new Exception(ROOT.'Application/'.APP.'/View/'.$file.'.html'.'不存在!');
+        echo <<<EEE
+</html>
+EEE;
+        return true;
+    }
+    // 引入静态文件
+    protected function staticJs($minjs){
         // js 路由方法
         $str = 'function __url__(Application, Controller, method){if(arguments.length==1){method=Application;Controller="'.$this->classname.'";Application="'.$this->app.'";}else if(arguments.length==2) {method=Controller;Controller=Application;Application="'.$this->app.'";} var url=window.location.protocol+"//"+window.location.host+window.location.pathname+"?'.PATH.'="+Application+"/"+Controller+"/"+method+"/"; return url;}';
         echo <<<EEE
@@ -113,14 +128,7 @@ class Controller extends Base{
 EEE;
         // 公用view
         obj('Template')->includeFiles();
-        echo '<script>'.$str,$this->cache,$ajax.'</script>';
-        $this->cache = ';';       if(file_exists(ROOT.'Application/'.APP.'/View/'.$file.'.html'))
-            include ROOT.'Application/'.APP.'/View/'.$file.'.html';
-        else throw new Exception(ROOT.'Application/'.APP.'/View/'.$file.'.html'.'不存在!');
-        echo <<<EEE
-</html>
-EEE;
-        return true;
+        echo '<script>'.$str,$this->cache.'</script>';
     }
     // 缓存js赋值 string
     protected function assign($name, $val){
@@ -196,52 +204,6 @@ EEE;
         }
         else exit('微信授权失误!请关闭网页后重试!');
     }
-
-    /**
-     * 缓存开启缓存后的所有输出
-     * @param $keyArray array|string 索引key
-     * @param bool|false|int $cacheTime 有效时间
-     * @return mixed
-     */
-    protected function cacheBegin($keyArray='', $cacheTime=false){
-        $debug = debug_backtrace();
-        $functionName = $debug[1]['function'];
-        return $this->phpcache->cacheBegin($this->app,$this->classname,$functionName, $keyArray, $cacheTime);
-    }
-    /**
-     * 以缓存方式呼叫一个对象的方法
-     * @param string $func 执行方法 如 'getUserById' 外部调用应为public , $this可以调用protected ;注 private均不能
-     * @param object $obj 执行对象 如 obj('testModule','admin'), 自身请用 $this
-     * @param bool|true $cacheTime 有效时间 如 30 使用true表示全局有效时间
-     * @param 其他参数,如 3 会直接传入执行方法
-     * @return mixed
-     */
-    protected function cacheCall($func,$obj=false,$cacheTime=true){
-        $obj = $obj ? $obj : $this;
-        if($cacheTime === true ) $cacheTime = false;
-        $pars = func_get_args();
-        $parstr = '';
-        unset($pars[0]);
-        unset($pars[1]);
-        unset($pars[2]);
-        $par = array_values($pars);
-        if(!empty($par)){
-            for($i = 0 ; $i < count($par) ; $i++){
-                $parstr .= ',$par['.$i.']';
-            }
-            $parstr = ltrim($parstr, ',');
-        }else $par = '';
-        $code = 'return $obj->{$func}('.$parstr.');';
-        $app = explode('\\', $obj->getThis());
-        if($ss = obj('cache')->cacheCall($app[0], $app[1], $func, $par, $cacheTime) )
-            return $ss;
-        $bool = eval($code);
-        return obj('cache')->funcEnd($bool);
-    }
-    protected function cacheClear($namespace='', $Contr='', $Func=''){
-        $this->phpcache->cacheClear($namespace, $Contr, $Func);
-    }
-
     final public function __call($fun, $par=array()){
         if(in_array(strtolower($fun), array('post','put','delete'))){
             if(!obj('Secure')->checkCsrftoken( $this->classname ))  $this->returnMsg(0, '页面已过期,请刷新!!') && exit ;

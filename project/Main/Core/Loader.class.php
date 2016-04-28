@@ -10,7 +10,7 @@ class Loader{
 //        'Main\Secure'=>'Main/Core/Secure.class.php',
 //        'Main\Cache'=>'Main/Core/Cache.class.php',
 //        'Main\conf'=>'Main/Core/conf.class.php',
-//        'Main\Controller'=>'Main/Core/Controller.class.php',
+//        'Main\Core\Controller'=>'Main/Core/Controller.class.php',
 //        'Main\F'=>'Main/Core/F.class.php',
 //        'Main\log'=>'Main/Core/log.class.php',
         'Main\Core\Module'=>'Main/Core/Module.class.php',
@@ -27,6 +27,7 @@ class Loader{
     private static $obj_call = array(
         'f'=>'\Main\Core\F',
         'm'=>'\Main\Core\Module',
+        'c'=>'\Main\Core\Controller',
         'mysql'=>'\Main\Core\Mysql',
         'conf'=>'\Main\Core\Conf',
         'secure'=>'\Main\Core\Secure',

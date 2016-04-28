@@ -6,61 +6,76 @@ class Cache {
     private  $cacheRoot        ;
     // 默认缓存更新时间秒数，0为不缓存
     private  $cacheLimitTime   = 30;
-    // 缓存文件名
-    private  $cacheFileName    = "";
-    // 方法缓存文件名
-    private  $cacheFuncFileName    = "";
-    // 是否缓存
-    private  $cacheAble    = false;
     // 缓存扩展名
     private  $cacheFileExt     = "html";
     final public function __construct($time = 30){
         $this->cacheRoot = ROOT.'data/Cache/';
         $this->cacheLimitTime = (int)$time;
     }
-    final public function __destruct(){
-        if($this->cacheAble)
-            $this->cacheEnd();
-    }
-    // 缓存开启
-    public function cacheBegin($app, $contr, $methor,$keyArray,$cacheTime=false){
-        $this->cacheFileName = $this->makeCaheName($app, $contr, $methor, $keyArray);
-        ob_start();
-        if( file_exists( $this->cacheFileName ) && $this->cacheLimitTime !== 0 ) {
-            $cTime = $this->getFileCreateTime( $this->cacheFileName );
+    // 获取缓存
+    private function getCache($cachedir, $cacheTime ){
+        $echo   = $cachedir . 'echo.' . $this->cacheFileExt;
+        $return = $cachedir . 'return.' . $this->cacheFileExt;
+
+        if( file_exists($echo) || file_exists($return) && $this->cacheLimitTime !== 0){
+            $cTime = ( $t = $this->getFileCreateTime($echo) ) ? $t : $this->getFileCreateTime($return );
             $cacheTime = $cacheTime ? (int)$cacheTime  : $this->cacheLimitTime;
             if( ($cTime + $cacheTime ) > time() ) {
-                $this->cacheAble = false;
-                echo file_get_contents( $this->cacheFileName );
-                ob_end_flush();
-                exit;
-            }
-        }
-        $this->cacheAble = true;
-    }
-    // 缓存结束 正常输出 页面缓存 并写入文件
-    private function cacheEnd(){
-        $cacheContent = ob_get_contents();
-        ob_end_flush();
-        if($this->cacheLimitTime !== 0)
-            $this->saveFile( $this->cacheFileName, $cacheContent );
-    }
-    // 缓存方法
-    public function cacheCall($app, $class, $func, $keyArray, $cacheTime = false){
-        $this->cacheFuncFileName = $this->makeCaheNameForCall($app, $class, $func, $keyArray);
-        if (file_exists($this->cacheFuncFileName) && $this->cacheLimitTime !== 0) {
-            $cTime = $this->getFileCreateTime($this->cacheFuncFileName);
-            $cacheTime = $cacheTime ? (int)$cacheTime : $this->cacheLimitTime;
-            if (($cTime + $cacheTime) > time()) {
-                return unserialize((file_get_contents($this->cacheFuncFileName)));
+                $data = NULL;
+                if(file_exists($echo)) echo file_get_contents($echo);
+                if(file_exists($return)) $data = unserialize(file_get_contents($return));
+                return array('status'=>true,'data'=>$data);
             }
         }
         return false;
     }
-    public function funcEnd($bool){
-        if($this->cacheLimitTime !== 0)
-            $this->saveFile( $this->cacheFuncFileName,  (serialize($bool)) );
-        return $bool;
+    // return 对应的缓存文件夹名
+    private function makeCacheDir($obj, $func, $keyArray){
+        $dir = str_replace('\\','/',get_class($obj).'/'.$func.'/');
+        $key = '';
+        if(is_array($keyArray) )
+            foreach($keyArray as $k=>$v){
+                switch($v){
+                    case true:
+                        $v = '#true';
+                        break;
+                    case false:
+                        $v = '#false';
+                        break;
+                    default :
+                        break;
+                }
+                $key .= $key ? '_'.$v : $v;
+            }
+        else if($keyArray === '') $key .= 'default';
+        else $key .= $keyArray;
+        return $this->cacheRoot .$dir.$key.'/';
+    }
+    // 执行方法
+    private function runFunc($obj, $func, $args){
+        if (method_exists($obj, 'runProtectedFunction')) return $obj->runProtectedFunction($func, $args);
+        else return call_user_func_array(array($obj, $func), $args);
+    }
+    // 缓存方法 兼容 return 与 打印输出
+    public function cacheCall($obj, $func, $cacheTime=true){
+        if($cacheTime === true ) $cacheTime = false;
+        $pars = func_get_args();
+        unset($pars[0]);
+        unset($pars[1]);
+        unset($pars[2]);
+        $par = array_values($pars);
+        $cachedir = $this->makeCacheDir($obj, $func, $par);
+        if($re = $this->getCache($cachedir, $cacheTime)  )
+            return $re['data'];
+        else{
+            ob_start();
+            $return  = $this->runFunc($obj, $func, $par);
+            $echo = ob_get_contents();
+            ob_end_flush();
+            $this->saveFile($cachedir.'echo.html', $echo);
+            $this->saveFile($cachedir.'return.html', serialize($return));
+            return $return;
+        }
     }
     // 清除缓存, 可指定
     public function cacheClear($App='', $Contr='', $Func=''){
@@ -69,30 +84,6 @@ class Cache {
         $dirName .= $Contr ? $Contr : '';
         $dirName .= $Func ? $Func : '';
         $this->del_DirAndFile($dirName);
-    }
-    // 根据当前动态文件生成缓存文件名 data缓存用
-    private function makeCaheNameForCall($app, $class, $func, $keyArray ) {
-        $key = '';
-        if(is_array($keyArray) ){
-            foreach($keyArray as $k=>$v){
-                $key .= $key ? '_'.$v : $v;
-            }
-        }else if($keyArray === '')
-            $key .= 'default';
-        else $key .= $keyArray;
-        return  $this->cacheRoot .$app.'App/'.$class.'/'.$func.'/'.$key.'.'.$this->cacheFileExt;
-    }
-    // 根据当前动态文件生成缓存文件名 data缓存用
-    private function makeCaheName($app, $contr, $methor,  $keyArray ) {
-        $key = '';
-        if(is_array($keyArray)){
-            foreach($keyArray as $k=>$v){
-                $key .= $key ? '_'.$v : $v;
-            }
-        }else if($keyArray === '')
-            $key .= 'default';
-        else $key .= $keyArray;
-        return  $this->cacheRoot .$app.'App/'.$contr.'Contr/'.$methor.'/'.$key.'.'.$this->cacheFileExt;
     }
     // 递归删除 目录(绝对路径)下的所有文件,不包括自身
     private function del_DirAndFile($dirName){
@@ -119,7 +110,6 @@ class Cache {
             return (int)filemtime($fileName);
         }else return 0;
     }
-
     /*
      * 保存文件
      * string $fileName  文件名（含相对路径）
@@ -140,8 +130,7 @@ class Cache {
                 fclose($fp);
                 return false;
             }
-        }
-        return false;
+        }return false;
     }
     private function _mkdir($dir, $mode = 0777 ){
         if(is_dir(dirname($dir)) || $this->_mkdir(dirname($dir))) return mkdir($dir, $mode);

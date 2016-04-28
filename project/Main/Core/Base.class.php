@@ -11,7 +11,13 @@ class Base{
         $where = IN_SYS.'?'.PATH.'='.$where;
         $jump ? obj('template')->jumpTo($msg, $where) : header('location:'.$where);
     }
-    final public function getThis(){
-        return get_class($this);
+
+    /**
+     * @param $func 呼叫的protected方法
+     * @param $agrs 参数数组
+     * @return mixed
+     */
+    final public function runProtectedFunction($func,array $agrs = array()){
+        return call_user_func_array(array($this, $func), $agrs);
     }
 }

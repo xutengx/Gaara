@@ -30,25 +30,16 @@ class Cache {
         return false;
     }
     // return 对应的缓存文件夹名
-    private function makeCacheDir($obj, $func, $keyArray){
+    private function makeCacheDir($obj, $func, array $keyArray){
         $dir = str_replace('\\','/',get_class($obj).'/'.$func.'/');
         $key = '';
-        if(is_array($keyArray) )
+        if(!empty($keyArray) )
             foreach($keyArray as $k=>$v){
-                switch($v){
-                    case true:
-                        $v = '#true';
-                        break;
-                    case false:
-                        $v = '#false';
-                        break;
-                    default :
-                        break;
-                }
-                $key .= $key ? '_'.$v : $v;
+                if($v === true) $key .= '_boolean-true';
+                elseif($v === false) $key .= '_boolean-false';
+                else $key .= '_'.gettype($v).'-'.$v;
             }
-        else if($keyArray === '') $key .= 'default';
-        else $key .= $keyArray;
+        else $key .= '#default';
         return $this->cacheRoot .$dir.$key.'/';
     }
     // 执行方法
@@ -78,12 +69,24 @@ class Cache {
         }
     }
     // 清除缓存, 可指定
-    public function cacheClear($App='', $Contr='', $Func=''){
-        $dirName = ROOT.'data/Cache/';
-        $dirName .= $App ? $App.'App/' : '';
-        $dirName .= $Contr ? $Contr : '';
-        $dirName .= $Func ? $Func : '';
-        $this->del_DirAndFile($dirName);
+    public function cacheClear($obj=false, $func=false){
+        $cachedir = $this->cacheRoot;
+        $cachedir .= $obj ? str_replace('\\','/',get_class($obj)) : '' ;
+        $cachedir .= $func ? '/'.$func : '';
+        $pars = func_get_args();
+        unset($pars[0]);
+        unset($pars[1]);
+        $keyArray = array_values($pars);
+        $key = '';
+        if(!empty($keyArray) ){
+            foreach($keyArray as $k=>$v){
+                if($v === true) $key .= '_boolean-true';
+                elseif($v === false) $key .= '_boolean-false';
+                else $key .= '_'.gettype($v).'-'.$v;
+            }
+            $cachedir .= '/'.$key.'/';
+        }
+        $this->del_DirAndFile($cachedir);
     }
     // 递归删除 目录(绝对路径)下的所有文件,不包括自身
     private function del_DirAndFile($dirName){

@@ -81,8 +81,6 @@ class Controller extends Base{
     }
     // 以组件方式引入html
     final protected function template($file=false){
-//        $classname =  str_replace('Contr','',get_class($this));
-//        $app = explode('\\', $classname);
         $file = $file ? $file : $this->classname;
         $this->assignPhp('T_VIEW','Application/'.$this->app.'/View/');
         $DATA = $this->phparray;
@@ -211,7 +209,6 @@ EEE;
                 $match = isset($par[1]) ? ',$par[1]' : false ;
                 $code = 'return obj(\'F\')->{$fun}("'.$par[0].'"'.$match.');';
                 $bool = eval($code);
-
                 if($bool === false ) {
                     $msg = isset($par[2]) ? $par[2] : $par[0].' 不合法!';
                     $this->returnMsg(0, $msg);

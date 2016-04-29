@@ -7,14 +7,16 @@ class indexContr extends \Business\businessController{
         $this->me = obj('userObj')->init(obj('userModule'), 1);
     }
     public function indexDo(){
+        obj('cache')->cacheCall($this,'test',true);
+        obj('cache')->cacheCall($this,'test',true,1234);
         $this->display();
     }
-    protected function test(){
+    public function ttt(){
+        obj('cache')->cacheClear();
+    }
+    protected function test($w=0){
         $aa =  'echo缓存 : '.date('H:i:s',time());
         echo $aa;
-//        echo $e;
-//        echo 123123123;
-//        return date('H:i:s',time());
     }
     public function submitData(){
         $data = ($this->post());

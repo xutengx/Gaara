@@ -6,8 +6,8 @@ return [
     'sessionPath'=>'data/Session',           // session存储路径 // 全局SESSIONPATH常量
     'sessionLife'=>3600*24*7,                 // session 时效性  // 全局SESSIONLIFE常量
 
-    'appid_potser'=>'wx996bd5d838d5d827',
-    'appsecret_potser'=>'d3927177ebc315da18681dd9876ed073',
+    'appid_poster'=>'wx996bd5d838d5d827',
+    'appsecret_poster'=>'d3927177ebc315da18681dd9876ed073',
     'debug_poster'=>false,
 
     'appid_wx'=>'wxf104d7a120384fec',

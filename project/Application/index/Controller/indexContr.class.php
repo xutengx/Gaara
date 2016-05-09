@@ -11,14 +11,15 @@ class indexContr extends \Business\businessController{
         $a2 = obj('userModule',true);
         $a3 = obj('userModule');
 //        $a3 = obj('admin\userqweObj');
-        var_dump($a1 === $a2);
-        var_dump($a2 === $a3);
-        var_dump($a1 === $a3);
+//        var_dump($a1 === $a2);
+//        var_dump($a2 === $a3);
+//        var_dump($a1 === $a3);
 //var_dump(function_exists('obj'));
 //        echo 'hello World !';
 //        obj('cache')->cacheCall($this,'test',true);
 //        obj('cache')->cacheCall($this,'test',true,1234);
-//        $this->display('index2');
+        $this->assign('type',1);
+        $this->display('index2');
         statistic();
     }
     public function ttt(){

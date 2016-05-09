@@ -103,7 +103,7 @@ class Controller extends Base{
         $ajax = obj('Secure')->csrfAjax($this->classname);
         // 引入静态文件
         obj('cache')->cacheCall(obj('c'),'staticJs',3600, MINJS);
-        echo '<script>'.$ajax.'</script>';
+        echo '<script>'.$ajax,$this->cache.'</script>';
         // 重置
         $this->cache = ';';
         if(file_exists(ROOT.'Application/'.$this->app.'/View/'.$file.'.html'))
@@ -125,7 +125,7 @@ EEE;
 EEE;
         // 公用view
         obj('Template')->includeFiles();
-        echo '<script>'.$str,$this->cache.'</script>';
+        echo '<script>'.$str.'</script>';
     }
     // 缓存js赋值 string
     protected function assign($name, $val){

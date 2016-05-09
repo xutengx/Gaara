@@ -3,7 +3,7 @@ namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 class Loader{
     // 缓存对象,实现单元素模式
-    public static $obj_ins = array();
+    private static $obj_ins = array();
     // 预存的class引用路径
     private static $obj_map = array(
 //        'Main\Base'=>'Main/Core/Base.class.php',
@@ -36,58 +36,44 @@ class Loader{
         'tool'=>'\Main\Core\Tool',
         'cache'=>'\Main\Core\Cache',
     );
-    // 查看预存的class引用路径
-    public static function showMap(){
-        var_export(self::$obj_map);
-    }
     /**
-     * 注册自定义的类引入
-     * @param $class 注册的类名
-     * @param $dir   require 路径(相对路径)
+     * 通过全局obj()调用
+     * @param string    $class      类名(应用类,可不带namespace,支持别名)
+     * @param bool|true $singleton  单例模式实例化
+     * @param array     $pars       new一个对象所需要的参数; 注:单例模式下,显然只有第一次实例化时,参数才会被使用!
+     *
+     * @return mixed
+     * @throws Exception
      */
-    public static function putobj($class, $dir){
-        if(isset(self::$obj_map[$class])) throw new Exception($class.'已被注册!');
-        self::$obj_map[$class] = $dir;
-    }
-    /**
-     * @param $class
-     * @param bool|true $app 当$class为Contr或Module时,代表所指向的APP,默认当前APP;
-     *                        当$class为其他引用类时,其他参数生效,$app默认为true,代表单例模式实例化;
-     * @param $pars 其他参数, 在new非Contr或Module对象时的参数, 注:单例模式下,显然只有第一次实例化时,参数才会被使用!
-     * @return mixed 对象
-     */
-    public static function get($class, $app=true, $pars=null){
-        if(isset(self::$obj_call[strtolower($class)])) $class = self::$obj_call[strtolower($class)];
-        if(self::checkClass($class)){
-            $app = ( $app===true ) ? APP : $app;
-            $s = '\\'.$app.'\\'.$class;
-            return $s::getins();
-        }else return self::getins($class, $app, $pars);
+    public static function get($class = '', $singleton = true, array $pars = array()){
+        // 别名修正
+        if(isset(self::$obj_call[ strtolower($class) ]))
+            $class = self::$obj_call[ strtolower($class) ];
+        // 属于应用类
+        if(self::checkClass($class))
+            $class = self::addNamespace($class);
+        return self::getins($class, $singleton, $pars);
     }
     // 自动引入
     public static function requireClass($class){
+        // 根据预存的class引用路径
         if(isset(self::$obj_map[$class])) self::includeWithException(ROOT.self::$obj_map[$class]);
         else {
-            $app = 'index';
-            if( ($is = strrpos($class, '\\')) !== false) {
-                $app = substr($class, 0 ,(int)$is);
-                $classname = substr($class, (int)$is+1);
-            }else $classname = $class;
+            $is = strrpos($class, '\\');
+            $app = substr($class, 0 ,(int)$is);
+            $classname = substr($class, (int)$is+1);
             if (strtolower(substr($class,0, 8))=='business')  self::autoMakeBusiness($class, $classname);
             else if (strtolower(substr($class, -5)) == 'contr')  self::includeWithException(ROOT.'Application/'.$app.'/Controller/'.$classname.'.class.php');
             else if (strtolower(substr($class, -6)) == 'module')  self::autoMakeModule($app,$classname);
             else if (strtolower(substr($class, -3)) == 'obj')  self::autoMakeObject($app, $classname);
-            else  {
+            else {
                 $parameter = explode('\\', $class);
                 $str = '';
-                foreach ($parameter as $k=>$v){
+                foreach ($parameter as $k=>$v)
                     $str .= $str ? '/'.$v : $v;
-                }
-                $str0 = ROOT.'Main/'.$str.'.class.php';
                 $str = ROOT.$str.'.class.php';
-                if(file_exists($str0))  self::includeWithException($str0);
-                else if(file_exists($str))  self::includeWithException($str);
-                else  self::includeWithException(ROOT . 'Include/' . $classname . '.class.php');
+                if(file_exists($str))  self::includeWithException($str);
+                else self::includeWithException(ROOT . 'Include/' . $classname . '.class.php');
             }
         }
     }
@@ -101,7 +87,7 @@ class Loader{
             $state = 'base';
             $m = ROOT . 'Main/Business/' . $classname . '.class.php';
         }
-        if(file_exists($m) ||obj('\Main\Core\Code')->makeBusiness($m, $state, $classname) ) require $m;
+        if(file_exists($m) || obj('\Main\Core\Code')->makeBusiness($m, $state, $classname) ) require $m;
     }
     // 自动生成 Module
     private static function autoMakeModule($app,$classname){
@@ -116,7 +102,10 @@ class Loader{
     // 异常处理
     private static function includeWithException($where){
         try{
-            if(file_exists($where)) require $where;
+            if(file_exists($where)) {
+                require $where;
+                return true;
+            }
             else throw new Exception('引入文件 '.$where.' 不存在! ',99);
         }catch(Exception $e){
             if(ini_get('display_errors')) echo $e->getMessage();
@@ -128,27 +117,50 @@ class Loader{
         if(strtolower(substr($class, -5))=='contr' || strtolower(substr($class, -6))=='module' || strtolower(substr($class, -3))=='obj') return true;
         else return false;
     }
+    // 简易引入 转化为 带有命名空间的全称
+    private static function addNamespace($class){
+        $class = trim($class,'\\');
+        if(($is = strrpos($class, '\\')) === false){
+            return '\\'.APP.'\\'.$class;
+        }else return '\\'.$class;
+    }
     // 缓存其他 class 的单例并返回实例
-    private static function getins($class, $singleton=true, $par=null){
-        if(!class_exists($class)) throw new Exception($class.'不存在!');
-        $parstr ='' ;
-        if($par !== null){
+    private static function getins($class, $singleton = true, $par = NULL){
+        if(!class_exists($class))
+            throw new Exception($class.'不存在!');
+        $parstr = '';
+        if($par !== NULL){
             $par = array_values($par);
-            for($i = 0 ; $i < count($par) ; $i++){
+            for( $i = 0 ; $i < count($par) ; $i++ )
                 $parstr .= ',$par['.$i.']';
-            }
             $parstr = ltrim($parstr, ',');
         }
         $str = 'new $class('.$parstr.');';
-        if($singleton===true){
-            $str = 'self::$obj_ins[$class] = '. $str;
-            if(!isset(self::$obj_ins[$class]) && empty(self::$obj_ins[$class]))  eval($str);
-            return self::$obj_ins[$class];
-        }else {
-            $str = '$cache = '. $str;
+        if($singleton === true){
+            $str = 'self::$obj_ins[$class] = '.$str;
+            if(!isset(self::$obj_ins[ $class ]) && empty(self::$obj_ins[ $class ]))
+                eval($str);
+            return self::$obj_ins[ $class ];
+        }else{
+            $str = '$cache = '.$str;
             eval($str);
             return $cache;
         }
+    }
+    // 查看预存的class引用路径
+    public static function showMap(){
+        var_export(self::$obj_map);
+    }
+    /**
+     * 注册自定义的类引入
+     * @param string $class 注册的类名
+     * @param string $dir   require 路径(相对路径)
+     *
+     * @throws Exception
+     */
+    public static function putobj($class='', $dir=''){
+        if(isset(self::$obj_map[$class])) throw new Exception($class.'已被注册!');
+        self::$obj_map[$class] = $dir;
     }
 }
 spl_autoload_register(array('Main\Core\loader', 'requireClass'));

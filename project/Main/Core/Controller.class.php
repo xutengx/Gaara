@@ -61,10 +61,9 @@ class Controller extends Base{
         $this->db->query($sql);
     }
     /**
-     * echo json数据
-     * 原ajaxbackWithMsg()
-     * @param $re 状态标记
-     * @param $msg 状态描述
+     * @param int    $re   状态标记
+     * @param string $msg  状态描述
+     *
      * @return bool
      */
     protected function returnMsg($re=1, $msg='fail!'){
@@ -104,12 +103,12 @@ class Controller extends Base{
         $ajax = obj('Secure')->csrfAjax($this->classname);
         // 引入静态文件
         obj('cache')->cacheCall(obj('c'),'staticJs',3600, MINJS);
-        // 重置
         echo '<script>'.$ajax.'</script>';
+        // 重置
         $this->cache = ';';
-        if(file_exists(ROOT.'Application/'.APP.'/View/'.$file.'.html'))
-            include ROOT.'Application/'.APP.'/View/'.$file.'.html';
-        else throw new Exception(ROOT.'Application/'.APP.'/View/'.$file.'.html'.'不存在!');
+        if(file_exists(ROOT.'Application/'.$this->app.'/View/'.$file.'.html'))
+            include ROOT.'Application/'.$this->app.'/View/'.$file.'.html';
+        else throw new Exception(ROOT.'Application/'.$this->app.'/View/'.$file.'.html'.'不存在!');
         echo <<<EEE
 </html>
 EEE;
@@ -158,7 +157,7 @@ EEE;
         if (strpos($user_agent, 'MicroMessenger') === false){
             header("Content-type: text/html; charset=utf-8");
             echo '<p>请在微信中打开</p>';
-            //exit();
+            if(!DEBUG) exit();
         }else{
             $code = obj('F')->get('code');
             //获取授权
@@ -166,7 +165,6 @@ EEE;
             if($code === null){
                 $redirect_uri = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'];
                 $redirect_uri = str_replace(IN_SYS, 'getInfoOnWechat.php', $redirect_uri);
-//                echo $redirect_uri;exit;
                 $method = $is ? 'get_authorize_url2':'get_authorize_url';
                 $url    = $auth->{$method}($redirect_uri,'STATE');
                 header("Location:".$url); //跳转get_authorize_url2()设好的url，跳转后会跳转回上面指定的url中并且带上code变量，用get方法获取即可

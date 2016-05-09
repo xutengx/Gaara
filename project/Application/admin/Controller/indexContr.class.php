@@ -3,7 +3,7 @@ namespace admin;
 defined('IN_SYS')||exit('ACC Denied');
 class indexContr extends \Business\businessController{
     public function indexDo(){
-       $this->assignPhp('admin','true');
+        $this->assignPhp('admin','true');
         $this->display();
     }
     public function test(){
@@ -11,5 +11,8 @@ class indexContr extends \Business\businessController{
 //        var_dump($data);
 //        var_dump($_FILES);
         $this->returnData($data);
+    }
+    public function make(){
+        return obj('admin\userModule');
     }
 }

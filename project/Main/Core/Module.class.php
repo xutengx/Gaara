@@ -13,10 +13,12 @@ class Module extends Base{
     // 表字段
     protected $attribute = array();
 
-    final protected function __construct(){
+    final public function __construct(){
         $this->db   = obj('Mysql');
         $this->get_thisTable();
+        $this->construct();
     }
+    protected function construct(){}
     final protected function get_thisTable(){
         $classname = get_class($this);
         $classname = substr($classname,strrpos($classname,'\\')+1);

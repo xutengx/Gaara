@@ -7,7 +7,13 @@ class indexContr extends \Business\businessController{
         $this->me = obj('userObj')->init(obj('userModule'), 1);
     }
     public function indexDo(){
-//        var_dump($this->me);
+        $a1 = obj('admin\indexContr')->make();
+        $a2 = obj('userModule',true);
+        $a3 = obj('userModule');
+//        $a3 = obj('admin\userqweObj');
+        var_dump($a1 === $a2);
+        var_dump($a2 === $a3);
+        var_dump($a1 === $a3);
 //var_dump(function_exists('obj'));
 //        echo 'hello World !';
 //        obj('cache')->cacheCall($this,'test',true);

@@ -18,8 +18,7 @@ function obj($obj, $app=true){
     $arr = func_get_args();
     unset($arr[0]);
     unset($arr[1]);
-    if(empty($arr)) return \Main\Core\loader::get($obj, $app);
-    else return \Main\Core\loader::get($obj, $app, $arr);
+    return \Main\Core\loader::get($obj, $app, $arr);
 }
 
 /**

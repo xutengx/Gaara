@@ -103,7 +103,7 @@ class Controller extends Base{
         // 防scrf的ajax(基于jquery), 接受post提交数据前.先验证http头中的 csrftoken
         $ajax = obj('Secure')->csrfAjax($this->classname);
         // 引入静态文件
-        obj('cache')->cacheCall($this,'staticJs',3600, MINJS);
+        obj('cache')->cacheCall(obj('c'),'staticJs',3600, MINJS);
         // 重置
         echo '<script>'.$ajax.'</script>';
         $this->cache = ';';

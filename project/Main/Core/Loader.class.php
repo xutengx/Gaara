@@ -3,7 +3,7 @@ namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 class Loader{
     // 缓存对象,实现单元素模式
-    private static $obj_ins = array();
+    public static $obj_ins = array();
     // 预存的class引用路径
     private static $obj_map = array(
 //        'Main\Base'=>'Main/Core/Base.class.php',
@@ -130,7 +130,6 @@ class Loader{
     }
     // 缓存其他 class 的单例并返回实例
     private static function getins($class, $singleton=true, $par=null){
-//        var_dump($class);
         if(!class_exists($class)) throw new Exception($class.'不存在!');
         $parstr ='' ;
         if($par !== null){

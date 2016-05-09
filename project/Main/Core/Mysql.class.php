@@ -9,8 +9,9 @@ namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 class Mysql{
     private $conn       = null;
-    public  $conf       = array();
+    private  $conf       = array();
     public  $tablepre   = null;
+    private $info = array();
 
     final public function __construct(){
         $this->conf = obj('Conf');
@@ -18,7 +19,12 @@ class Mysql{
         $this->setchar($this->conf->char);
         $this->select_db($this->conf->db);
         $this->tablepre = $this->conf->tablepre;
+        $this->ini();
     }
+    // 初始化统计数据
+    final private function ini(){
+        $this->info=array( 'queryTimes'=>0 );
+}
     private function connect ($h,$u,$p){
         $this->conn = mysqli_connect($h,$u,$p);
         if(!$this->conn) throw new Exception('连接db失败');
@@ -60,6 +66,7 @@ class Mysql{
             obj('\Main\Core\Log')->write($sql."\r\n".$error);
             if(DEBUG) echo ('query error 已经记录 :</br>'.$sql."</br>".$error."</br>");
         }
+        $this->info['queryTimes']++;
         return $rs;
     }
     // 执行无返回sql.如update.return 受影响的行数
@@ -98,5 +105,10 @@ class Mysql{
             }
             usleep(50000);
         }
+    }
+    final public function __get($property_name){
+        if(isset($this->info[$property_name]))
+            return $this->info[$property_name];
+        else throw new Exception('不存在的属性!');
     }
 }

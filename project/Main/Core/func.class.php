@@ -31,6 +31,16 @@ function template($template=''){
     else throw new \Exception('引入模板名有误!');
 }
 
+// 运行状态统计
+function statistic(){
+    global $statistic;
+    $runtime = ( microtime( true ) - $statistic['_beginTime'] ) * 1000; //将时间转换为毫秒
+    $usedMemory = ( memory_get_usage() - $statistic['_beginMemory'] ) / 1024;
+    $time = obj( 'mysql' )->queryTimes;
+    echo "<br /><br />运行时间: {$runtime} 毫秒<br />";
+    echo "耗费内存: {$usedMemory} K<br />";
+    echo "数据库操作次数: {$time} 次<br /><br /><br />";
+}
 /**
  * 发送HTTP状态
  * @param integer $code 状态码

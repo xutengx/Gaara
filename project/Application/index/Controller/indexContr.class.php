@@ -7,14 +7,21 @@ class indexContr extends \Business\businessController{
         $this->me = obj('userObj')->init(obj('userModule'), 1);
     }
     public function indexDo(){
-        obj('cache')->cacheCall($this,'test',true);
-        obj('cache')->cacheCall($this,'test',true,1234);
-        $this->display();
+//        var_dump($this->me);
+//var_dump(function_exists('obj'));
+//        echo 'hello World !';
+//        obj('cache')->cacheCall($this,'test',true);
+//        obj('cache')->cacheCall($this,'test',true,1234);
+//        $this->display('index2');
+        statistic();
     }
     public function ttt(){
         obj('cache')->cacheClear();
     }
     protected function test($w=0){
+        for($i=0 ; $i<3999 ; $i++){
+            obj('userModule')->selRow(1);
+        }
         $aa =  'echo缓存 : '.date('H:i:s',time());
         echo $aa;
     }

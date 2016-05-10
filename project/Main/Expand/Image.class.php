@@ -1,5 +1,5 @@
 <?php
-namespace Expand;
+namespace Main\Expand;
 defined('IN_SYS') || exit('ACC Denied');
 class Image {
     // 1中英文验证码 2对上传图片进行缩放 3打水印

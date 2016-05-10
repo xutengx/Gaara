@@ -70,9 +70,14 @@ class Controller extends Base{
         echo json_encode( array('state'=>$re, 'msg'=>$msg));
         return true;
     }
-    // 用于ajax返回
-    // 原ajaxback()
-    protected function returnData($re){
+
+    /**
+     * echo json
+     * @param string $re
+     *
+     * @return bool
+     */
+    protected function returnData($re=''){
         if ($re !== false && $re !== null && $re !== 0 && $re !== -1) {
             echo json_encode(array('state' => 1, 'data' => $re));
         } else $this->returnMsg(0);
@@ -187,7 +192,7 @@ EEE;
         }else{
             $code = obj('F')->get('code');
             //获取授权
-            $auth = obj('\Expand\Wechat',false, APPID, APPSECRET);
+            $auth = obj('\Main\Expand\Wechat',false, APPID, APPSECRET);
             if($code === null){
                 $redirect_uri = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'];
                 $redirect_uri = str_replace(IN_SYS, 'getInfoOnWechat.php', $redirect_uri);

@@ -1,10 +1,9 @@
 <?php
-
 /**
  * 微信授权相关接口
  *
  */
-namespace Expand;
+namespace Main\Expand;
 defined('IN_SYS') || exit('ACC Denied');
 // 测试
 // appid = wx8f0ca1bc115c1fae

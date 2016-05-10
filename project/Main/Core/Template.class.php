@@ -20,7 +20,7 @@ class Template {
     // js_plugins min引入
     const pluginsMinDir =  'Main/Views/plugins/minjs/';
 
-    public function show($file){
+    public   function show($file){
         include ROOT.'Application/'.APP.'/View/template/'.$file.'.html';
         return true;
     }
@@ -31,7 +31,6 @@ class Template {
      */
     public function jumpTo($message='', $jumpUrl='index.php?path=index/index/indexDo/'){
         $waitSecond = 3;
-        $jumpUrl = '?'.PATH.'='.$jumpUrl;
         include ROOT.'Main/Views/tpl/'.$this->jumpTo.'.html';
         exit;
     }

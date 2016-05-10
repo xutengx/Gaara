@@ -3,21 +3,21 @@ namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 class Controller extends Base{
     // 引入sql类
-    protected $db         = null;
+    protected $db = NULL;
     // 引入cache类
-    protected $phpcache  = null;
+    protected $phpcache = NULL;
     // 引入session类
-    protected $session   = null;
+    protected $session = NULL;
     // 缓存js赋值
-    protected $cache        = ';';
+    protected $cache = ';';
     // 缓存php赋值
-    protected $phparray        = array();
+    protected $phparray = array();
     // 缓存微信授权返回值
-    protected $wechatinfo  = array();
+    protected $wechatinfo = array();
     // 当前Contr所在app名
-    protected $app = null;
+    protected $app = NULL;
     // 当前Contr名
-    protected $classname = null;
+    protected $classname = NULL;
 
     final public function __construct(){
         $this->phpcache = obj('\Main\Core\Cache',true,30);
@@ -70,7 +70,6 @@ class Controller extends Base{
         echo json_encode( array('state'=>$re, 'msg'=>$msg));
         return true;
     }
-
     /**
      * echo json
      * @param string $re

@@ -5,9 +5,10 @@ class indexContr extends \Business\businessController{
     private $me = null;
     public function construct(){
         $this->me = obj('userObj')->init(obj('userModule'), 1);
+//        $this->me = obj('cache')->cacheCall(obj('userObj'),'init',true,obj('userModule'), 1);
     }
     public function indexDo(){
-        $a1 = obj('admin\indexContr')->make();
+//        $a1 = obj('admin\indexContr')->make();
         $a2 = obj('userModule',true);
         $a3 = obj('userModule');
 //        $a3 = obj('admin\userqweObj');
@@ -18,8 +19,9 @@ class indexContr extends \Business\businessController{
 //        echo 'hello World !';
 //        obj('cache')->cacheCall($this,'test',true);
 //        obj('cache')->cacheCall($this,'test',true,1234);
-
-        $this->assign('type',123123);
+//        $dd = obj('cache')->cacheCall($this,'test',true);
+//        var_dump($dd);;
+//        $this->assign('type',$dd);
         $this->display('index2');
         statistic();
     }
@@ -27,11 +29,13 @@ class indexContr extends \Business\businessController{
         obj('cache')->cacheClear();
     }
     protected function test($w=0){
-        for($i=0 ; $i<3999 ; $i++){
-            obj('userModule')->selRow(1);
-        }
-        $aa =  'echo缓存 : '.date('H:i:s',time());
-        echo $aa;
+        $re = obj('userModule');
+//        for($i=0 ; $i<3999 ; $i++){
+//            obj('userModule')->selRow(1);
+//        }
+//        $aa =  'echo缓存 : '.date('H:i:s',time());
+//        echo $aa;
+        return $re;
     }
     public function submitData(){
         $data = ($this->post());

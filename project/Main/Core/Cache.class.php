@@ -12,25 +12,38 @@ class Cache {
         $this->cacheRoot = ROOT.'data/Cache/';
         $this->cacheLimitTime = (int)$time;
     }
-    // 获取缓存
-    private function getCache($cachedir, $cacheTime ){
-        $echo   = $cachedir . 'echo.' . $this->cacheFileExt;
-        $return = $cachedir . 'return.' . $this->cacheFileExt;
-
-        if( file_exists($echo) || file_exists($return) && $this->cacheLimitTime !== 0){
-            $cTime = ( $t = $this->getFileCreateTime($echo) ) ? $t : $this->getFileCreateTime($return );
-            $cacheTime = $cacheTime ? (int)$cacheTime  : $this->cacheLimitTime;
-            if( ($cTime + $cacheTime ) > time() ) {
+    /**
+     * 获取缓存
+     * @param string    $cachedir 缓存文件地址
+     * @param int|false $cacheTime 缓存过期时间
+     *
+     * @return array|bool
+     */
+    private function getCache($cachedir = '', $cacheTime){
+        $echo = $cachedir.'echo.'.$this->cacheFileExt;
+        $return = $cachedir.'return.'.$this->cacheFileExt;
+        if(file_exists($echo) || file_exists($return) && $this->cacheLimitTime !== 0){
+            $cTime = ($t = $this->getFileCreateTime($echo)) ? $t : $this->getFileCreateTime($return);
+            $cacheTime = $cacheTime ? (int)$cacheTime : $this->cacheLimitTime;
+            if(($cTime + $cacheTime) > time()){
                 $data = NULL;
-                if(file_exists($echo)) echo file_get_contents($echo);
-                if(file_exists($return)) $data = unserialize(file_get_contents($return));
-                return array('status'=>true,'data'=>$data);
+                if(file_exists($echo))
+                    echo file_get_contents($echo);
+                if(file_exists($return))
+                    $data = unserialize(file_get_contents($return));
+                return array('status' => true, 'data' => $data);
             }
         }
         return false;
     }
-    // return 对应的缓存文件夹名
-    private function makeCacheDir($obj, $func, array $keyArray){
+    /**
+     * @param object $obj 执行对象
+     * @param string $func 执行方法
+     * @param array $keyArray 参数数组
+     *
+     * @return string 缓存文件地址
+     */
+    private function makeCacheDir($obj, $func='', array $keyArray){
         $dir = str_replace('\\','/',get_class($obj).'/'.$func.'/');
         $key = '';
         if(!empty($keyArray) )
@@ -47,7 +60,14 @@ class Cache {
         if (method_exists($obj, 'runProtectedFunction')) return $obj->runProtectedFunction($func, $args);
         else return call_user_func_array(array($obj, $func), $args);
     }
-    // 缓存方法 兼容 return 与 打印输出
+    /**
+     * 缓存方法 兼容 return 与 打印输出
+     * @param object  $obj 执行对象
+     * @param string  $func 执行方法
+     * @param bool|true $cacheTime 缓存过期时间
+     *
+     * @return mixed
+     */
     public function cacheCall($obj, $func, $cacheTime=true){
         if($cacheTime === true ) $cacheTime = false;
         $pars = func_get_args();
@@ -60,7 +80,7 @@ class Cache {
             return $re['data'];
         else{
             ob_start();
-            $return  = $this->runFunc($obj, $func, $par);
+            $return = $this->runFunc($obj, $func, $par);
             $echo = ob_get_contents();
             ob_end_flush();
             $this->saveFile($cachedir.'echo.html', $echo);
@@ -68,7 +88,11 @@ class Cache {
             return $return;
         }
     }
-    // 清除缓存, 可指定
+    /**
+     * 清除指定缓存
+     * @param object|false $obj 执行对象
+     * @param string|false $func 执行方法
+     */
     public function cacheClear($obj=false, $func=false){
         $cachedir = $this->cacheRoot;
         $cachedir .= $obj ? str_replace('\\','/',get_class($obj)) : '' ;

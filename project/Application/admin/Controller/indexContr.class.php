@@ -11,6 +11,7 @@ class indexContr extends \Business\businessController{
 //        var_dump($data);
 //        var_dump($_FILES);
         $this->returnData($data);
+
     }
     public function make(){
         return obj('admin\userModule');

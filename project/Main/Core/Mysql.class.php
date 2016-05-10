@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2015/12/21 0021
- * Time: 17:13
- */
 namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 class Mysql{
@@ -23,8 +17,8 @@ class Mysql{
     }
     // 初始化统计数据
     final private function ini(){
-        $this->info=array( 'queryTimes'=>0 );
-}
+        $this->info = array('queryTimes' => 0);
+    }
     private function connect ($h,$u,$p){
         $this->conn = mysqli_connect($h,$u,$p);
         if(!$this->conn) throw new Exception('连接db失败');

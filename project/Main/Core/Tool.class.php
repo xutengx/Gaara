@@ -2,10 +2,11 @@
 namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 class Tool{
-    // 路径 转 绝对路径
-    // param string &$dir
-    // return string
-    final public function absoluteDir(&$dir){
+    /**
+     * 路径 转 绝对路径
+     * @param string $dir
+     */
+    final public function absoluteDir(&$dir=''){
         $system = php_uname('s');
         $dir = str_replace('\\','/',trim($dir));
         if(substr($system,0,5) === 'Linux'){
@@ -126,9 +127,13 @@ class Tool{
             return $data;
         }
     }
-    // 递归删除 目录(绝对路径)下的所有文件,不包括自身
-    // return void
-    final public function delDirAndFile($dirName){
+    /**
+     * 递归删除 目录(绝对路径)下的所有文件,不包括自身
+     * @param string $dirName 目录
+     *
+     * @return void
+     */
+    final public function delDirAndFile($dirName=''){
         $this->absoluteDir($dirName);
         if (is_dir($dirName) && $dir_arr = scandir($dirName)){
             foreach($dir_arr as $k=>$v){
@@ -142,11 +147,14 @@ class Tool{
             }
         }
     }
-    // 将任意内容写进文件
-    // param string $fileName 文件名
-    // param string $text 内容
-    // return bool
-    final public function printInFile($fileName, $text){
+    /**
+     * 将任意内容写进文件
+     * @param string $fileName  文件名
+     * @param string $text  内容
+     *
+     * @return bool
+     */
+    final public function printInFile($fileName='', $text=''){
         //if( ! $fileName || ! $text ) return false;
         $this->absoluteDir($fileName);
         if(strripos($fileName, '/') === (strlen($fileName) - 1)) return false;      // filename 为路径,而不是文件名
@@ -165,13 +173,13 @@ class Tool{
         }
         return false;
     }
-
     /**
-     * @param $dirName 文件夹
+     * @param string $dirName 文件夹
+     *
      * @return array 返回文件夹下的所有文件 组成的一维数组
      * @throws Exception
      */
-    final public function getFiles($dirName){
+    final public function getFiles($dirName=''){
         $dirName = rtrim($dirName,'/');
         $arr = array();
         if (is_dir($dirName) && $dir_arr = scandir($dirName)){
@@ -188,9 +196,14 @@ class Tool{
             return $arr;
         }else throw new Exception($dirName.' 并非可读路径!');
     }
-
-    // 人性化相对时间
-    final public function friendlyDate($sTime, $format='Y-m-d H:i'){
+    /**
+     * 人性化相对时间
+     * @param int    $sTime 目标时间
+     * @param string $format 时间格式
+     *
+     * @return bool|string
+     */
+    final public function friendlyDate($sTime=0, $format='Y-m-d H:i'){
         $dTime      =   time() - $sTime;
         $state      =   $dTime>0?'前':'后';
         $dTime      =   abs($dTime);
@@ -204,8 +217,15 @@ class Tool{
             return intval($dTime/(3600*24)) . ' 天'.$state;
         } else return date($format, $sTime);
     }
-    // 生成随机文件名
-    final public function makeFilename($dir, $ext, $id=123){
+    /**
+     * 生成随机文件名
+     * @param string $dir 文件所在的目录
+     * @param string $ext 文件后缀
+     * @param int    $id  唯一标识
+     *
+     * @return string
+     */
+    final public function makeFilename($dir='', $ext='', $id=123){
         $dir = $dir?trim($dir,'/').'/':'./';
         if(!is_dir($dir)) obj('\Main\Core\Tool')->__mkdir($dir);
         $ext = trim($ext,'.');
@@ -213,12 +233,99 @@ class Tool{
         $dir .='.'.$ext;
         return $dir;
     }
-    // 递归创建目录
-    // param string $dir 目录名
-    // param string $mode 目录权限
-    // return void
-    final public function __mkdir($dir, $mode = 0777 ){
+    /**
+     * 递归创建目录
+     * @param string $dir 目录名(相对or绝对路径)
+     * @param int    $mode 目录权限
+     *
+     * @return bool
+     */
+    final public function __mkdir($dir='', $mode = 0777 ){
         $this->absoluteDir($dir);
         if(is_dir(dirname($dir)) || $this->__mkdir(dirname($dir))) return mkdir($dir, $mode);
     }
+    /**
+     * 字符串长度控制(截取)
+     * @param string     $string 原字符串
+     * @param int        $length 目标长度
+     * @param bool|false $havedot 多余展示符,false则没有, 如 ...
+     * @param string     $charset 字符编码
+     *
+     * @return mixed|string
+     */
+    public function cutstr($string='', $length=9, $havedot = false, $charset = 'utf8'){
+        if (strtolower($charset) == 'gbk') $charset = 'gbk';
+        else $charset = 'utf8';
+        if (strlen($string) <= $length)  return $string;
+        if (function_exists('mb_strcut'))  $string = mb_substr($string, 0, $length, $charset);
+        else {
+            $pre = '{%';  $end = '%}';
+            $string = str_replace(array('&amp;', '&quot;', '&lt;', '&gt;'), array($pre . '&' . $end, $pre . '"' . $end, $pre . '<' . $end, $pre . '>' . $end), $string);
+            $strlen = strlen($string);
+            $n = $tn = $noc = 0;
+            if ($charset == 'utf8') {
+                while ($n < $strlen) {
+                    $t = ord($string[$n]);
+                    if ($t == 9 || $t == 10 || (32 <= $t && $t <= 126)) {
+                        $tn = 1;
+                        $n++;
+                        $noc++;
+                    } elseif (194 <= $t && $t <= 223) {
+                        $tn = 2;
+                        $n += 2;
+                        $noc++;
+                    } elseif (224 <= $t && $t <= 239) {
+                        $tn = 3;
+                        $n += 3;
+                        $noc++;
+                    } elseif (240 <= $t && $t <= 247) {
+                        $tn = 4;
+                        $n += 4;
+                        $noc++;
+                    } elseif (248 <= $t && $t <= 251) {
+                        $tn = 5;
+                        $n += 5;
+                        $noc++;
+                    } elseif ($t == 252 || $t == 253) {
+                        $tn = 6;
+                        $n += 6;
+                        $noc++;
+                    } else {
+                        $n++;
+                    }
+                    if ($noc >= $length) {
+                        break;
+                    }
+                }
+                if ($noc > $length) {
+                    $n -= $tn;
+                }
+                $strcut = substr($string, 0, $n);
+            } else {
+                while ($n < $strlen) {
+                    $t = ord($string[$n]);
+                    if ($t > 127) {
+                        $tn = 2;
+                        $n += 2;
+                        $noc++;
+                    } else {
+                        $tn = 1;
+                        $n++;
+                        $noc++;
+                    }
+                    if ($noc >= $length) {
+                        break;
+                    }
+                }
+                if ($noc > $length) {
+                    $n -= $tn;
+                }
+                $strcut = substr($string, 0, $n);
+            }
+            $string = str_replace(array($pre . '&' . $end, $pre . '"' . $end, $pre . '<' . $end, $pre . '>' . $end), array('&amp;', '&quot;', '&lt;', '&gt;'), $strcut);
+        }
+        if ($havedot) $string = $string . $havedot;
+        return $string;
+    }
+
 }

@@ -18,7 +18,8 @@ class indexContr extends \Business\businessController{
 //        echo 'hello World !';
 //        obj('cache')->cacheCall($this,'test',true);
 //        obj('cache')->cacheCall($this,'test',true,1234);
-        $this->assign('type',1);
+
+        $this->assign('type',123123);
         $this->display('index2');
         statistic();
     }

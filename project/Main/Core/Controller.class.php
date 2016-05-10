@@ -102,7 +102,7 @@ class Controller extends Base{
         // 防scrf的ajax(基于jquery), 接受post提交数据前.先验证http头中的 csrftoken
         $ajax = obj('Secure')->csrfAjax($this->classname);
         // 引入静态文件
-        obj('cache')->cacheCall(obj('c'),'staticJs',3600, MINJS);
+        $this->phpcache->cacheCall(obj('c'),'staticJs',3600, MINJS);
         echo '<script>'.$ajax,$this->cache.'</script>';
         // 重置
         $this->cache = ';';
@@ -127,16 +127,42 @@ EEE;
         obj('Template')->includeFiles();
         echo '<script>'.$str.'</script>';
     }
-    // 缓存js赋值 string
-    protected function assign($name, $val){
-        $this->cache .= "var ".$name."='".$val."';";
+    /**
+     * 将数据赋值到页面js 支持 int string array bool
+     * @param string $name js对应键
+     * @param string $val  js对应值
+     *
+     * @throws Exception
+     */
+    protected function assign($name='', $val=''){
+        $type = gettype($val);
+        switch($type){
+            case 'boolean':
+                if($val === true)
+                    $this->cache .= 'var '.$name.'=true;';
+                else if($val === false)
+                    $this->cache .= 'var '.$name.'=false;';
+                break;
+            case 'integer':
+                $this->cache .= 'var '.$name.'='.$val.';';
+                break;
+            case 'string':
+                $this->cache .= "var ".$name."='".$val."';";
+                break;
+            case 'array':
+                $this->cache .= "var ".$name."=".json_encode($val).";";
+                break;
+            default:
+                throw new Exception('暂不支持的数据类型!');
+                break;
+        }
     }
-    // 缓存js赋值 json对象
-    protected function assignJson($name, $val){
-        $this->cache .= "var ".$name."=".json_encode($val).";";
-    }
-    // 缓存php赋值,以$DATA[$key]调用
-    protected function assignPhp($key, $val){
+    /**
+     * 将数据赋值到页面php 以$DATA[$key]调用
+     * @param string $key
+     * @param string $val
+     */
+    protected function assignPhp($key='', $val=''){
         $this->phparray[$key] = $val;
     }
     // cookie即时生效

@@ -106,9 +106,11 @@ class Controller extends Base{
         $this->assign('method', $method);
         // 防scrf的ajax(基于jquery), 接受post提交数据前.先验证http头中的 csrftoken
         $ajax = obj('Secure')->csrfAjax($this->classname);
+        // js 路由方法
+        $str = 'function __url__(Application, Controller, method){if(arguments.length==1){method=Application;Controller="'.$this->classname.'";Application="'.$this->app.'";}else if(arguments.length==2) {method=Controller;Controller=Application;Application="'.$this->app.'";} var url=window.location.protocol+"//"+window.location.host+window.location.pathname+"?'.PATH.'="+Application+"/"+Controller+"/"+method+"/"; return url;}';
         // 引入静态文件
         $this->phpcache->cacheCall(obj('c'),'staticJs',3600, MINJS);
-        echo '<script>'.$ajax,$this->cache.'</script>';
+        echo '<script>'.$ajax,$this->cache,$str.'</script>';
         // 重置
         $this->cache = ';';
         if(file_exists(ROOT.'Application/'.$this->app.'/View/'.$file.'.html'))
@@ -121,8 +123,6 @@ EEE;
     }
     // 引入静态文件
     protected function staticJs($minjs){
-        // js 路由方法
-        $str = 'function __url__(Application, Controller, method){if(arguments.length==1){method=Application;Controller="'.$this->classname.'";Application="'.$this->app.'";}else if(arguments.length==2) {method=Controller;Controller=Application;Application="'.$this->app.'";} var url=window.location.protocol+"//"+window.location.host+window.location.pathname+"?'.PATH.'="+Application+"/"+Controller+"/"+method+"/"; return url;}';
         echo <<<EEE
 <!DOCTYPE html>
 <html lang="zh-CN" xml:lang='zh-CN' xmlns='http://www.w3.org/1999/xhtml'>
@@ -130,7 +130,6 @@ EEE;
 EEE;
         // 公用view
         obj('Template')->includeFiles();
-        echo '<script>'.$str.'</script>';
     }
     /**
      * 将数据赋值到页面js 支持 int string array bool

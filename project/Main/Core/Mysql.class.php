@@ -5,7 +5,7 @@ class Mysql{
     private $conn       = null;
     private  $conf       = array();
     public  $tablepre   = null;
-    private $info = array();
+    private $info = array('queryTimes' => 0);
 
     final public function __construct(){
         $this->conf = obj('Conf');

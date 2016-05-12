@@ -9,11 +9,11 @@ namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 // 原filter类, 数据来源过滤
 class F{
-    public   $post;
-    public   $get;
-    public   $put;
-    public   $delete;
-    public   $cookie;
+    private   $post;
+    private   $get;
+    private   $put;
+    private   $delete;
+    private   $cookie;
     private   $filterArr = array(
         'email' => '/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/',
         'email2' => '/^[0-9a-z][_.0-9a-z-]{0,31}@([0-9a-z][0-9a-z-]{0,30}[0-9a-z]\.){1,4}[a-z]{2,4}$/i',
@@ -122,5 +122,18 @@ class F{
     // 外部获取 预定义验证规则
     public function getFilterArr(){
         return $this->filterArr;
+    }
+
+    /**
+     * 获取原始数据数组
+     * @param $property_name
+     *
+     * @return mixed
+     * @throws Exception
+     */
+    public function __get($property_name){
+        if(isset($this->$property_name))
+            return $this->$property_name;
+        else throw new Exception('不存在的属性:'.$property_name.'!');
     }
 }

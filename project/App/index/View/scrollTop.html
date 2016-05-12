@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="renderer" content="webkit" />
+	<meta http-equiv="X-UA-Compatible" content="IE=EDGE, chrome=1">  
+	<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+	<meta name="msapplication-tap-highlight" content="no" />
+	<meta name="format-detection" content="telephone=no" />  
+	<link rel="stylesheet" href="" />
+	<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			var con = $(".con");
+			var boxh1 = $(".box1").height();
+			var boxh2 = $(".box2").height();
+			var boxh3 = $(".box3").height();
+			console.log(boxh1);
+			console.log(boxh2);
+			console.log(boxh3);
+
+			$(".l1").click(function(){
+				if(!con.is(":animated")){
+					$("body").animate({scrollTop: 0},400);
+				}
+				console.log($(document).scrollTop());
+			});
+	
+			$(".l2").click(function(){
+				if(!con.is(":animated")){
+					$("body").animate({scrollTop: boxh1},400);
+				}
+				console.log($(document).scrollTop());
+			});
+			$(".l3").click(function(){
+				if(!con.is(":animated")){
+					$("body").animate({scrollTop: boxh2+boxh1},400);
+				}
+				console.log($(document).scrollTop());
+			});
+
+
+
+
+		});
+	</script>
+	<style type="text/css">
+
+
+		html, body {
+			position:relative;
+			width: 100%;
+			height: 100%;
+			padding: 0px;
+			margin: 0 auto;
+			top: 0;
+			left: 0;
+			font-family:'Microsoft YaHei';
+
+		}
+		ul {
+			position:  fixed;
+			top:  0;
+			bottom:  auto;
+			margin:  0 auto;
+			height:  100px;
+			overflow: hidden;
+
+		}
+		ul li {
+			margin: 0;
+			padding: 0;
+			float: left;
+			list-style:  none;
+			width:  74px;
+			border:  1px solid #585858;
+			padding:  5px 0;
+			text-align:  center;
+			cursor: pointer;
+		}
+		li:first-child {
+			border-right: 0;
+		}
+		li:last-child {
+			border-left: 0;
+		}
+		ul:after {
+			content: "";
+			display:  block;
+			clear: both;
+		}
+		.box1, .box2, .box3 {
+			border: 1px solid #595959;
+			padding-bottom:  34px;
+			max-width: 1200px;
+			margin: 0 auto;
+
+		}
+	</style>
+</head>
+<body>
+	<ul>
+		<li class="l1">卡片一</li>
+		<li class="l2">卡片二</li>
+		<li class="l3">卡片三</li>
+	</ul>	
+	<br />
+	<br />
+	<div class="con">
+		<div class="box1">
+			我睡觉了废旧塑料见风使舵垃圾焚<br /><br />烧垃圾焚烧雷锋精神雷锋精神我睡觉了废旧塑料见风使舵垃圾焚烧垃圾焚烧雷锋精神雷锋精神我睡觉了废旧塑料见风使<br />舵垃圾焚烧垃圾焚烧雷锋精神雷锋精神<br />
+			我睡觉了废旧塑料见风使舵垃圾焚烧垃圾焚烧雷锋精神雷锋精神我<br /><br />睡觉了废旧塑料见风使舵垃圾焚烧垃圾焚烧雷锋精神雷锋精神我睡<br />觉了废旧塑料见风使舵垃圾焚烧垃圾焚烧雷锋精神雷锋精神<br /<br />><br /<br />>我睡觉了废旧塑料见风使舵垃圾焚烧垃圾焚烧雷锋精神雷锋精神我睡觉了废旧塑料见风使舵垃圾焚烧垃圾焚烧雷锋精神雷锋精<br />神我睡觉了废旧塑料见风使舵垃圾焚烧垃圾焚烧雷锋精神雷锋精神我睡觉了废旧塑料见风使舵垃圾焚烧垃圾焚烧雷锋精神雷锋<br />精神我睡觉了废旧塑料见风使舵垃圾焚烧垃圾焚烧雷锋精神雷锋精神我睡觉了废旧塑料见风使舵垃圾焚烧垃圾焚烧雷锋精神雷<br />锋精神
+		</div>
+		<div class="box2">
+			<img src="images/1.jpg" />
+			<br />
+			<img src="images/1.jpg" />
+		</div>
+		<div class="box3">
+			精神我睡觉了废旧塑料见风使舵垃圾焚烧垃圾焚烧雷锋精神雷锋精神我睡觉了废旧塑料见风使舵垃圾焚烧垃圾焚烧雷锋精神雷<锋精神<br />
+			<img src="images/1.jpg" />
+		</div>
+	</div>
+</body>
+</html>

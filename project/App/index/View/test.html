@@ -1,0 +1,62 @@
+<head>
+    <title>123</title>
+</head>
+<body>
+<form action="" id="ew">
+    <form id="form!!!" action="">
+    <div>
+        <a href=""> <div></div></a>
+        <input type="text" name="int" value="test" >
+        <input type="password" name="passwd" value="test" rule="/^(.){0,64}$/|msg:自定义的">
+        <input type="text" name="age" value="12" >
+        <input type="text" name="tel" value="13324422424" >
+        <input type="file" name="f11" >
+        <input type="file" name="f22" >
+        <input type="radio" name="sex" value="nan" >
+        <input type="radio" name="sex" value="lv" >
+        <input type="text" name="sex" value="other-sex-xxxxxxxxxxxxxxxxxx"  />
+        <input type="radio" name="sex" value="other"  rule="/^\d{6}$/" >
+        <input type="checkbox" name="checkbox" value="1" >
+        <input type="checkbox" name="checkbox" value="2" >
+        <input type="checkbox" name="checkbox" value="3" >
+        <input type="checkbox" name="checkbox" value="4" >
+        <input type="checkbox" name="checkbox" value="5" >
+        <input type="checkbox" name="checkbox" value="other" rule="/^\d{6}$/">
+        <input type="text" name="checkbox" value="checkbox-other" rule="/^\d{6}$/">
+        <input type="checkbox" name="checkbox2" value="5" >
+        <input type="checkbox" name="checkbox2" value="6" >
+        <select name="t1"><option value="1"/>1<option value="2"/>2<option value="3"/>3</select>
+        <select name="t2"><option value="1"/>1<option value="2"/>2<option value="3"/>3</select>
+        <select name="t3"><option value="1"/>1<option value="2"/>2<option value="3"/>3</select>
+        <textarea  id="rrr" cols="30" rows="10" name="textarea1">11111111111</textarea>
+        <textarea id="" cols="30" rows="10" name="textarea2" rule="int">222222222222</textarea>
+        <input id="asd" type="button" value="test" onclick="test();">
+        <div  style="width:800px;height:1028px;"></div>
+        <input id="asd2" type="button" value="test" onclick="test();">
+        <div  style="width:800px;height:1028px;"></div>
+        <input type="button" value="test" onclick="test();">
+    </div>
+</form>
+</form>
+<form id="form!!1231" action="">
+    <div>
+        <input id="ttt" type="button" value="test" onclick="test();">
+        <div  style="width:800px;height:1028px;"></div>
+        <input type="button" value="test" onclick="test();">
+        <div  style="width:800px;height:1028px;"></div>
+        <input type="button" value="test" id="fff">
+    </div>
+</form>
+</body>
+<script>
+    $('#asd').submitData();
+    $('#asd2').submitData();
+    var test = function(){
+        console.log($(window).height());
+        $.ajax({
+
+        })
+    }
+    $('#fff').copy($('#rrr'));
+//    $.getinfo();
+</script>

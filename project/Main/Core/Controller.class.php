@@ -31,10 +31,11 @@ class Controller extends Base{
     protected function construct(){
     }
     protected function setClassname(){
-        $classname =  str_replace('Contr','',get_class($this));
-        $app = explode('\\', $classname);
-        $this->app = $app[0];
-        $this->classname = $app[1];
+        $app = explode('\\', get_class($this));
+        if($app[0] == 'App'){
+            $this->app = $app[1];
+            $this->classname = str_replace('Contr','',$app[3]);
+        }
     }
     public function indexDo(){
         $this->display();
@@ -112,9 +113,9 @@ class Controller extends Base{
         echo '<script>'.$ajax,$this->cache,$str.'</script>';
         // 重置
         $this->cache = ';';
-        if(file_exists(ROOT.'Application/'.$this->app.'/View/'.$file.'.html'))
-            include ROOT.'Application/'.$this->app.'/View/'.$file.'.html';
-        else throw new Exception(ROOT.'Application/'.$this->app.'/View/'.$file.'.html'.'不存在!');
+        if(file_exists(ROOT.'App/'.$this->app.'/View/'.$file.'.html'))
+            include ROOT.'App/'.$this->app.'/View/'.$file.'.html';
+        else throw new Exception(ROOT.'App/'.$this->app.'/View/'.$file.'.html'.'不存在!');
         echo <<<EEE
 </html>
 EEE;
@@ -233,12 +234,13 @@ EEE;
         if(in_array(strtolower($fun), array('post','put','delete'))){
             if(!obj('Secure')->checkCsrftoken( $this->classname ))  $this->returnMsg(0, '页面已过期,请刷新!!') && exit ;
             loop : if(!empty($par)){
-                $match = isset($par[1]) ? ',$par[1]' : false ;
-                $code = 'return obj(\'F\')->{$fun}("'.$par[0].'"'.$match.');';
-                $bool = eval($code);
+//                $match = isset($par[1]) ? ',$par[1]' : false ;
+//                $code = 'return obj(\'F\')->{$fun}("'.$par[0].'"'.$match.');';
+//                $bool = eval($code);
+                $bool = call_user_func_array(array(obj('f'),$fun), $par);
                 if($bool === false ) {
                     $msg = isset($par[2]) ? $par[2] : $par[0].' 不合法!';
-                    $this->returnMsg(0, $msg);
+                    $this->returnMsg(0, $msg) && exit;
                 }else if($bool === null ) throw new Exception('尝试获取'.$fun.'中的"'.$par[0].'"没有成功!');
                 else return $bool;
             }else {
@@ -250,18 +252,17 @@ EEE;
                  * @throws Exception
                  */
                 $arrayKey = array();
-                $code = 'return obj(\'F\')->{$fun};';
-                $array = eval($code);
+                $array = obj('f')->$fun;
                 if($array === null)  throw new Exception('尝试获取'.$fun.'中的数据没有成功!');
-                foreach($array as $k=>$v){
-                    if(array_key_exists($k,obj('F')->getFilterArr()) && !is_array($k)){
-                        $arrayKey[$k] = obj('F')->{$fun}($k, $k);
-                    }else $arrayKey[$k] = obj('F')->{$fun}($k);
+                foreach( $array as $k => $v ){
+                    if(array_key_exists($k, obj('F')->getFilterArr()) && !is_array($k)){
+                        $arrayKey[ $k ] = $this->{$fun}($k, $k);
+                    }else $arrayKey[ $k ] = obj('F')->{$fun}($k);
                 }
                 return $arrayKey;
             }
         }else if(in_array(strtolower($fun), array('get','session','cookie'))){
             goto loop;
-        }else  throw new Exception('未定义的方法:'.$fun.'!');
+        }else throw new Exception('未定义的方法:'.$fun.'!');
     }
 }

@@ -1,0 +1,81 @@
+
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="msapplication-tap-highlight" content="no" />
+<meta content="telephone=no" name="format-detection">
+<title>华为合肥平安城市论坛调查问卷</title>
+<link rel="stylesheet" type="text/css" href="<?php echo VIEW;?>css/index2.css?time=2">
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script>
+//	$(function() {
+//		resize();
+//	});
+//	$(window).load(function(){
+//		resize();
+//	});
+//
+//	function resize() {
+//		var sw   = $(window).width();
+//		var sh   = $(window).height();
+//		var h    = $(".wrapper").height();
+//		var r    = parseFloat(sw/300, 10);
+//		var top  = h*(r-1)/2;
+//		var left = (sw-300)/2;
+//		$(".wrapper").css({
+//		"-webkit-transform": "scale("+r+","+r+")",
+//
+//		});
+//	}
+</script>
+</head>
+
+<body style=" -webkit-overflow-scrolling:  touch; padding-bottom: 10000px;">
+	<div class="wrapper" >
+    	<!--<img class="bg" src="<?php echo VIEW;?>img/bg3.jpg">-->
+        <form>
+            <!-- <div class="form-title">ONOS全球首届集训营暨黑客马拉松大赛报名表</div>
+            <div class="form-info">个人信息</div> -->
+            <table class="table-info"  width="100%" border-collapse="collapse"cellspacing="0" cellpadding="0">
+            	<tbody class="table-body">
+                	<tr class="table-row"><td class="col col1">&nbsp;</td><td class="col2">您的信息</td></tr>
+                    <tr class="table-row"><td class="col col1">姓名</td><td class="col2"><input type="text"  name="name" value=""></td></tr>
+                    
+                    <tr class="table-row"><td class="col col1">城市</td><td class="col2"><input type="text" name="city" value=""></td></tr>
+                    <tr class="table-row"><td class="col col1">电话</td><td class="col2"><input type="text" name="tel" value=""></td></tr>
+                    <tr class="table-row"><td class="col col1">单位</td><td class="col2"><input type="text"  name="company" value=""></td></tr>
+                    <tr class="table-row"><td class="col col1">邮箱</td><td class="col2"><input type="text" name="email" value=""></td></tr>
+                </tbody>
+            </table>
+            <!-- 开始选项 -->
+            <div class="row-info">您与华为的关系是？(单选)</div>
+            <div class="row-info1">
+            	<div class="row-radio"><input type="radio" name="info1" id="info1-a" value="A"><label for="info1-a">最终用户</label></div>
+                <div class="row-radio"><input type="radio" name="info1" id="info1-b" value="B"><label for="info1-b">集成商</label></div>
+                <div class="row-radio"><input type="radio" name="info1" id="info1-c" value="C"><label for="info1-c">渠道分销商</label></div>
+                <div class="row-radio"><input type="radio" name="info1" id="info1-d" value="D" ><label for="info1-d">其他</label>
+                <input id="info1-other"type="text" name="info1-other" value="" style="display:none">
+                </div>
+            </div>
+            <div class="tijiao">
+                <img id="tijiao"  src="<?php echo VIEW;?>img/tijiao.png" >
+            </div>
+        </form>
+      
+</div>
+    </div>
+<script type="text/javascript">
+
+$('#tijiao').submitData('submitData',function(re){
+//    var oHeight=document.body.scrollHeight==0?document.documentElement.scrollHeight:document.body.scrollHeight;
+//
+//    var oTop=document.body.scrollTop==0?document.documentElement.scrollTop:document.body.scrollTop;
+    var scrollTop = window.pageYOffset|| document.documentElement.scrollTop || document.body.scrollTop;
+console.log(scrollTop);
+    console.log($(document).height())
+    console.log($.jsorminjs);
+});
+
+</script>
+
+</body>

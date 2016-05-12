@@ -30,7 +30,10 @@ class Conf{
     }
     private function set(){
         date_default_timezone_set($this->data['timezone']);
-        if(DEBUG == true) ini_set('display_errors', 1);
+        if(DEBUG == true) {
+            ini_set('display_errors', 1);
+            error_reporting(E_ALL);
+        }
         else ini_set('display_errors', 0);
     }
     public function getCreateDb(){

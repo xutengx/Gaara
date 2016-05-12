@@ -54,22 +54,23 @@ class Route{
         }
     }
     private static function doMethod(){
-        $contr      = self::$urlArr['controller'];
-        if(file_exists('Application/'.self::$urlArr['application'].'/Controller/'.self::$urlArr['controller'].'.class.php')){
+        $obj = 'App\\'.self::$urlArr['application'].'\Controller\\'.self::$urlArr['controller'];
+        if(file_exists('App/'.self::$urlArr['application'].'/Controller/'.self::$urlArr['controller'].'.class.php')){
             define('APP',self::$urlArr['application']);
             define('VIEW','Application/'.self::$urlArr['application'].'/View/');
             self::$urlArr['pramers'] = array_merge(self::$urlArr['pramers'], self::$urlPars);
             self::filterPars();
-            $obj        = loader::get($contr);
+            $obj        = obj($obj);
             $func = method_exists($obj,self::$urlArr['method'] ) ? self::$urlArr['method'] : 'indexDo';
             $obj->$func();
         }else header('Location:'.IN_SYS);
     }
-    private static  function getPars(){
+    private static function getPars(){
         $str    = str_replace(PATH.'='.self::$url, '', $_SERVER['QUERY_STRING']);
         $str    = explode('?',$str);
-        for ($i=0 ; $i<count($str) ; $i++){
-            self::$urlPars = array_merge(self::getParameter($str[$i]), self::$urlPars);
+        $n = count($str);
+        for( $i = 0 ; $i < $n ; $i++ ){
+            self::$urlPars = array_merge(self::getParameter($str[ $i ]), self::$urlPars);
         }
     }
     // 获取一段url上的get参数

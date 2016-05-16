@@ -3,20 +3,6 @@ defined('IN_SYS')||exit('ACC Denied');
 return  <<<EEE
 set names utf8;
 SET FOREIGN_KEY_CHECKS=0;
-CREATE TABLE `boke_article` (
-  `id` int(1) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(100) NOT NULL DEFAULT '默认标题' COMMENT '文章题目',
-  `content` longtext NOT NULL  COMMENT '文章内容',
-  `status` ENUM('草稿','公开','禁用','私有') NOT NULL DEFAULT '草稿' COMMENT '文章状态',
-  `comment_status` ENUM('否','是') NOT NULL COMMENT '可否评论',
-  `comment_num` int(1) unsigned NOT NULL DEFAULT 0 COMMENT '评论数量',
-  `like_num` int(1) unsigned NOT NULL DEFAULT 0 COMMENT '点赞数量',
-  `time_create` datetime COMMENT '文章建立时间',
-  `time_modify` datetime COMMENT '文章最近修改时间',
-  `userid` int(1) unsigned NOT NULL DEFAULT 0 COMMENT '用户id',
-  `groupid` int(1) unsigned NOT NULL DEFAULT 0 COMMENT '分类id',
-  PRIMARY KEY (`id`)
-) ENGINE=innodb  AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 CREATE TABLE `boke_user` (
   `id` int(1) NOT NULL AUTO_INCREMENT,
   `keyid` varchar(50)  NOT NULL DEFAULT '' COMMENT '用户标识,微信openid,pc游客浏览器id,等',

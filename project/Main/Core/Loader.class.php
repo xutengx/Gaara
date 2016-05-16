@@ -27,7 +27,7 @@ class Loader{
     private static $obj_call = array(
         'f'=>'\Main\Core\F',
         'm'=>'\Main\Core\Module',
-        'c'=>'\Main\Core\Controller',
+//        'c'=>'\Main\Core\Controller',
         'mysql'=>'\Main\Core\Mysql',
         'conf'=>'\Main\Core\Conf',
         'secure'=>'\Main\Core\Secure',

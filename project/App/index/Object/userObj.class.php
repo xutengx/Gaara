@@ -1,6 +1,6 @@
 <?php
-namespace index;
+namespace App\index\Object;
 defined('IN_SYS')||exit('ACC Denied');
-class userObj extends \Business\businessObject{
+class userObj extends \Main\Core\Object{
 
 }

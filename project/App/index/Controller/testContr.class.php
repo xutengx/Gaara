@@ -2,17 +2,14 @@
 namespace App\index\Controller;
 use \Main\Core\Controller;
 defined('IN_SYS')||exit('ACC Denied');
-class indexContr extends Controller\HttpController{
+class testContr extends Controller\HttpController{
     private $me = null;
     public function construct(){
 //        $this->me = obj('userObj')->init(obj('userModule'), 1);
 //        $this->me = obj('cache')->cacheCall(obj('userObj'),'init',true,obj('userModule'), 1);
     }
     public function indexDo(){
-//        statistic();
-//        sleep(2);
-        $this->headerTo('index/test/indexDo/',false,array('id'=>1,'ttt'=>'TTT'));
-
+        statistic();
     }
 //    public function ttt(){
 //        obj('cache')->cacheClear();

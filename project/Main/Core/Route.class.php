@@ -57,7 +57,7 @@ class Route{
         $obj = 'App\\'.self::$urlArr['application'].'\Controller\\'.self::$urlArr['controller'];
         if(file_exists('App/'.self::$urlArr['application'].'/Controller/'.self::$urlArr['controller'].'.class.php')){
             define('APP',self::$urlArr['application']);
-            define('VIEW','Application/'.self::$urlArr['application'].'/View/');
+            define('VIEW','App/'.self::$urlArr['application'].'/View/');
             self::$urlArr['pramers'] = array_merge(self::$urlArr['pramers'], self::$urlPars);
             self::filterPars();
             $obj        = obj($obj);

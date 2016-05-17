@@ -12,7 +12,7 @@ class Code{
 <?php
 namespace {$namespace};
 defined('IN_SYS')||exit('ACC Denied');
-class {$classname} extends \Main\Core\Module{
+class {$classname} extends \Main\Core\Model{
 
 }
 EOF;

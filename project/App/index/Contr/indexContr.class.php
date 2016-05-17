@@ -1,5 +1,5 @@
 <?php
-namespace App\index\Controller;
+namespace App\index\Contr;
 use \Main\Core\Controller;
 defined('IN_SYS')||exit('ACC Denied');
 class indexContr extends Controller\HttpController{
@@ -11,8 +11,9 @@ class indexContr extends Controller\HttpController{
     public function indexDo(){
 //        statistic();
 //        sleep(2);
-        $this->headerTo('index/test/indexDo/',false,array('id'=>1,'ttt'=>'TTT'));
-
+//        $this->headerTo('index/test/indexDo/',false,array('id'=>1,'ttt'=>'TTT'));
+var_dump($this->tttt('ndCCwex/indexCCContqweqr'));
+        obj('ttt/userModel')->indexDo();
     }
 //    public function ttt(){
 //        obj('cache')->cacheClear();
@@ -28,5 +29,8 @@ class indexContr extends Controller\HttpController{
     }
     public function delete(array $data){
         echo 'i delete !!!';
+    }
+    private function tttt($str){
+        return preg_match('#[A-Z]{1}[0-9a-z_]+$#', $str, $a) ? $a : false ;
     }
 }

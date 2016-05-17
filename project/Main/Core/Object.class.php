@@ -1,7 +1,7 @@
 <?php
 namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
-class Object extends Base{
+class Object{
     // 对象属性
     protected $obj_attr = array();
     // 绑定模型

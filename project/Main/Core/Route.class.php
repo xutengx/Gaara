@@ -54,8 +54,8 @@ class Route{
         }
     }
     private static function doMethod(){
-        $obj = 'App\\'.self::$urlArr['application'].'\Controller\\'.self::$urlArr['controller'];
-        if(file_exists('App/'.self::$urlArr['application'].'/Controller/'.self::$urlArr['controller'].'.class.php')){
+        $obj = 'App\\'.self::$urlArr['application'].'\Contr\\'.self::$urlArr['controller'];
+        if(file_exists('App/'.self::$urlArr['application'].'/Contr/'.self::$urlArr['controller'].'.class.php')){
             define('APP',self::$urlArr['application']);
             define('VIEW','App/'.self::$urlArr['application'].'/View/');
             self::$urlArr['pramers'] = array_merge(self::$urlArr['pramers'], self::$urlPars);

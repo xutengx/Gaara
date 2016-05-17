@@ -26,8 +26,7 @@ class Loader{
     // class简称
     private static $obj_call = array(
         'f'=>'\Main\Core\F',
-        'm'=>'\Main\Core\Module',
-//        'c'=>'\Main\Core\Controller',
+        'm'=>'\Main\Core\Model',
         'mysql'=>'\Main\Core\Mysql',
         'conf'=>'\Main\Core\Conf',
         'secure'=>'\Main\Core\Secure',
@@ -50,32 +49,28 @@ class Loader{
         // 别名修正
         if(isset(self::$obj_call[ strtolower($class) ]))
             $class = self::$obj_call[ strtolower($class) ];
+        $class = trim($class,'\\');
         // 属于应用类,则进行添加 namespace 操作
         $class = self::checkClass($class);
         return self::getins($class, $singleton, $pars);
     }
     // 自动引入
     public static function requireClass($class){
-        $path = str_replace('\\','/',$class);
+        $path = ROOT.str_replace('\\','/',$class).'.class.php';
         // 根据预存的class引用路径
         if(isset(self::$obj_map[$class])) self::includeWithException(ROOT.self::$obj_map[$class]);
-        else if (strtolower(substr($class, -6)) == 'module')  self::autoMakeModule($path, $class);
+        else if (strtolower(substr($class, -5)) == 'model')  self::autoMakeModel($path, $class);
         else if (strtolower(substr($class, -3)) == 'obj')  self::autoMakeObject($path, $class);
-        else {
-            $str = ROOT.$path.'.class.php';
-            if(file_exists($str))  self::includeWithException($str);
-            else self::includeWithException(ROOT . 'Include/' . $class . '.class.php');
-        }
+        else if(file_exists($path))  self::includeWithException($path);
+        else self::includeWithException(ROOT . 'Include/' . $class . '.class.php');
     }
-    // 自动生成 Module
-    private static function autoMakeModule($path, $classname){
-        $m = ROOT.$path.'.class.php';
-        if(file_exists($m) || obj('\Main\Core\Code')->makeModule($m, $classname) ) require $m;
+    // 自动生成 Model
+    private static function autoMakeModel($path, $classname){
+        if(file_exists($path) || obj('\Main\Core\Code')->makeModule($path, $classname) ) require $path;
     }
     // 自动生成 Object
     private static function autoMakeObject($path, $classname){
-        $m = ROOT.$path.'.class.php';
-        if(file_exists($m) || obj('\Main\Core\Code')->makeObject($m, $classname) ) require $m;
+        if(file_exists($path) || obj('\Main\Core\Code')->makeObject($path, $classname) ) require $path;
     }
     // 异常处理
     private static function includeWithException($where){
@@ -91,19 +86,19 @@ class Loader{
         }
     }
     /**
-     * 处理应用类 Contr Module Object
+     * 处理应用类 Contr Module Object or 自定义
      * @param string $class
      *
      * @return string $class
      */
     private static function checkClass($class=''){
-        $class = trim($class,'\\');
-        if(strtolower(substr($class, -5))=='contr')
-            return self::addNamespace($class, 'Controller');
-        else if(strtolower(substr($class, -6))=='module')
-            return self::addNamespace($class, 'Module');
-        else if(strtolower(substr($class, -3))=='obj')
-            return self::addNamespace($class, 'Object');
+        if((strrpos($class, '\\')) !== false){
+            $array = explode('\\',$class);
+            $n = count($array);
+            if($n == 2 && preg_match('#[A-Z]{1}[0-9a-z_]+$#', $class, $type))
+                return 'App\\'.$array[0].'\\'.$type[0].'\\'.$array[1];
+        }else if(preg_match('#[A-Z]{1}[0-9a-z_]+$#', $class, $type))
+            return 'App\\'.APP.'\\'.$type[0].'\\'.$class;
         return $class;
     }
     /**
@@ -113,17 +108,18 @@ class Loader{
      *
      * @return string 空间全称
      */
-    private static function addNamespace($class='', $type='Controller'){
-        if((strrpos($class, '\\')) !== false){
-            $array = explode('\\',$class);
-            $n = count($array);
-            if($n == 2)
-                return '\App\\'.$array[0].'\\'.$type.'\\'.$array[1];
-            return $class;
-        }return '\App\\'.APP.'\\'.$type.'\\'.$class;
-    }
-    // 缓存其他 class 的单例并返回实例
+//    private static function addNamespace($class='', $type='Controller'){
+//        var_dump(func_get_args());
+//        if((strrpos($class, '\\')) !== false){
+//            $array = explode('\\',$class);
+//            $n = count($array);
+//            if($n == 2)
+//                return '\App\\'.$array[0].'\\'.$type.'\\'.$array[1];
+//            return $class;
+//        }return '\App\\'.APP.'\\'.$type.'\\'.$class;
+//    }
     /**
+     * 缓存 class 的单例并返回实例
      * @param string     $class     完整类名
      * @param bool|true  $singleton 是否单利
      * @param null|array $par       参数数组

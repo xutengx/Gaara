@@ -1,0 +1,4 @@
+2016-05-17 16:27:01
+select * from boke_userModel  where `id`="1"  LIMIT 1
+Table 'test.boke_userModel' doesn't exist
+

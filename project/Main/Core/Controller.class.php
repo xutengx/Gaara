@@ -24,7 +24,7 @@ abstract class Controller{
      *
      * @return mixed
      */
-    final public function runProtectedFunction( $func='', array $agrs = array() ){
+     public function runProtectedFunction( $func='', array $agrs = array() ){
         return call_user_func_array( array( $this, $func ), $agrs );
     }
 }

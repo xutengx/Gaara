@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xml:lang='zh-CN' xmlns='http://www.w3.org/1999/xhtml'>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><script src="Main/Views/include/jquery/jquery-1.12.2.min.js"></script><script>jQuery.extend({jsorminjs:"Main/Views/plugins/minjs/"});</script><script src="Main/Views/include/minjs/_autoload.js"></script><script src="Main/Views/include/minjs/ajaxSending.js"></script><script>(function($){var _ajax=$.ajax;$.ajax=function(opt){ var fn = {beforeSend: function(request) {}};if(opt.beforeSend) fn.beforeSend=opt.beforeSend; var _opt = $.extend(opt,{beforeSend: function(request) {request.setRequestHeader("SCRFTOKEN", "Wg1SAEhTDFcKVgQBBAcA");fn.beforeSend(request); }});_ajax(_opt);};})(jQuery);;var path='path';var in_sys='index.php';var view='App/index/View/';var contr='index';var method='show';function __url__(Application, Controller, method){if(arguments.length==1){method=Application;Controller="index";Application="index";}else if(arguments.length==2) {method=Controller;Controller=Application;Application="index";} var url=window.location.protocol+"//"+window.location.host+window.location.pathname+"?path="+Application+"/"+Controller+"/"+method+"/"; return url;}</script><head>
+    <title>Zero Clipboard Test</title>
+    <meta charset="utf-8">
+</head>
+<body style="padding-bottom: 99%;">
+<button id="d_clip_button" class="my_clip_button" data-clipboard-target="fe_text"><b>复制到剪贴板 jquery obj</b></button>
+<button id = 'test1'><b>复制到剪贴板 js obj</b></button>
+<button id = 'test2'><b>复制到剪贴板 string</b></button>
+<button id = 'test3'><b>wwww</b></button>
+<br/>
+<textarea id="fe_text" cols="50" rows="3">输入需要复制的内容</textarea>
+<textarea id="fe_text2" cols="50" rows="3">qweqweqweeeee</textarea>
+</body>
+<script type="text/javascript">
+    $('#d_clip_button').copy($('#fe_text'));
+    $('#test1').copy(document.getElementById('fe_text2'));
+    $('#test2').copy('fffffffffffffffffffff');
+    $('#test3').click(function(){
+        $('#test2').attr('data-clipboard-text','chenge already!');
+    })
+    $(function(){
+        console.log(type);
+        console.log(true);
+//        console.log($(document).scrollTop());
+    })
+</script>
+</html>

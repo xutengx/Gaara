@@ -37,14 +37,28 @@ class F{
     );
 
     final public function __construct($par){
-        $this->filterMake($par);
+        $this->getContentType($par);
     }
-    final private function __clone(){}
-    private function filterMake($par){
+    private function getContentType($par){
         $this->get = $this->_addslashes($this->_htmlspecialchars($par));
-        $this->post = $this->_addslashes($this->_htmlspecialchars($_POST));
         $this->cookie = $this->_addslashes($this->_htmlspecialchars($_COOKIE));
-        $this->getPUTorDELETE();
+        if( ($argc = strtolower($_SERVER['REQUEST_METHOD'])) != 'get'){
+            $this->{$argc} = file_get_contents('php://input');
+            switch($_SERVER['CONTENT_TYPE']){
+                case 'application/x-www-form-urlencoded':
+                    parse_str($this->{$argc}, $this->{$argc});
+                    $this->{$argc} = $this->_addslashes($this->_htmlspecialchars($this->{$argc}));
+                    break;
+                case 'application/json':
+                    $this->{$argc} = json_decode($this->{$argc}, true);
+                    break;
+                case 'application/xml':
+                    $this->{$argc} = obj('tool')->xml_decode($this->{$argc});
+                    break;
+                default:
+                    break;
+            }
+        }
     }
     public function get($key, $filter = false){
         if(isset($this->get[$key]))  return $filter ? $this->filterMatch($this->get[$key], $filter) : $this->get[$key];
@@ -72,13 +86,6 @@ class F{
     }
     public function set_cookie($k, $v){
         $this->cookie[$k] = $v;
-    }
-    private function getPUTorDELETE(){
-        if ('PUT' == $_SERVER['REQUEST_METHOD']) {
-            parse_str(file_get_contents('php://input'), $this->put);
-        }else if('DELETE' == $_SERVER['REQUEST_METHOD']) {
-            parse_str(file_get_contents('php://input'), $this->delete);
-        }
     }
     /**
      * 正则匹配
@@ -132,7 +139,7 @@ class F{
      * @throws Exception
      */
     public function __get($property_name){
-        if(isset($this->$property_name))
+        if(in_array(strtolower($property_name),array('post','get','put','delete','cookie')))
             return $this->$property_name;
         else throw new Exception('不存在的属性:'.$property_name.'!');
     }

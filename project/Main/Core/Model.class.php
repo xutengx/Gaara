@@ -22,7 +22,7 @@ class Model{
     final protected function get_thisTable(){
         $classname = get_class($this);
         $classname = substr($classname,strrpos($classname,'\\')+1);
-        if($this->tablename == '') $this->tablename=strtr($classname, array('Module'=>''));
+        if($this->tablename == '') $this->tablename=strtr($classname, array('Model'=>''));
         $this->table = $this->db->tablepre.$this->tablename;
     }
     public function tbname(){

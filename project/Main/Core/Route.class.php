@@ -60,13 +60,14 @@ class Route{
             define('VIEW','App/'.self::$urlArr['application'].'/View/');
             self::$urlArr['pramers'] = array_merge(self::$urlArr['pramers'], self::$urlPars);
             self::filterPars();
-            $obj        = obj($obj);
-            $func = method_exists($obj,self::$urlArr['method'] ) ? self::$urlArr['method'] : 'indexDo';
+//            $func = method_exists($obj,self::$urlArr['method'] ) ? self::$urlArr['method'] : 'indexDo';
+            $func = self::$urlArr['method'];
+            $obj  = obj($obj, true, $func);
             $obj->$func();
         }else header('Location:'.IN_SYS);
     }
     private static function getPars(){
-        $str    = str_replace(PATH.'='.self::$url, '', $_SERVER['QUERY_STRING']);
+        $str    = str_replace(PATH.'='.self::$url, '', $_SERVER['REQUEST_URI']);
         $str    = explode('?',$str);
         $n = count($str);
         for( $i = 0 ; $i < $n ; $i++ ){

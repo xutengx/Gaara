@@ -20,14 +20,17 @@ abstract class HttpController extends \Main\Core\Controller{
     // 当前Contr名
     protected $classname = NULL;
 
-    final public function __construct(){
+    /**
+     * @param string $func 将要执行的方法名
+     */
+    final public function __construct($func=''){
         $this->phpcache = obj('\Main\Core\Cache',true,30);
         //设置session
         $this->session = obj('\Main\Core\Session');
 
         $this->setClassname();
 
-        $this->construct();
+        $this->construct($func);
     }
     protected function construct(){
     }
@@ -260,6 +263,6 @@ EEE;
             }
         }else if(in_array(strtolower($fun), array('get','session','cookie'))){
             goto loop;
-        }else throw new \Main\Core\Exception('未定义的方法:'.$fun.'!');
+        }elseif(DEBUG) throw new \Main\Core\Exception('未定义的方法:'.$fun.'!');
     }
 }

@@ -3,11 +3,11 @@ namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 class Cache {
     // 缓存目录
-    private  $cacheRoot        ;
+    private $cacheRoot        ;
     // 默认缓存更新时间秒数，0为不缓存
-    private  $cacheLimitTime   = 30;
+    private $cacheLimitTime   = 30;
     // 缓存扩展名
-    private  $cacheFileExt     = "html";
+    private $cacheFileExt     = "html";
     final public function __construct($time = 30){
         $this->cacheRoot = ROOT.'data/Cache/';
         $this->cacheLimitTime = (int)$time;

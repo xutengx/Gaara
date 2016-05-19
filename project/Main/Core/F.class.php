@@ -9,12 +9,12 @@ namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 // 原filter类, 数据来源过滤
 class F{
-    private   $post;
-    private   $get;
-    private   $put;
-    private   $delete;
-    private   $cookie;
-    private   $filterArr = array(
+    private $post = [];
+    private $get = [];
+    private $put = [];
+    private $delete = [];
+    private $cookie = [];
+    private $filterArr = array(
         'email' => '/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/',
         'email2' => '/^[0-9a-z][_.0-9a-z-]{0,31}@([0-9a-z][0-9a-z-]{0,30}[0-9a-z]\.){1,4}[a-z]{2,4}$/i',
         'url'   => '/^[a-zA-z]+://(\w+(-\w+)*)(\.(\w+(-\w+)*))*(\?\S*)?$/',

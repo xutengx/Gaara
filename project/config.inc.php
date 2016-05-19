@@ -23,11 +23,20 @@ return [
     'user_test'=>'root',
     'pwd_test'=>'root',
     'db_test'=>'test',
+
     'debug'=>true,
     'minjs'=>true,
-
-
     'tablepre'=>'boke_',
     'keytable'=>'boke_user',
     'char'=>'UTF8',
+    /**
+     * @return string 多配置关键字
+     */
+    'chooseConfig'=> function(){
+        if($_SERVER['HTTP_HOST'] == 'poster.issmart.com.cn'){
+            return '_poster';
+        }else if($_SERVER['HTTP_HOST'] == 'wx.issmart.com.cn'){
+            return '_wx';
+        }return '_test';
+    }
 ];

@@ -6,6 +6,7 @@ class apiContr extends Controller\HttpController{
     public function construct(){
         $arg = func_get_args();
         obj($arg[0].'Api');
+        statistic();
         exit;
     }
 }

@@ -10,39 +10,22 @@ class indexContr extends Controller\HttpController{
 //        $this->me = obj('cache')->cacheCall(obj('userObj'),'init',true,obj('userModule'), 1);
     }
     public function indexDo(){
-        $str = 'http://172.19.5.55/git/php_/project/pic';
-        echo $str.'<br>';
-        var_dump( preg_match('#/([0-9a-zA-Z_]+)$#', $str, $a) ? $a : false );
-
-//        obj('cache')->cacheCall($this,'show');
-//        statistic();
-//        sleep(2);
-//        $this->headerTo('index/test/indexDo/',false,array('id'=>1,'ttt'=>'TTT'));
-//var_dump($this->tttt('ndCCwex/indexCCContqweqr'));
-//        obj('ttt/userModel');
+        $d = $this->tttt();
+        var_dump($d['func']());
     }
-//    public function ttt(){
-//        obj('cache')->cacheClear();
-//    }
     protected function show(){
         $this->display('index2');
     }
     protected function t($int){
         echo $int;
     }
-    public function get(array $data=array()){
-        echo 'i get !!!';
-    }
-    public function put(array $data){
-        echo 'i put !!!';
-    }
-    public function post(array $data){
-        echo 'i post !!!';
-    }
-    public function delete(array $data){
-        echo 'i delete !!!';
-    }
-    private function tttt($str){
-        return preg_match('#[A-Z]{1}[0-9a-z_]+$#', $str, $a) ? $a : false ;
+    private function tttt(){
+        return array(
+            'a' => 'aa',
+            'b' => 'bb',
+            'func' => function(){
+                return 'this is func';
+            }
+        );
     }
 }

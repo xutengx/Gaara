@@ -10,8 +10,7 @@ class indexContr extends Controller\HttpController{
 //        $this->me = obj('cache')->cacheCall(obj('userObj'),'init',true,obj('userModule'), 1);
     }
     public function indexDo(){
-        $d = $this->tttt();
-        var_dump($d['func']());
+        $this->display('index2');
     }
     protected function show(){
         $this->display('index2');

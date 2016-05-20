@@ -63,13 +63,13 @@ class Model{
     public function selAll($where = false){
         $where = $where ? ' where '.$where : '';
         $sql = 'select * from '.$this->table.' '.$where;
-        return $this->getAll($sql);
+        return $this->db->getAll($sql);
     }
 
     public function selRow($where = false){
         $where = is_numeric($where) ? ' where `'.$this->key.'`="'.$where.'" ': ($where ? ' where '.$where : '') ;
         $sql = 'select * from '.$this->table.' '.$where;
-        return $this->getRow($sql);
+        return $this->db->getRow($sql);
     }
     // 核对此openid是否已经记录
     // param 包含openid的一维数组 or openid

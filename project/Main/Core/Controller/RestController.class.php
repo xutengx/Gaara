@@ -112,7 +112,7 @@ abstract class RestController extends \Main\Core\Controller{
             case 'php':
                 return serialize($data);
             case 'html':
-                return $data;
+                return is_array($data) ? json_encode($data) : $data;
             default:
                 return var_export($data);
         }

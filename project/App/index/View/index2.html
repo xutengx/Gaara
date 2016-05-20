@@ -8,6 +8,7 @@
 <button id = 'test2'><b>复制到剪贴板 string</b></button>
 <button id = 'test3'><b>wwww</b></button>
 <br/>
+<?php template('test');?>
 <textarea id="fe_text" cols="50" rows="3">输入需要复制的内容</textarea>
 <textarea id="fe_text2" cols="50" rows="3">qweqweqweeeee</textarea>
 </body>
@@ -18,9 +19,5 @@
     $('#test3').click(function(){
         $('#test2').attr('data-clipboard-text','chenge already!');
     })
-    $(function(){
-        console.log(type);
-        console.log(true);
-//        console.log($(document).scrollTop());
-    })
+    console.log(__url__('index','index','index'));
 </script>

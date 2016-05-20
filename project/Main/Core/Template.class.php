@@ -21,7 +21,7 @@ class Template {
     const pluginsMinDir =  'Main/Views/plugins/minjs/';
 
     public function show($file){
-        include ROOT.'Application/'.APP.'/View/template/'.$file.'.html';
+        include ROOT.'App/'.APP.'/View/template/'.$file.'.html';
         return true;
     }
     /**

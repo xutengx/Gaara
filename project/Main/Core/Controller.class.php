@@ -3,7 +3,7 @@ namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 abstract class Controller{
     // 一般入口
-    public function indexDo(){}
+    abstract public function indexDo();
     /**
      * 重定向到指定路由
      * @param string        $where 指定路由,如:index/index/indexDo/

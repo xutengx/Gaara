@@ -26,7 +26,7 @@ function obj($obj, $app=true){
  * @param string $template 引入模板名
  */
 function template($template=''){
-    if($template) \Main\Core\template::show($template);
+    if($template) obj('\Main\Core\template')->show($template);
     else throw new \Exception('引入模板名有误!');
 }
 

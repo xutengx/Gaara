@@ -8,7 +8,7 @@ abstract class HttpController extends \Main\Core\Controller{
     // 引入cache类
     protected $phpcache = NULL;
     // 引入session类
-    protected $session = NULL;
+    protected $session = true;
     // 缓存js赋值
     protected $cache = ';';
     // 缓存php赋值
@@ -26,7 +26,7 @@ abstract class HttpController extends \Main\Core\Controller{
     final public function __construct($func=''){
         $this->phpcache = obj('\Main\Core\Cache',true,30);
         //设置session
-        $this->session = obj('\Main\Core\Session');
+        $this->session = $this->session ? obj('\Main\Core\Session') : null;
 
         $this->setClassname();
 

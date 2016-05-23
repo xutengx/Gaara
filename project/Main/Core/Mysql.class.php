@@ -101,8 +101,8 @@ class Mysql{
         }
     }
     final public function __get($property_name){
-        if(isset($this->info[$property_name]))
-            return $this->info[$property_name];
+        if(isset(self::$info[$property_name]))
+            return self::$info[$property_name];
         else throw new Exception('不存在的属性!');
     }
 }

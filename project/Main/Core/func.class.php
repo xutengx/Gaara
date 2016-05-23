@@ -29,7 +29,20 @@ function template($template=''){
     if($template) obj('\Main\Core\template')->show($template);
     else throw new \Exception('引入模板名有误!');
 }
-
+/**
+ * 重定向到指定路由
+ * @param string        $where 指定路由,如:index/index/indexDo/
+ * @param string|false  $msg   跳转中间页显示信息|不使用中间页
+ * @param array         $pars  参数数组
+ */
+function headerTo($where='', $msg = false, array $pars = array()){
+    $str = '';
+    foreach($pars as $k=>$v){
+        $str .= $k.'/'.$v.'/';
+    }
+    $where = IN_SYS.'?'.PATH.'='.$where.$str;
+    ( $msg!==false ) ? obj('template')->jumpTo($msg, $where) : header('location:'.$where);
+}
 // 运行状态统计
 function statistic(){
     global $statistic;

@@ -34,6 +34,7 @@ class Loader{
         'log'=>'\Main\Core\Log',
         'tool'=>'\Main\Core\Tool',
         'cache'=>'\Main\Core\Cache',
+        'session'=>'\Main\Core\Session',
     );
     /**
      * 通过全局obj()调用

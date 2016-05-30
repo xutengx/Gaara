@@ -9,6 +9,7 @@ class testContr extends Controller\HttpController{
 //        $this->me = obj('cache')->cacheCall(obj('userObj'),'init',true,obj('userModule'), 1);
     }
     public function indexDo(){
+        echo 'this is testContr !!';
         statistic();
     }
 //    public function ttt(){

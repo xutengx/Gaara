@@ -38,7 +38,7 @@ class Mysql{
     private function select_db($db){
         $sql = 'use  '.$db.';';
         $this->query($sql);
-        $this->check_db();
+        if(DEBUG) $this->check_db();
     }
     private function check_db(){
         $tables = $this->conf->keytable;
@@ -72,9 +72,10 @@ class Mysql{
     // return int 上次sql影响的一个主键
     public function lastInsertId($sql){
         if($this->execute($sql)){
-            $sql = 'select LAST_INSERT_ID() ';
-            $re  = $this->getRow($sql);
-            return $re['LAST_INSERT_ID()'];
+//            $sql = 'select LAST_INSERT_ID() ';
+//            $re  = $this->getRow($sql);
+//            return $re['LAST_INSERT_ID()'];
+            return mysqli_insert_id($this->conn);
         }return false;
     }
     public function getAll($sql){

@@ -3,9 +3,9 @@ namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 class Log{
     const LOGDIR    = 'data/dblog/';                //文件路径
-    const LOGFILE   = 'curr.log'; 		               //文件名称
+    const LOGFILE   = 'curr.log';                   //文件名称
     public function write($content){
-        $cont ="\r\n";						               //添加换行符
+        $cont ="\r\n";                                 //添加换行符
         $con = date('Y-m-d H:i:s', time()).$cont.$content.$cont.$cont;
         $log = $this->createlog();
         $fh = fopen($log, 'ab');

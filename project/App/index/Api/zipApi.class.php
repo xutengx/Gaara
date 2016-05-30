@@ -7,6 +7,7 @@ class zipApi extends Controller\RestController{
 //        var_dump($_SERVER['PATH_INFO']);
 //        var_dump($this->getAcceptType());
         echo 'i am get of zip';
+        $this->returnData($data);
     }
     public function put( $data){
 //        var_dump($data);

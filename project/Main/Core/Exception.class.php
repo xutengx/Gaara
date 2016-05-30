@@ -5,14 +5,15 @@ class Exception extends \Exception{
         // 自动加载
         99 => 'loader'
     );
-    public function __construct($message='', $code=0,$previous =null){
-        parent::__construct($message, $code, $previous);
+    public function __construct($message='', $code=0, $previous =null){
+//        parent::__construct($message, $code, $previous);
+        $this->message .= $message ;
+        $this->code = $code;
         $this->makeMessage();
     }
     protected function makeMessage(){
         if(isset($this->code_map[$this->code])) $this->{$this->code_map[$this->code]}();
     }
-
     /**
      * 自动加载
      * 生成适应的 message
@@ -21,9 +22,14 @@ class Exception extends \Exception{
         $str = $this->getTraceAsString();
         $str =  explode('#',$str);
         if($str[0] == '') unset($str[0]);
-        $str = array_values($str);
-        $this->message .= '</br>系统检测问题所在 : '.$str[4];
-        $this->message .= '</br>原异常 : '.$this->getTraceAsString();
+        $arr = $this->getTrace();
+        foreach($arr as $k=>$v){
+            if($v['function'] == 'obj'){
+                $this->message .= '<br /><b>系统检测问题所在 : </b>'.$str[$k+1];
+                $this->message .= '<br /><b>原异常 : </b>'.$this->getTraceAsString();
+                exit($this->message);
+            }
+        }
     }
 }
 

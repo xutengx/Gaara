@@ -33,7 +33,6 @@ class F{
         'sign' => '/^{0,200}$/',
         // 2-8位
         'name'  => '/^[_\w\d\x{4e00}-\x{9fa5}]{2,8}$/iu'
-
     );
 
     final public function __construct($par){
@@ -44,7 +43,8 @@ class F{
         $this->cookie = $this->_addslashes($this->_htmlspecialchars($_COOKIE));
         if( ($argc = strtolower($_SERVER['REQUEST_METHOD'])) != 'get'){
             $this->{$argc} = file_get_contents('php://input');
-            switch($_SERVER['CONTENT_TYPE']){
+            $content_type = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '';
+            switch($content_type){
                 case 'application/x-www-form-urlencoded':
                     parse_str($this->{$argc}, $this->{$argc});
                     $this->{$argc} = $this->_addslashes($this->_htmlspecialchars($this->{$argc}));

@@ -28,7 +28,6 @@ class Model{
     public function tbname(){
         return $this->table;
     }
-    final protected function __clone(){exit;}
     // 以数组形式 insert 一条数据
     // return 新数据的主键
     public function insertData($cols, $addslashes=true) {
@@ -95,19 +94,10 @@ class Model{
         if($this->db->execute($sql)) return $openid;
         return false;
     }
+
     final public function __call($fun, $par=null){
-        if(method_exists($this->db, $fun)) {
-            if($par !== null){
-                $parstr ='' ;
-                $par = array_values($par);
-                for($i = 0 ; $i < count($par) ; $i++){
-                    $parstr .= ',$par['.$i.']';
-                }
-                $parstr = ltrim($parstr, ',');
-                $code = 'return $this->db->{$fun}('.$parstr.');';
-                return eval($code);
-            }
-        }
+        if(method_exists($this->db, $fun) && ($par !== null))
+            return call_user_func_array([$this->db, $fun], $par);
         else throw new \Main\Core\Exception('方法没定义!');
     }
 }

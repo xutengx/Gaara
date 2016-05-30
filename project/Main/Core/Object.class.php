@@ -32,7 +32,7 @@ class Object{
      * @return bool|int
      */
     final public function save(){
-        return $this->obj_module->modifyData($this->obj_attr);
+        return $this->obj_module->updateData($this->obj_attr);
     }
     final public function __set($property_name, $value){
         $this->obj_attr[$property_name] = $value;

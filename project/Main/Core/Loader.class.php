@@ -62,8 +62,8 @@ class Loader{
         if(isset(self::$obj_map[$class])) self::includeWithException(ROOT.self::$obj_map[$class]);
         else if (strtolower(substr($class, -5)) == 'model')  self::autoMakeModel($path, $class);
         else if (strtolower(substr($class, -3)) == 'obj')  self::autoMakeObject($path, $class);
-        else if(file_exists($path))  self::includeWithException($path);
-        else self::includeWithException(ROOT . 'Include/' . $class . '.class.php');
+        else self::includeWithException($path);
+//        else self::includeWithException(ROOT . 'Include/' . $class . '.class.php');
     }
     // 自动生成 Model
     private static function autoMakeModel($path, $classname){
@@ -75,16 +75,10 @@ class Loader{
     }
     // 异常处理
     private static function includeWithException($where){
-        try{
-            if(file_exists($where)) {
-                require $where;
-                return true;
-            }
-            else throw new Exception('引入文件 '.$where.' 不存在! ',99);
-        }catch(Exception $e){
-            if(ini_get('display_errors')) echo $e->getMessage();
-            exit;
-        }
+        if(file_exists($where)) {
+            require $where;
+            return true;
+        }throw new Exception('引入文件 '.$where.' 不存在! ',99);
     }
     /**
      * 处理应用类 Contr Module Object or 自定义
@@ -93,32 +87,15 @@ class Loader{
      * @return string $class
      */
     private static function checkClass($class=''){
-        if((strrpos($class, '\\')) !== false){
+        if( preg_match('#[A-Z]{1}[0-9a-z_]+$#', $class, $type) ){
             $array = explode('\\',$class);
-            $n = count($array);
-            if($n == 2 && preg_match('#[A-Z]{1}[0-9a-z_]+$#', $class, $type))
-                return 'App\\'.$array[0].'\\'.$type[0].'\\'.$array[1];
-        }else if(preg_match('#[A-Z]{1}[0-9a-z_]+$#', $class, $type))
-            return 'App\\'.APP.'\\'.$type[0].'\\'.$class;
+            if(strrpos($class, '\\') !== false){
+                if(count($array) == 2 )
+                    return 'App\\'.$array[0].'\\'.$type[0].'\\'.$array[1];
+            }else return 'App\\'.APP.'\\'.$type[0].'\\'.$class;
+        }
         return $class;
     }
-    /**
-     * 简易引入 转化为 带有命名空间的全称
-     * @param string $class class名称(简称,应用简称,空间全称)
-     * @param string $type class类型(所属上级文件夹名)
-     *
-     * @return string 空间全称
-     */
-//    private static function addNamespace($class='', $type='Controller'){
-//        var_dump(func_get_args());
-//        if((strrpos($class, '\\')) !== false){
-//            $array = explode('\\',$class);
-//            $n = count($array);
-//            if($n == 2)
-//                return '\App\\'.$array[0].'\\'.$type.'\\'.$array[1];
-//            return $class;
-//        }return '\App\\'.APP.'\\'.$type.'\\'.$class;
-//    }
     /**
      * 缓存 class 的单例并返回实例
      * @param string     $class     完整类名

@@ -78,7 +78,8 @@ class Loader{
         if(file_exists($where)) {
             require $where;
             return true;
-        }throw new Exception('引入文件 '.$where.' 不存在! ',99);
+        }
+//        throw new Exception('引入文件 '.$where.' 不存在! ',99);
     }
     /**
      * 处理应用类 Contr Module Object or 自定义
@@ -107,7 +108,7 @@ class Loader{
      */
     private static function getins($class, $singleton = true, $par = NULL){
         if(!class_exists($class))
-            throw new Exception($class.'不存在!');
+            throw new Exception('实例化类 : '.$class.' 不存在!',99);
         $parstr = '';
         if($par !== NULL){
             $par = array_values($par);

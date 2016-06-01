@@ -1,8 +1,11 @@
 <?php
 namespace Main\Core;
+use Piwik\Exception\Exception;
+
 class Session{
     private static $status = false;
     final public function __construct(){
+//        throw new \Exception();
         $this->session_start();
     }
     public function session_start(){

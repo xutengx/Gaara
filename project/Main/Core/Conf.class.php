@@ -35,7 +35,7 @@ class Conf{
     }
     private function makeDefine(){
         define('PATH', $this->data['path']);
-        define('SESSIONPATH', $this->data['sessionPath']);
+        define('SESSIONPATH', ROOT.$this->data['sessionPath']);
         define('SESSIONLIFE', $this->data['sessionLife']);
         define('APPID', $this->data['appid']);
         define('APPSECRET', $this->data['appsecret']);

@@ -2,3 +2,39 @@
 select * from boke_userModel  where `id`="1"  LIMIT 1
 Table 'test.boke_userModel' doesn't exist
 
+2016-06-01 10:47:25
+insert into boke_userVALUES ()
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+
+2016-06-01 10:49:24
+insert into boke_user VALUES ()
+Duplicate entry '0' for key 'account'
+
+2016-06-01 10:50:40
+insert into boke_user (`account`)VALUES ()
+Column count doesn't match value count at row 1
+
+2016-06-01 10:54:19
+insert into boke_user (`account`)VALUES (qwwww)
+Unknown column 'qwwww' in 'field list'
+
+2016-06-01 11:06:27
+insert into boke_user (`account`)VALUES ('wwww')
+Duplicate entry 'wwww' for key 'account'
+
+2016-06-01 12:32:03
+insert into boke_user (`account`)VALUES ('qwer')
+Duplicate entry 'qwer' for key 'account'
+
+2016-06-01 14:14:52
+insert into boke_user (`account`)VALUES ('Array')
+Duplicate entry 'Array' for key 'account'
+
+2016-06-01 15:13:23
+insert into boke_user (`account`)VALUES ('{"account":"yyyy","passwd":"123"}')
+Data too long for column 'account' at row 1
+
+2016-06-01 15:15:52
+insert into boke_user (`account`)VALUES ('{"account":"yyyy","passwd":"123"}')
+Data too long for column 'account' at row 1
+

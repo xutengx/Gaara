@@ -72,11 +72,12 @@ class Mysql{
     // return int 上次sql影响的一个主键
     public function lastInsertId($sql){
         if($this->execute($sql)){
-//            $sql = 'select LAST_INSERT_ID() ';
-//            $re  = $this->getRow($sql);
-//            return $re['LAST_INSERT_ID()'];
             return mysqli_insert_id($this->conn);
         }return false;
+    }
+    // return int 上次sql影响的一个主键
+    public function returnInsertId(){
+        return mysqli_insert_id($this->conn);
     }
     public function getAll($sql){
         $rs = $this->query($sql);

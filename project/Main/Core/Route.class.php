@@ -23,7 +23,7 @@ class Route{
         //获取路由路径
         self::getUrl();
         //获取不包含路由路径的url中的get参数
-        self::getPars();
+        if(php_sapi_name() !== 'cli') self::getPars();
         //由路由路径,解析路径和参数
         self::getController();
         //整合参数并执行
@@ -55,11 +55,11 @@ class Route{
     }
     private static function doMethod(){
         $obj = 'App\\'.self::$urlArr['application'].'\Contr\\'.self::$urlArr['controller'];
-        if(file_exists('App/'.self::$urlArr['application'].'/Contr/'.self::$urlArr['controller'].'.class.php')){
+        if(file_exists(ROOT.'App/'.self::$urlArr['application'].'/Contr/'.self::$urlArr['controller'].'.class.php')){
             define('APP',self::$urlArr['application']);
             define('VIEW','App/'.self::$urlArr['application'].'/View/');
             self::$urlArr['pramers'] = array_merge(self::$urlArr['pramers'], self::$urlPars);
-            self::filterPars();
+            if(php_sapi_name() !== 'cli') self::filterPars();
 //            $func = method_exists($obj,self::$urlArr['method'] ) ? self::$urlArr['method'] : 'indexDo';
             $func = self::$urlArr['method'];
             $obj  = obj($obj, true, $func);

@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="author" content="探索者">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+    <title>php_HTML5_聊天室</title>
+</head>
+
+<body>
+<form action="">
+    名字 : <input type="text" name="name">
+    <!--性别 : <input type="text" name="sex">-->
+    <input id="tijiao" type="button" value="tijiao">
+    <input id="select" type="button" value="select">
+</form>
+
+</body>
+<script>
+    if(typeof(WebSocket)=='undefined'){
+        alert('你的浏览器不支持 WebSocket ，推荐使用Google Chrome 或者 Mozilla Firefox');
+    }else{
+        $('#tijiao').on('click',function(){
+            var obj = {};
+            obj.act = 'select';
+            obj.account = 'yyyy';
+            obj.passwd = '123';
+            ws.send(JSON.stringify(obj));
+        });
+        $('#select').on('click',function(){
+            ws.send('code:999');
+        });
+
+        // 创建一个Socket实例
+        // 假设服务端ip为127.0.0.1
+        ws = new WebSocket("ws://172.19.5.55:2345");
+        ws.onopen = function() {
+            var obj = {};
+            obj.act = 'login';
+            obj.account = 'yyyy';
+            obj.passwd = '1233';
+            ws.send(JSON.stringify(obj));
+//        alert("连接成功");
+//        ws.send('tom');
+//        alert("给服务端发送一个字符串：tom");
+        };
+        ws.onmessage = function(e) {
+            console.log(e)
+//            alert("收到服务端的消息：" + e.data);
+        };
+        ws.onclose = function(e) {
+            console.log('收到服务端de claso')
+//            alert("收到服务端的消息：" + e.data);
+        };
+    }
+</script>
+</html>

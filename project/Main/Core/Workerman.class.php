@@ -19,30 +19,23 @@ use Workerman\Worker;
 
 require_once ROOT.'Main/Core/Workerman/Autoloader.php';
 class Workerman{
+    const logDir = 'data/workerman/';
+
     protected $worker = null;
+
     final public function __construct($socket_name='http://0.0.0.0:2345', $count=1){
         $this->worker = new Worker($socket_name);
         // 启动$count个进程对外提供服务
         $this->worker->count = $count;
-    }
 
-    /**
-     * 向浏览器发送hello world
-     * $connection->send('<h1>hello world</h1>');
-     * @param $connection
-     * @param $data
-     *
-     * @return mixed
-     */
-//     protected function returnData($connection, $data){
-//         $connection->send('<h1>wqqweqwewqwqeq</h1>');
-//     }
-//    // 当客户端连上来时
-//    abstract public function handle_connection($connection);
-//    // 当客户端发送消息过来时
-//    abstract public function handle_message($connection, $data);
-//    // 当客户端断开时，广播给所有客户端
-//    abstract public function handle_close($connection);
+        $this->set();
+    }
+    final protected function set(){
+        if(!is_dir(self::logDir)) obj('\Main\Core\Tool')->__mkdir(self::logDir);
+        Worker::$logFile = ROOT.self::logDir.'run.log';
+        Worker::$stdoutFile = ROOT.self::logDir.'varDump.log';
+        Worker::$pidFile = ROOT.self::logDir.'workerman.pid';
+    }
 
     final public function runAll(){
         Worker::runAll();

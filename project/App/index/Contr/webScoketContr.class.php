@@ -6,20 +6,27 @@ class webScoketContr{
     /**
      * 设置Session
      */
-    use Module\SessionModule;
+//    use Module\SessionModule;
     public function __construct(){
         php_sapi_name() === 'cli'||exit('error!');
 
-        $this->SessionModuleConstruct();
+//        $this->SessionModuleConstruct();
     }
     public function indexDo(){
 //        obj('chatScoket',false,'websocket://0.0.0.0:2345', 2);
+
         $work = obj('\Main\Core\Workerman',false,'websocket://0.0.0.0:2345');
 
-//        \Workerman\Protocols\Http::sessionStart();
         $work->count = 1;
         $work->onConnect =  function($conn){
-//            var_dump($_SESSION);
+            $conn->onWebSocketConnect = function($connection , $http_header){
+                session_start();
+                $d = obj('userModel')->selRow(' `account`="'.$_SESSION['account'].'" and `passwd`="'.$_SESSION['passwd'].'" ');
+                $_SESSION['passwd'] = 3333;
+                session_commit();
+                if(!$d)
+                    $connection->close();
+            };
         };
         $work->onMessage = function($ttt, $data){
             $data = json_decode($data,true);
@@ -40,12 +47,7 @@ class webScoketContr{
                     $ttt->send('select success!');
                 }
             }else $ttt->send('未登入!');
-
-//            else{
-//                $d = (obj('userModel')->newOne($data));
-//                $ttt->send('<h1>这次插入id = '.$d.'</h1>');
-//            }
-            statistic();
+//            statistic();
         };
         $work->runAll();
     }

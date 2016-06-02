@@ -35,20 +35,27 @@ class Conf{
     }
     private function makeDefine(){
         define('PATH', $this->data['path']);
-        define('SESSIONPATH', ROOT.$this->data['sessionPath']);
-        define('SESSIONLIFE', $this->data['sessionLife']);
+//        define('SESSIONPATH', ROOT.$this->data['sessionPath']);
+//        define('SESSIONLIFE', $this->data['sessionLife']);
         define('APPID', $this->data['appid']);
         define('APPSECRET', $this->data['appsecret']);
         define('DEBUG', $this->data['debug']);
         define('MINJS', $this->data['minjs']);
     }
     private function set(){
+        $SESSIONPATH = ROOT.$this->data['sessionPath'];
+//        ini_set('session.cookie_path',$SESSIONPATH);
+        ini_set('session.save_path',$SESSIONPATH);
+        if(!is_dir($SESSIONPATH)) obj('tool')->__mkdir($SESSIONPATH);
+//        ini_set('session.cookie_domain',SESSIONLIFE);
+//        ini_set('session.cookie_secure',SESSIONLIFE);
+        ini_set('session.cookie_httponly',$this->data['sessionHostOnly']);
+        ini_set('session.cookie_lifetime',$this->data['sessionLife']);
         date_default_timezone_set($this->data['timezone']);
         if(DEBUG == true) {
             ini_set('display_errors', 1);
             error_reporting(E_ALL);
-        }
-        else ini_set('display_errors', 0);
+        }else ini_set('display_errors', 0);
     }
     public function getCreateDb(){
         return require(ROOT.'db.inc.php'); //配置文件信息,读过来,赋给data属性

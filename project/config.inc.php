@@ -5,6 +5,7 @@ return [
     'timezone'=>'PRC',                       // 时区
     'sessionPath'=>'data/Session',           // session存储路径 // 全局SESSIONPATH常量
     'sessionLife'=>3600*24*7,                 // session 时效性  // 全局SESSIONLIFE常量
+    'sessionHostOnly'=>true,                 // session
 
     'appid_poster'=>'wx996bd5d838d5d827',
     'appsecret_poster'=>'d3927177ebc315da18681dd9876ed073',
@@ -26,8 +27,8 @@ return [
 
     'debug'=>true,
     'minjs'=>true,
-    'tablepre'=>'boke_',
-    'keytable'=>'boke_user',
+    'tablepre'=>'hk_',
+    'keytable'=>'hk_user',
     'char'=>'UTF8',
     /**
      * @return string 多配置关键字

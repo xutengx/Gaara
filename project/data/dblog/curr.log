@@ -193,3 +193,108 @@ Table 'hk.hk_session' doesn't exist
 DELETE FROM hk_session WHERE session_expire < 1464946139
 Table 'hk.hk_session' doesn't exist
 
+2016-06-04 01:08:56
+use  hk;
+Unknown database 'hk'
+
+2016-06-04 01:08:56
+show tables like "hk_user"
+No database selected
+
+2016-06-04 01:08:56
+show tables like "hk_session"
+No database selected
+
+2016-06-04 01:08:56
+CREATE TABLE hk_session (
+session_id varchar(255) NOT NULL,
+session_expire int(11) NOT NULL,
+session_data blob,
+UNIQUE KEY `session_id` (`session_id`)
+)ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+No database selected
+
+2016-06-04 01:10:22
+use  hk;
+Unknown database 'hk'
+
+2016-06-04 01:10:22
+show tables like "hk_user"
+No database selected
+
+2016-06-04 01:10:22
+show tables like "hk_session"
+No database selected
+
+2016-06-04 01:10:22
+CREATE TABLE hk_session (
+session_id varchar(255) NOT NULL,
+session_expire int(11) NOT NULL,
+session_data blob,
+UNIQUE KEY `session_id` (`session_id`)
+)ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+No database selected
+
+2016-06-04 01:21:25
+use  hk;
+Unknown database 'hk'
+
+2016-06-04 01:21:25
+create datebase hk ;
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'datebase hk' at line 1
+
+2016-06-04 01:21:25
+show tables like "hk_user"
+No database selected
+
+2016-06-04 01:21:25
+show tables like "hk_session"
+No database selected
+
+2016-06-04 01:21:25
+CREATE TABLE hk_session (
+session_id varchar(255) NOT NULL,
+session_expire int(11) NOT NULL,
+session_data blob,
+UNIQUE KEY `session_id` (`session_id`)
+)ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+No database selected
+
+2016-06-04 01:23:15
+create datebase hk ;
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'datebase hk' at line 1
+
+2016-06-04 01:23:15
+show tables like "hk_user"
+No database selected
+
+2016-06-04 01:23:15
+show tables like "hk_session"
+No database selected
+
+2016-06-04 01:23:15
+CREATE TABLE hk_session (
+session_id varchar(255) NOT NULL,
+session_expire int(11) NOT NULL,
+session_data blob,
+UNIQUE KEY `session_id` (`session_id`)
+)ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+No database selected
+
+2016-06-04 01:24:13
+show tables like "hk_user"
+No database selected
+
+2016-06-04 01:24:13
+show tables like "hk_session"
+No database selected
+
+2016-06-04 01:24:13
+CREATE TABLE hk_session (
+session_id varchar(255) NOT NULL,
+session_expire int(11) NOT NULL,
+session_data blob,
+UNIQUE KEY `session_id` (`session_id`)
+)ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+No database selected
+

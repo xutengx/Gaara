@@ -124,8 +124,8 @@ $.fn.extend({
                     }
                     delete inputTextVal[i];
                 }
-                if(inputRadioVal[i] == ''){
-                    alert('单选项'+i+'不能留空哦!');
+                if (inputRadioVal[i] == '') {
+                    alert('单选项' + i + '不能留空哦!');
                     return false;
                 }
                 fd.append(i, inputRadioVal[i]);

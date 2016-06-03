@@ -37,7 +37,10 @@ class Mysql{
     }
     private function select_db($db){
         $sql = 'use  '.$db.';';
-        $this->query($sql);
+        if(!mysqli_query($this->conn, $sql)){
+            $this->query('create database '.$db.' ;');
+            mysqli_query($this->conn, $sql);
+        }
         if(DEBUG) $this->check_db();
     }
     private function check_db(){

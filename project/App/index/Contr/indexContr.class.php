@@ -5,6 +5,8 @@ defined('IN_SYS')||exit('ACC Denied');
 class indexContr extends Controller\HttpController{
     private $user;
     public function construct(){
+        phpinfo();
+        exit;
 //        $this->user = obj('userObj')->init(obj('userModel'));
     }
     public function indexDo(){

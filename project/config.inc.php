@@ -35,9 +35,9 @@ return [
      * @return string 多配置关键字
      */
     'chooseConfig'=> function(){
-        if($_SERVER['HTTP_HOST'] == 'poster.issmart.com.cn'){
+        if(isset($_SERVER['HTTP_HOST']) && ($_SERVER['HTTP_HOST'] == 'poster.issmart.com.cn')){
             return '_poster';
-        }else if($_SERVER['HTTP_HOST'] == 'wx.issmart.com.cn'){
+        }else if(isset($_SERVER['HTTP_HOST']) && ( $_SERVER['HTTP_HOST'] == 'wx.issmart.com.cn')){
             return '_wx';
         }return '_test';
     }

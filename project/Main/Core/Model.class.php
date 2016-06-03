@@ -52,11 +52,15 @@ class Model{
         return $this->db->execute($sql);
     }
     // 以主键是否存在,对一条数据进行 insert or update
-    public function modifyData($data){
-        if(isset($data[$this->key])) {
-            $sql = 'select '.$this->key.' from '.$this->table.' where '.$this->key.'="'.$data[$this->key].'"';
-            if($this->db->getRow($sql)) return $this->updateData($data);
-        }return $this->insertData($data);
+    public function modifyData($cols){
+        $fileds = '';
+        $values = '';
+        foreach ($cols as $f => $v) {
+            $fileds .= $fileds ? ",{$f}" : $f;
+            $values .= $values ? ",'{$v}'" : "'{$v}'";
+        }
+        $sql = 'REPLACE INTO '.$this->table." ({$fileds}) VALUES ({$values})";
+        return $this->db->execute($sql);
     }
 
     public function selAll($where = false){

@@ -5,8 +5,9 @@ class Image {
     // 1中英文验证码 2对上传图片进行缩放 3打水印
     /**
      * 返回中英文验证码图片
-     * 建议用法:1,控制器的单独public方法中, obj('\Expand\Image',true)->yzm($width, $height, $complexity, $onlyEnglish) && exit;
+     * 建议用法:1,控制器的单独public方法中, obj('\Main\Expand\Image',true)->yzm($width, $height, $complexity, $onlyEnglish) && exit;
      * 2,将view中的验证码img的src指向以上控制器方法
+     * 需要开启 session;
      * $_SESSION ['yzm']则为校验值
      * @param int $width 宽度
      * @param int $height   高度

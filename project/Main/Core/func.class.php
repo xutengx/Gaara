@@ -43,6 +43,20 @@ function headerTo($where='', $msg = false, array $pars = array()){
     $where = IN_SYS.'?'.PATH.'='.$where.$str;
     ( $msg!==false ) ? obj('template')->jumpTo($msg, $where) : header('location:'.$where);
 }
+
+/**
+ * 通过$_SERVER 手动获取$_SESSION
+ * 用于webScoket的http阶段
+ * @return array
+ */
+function get_session(){
+    if(isset($_SERVER['HTTP_COOKIE'])){
+        echo $_SERVER['HTTP_COOKIE'];
+        if(preg_match('#.*PHPSESSID=(.*)#', $_SERVER['HTTP_COOKIE'], $match)){
+            return session_decode(ini_get('session.save_path').'/sess_'.$match[1]);
+        }
+    }
+}
 // 运行状态统计
 function statistic(){
     global $statistic;

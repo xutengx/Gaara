@@ -9,14 +9,10 @@
 
 <body>
 <form action="">
-    名字 : <input type="text" name="name">
-    密码 : <input type="text" name="passwd">
-    <input id="tijiao" type="button" value="登入聊天">
-    <br>
-    <br>
-    <br>
-    <div style="display:none;">
-        说一句 : <input type="text" name="say">
+
+    <div >
+        说一句 : <input type="text" name="content">
+        to : <input type="text" name="to_id">
         <input id="say" type="button" value="说一句">
     </div>
 </form>
@@ -27,17 +23,9 @@
     if(typeof(WebSocket)=='undefined'){
         alert('你的浏览器不支持 WebSocket ，推荐使用Google Chrome 或者 Mozilla Firefox');
     }else {
-        $('#tijiao').on('click', function() {
             ws = new WebSocket("ws://172.19.5.55:2345");
             ws.onopen = function() {
-//                var obj = {};
-//                obj.act = 'login';
-//                obj.account = 'yyyy';
-//                obj.passwd = '1233';
-//                ws.send(JSON.stringify(obj));
-        alert("连接成功!");
-//        ws.send('tom');
-//        alert("给服务端发送一个字符串：tom");
+                alert("连接成功!");
             };
             ws.onmessage = function(e) {
                 console.log(e);
@@ -46,9 +34,11 @@
                 alert("连接关闭!");
                 console.log('收到服务端de claso');
             };
-        });
-        $('#select').on('click',function(){
-            ws.send('code:999');
+        $('#say').on('click',function(){
+            var say = {};
+            say.to_id = $('input[name=to_id]').val();
+            say.content = $('input[name=content]').val();
+            ws.send(JSON.stringify(say));
         });
     }
 </script>

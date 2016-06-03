@@ -59,7 +59,11 @@ class Route{
             define('APP',self::$urlArr['application']);
             define('VIEW','App/'.self::$urlArr['application'].'/View/');
             self::$urlArr['pramers'] = array_merge(self::$urlArr['pramers'], self::$urlPars);
-            if(php_sapi_name() !== 'cli') self::filterPars();
+            if(php_sapi_name() !== 'cli') {
+                self::filterPars();
+            }
+            //设置session
+            obj('session');
 //            $func = method_exists($obj,self::$urlArr['method'] ) ? self::$urlArr['method'] : 'indexDo';
             $func = self::$urlArr['method'];
             $obj  = obj($obj, true, $func);

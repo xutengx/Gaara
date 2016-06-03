@@ -1,13 +1,11 @@
 <?php
 namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
-class Object{
+abstract class Object{
     // 对象属性
     protected $obj_attr = array();
     // 绑定模型
     protected $obj_module = null;
-    // 绑定模型的选择条件
-    protected $obj_where = null;
 
     final public function __construct(){
         $this->construct();
@@ -17,16 +15,28 @@ class Object{
     }
     /**
      * 绑定数据库模型到obj
-     * @param $obj 如 obj('userModule')
-     * @param $where obj('userModule')->selRow($where);
+     * @param object $obj 如 obj('userModule')
      * @return $this
      */
-    final public function init($obj, $where){
+    final public function init($obj){
         $this->obj_module = $obj;
-        $this->obj_attr = $obj->selRow($where);
-        $this->obj_where = $where;
+        if(!$this->obj_attr = $this->bind())
+            $this->bindFalse();
         return $this;
     }
+
+    /**
+     * 绑定 obj 到 model
+     * @return array|false 一维数组
+     */
+    abstract protected function bind();
+
+    /**
+     * bind() 失败(returne false)之后操作
+     * @return mixed
+     */
+    abstract protected function bindFalse();
+
     /**
      * 更新当前对象属性到绑定的数据库模型
      * @return bool|int

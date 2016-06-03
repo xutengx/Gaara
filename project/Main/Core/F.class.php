@@ -56,6 +56,7 @@ class F{
                     $this->{$argc} = obj('tool')->xml_decode($this->{$argc});
                     break;
                 default:
+                    $this->{$argc} = $_POST ? $_POST:$this->{$argc};
                     break;
             }
         }

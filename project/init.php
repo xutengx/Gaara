@@ -13,3 +13,4 @@ require (ROOT . 'Main/Core/Loader.class.php');
 require (ROOT . 'Main/Core/func.class.php');
 // 执行
 \Main\Core\Route::Start();
+

@@ -2,6 +2,7 @@
 namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 class Conf{
+//    private static $sessionStatus = true;
     protected $data = array();
     // 多配置选取关键字
     protected $key = '_test';
@@ -35,22 +36,17 @@ class Conf{
     }
     private function makeDefine(){
         define('PATH', $this->data['path']);
-//        define('SESSIONPATH', ROOT.$this->data['sessionPath']);
-//        define('SESSIONLIFE', $this->data['sessionLife']);
+
+        define('SESSIONPATH', ROOT.$this->data['sessionPath']);
+        define('SESSIONLIFE', $this->data['sessionLife']);
+        define('SESSIONMODULENAME', $this->data['sessionModuleName']);
+
         define('APPID', $this->data['appid']);
         define('APPSECRET', $this->data['appsecret']);
         define('DEBUG', $this->data['debug']);
         define('MINJS', $this->data['minjs']);
     }
     private function set(){
-        $SESSIONPATH = ROOT.$this->data['sessionPath'];
-//        ini_set('session.cookie_path',$SESSIONPATH);
-        ini_set('session.save_path',$SESSIONPATH);
-        if(!is_dir($SESSIONPATH)) obj('tool')->__mkdir($SESSIONPATH);
-//        ini_set('session.cookie_domain',SESSIONLIFE);
-//        ini_set('session.cookie_secure',SESSIONLIFE);
-        ini_set('session.cookie_httponly',$this->data['sessionHostOnly']);
-        ini_set('session.cookie_lifetime',$this->data['sessionLife']);
         date_default_timezone_set($this->data['timezone']);
         if(DEBUG == true) {
             ini_set('display_errors', 1);

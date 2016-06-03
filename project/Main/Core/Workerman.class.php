@@ -31,7 +31,7 @@ class Workerman{
         $this->set();
     }
     final protected function set(){
-        if(!is_dir(self::logDir)) obj('\Main\Core\Tool')->__mkdir(self::logDir);
+        if(!is_dir(ROOT.self::logDir)) obj('\Main\Core\Tool')->__mkdir(ROOT.self::logDir);
         Worker::$logFile = ROOT.self::logDir.'run.log';
         Worker::$stdoutFile = ROOT.self::logDir.'varDump.log';
         Worker::$pidFile = ROOT.self::logDir.'workerman.pid';

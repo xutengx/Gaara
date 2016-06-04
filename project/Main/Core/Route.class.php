@@ -23,7 +23,7 @@ class Route{
         //获取路由路径
         self::getUrl();
         //获取不包含路由路径的url中的get参数
-        if(php_sapi_name() !== 'cli') self::getPars();
+        if(!CLI) self::getPars();
         //由路由路径,解析路径和参数
         self::getController();
         //整合参数并执行
@@ -59,7 +59,7 @@ class Route{
             define('APP',self::$urlArr['application']);
             define('VIEW','App/'.self::$urlArr['application'].'/View/');
             self::$urlArr['pramers'] = array_merge(self::$urlArr['pramers'], self::$urlPars);
-            if(php_sapi_name() !== 'cli') {
+            if(!CLI) {
                 self::filterPars();
             }
             //设置session

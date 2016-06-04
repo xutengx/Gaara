@@ -7,32 +7,30 @@ class webScoketContr{
      * 设置Session
      */
     public function __construct(){
-        php_sapi_name() === 'cli'||exit('error!');
+        CLI||exit('error!');
     }
     public function indexDo(){
         $work = obj('\Main\Core\Workerman',false,'websocket://0.0.0.0:2345');
         $work->count = 1;
         $work->onConnect = function($connec){
+            // http验证阶段
             $connec->onWebSocketConnect = function($conn , $http_header){
-//                if($user = obj('userObj')->init(obj('userModel'))){
-//
-//                    $conn->id = $user->id;
-//                    var_dump($http_header);
-//                }
-//                else $conn->close();
-                var_dump(get_session());
-//                var_dump($_SESSION);
-//                session_write_close();
+                $session = obj('session')->getSession();
+                $conn->id = $session['id'];
+//                obj('session')->commit($session);
             };
         };
         $work->onMessage = function($conn, $data){
             $data = json_decode($data, true);
+            $data['state'] = 1;
+            $data['form_id'] = $conn->id;
+            $data['time'] = date('Y-m-d H:i:s', time());
+            $messageid = obj('messageModel')->insertData($data);
             foreach($conn->worker->connections as $con){
-//                var_dump($conn->id);
-//                var_dump($con->id);
-//                var_dump($con->$data['to_id']);
-                if($con->id == $data['to_id'] )
+                if($con->id == $data['to_id'] ){
+                    obj('messageModel')->checkState($messageid, 2);
                     $con->send($data['content']);
+                }
             }
         };
         $work->runAll();

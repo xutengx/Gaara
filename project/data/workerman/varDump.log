@@ -1,8 +1,0 @@
-
-Warning: session_start(): Cannot send session cache limiter - headers already sent (output started at /mnt/hgfs/www/git/php_/project/Main/Core/Workerman/Worker.php:1298) in /mnt/hgfs/www/git/php_/project/App/index/Obj/userObj.class.php on line 6
-string(2) "10"
-
-Warning: session_start(): Cannot send session cookie - headers already sent by (output started at /mnt/hgfs/www/git/php_/project/Main/Core/Workerman/Worker.php:1298) in /mnt/hgfs/www/git/php_/project/App/index/Obj/userObj.class.php on line 6
-
-Warning: session_start(): Cannot send session cache limiter - headers already sent (output started at /mnt/hgfs/www/git/php_/project/Main/Core/Workerman/Worker.php:1298) in /mnt/hgfs/www/git/php_/project/App/index/Obj/userObj.class.php on line 6
-string(2) "10"

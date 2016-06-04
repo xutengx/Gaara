@@ -14,7 +14,7 @@ class userObj extends \Main\Core\Object{
     }
     protected function bindFalse(){
 //        exit(json_encode(['code'=>'0','message'=>'用户验证失败!']));
-        if(php_sapi_name() !== 'cli') return false;
+        if(CLI) return false;
         headerTo('index/login/indexDo/','请先登入!');
     }
 }

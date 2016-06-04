@@ -298,3 +298,7 @@ UNIQUE KEY `session_id` (`session_id`)
 )ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 No database selected
 
+2016-06-04 14:37:16
+INSERT INTO hk_message (to_id,content,type,state,form_id,time) VALUES ('b123123','test,b123123没上线','0','1','10','2016-06-04 14:37:16')
+Table 'hk.hk_message' doesn't exist
+

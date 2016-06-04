@@ -23,7 +23,7 @@
     if(typeof(WebSocket)=='undefined'){
         alert('你的浏览器不支持 WebSocket ，推荐使用Google Chrome 或者 Mozilla Firefox');
     }else {
-            ws = new WebSocket("ws://172.19.5.55:2345");
+            ws = new WebSocket("ws://192.168.0.55:2345");
             ws.onopen = function() {
                 alert("连接成功!");
             };
@@ -38,6 +38,7 @@
             var say = {};
             say.to_id = $('input[name=to_id]').val();
             say.content = $('input[name=content]').val();
+            say.type = 0;
             ws.send(JSON.stringify(say));
         });
     }

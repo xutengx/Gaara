@@ -10,6 +10,7 @@ class loginContr extends Controller\HttpController{
         $re = obj('userModel')->userLogin($data['account'],$data['passwd']);
         if(isset($re['id'])){
             session_start();
+            $_SESSION['id'] = $re['id'];
             $_SESSION['timeLogin'] = date('Y-m-d H:i:s', time());
             obj('userModel')->loginState($re['id'], $_SESSION['timeLogin'], $_SERVER['REMOTE_ADDR']);
             $_SESSION['account'] = $data['account'];

@@ -39,16 +39,17 @@ CREATE TABLE `hk_userqq` (
   UNIQUE KEY (`openid`)
 ) ENGINE=innodb  AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
-CREATE TABLE `hk_massage` (
+CREATE TABLE `hk_message` (
   `id` bigint(1) NOT NULL AUTO_INCREMENT,
   `form_id` bigint(1) NOT NULL DEFAULT 0 COMMENT '消息发送者id,ref:hk_user_account->id',
   `to_id` bigint(1) NOT NULL DEFAULT 0 COMMENT '消息接受者id,ref:hk_user_account->id',
   `content` varchar(2000)  NOT NULL DEFAULT '' COMMENT '消息正文,引用地址',
-  `state` tinyint(1) NOT NULL DEFAULT 0 COMMENT '消息状态,0:草稿,1:发送中,2:送达,3:已读,4:发送失败,5:撤销',
+  `state` tinyint(1) NOT NULL DEFAULT 0 COMMENT '消息状态,0:草稿,1:已发送,2:送达,3:已读,4:发送失败,5:撤销',
   `type` tinyint(1) NOT NULL DEFAULT 0 COMMENT '消息类型,0:普通文本,1:图片,2:视频,3:语音',
   `time` datetime COMMENT '消息时间',
   PRIMARY KEY (`id`),
   INDEX form_to_id (form_id,to_id)
 ) ENGINE=innodb  AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
 
 EEE;

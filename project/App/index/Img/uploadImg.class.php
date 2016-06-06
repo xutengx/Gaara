@@ -1,21 +1,19 @@
 <?php
-namespace App\index\Contr;
-use \Main\Core\Controller;
+namespace App\index\Img;
 defined('IN_SYS')||exit('ACC Denied');
-class chatRoomContr extends Controller\HttpController{
-    public function construct(){
-
-    }
+class uploadImg  {
     // 存储webScoket上传的2进制图片
+    // return get路径
     public function saveImg(){
+        $data = $this->post();
         // 查重
         foreach($_FILES as $k=>$v){
             $ext = strrchr($v['name'], '.');
-            $fname = obj('tool')->makeFilename('data/upload/img/'.date('Ymd', time()), $ext);
-
+            $filename = obj('tool')->makeFilename('data/upload/img/','jpg');
+            $fname = obj('tool')->makeFilename('data/upload/'.date('Ymd', time()), $ext);
             move_uploaded_file($v['tmp_name'], $fname);
             // 压缩
-            $this->returnData($fname);
         }
+        return $filename;
     }
 }

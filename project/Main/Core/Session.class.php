@@ -181,8 +181,8 @@ EEE;
                 $sessData[$i]    = str_replace('"','',strstr($sessGet[1],'"'));
             } else {
                 $sessData[$i]    = substr($sessGet[1],2);
-            } // end if
-        } // end for
+            }
+        }
         $result        = array_combine($sessName,$sessData);
         return $result;
     }

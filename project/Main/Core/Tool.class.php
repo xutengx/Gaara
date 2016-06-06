@@ -226,8 +226,9 @@ class Tool{
      * @return string
      */
     final public function makeFilename($dir='', $ext='', $id=123){
-        $dir = $dir?trim($dir,'/').'/':'./';
-        if(!is_dir($dir)) obj('\Main\Core\Tool')->__mkdir($dir);
+//        $this->absoluteDir($dir);
+        $dir = $dir?rtrim($dir,'/').'/':'./';
+        if(!is_dir($dir)) $this->__mkdir($dir);
         $ext = trim($ext,'.');
         $dir .= uniqid($id);
         $dir .='.'.$ext;

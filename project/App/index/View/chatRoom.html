@@ -11,19 +11,41 @@
 <form action="">
 
     <div >
-        说一句 : <input type="text" name="content">
-        to : <input type="text" name="to_id">
-        <input id="say" type="button" value="说一句">
+        to : <input type="text" name="to_id"><br>
+
+        说一句 : <input type="text" name="content"><br>
+        <input id="say" type="button" value="说一句"><br>
+
+        传图 : <input type="file" name="img"><br>
+        <input id="img" type="button" value="发一图"><br>
     </div>
 </form>
 
 </body>
 <script>
+    function convertImgToBase64(url, callback, outputFormat) {
+        var canvas = document.createElement('CANVAS'),
+                ctx = canvas.getContext('2d'),
+                img = new Image;
+        img.crossOrigin = 'Anonymous';
+        img.onload = function() {
+            canvas.height = img.height;
+            canvas.width = img.width;
+            ctx.drawImage(img, 0, 0);
+            var dataURL = canvas.toDataURL(outputFormat || 'image/png');
+            callback.call(this, dataURL);
+            canvas = null;
+        };
+        img.src = url;
+    }
+//convertImgToBase64('http://bit.ly/18g0VNp', function(base64Img){
+//    // Base64DataURL
+//});
     var ws = {};
     if(typeof(WebSocket)=='undefined'){
         alert('你的浏览器不支持 WebSocket ，推荐使用Google Chrome 或者 Mozilla Firefox');
     }else {
-            ws = new WebSocket("ws://192.168.0.55:2345");
+            ws = new WebSocket("ws://172.19.5.55:2345");
             ws.onopen = function() {
                 alert("连接成功!");
             };
@@ -40,6 +62,38 @@
             say.content = $('input[name=content]').val();
             say.type = 0;
             ws.send(JSON.stringify(say));
+        });
+        $('#img').on('click',function(){
+            var fd = new FormData();
+            fd.append('to_id',$('input[name=to_id]').val());
+            fd.append('type',1);
+            fd.append('file_img',$('input[name=img]')[0].files[0]);
+
+            var say = {};
+            say.to_id = $('input[name=to_id]').val();
+            say.type = 1;
+
+            $.ajax({
+                url:__url__('saveImg'),
+                processData: false,
+                contentType: false,
+                data:fd,
+                type:'post',
+                dataType:'json',
+                success:function(re){
+                    say.content = re.data;
+                    ws.send(JSON.stringify(say));
+                }
+            });
+
+//            var reader = new FileReader();
+//            reader.readAsBinaryString($('input[name=img]')[0].files[0]);
+//            reader.onload=function(f){
+//                say.content = this.result;
+////                ws.send(JSON.stringify(say));;
+//                ws.send(this.result);
+//            };
+
         });
     }
 </script>

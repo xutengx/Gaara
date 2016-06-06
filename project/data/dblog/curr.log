@@ -302,3 +302,7 @@ No database selected
 INSERT INTO hk_message (to_id,content,type,state,form_id,time) VALUES ('b123123','test,b123123没上线','0','1','10','2016-06-04 14:37:16')
 Table 'hk.hk_message' doesn't exist
 
+2016-06-06 14:23:01
+INSERT INTO hk_message (to_id,type,content,state,form_id,time) VALUES ('','1','data/upload/img/123575516c58f848.jpg','1','10','2016-06-06 14:23:01')
+Incorrect integer value: '' for column 'to_id' at row 1
+

@@ -22,6 +22,7 @@ class webScoketContr{
         };
         $work->onMessage = function($conn, $data){
             $data = json_decode($data, true);
+
             $data['state'] = 1;
             $data['form_id'] = $conn->id;
             $data['time'] = date('Y-m-d H:i:s', time());

@@ -9,7 +9,7 @@ class Session {
     /**
      * Session有效时间
      */
-    private $lifeTime      = 3600*24*7;
+    private $lifeTime;
 
     /**
      * session保存的数据库名

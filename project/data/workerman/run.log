@@ -85,3 +85,6 @@ Stack trace:
 2016-06-06 15:00:21 pid:2088 Workerman[/mnt/hgfs/www/git/php_/project/webScoket.php] start in DEBUG mode
 2016-06-06 15:01:24 pid:2088 Workerman[webScoket.php] Stopping ...
 2016-06-06 15:01:25 pid:2088 Workerman[webScoket.php] has been stopped
+2016-06-08 16:22:44 pid:2146 Workerman[/mnt/hgfs/www/git/php_/project/webScoket.php] start in DEBUG mode
+2016-06-08 16:22:46 pid:2146 Workerman[webScoket.php] Stopping ...
+2016-06-08 16:22:46 pid:2146 Workerman[webScoket.php] has been stopped

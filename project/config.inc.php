@@ -26,6 +26,11 @@ return [
     'pwd_test'=>'root',
     'db_test'=>'hk',
 
+    'host_hk'=>'127.0.0.1',
+    'user_hk'=>'root',
+    'pwd_hk'=>'Passwd@123456',
+    'db_hk'=>'hk',
+
     'debug'=>true,
     'minjs'=>true,
     'tablepre'=>'hk_',
@@ -39,6 +44,10 @@ return [
             return '_poster';
         }else if(isset($_SERVER['HTTP_HOST']) && ( $_SERVER['HTTP_HOST'] == 'wx.issmart.com.cn')){
             return '_wx';
+        }else if( (isset($_SERVER['HTTP_HOST']) && ( $_SERVER['HTTP_HOST'] == '123.206.8.25') )
+            || (isset($_SERVER['HOSTNAME']) && ( $_SERVER['HOSTNAME'] == 'VM_61_217_centos') ) ){
+            return '_hk';
         }return '_test';
-    }
+    },
+    'mima' => 'Passwd@123456'
 ];

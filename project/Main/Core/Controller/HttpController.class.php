@@ -29,16 +29,10 @@ abstract class HttpController extends \Main\Core\Controller{
     use Module\CookieModule;
 
     /**
-     * 设置Session
-     */
-//    use Module\SessionModule;
-
-    /**
      * trait 构造函数队列
      * @var array
      */
     protected $__construct = [
         'ViewModule','TransactionModule','WechatModule','CookieModule'
-//        , 'SessionModule'
     ];
 }

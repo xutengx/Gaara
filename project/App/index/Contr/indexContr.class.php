@@ -38,7 +38,7 @@ class indexContr extends Controller\HttpController{
         }
         return $arr;
     }
-    public function __destruct(){
-        statistic();
-    }
+//    public function __destruct(){
+//        statistic();
+//    }
 }

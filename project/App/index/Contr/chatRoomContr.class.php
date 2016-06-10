@@ -3,7 +3,14 @@ namespace App\index\Contr;
 use \Main\Core\Controller;
 defined('IN_SYS')||exit('ACC Denied');
 class chatRoomContr extends Controller\HttpController{
+    private $user;
     public function construct(){
+        $this->user = obj('userObj')->init(obj('userModel'));
+    }
+    public function indexDo(){
+        $this->assign('account',$this->user->account);
+        $this->assign('host',$_SERVER['HTTP_HOST']);
+        $this->display();
 
     }
     // 存储webScoket上传的2进制图片

@@ -68,7 +68,6 @@ EEE;
             $this->db->query($createDb);
             return true;
         }
-
     }
     /**
      * 打开Session
@@ -172,7 +171,6 @@ EEE;
      * @return array
      */
     private function session_decode($encodedData) {
-//        var_dump($encodedData);
         $explodeIt    = explode(';',$encodedData);
         for($i=0;$i<count($explodeIt)-1;$i++) {
             $sessGet    = explode("|",$explodeIt[$i]);
@@ -193,9 +191,8 @@ EEE;
      * @param bool|true $safe
      * @return string
      */
-    private function session_encode( $array, $safe = true ) {
-        if( $safe )
-            $array = unserialize(serialize( $array )) ;
+    private function session_encode( $array) {
+        $array = unserialize(serialize( $array )) ;
         $raw = '' ;
         $line = 0 ;
         $keys = array_keys( $array ) ;

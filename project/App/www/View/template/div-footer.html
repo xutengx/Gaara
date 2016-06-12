@@ -1,0 +1,91 @@
+<div class="footer">
+    <div class="container">
+        <div class="footer-main">
+            <div class="col-md-3 footer-grid">
+                <h3>About This Theme</h3>
+                <p>But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was
+                    born and I will give you a complete account of the system, and expound the actual teachings of the
+                    great explorer of the truth, the master-builder of human happiness.Nemo enim ipsam voluptatem quia
+                    voluptas sit aspernatur aut odit aut fugit.account of the system.</p>
+            </div>
+            <div class="col-md-3 footer-grid">
+                <h3>Recents Posts</h3>
+                <div class="ftr-sub-gd">
+                    <div class="col-md-4 ftr-gd2-img">
+                        <a href="#"><img src="<?php echo VIEW;?>images/s1.jpg" alt=""></a>
+                    </div>
+                    <div class="col-md-8 ftr-gd2-text">
+                        <a href="#"><h4>How to Have The Best Vacation</h4></a>
+                        <a href="#"><p>Mar 3rd,2015</p></a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="ftr-sub-gd">
+                    <div class="col-md-4 ftr-gd2-img">
+                        <a href="#"><img src="<?php echo VIEW;?>images/s2.jpg" alt=""></a>
+                    </div>
+                    <div class="col-md-8 ftr-gd2-text">
+                        <a href="#"><h4>How to Have The Best Vacation</h4></a>
+                        <a href="#"><p>Mar 3rd,2015</p></a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="ftr-sub-gd">
+                    <div class="col-md-4 ftr-gd2-img">
+                        <a href="#"><img src="<?php echo VIEW;?>images/s3.jpg" alt=""></a>
+                    </div>
+                    <div class="col-md-8 ftr-gd2-text">
+                        <a href="#"><h4>How to Have The Best Vacation</h4></a>
+                        <a href="#"><p>Mar 3rd,2015</p></a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="col-md-3 footer-grid">
+                <h3>Categories</h3>
+                <ul>
+                    <li><a href="#">Featured</a></li>
+                    <li><a href="#">General</a></li>
+                    <li><a href="#">Lorem Ipsum</a></li>
+                    <li><a href="#">literature</a></li>
+                    <li><a href="#">Videos</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 footer-grid">
+                <h3>Recent Projects</h3>
+                <div class="ftr-gd4-img">
+                    <div class="col-md-3 ftr-gd4-1"><a href="#"><img src="<?php echo VIEW;?>images/f1.jpg" alt=""></a></div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div class="copyright">
+        <div class="container">
+            <div class="copy-main">
+                <div class="copy-left">
+                    <p>Copyright &copy; 2016.Company name All rights reserved.More Templates
+                        <a href="#" target="_blank" title="代码之家">代码之家</a>
+                        - Collect from
+                        <a href="#" title="代码之家" target="_blank">代码之家</a></p>
+                </div>
+                <div class="copy-right">
+                    <ul id="div-footer-menu">
+                        <li><a name="index">主页</a></li>/
+                        <li><a name="about">项目展示</a></li>/
+                        <li><a name="blog">业务能力</a></li>/
+                        <li><a name="contact">关于我们</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+$(document).ready(function(){
+    $('#div-footer-menu>li>a').each(function(e){
+        $(this).prop('href','?'+path+'=www/'+$(this).attr('name')+'/indexDo');
+    });
+});
+</script>

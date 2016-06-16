@@ -127,6 +127,15 @@ class Loader{
     public static function showMap(){
         var_export(self::$obj_map);
     }
+
+    /**
+     *  清除所有对象缓存
+     *  用于隔离子进程之间的资源句柄
+     */
+    public static function unsetAllObj(){
+        self::$obj_ins = [];
+        return true;
+    }
     /**
      * 注册自定义的类引入
      * @param string $class 注册的类名

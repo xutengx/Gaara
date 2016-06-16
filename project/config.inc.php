@@ -14,28 +14,118 @@ return [
 
     'appid_wx'=>'wxf104d7a120384fec',
     'appsecret_wx'=>'10b05e039778ec7fdb6344b969ed4c1e',
-    'host'=>'10.4.17.219',
-    'user'=>'root',
-    'pwd'=>'Huawei$123#_',
-    'db'=>'v5',
 
     'appid_test'=>'wx8f0ca1bc115c1fae',
     'appsecret_test'=>'d4624c36b6795d1d99dcf0547af5443d',
-    'host_test'=>'127.0.0.1',
-    'user_test'=>'root',
-    'pwd_test'=>'root',
-    'db_test'=>'hk',
 
-    'host_hk'=>'127.0.0.1',
-    'user_hk'=>'root',
-    'pwd_hk'=>'Passwd@123456',
-    'db_hk'=>'hk',
+    'db'=>[
+        'write'=>[
+            [
+                'weight'=>10,
+                'type'=>'mysql',
+                'host'=>'10.4.17.219',
+                'port'=>3306,
+                'user'=>'root',
+                'pwd'=>'Huawei$123#_',
+                'char'=>'UTF8',
+                'tablepre'=>'hk_',
+                'keytable'=>'user',
+                'db'=>'hk'
+            ]
+        ],
+        'read'=>[
+            [
+                'weight'=>10,
+                'type'=>'mysql',
+                'host'=>'10.4.17.219',
+                'port'=>3306,
+                'user'=>'root',
+                'pwd'=>'Huawei$123#_',
+                'char'=>'UTF8',
+                'tablepre'=>'hk_',
+                'keytable'=>'user',
+                'db'=>'hk'
+            ]
+        ]
+    ],
+    'db_hk' => [
+        'write'=>[
+            [
+                'weight'=>10,
+                'type'=>'mysql',
+                'host'=>'127.0.0.1',
+                'port'=>3306,
+                'user'=>'root',
+                'pwd'=>'Passwd@123456',
+                'char'=>'UTF8',
+                'tablepre'=>'hk_',
+                'keytable'=>'user',
+                'db'=>'hk'
+            ]
+        ],
+        'read' => [
+            [
+                'weight'=>10,
+                'type'=>'mysql',
+                'host' => '127.0.0.1',
+                'port'=>3306,
+                'user' => 'root',
+                'pwd' => 'Passwd@123456',
+                'char'=>'UTF8',
+                'tablepre'=>'hk_',
+                'keytable'=>'user',
+                'db' => 'hk'
+            ]
+        ]
+    ],
+    'db_test'=>[
+        'write'=>[
+            [
+                'weight'=>10,
+                'type'=>'mysql',
+                'host'=>'127.0.0.1',
+                'port'=>3306,
+                'user'=>'root',
+                'pwd'=>'root',
+                'char'=>'UTF8',
+                'tablepre'=>'hk_',
+                'keytable'=>'user',
+                'db'=>'hk'
+            ]
+        ],
+        'read'=>[
+            [
+                'weight'=>1,
+                'type'=>'mysql',
+                'host'=>'127.0.0.1',
+                'port'=>3306,
+                'user'=>'root',
+                'pwd'=>'root',
+                'char'=>'UTF8',
+                'tablepre'=>'hk_',
+                'keytable'=>'user',
+                'db'=>'hk'
+            ],
+            [
+                'weight'=>2,
+                'type'=>'mysql',
+                'host'=>'127.0.0.1',
+                'port'=>3306,
+                'user'=>'root',
+                'pwd'=>'root',
+                'char'=>'UTF8',
+                'tablepre'=>'hk_',
+                'keytable'=>'user',
+                'db'=>'hk'
+            ]
+        ]
+    ],
 
     'debug'=>true,
     'minjs'=>true,
-    'tablepre'=>'hk_',
-    'keytable'=>'hk_user',
-    'char'=>'UTF8',
+//    'tablepre'=>'hk_',
+//    'keytable'=>'hk_user',
+//    'char'=>'UTF8',
     /**
      * @return string 多配置关键字
      */
@@ -49,5 +139,5 @@ return [
             return '_hk';
         }return '_test';
     },
-    'mima' => 'Passwd@123456'
+//    'mima' => 'Passwd@123456'
 ];

@@ -16,7 +16,7 @@ abstract class HttpController extends \Main\Core\Controller{
     /**
      * BD事务
      */
-    use Module\TransactionModule;
+//    use Module\TransactionModule;
 
     /**
      * 微信授权
@@ -33,6 +33,9 @@ abstract class HttpController extends \Main\Core\Controller{
      * @var array
      */
     protected $__construct = [
-        'ViewModule','TransactionModule','WechatModule','CookieModule'
+        'ViewModule',
+//        'TransactionModule',
+        'WechatModule',
+        'CookieModule'
     ];
 }

@@ -31,6 +31,7 @@ class webScoketContr{
                 foreach($conn->worker->connections as $con){
                     $con->send(json_encode(['login', $conn->worker->users]));
                 }
+                delobj();
             };
         };
         $work->onMessage = function($conn, $data){

@@ -22,6 +22,14 @@ function obj($obj, $app=true){
 }
 
 /**
+ * 清除所有对象缓存
+ * @return bool
+ */
+function delobj(){
+    return \Main\Core\loader::unsetAllObj();
+}
+
+/**
  * 依赖 template.class.php 指向 template::show()
  * @param string $template 引入模板名
  */

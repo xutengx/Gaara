@@ -63,7 +63,7 @@ class Route{
                 self::filterPars();
             }
             //设置session
-            obj('session');
+//            obj('session');
 //            $func = method_exists($obj,self::$urlArr['method'] ) ? self::$urlArr['method'] : 'indexDo';
             $func = self::$urlArr['method'];
             $obj  = obj($obj, true, $func);

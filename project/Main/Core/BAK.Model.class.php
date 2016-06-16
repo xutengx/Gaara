@@ -2,11 +2,10 @@
 namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 class Model{
-    protected $db ;
-    // 引入conf类
-//    protected $conf         = null;
+    // 引入sql类
+    public $db           = null;
     // 表名,不包含表前缀
-    protected $tablename   = '';
+    protected $tablename    = '';
     // 主键的字段
     protected $key          = 'id';
     // 表名
@@ -18,20 +17,7 @@ class Model{
      * @param object $DbConnection db连接对象 如 obj('Mysql',false);
      */
     final public function __construct($DbConnection = null){
-//        self::$dbRead = obj('\Main\Core\DbConnection',true)
-        $this->db = obj('\Main\Core\DbConnection',true, obj('conf')->db);
-
-        $re = $this->db->execute("INSERT INTO `hk`.`hk_user` (`id`, `account`, `passwd`, `name`, `sex`, `img`, `sign`, `tel`, `email`, `idcard`, `address`, `status`, `timeCreate`, `timeLogin`, `ipLogin`, `level`) VALUES ('14', 'd23652369', '123123', '', '1', '', '', '0', '', '', '', '1', '2016-06-06 11:28:08', '2016-06-06 11:28:09', '127.0.0.1', ?)",[0]);
-        var_dump($re );
-        exit;
-
-//        if($this->conf->db['read'] === $this->conf->db['write']){
-//            echo 1111;
-//
-//        }
-//        var_dump($this->conf->db);
-//        exit;
-//        $this->db   = $DbConnection ? $DbConnection : obj('Mysql');
+        $this->db   = $DbConnection ? $DbConnection : obj('Mysql');
         $this->get_thisTable();
         $this->construct();
     }

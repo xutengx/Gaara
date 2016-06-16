@@ -123,7 +123,7 @@ return [
 
     'debug'=>true,
     'minjs'=>true,
-//    'tablepre'=>'hk_',
+    'tablepre'=>'hk_',
 //    'keytable'=>'hk_user',
 //    'char'=>'UTF8',
     /**

@@ -11,7 +11,10 @@ class indexContr extends Controller\HttpController{
 //        $obj = new \Main\Core\DbConnection('127.0.0.1', 3306, 'root', 'root', 'hk', $charset = 'utf8');
 //        $re = $obj->where(['id'=>11])->from('hk_user')->select()->query();
 //        var_dump($re);exit;
-        obj('userModel');
+        $user = obj('userModel')->where('id=1')->where(['account'=>'a23652369'])->where(['id'=>['>',11]])->where(['id'=>['<',21]])
+            ->where(['id'=>'15'])->where('sex=man')->where(['account'=>['>','1234']])
+        ;
+        var_dump($user);
 
 
 

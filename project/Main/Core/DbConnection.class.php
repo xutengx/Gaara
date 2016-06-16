@@ -19,12 +19,15 @@ class DbConnection{
     private $type = 'SELECT';
     // 是否事务过程中 不进行数据库更换
     private $transaction = false;
+    // ---------------------------- 单进程 ----------------------------- //
     // 单进程不进行数据库更换
     private $single = true;
     // 当前数据库 读 连接
     static $dbReadSingle;
     // 当前数据库 写 连接
     static $dbWriteSingle;
+    // ------------------------------------------------------------------//
+
     /**
      * 读取配置信息
      * @param array $DBconf
@@ -106,7 +109,7 @@ class DbConnection{
      * 单进程单链接实现
      * @return object PDO
      */
-    private function PDO(){
+    private function &PDO(){
         if($this->single){
             if($this->type === 'SELECT'){
                 if(is_object(self::$dbReadSingle) || (self::$dbReadSingle = &$this->connect()))
@@ -190,38 +193,40 @@ class DbConnection{
      * @param string $sql
      * @param array  $pars
      *
-     * @return 1|0|true
+     * @return 1|0
      */
-    public function execute($sql='', array $pars=[]) {
+    public function update($sql='', array $pars=[]) {
         $this->type = 'UPDATE';
         $PDO = $this->PDO();
         if(empty($pars))
             $res = $PDO->exec($sql);
-        else
-            $res = $PDO->prepare($sql)->execute($pars);
+        else{
+            $res = $PDO->prepare($sql);
+            $res->execute($pars);
+            $res = $res->rowCount();
+        }
         return $res;
     }
     public function insert($sql='', array $pars=[]){
         $this->type = 'INSERT';
         $PDO = $this->PDO();
-        if(empty($pars) && $PDO->exec($sql))
-            $res = $PDO->lastinsertid();
+        if(empty($pars))
+            $PDO->exec($sql);
         else
-            $res = $PDO->prepare($sql)->execute($pars);
+            $PDO->prepare($sql)->execute($pars);
+        $res = $PDO->lastinsertid();
         return $res;
     }
     public function count($sql=''){
         $this->type = 'SELECT';
         return $this->PDO()->query($sql)->fetchColumn();
     }
-//    public function prepare($sql='', array $pars, $type='SELECT'){
-//        $this->type = $type;
-//        $res = $this->PDO()->prepare($sql)->execute($pars);
-//        switch ($type){
-//            case 'SELECT':
-//        }
-//
-//    }
+
+    public function prepare($sql='', $type='UPTATE'){
+        $this->type = $type;
+        return $this->PDO()->prepare($sql);
+    }
+
     /**
      * 关闭连接
      */

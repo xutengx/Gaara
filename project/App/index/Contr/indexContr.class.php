@@ -11,10 +11,28 @@ class indexContr extends Controller\HttpController{
 //        $obj = new \Main\Core\DbConnection('127.0.0.1', 3306, 'root', 'root', 'hk', $charset = 'utf8');
 //        $re = $obj->where(['id'=>11])->from('hk_user')->select()->query();
 //        var_dump($re);exit;
-        $user = obj('userModel')->where('id=1')->where(['account'=>'a23652369'])->where(['id'=>['>',11]])->where(['id'=>['<',21]])
-            ->where(['id'=>'15'])->where('sex=man')->where(['account'=>['>','1234']])
-        ;
-        var_dump($user);
+//        $user = obj('userModel')
+//            ->where(['account'=>'a23652369'])->where(['id'=>['>',11]])->where(['id'=>['<',21]])
+//            ->where(['id'=>'15'])->where(['account'=>['>','1234']])->where(['sex'=>''])
+//            ->select(['account','sex'])->select('name')->select('name as a')->select(['account','sex as s'])
+//            ->getRow();
+//        $user = obj('userModel')->where('id=:id')->select('id')->prepare() ;
+//        $user->execute();
+//        var_dump($user->execute([':id'=>11]));
+        var_dump(obj('userModel')
+            ->where(['id'=>['not between',11,':asd']])
+//            ->where('id=weqwe')
+            ->where(['id'=>['in',[1,11,12,14]]])
+            ->where(['id'=>['not like',':ee']])
+            ->getAll([':asd'=>13,':ee'=>'%3']));
+
+//        $user = obj('userModel')->where('id=:id')->select('id,account')->prepare() ;
+//
+//        var_dump($user->execute([':id'=>13]));
+//        var_dump($user->execute());
+//        var_dump($user->execute());
+
+//        var_dump(obj('userModel')->filterColumn('count(qweqw) aS 1fff'));
 
 
 

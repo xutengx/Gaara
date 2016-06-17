@@ -172,11 +172,20 @@ class DbConnection{
      */
     private function query_prepare_execute($sql='',array $pars=[]){
         $PDO = $this->PDO();
-        if(empty($pars))
-            $res = $PDO->query($sql);
-        else{
-            $res = $PDO->prepare($sql);
-            $res->execute($pars);
+        try{
+            if(empty($pars))
+                $res = $PDO->query($sql);
+            else{
+                $res = $PDO->prepare($sql);
+                $res->execute($pars);
+            }
+        }catch(\PDOException $e){
+            echo "有错误！有错误！";
+//            print_r($res->errorInfo());
+            $error = 'wwwww';
+//            obj('\Main\Core\Log')->write($sql."\r\n".$error);
+            if(DEBUG) echo ('query error 已经记录 :</br>'.$sql."</br>".$error."</br>");
+            exit;
         }
         return $res;
     }
@@ -186,7 +195,8 @@ class DbConnection{
     }
     public function getRow($sql='', array $pars=[]){
         $this->type = 'SELECT';
-        return $this->query_prepare_execute($sql, $pars)->fetch(\PDO::FETCH_ASSOC);
+        $re = $this->query_prepare_execute($sql, $pars)->fetch(\PDO::FETCH_ASSOC);
+        return $re ? $re : [];
     }
 
     /**

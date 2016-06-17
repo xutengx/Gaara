@@ -5,6 +5,8 @@ class Model{
     protected $db ;
     // 表名,不包含表前缀
     protected $tablename   = '';
+    // 表名,不包含表前缀
+    protected $tablepre   = '';
     // 主键的字段
     protected $key          = 'id';
     // 表名
@@ -13,6 +15,14 @@ class Model{
     protected $attribute = [];
     // 链式操作集合
     protected $options = [];
+    // 链式操作 sql
+    protected $options_sql = [];
+    // 链式操作集合
+    protected $options_analysis = [];
+    // 链式操作 类型 select update delete insert
+    protected $options_type = null;
+    // PDOStatement
+    protected $PDOStatement = null;
     /**
      * @param object $DbConnection db连接对象 如 obj('Mysql',false);
      */
@@ -29,6 +39,7 @@ class Model{
     protected function construct(){}
     final protected function get_thisTable(){
         $conf = obj('conf');
+        $this->tablepre = $conf->tablepre;
         $classname = get_class($this);
         $classname = substr($classname,strrpos($classname,'\\')+1);
         if($this->tablename == '') $this->tablename=strtr($classname, array('Model'=>''));
@@ -108,20 +119,248 @@ class Model{
         return false;
     }
 //---------------------------------------------------------- 链式操作 -----------------------------------------------------//
-
+    /**
+     * sql条件
+     * @param $where
+     *
+     * @return $this
+     */
     public function where($where){
         if(is_string($where) && $where !== ''){
             $this->options['where']['__string'][] = $where ;
         }elseif(is_array($where) && !empty($where)){
             foreach($where as $k=>$v){
-//                if (is_array($v) && !empty($v)) {
-//                    $this->options['where'][$k] = array_merge(isset($this->options['where'][$k]) ? $this->options['where'][$k] :[], $v);
-//                }elseif(is_string($v)) {
-                    $this->options['where'][$k][] = $v;
-//                }
+                $this->options['where'][$k][] = $v;
             }
         }
         return $this;
+    }
+
+    /**
+     * 查询字段筛选
+     * @param  String|一维数组 $what
+     *
+     * @return $this
+     */
+    public function select($what){
+        if(is_string($what) && $what !== ''){
+            $this->options['select']['__string'][] = $what ;
+        }elseif(is_array($what) && !empty($what)){
+            $this->options['select'] = array_merge(isset($this->options['select']) ? $this->options['select'] : [] , $what);
+        }
+        return $this;
+    }
+
+    /**
+     * 设置数据表
+     * @param string     $table 表名
+     * @param bool|false $withTablepre 是否已包含表前缀
+     *
+     * @return $this
+     */
+    public function from($table='', $withTablepre=false){
+        if(is_string($table) && $table !== ''){
+            $table = ltrim($table,'');
+            $this->options['from'] = ( $withTablepre ? '': $this->tablepre ) .$table ;
+        }
+        return $this;
+    }
+
+    /**
+     * 准备sql
+     * @param bool|true $onlyOnce 是否执行一次后销毁(一般情况下如此)
+     *
+     * @return $this
+     */
+
+    public function prepare($onlyOnce = false){
+        // 填充
+        if(!isset($this->options['from']))
+            $this->from($this->table, true);
+
+        // 解析$this->options 生成sql子句
+        foreach($this->options as $k => $v){
+            $funcName = 'analysis_'.$k;
+            $this->$funcName($v);
+        }
+        switch($this->options_type){
+            case 'SELECT':
+                $sql = 'SELECT '.( isset($this->options_sql['select']) ? $this->options_sql['select'] : '*').' '
+                    . ( isset($this->options_sql['from']) ? $this->options_sql['from'] : $this->table).
+                    ( isset($this->options_sql['where']) ? ' WHERE '. $this->options_sql['where'] : '');
+
+                break;
+        }
+        $this->reset();
+        if($onlyOnce)
+            return $sql;
+        else {
+            $this->PDOStatement = $this->db->prepare($sql, $this->options_type);
+            return $this;
+        }
+    }
+
+    /**
+     * 重置链式操作
+     */
+    protected function reset(){
+        // 链式操作集合
+        $this->options = [];
+        // 链式操作 sql
+        $this->options_sql = [];
+        // 链式操作集合
+        $this->options_analysis = [];
+        // 链式操作 类型 select update delete insert
+        $this->options_type = null;
+    }
+
+    /**
+     * 参数绑定, 并执行
+     * @param array $pars
+     */
+    public function execute($pars = []){
+        $this->PDOStatement->execute($pars);
+        return $this->PDOStatement->fetchall(\PDO::FETCH_ASSOC);
+    }
+
+    public function getRow($pars = []){
+        $this->options_type = 'SELECT';
+        $sql = $this->prepare(true);
+        if($pars === false) return $sql;
+        elseif($pars === true) exit($sql);
+        return $this->db->getRow($sql, $pars);
+    }
+
+
+    public function getAll($pars = []){
+        $this->options_type = 'SELECT';
+        $sql = $this->prepare(true);
+        if($pars === false) return $sql;
+        elseif($pars === true) exit($sql);
+        return $this->db->getAll($sql, $pars);
+    }
+
+    /**
+     * 解析 $this->options['where']
+     */
+    protected function analysis_where(array $arr){
+        $str = '';
+        $temp = '';
+        foreach($arr as $k=>$v){
+            if($k === '__string'){
+                foreach($v as $kk=>$vv)
+                    $str .= $vv.' AND ';
+            }else foreach( $v as $kk => $vv ){
+                if(is_array($vv)){
+                    if(stristr($vv[0],'between')){
+                        $temp .= '`'.$k.'` '.$vv[0].' '.$this->filterPars($vv[1]).' AND '.$this->filterPars($vv[2]).' AND ';
+                    }elseif(stristr($vv[0],'in')){
+                        if(is_array($vv[1])){
+                            $in = '(';
+                            foreach ($vv[1] as $kkk => $vvv){
+                                $in .= $this->filterPars($vvv).',';
+                            }
+                            $in = rtrim($in,','). ')';
+                            $temp .= '`'.$k.'` '.$vv[0].' '.$in.' AND ';
+                        }else{
+                            if(strstr($vv[1],',')){
+                                $arr = explode(',', $vv[1]);
+                                $in = '(';
+                                foreach($arr as $kkk =>$vvv){
+                                    $in .= $this->filterPars($vvv).',';
+                                }
+                                $in = rtrim($in,','). ')';
+                                $temp .= '`'.$k.'` '.$vv[0].' '.$in.' AND ';
+                            }else $temp .= '`'.$k.'` '.$vv[0].' ('.$this->filterPars($vv[1]).') AND ';
+                        }
+                    }elseif(stristr($vv[0],'like')){
+                        $temp .= '`'.$k.'` '.$vv[0].' '.$this->filterPars($vv[1]).' AND ';
+                    }
+                    else $temp .= '`'.$k.'`'.$vv[0].$this->filterPars($vv[1]).' AND ';
+                }else {
+                    $temp .= '`'.$k.'`='.$this->filterPars($vv).' AND ';
+                }
+            }
+        }
+        $this->options_sql['where'] = trim($str.$temp, 'AND ').' ';
+    }
+
+    /**
+     * 解析 $this->options['select']
+     */
+    protected function analysis_select(array $arr){
+        if(isset($this->options_type) && $this->options_type !== 'SELECT')
+            throw new Exception(' 在非查询语句中,定义了查询字段 ! ');
+        $this->options_type = 'SELECT';
+        $str = '';
+        foreach($arr as $k=>$v){
+            if($k === '__string'){
+                foreach($v as $kk=>$vv){
+                    if(strstr($vv,',')){
+                        $array = explode(',', $vv);
+                        foreach($array as $kkk => $vvv){
+                            $str .= $this->filterColumn(trim($vvv,' ')).',';
+                        }
+                    }else $str .= $this->filterColumn($vv).',';
+                }
+            }else $str .= $this->filterColumn($v).',';
+        }
+        $this->options_sql['select'] = trim($str, ',').' ';
+    }
+
+    /**
+     * 解析 $this->options['from']
+     */
+    protected function analysis_from(){
+        $this->options_sql['from'] = 'FROM `'.$this->options['from'].'`';
+    }
+
+    /**
+     * 将可能与sql关键字混淆的 列名 加上 反引号
+     * 如 hk_user.account as like 处理成 `hk_user`.`account` as `like`
+     * @param string $str 需要处理的string单元
+     * @return string
+     */
+    protected function filterColumn($str=''){
+        $addBackQuote = function($str=''){
+            return '`'.trim($str,'`').'`';
+        };
+        $temp = '';
+        $str = trim($str,' ');
+        if($as = stristr($str,'as')){
+            $array = explode(substr($as,0,2), $str);
+            $array[0] = trim($array[0],' ');
+            $array[1] = trim($array[1],' ');
+            // 将 count(hk_user.account) 过滤为 count(`hk_user`.`account`)
+            if(($a = strstr($array[0],'(')) ){
+                $action = str_replace($a, '', $array[0]);
+                $a = ltrim($a,'(');
+                $a = rtrim($a,')');
+                if(strstr($a,'.')){
+                    $arr = explode('.', $a);
+                    $temp .= $addBackQuote($arr[0]).'.'.$addBackQuote($arr[1]);
+                }else $temp .= $addBackQuote($a);
+                $temp = $action.'('.$temp.')';
+            }elseif(strstr($array[0],'.')){
+                $arr = explode('.', $array[0]);
+                $temp .= $addBackQuote($arr[0]).'.'.$addBackQuote($arr[1]);
+            }else $temp .= $addBackQuote($array[0]);
+            $temp .= ' AS '.$addBackQuote($array[1]);
+        }else $temp .= $addBackQuote($str) ;
+        return $temp;
+    }
+
+    /**
+     * 将 非占位符 加上 ""
+     * @param string $str
+     *
+     * @return string
+     */
+    protected function filterPars($str=''){
+        $str = trim($str, ' ');
+        if(strstr($str,':'))
+            return $str;
+        else return '"'.$str.'"';
     }
 
     final public function __call($fun, $par=null){

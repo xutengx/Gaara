@@ -160,8 +160,23 @@ class Model{
      */
     public function from($table='', $withTablepre=false){
         if(is_string($table) && $table !== ''){
-            $table = ltrim($table,'');
+            $table = trim($table,' ');
             $this->options['from'] = ( $withTablepre ? '': $this->tablepre ) .$table ;
+        }
+        return $this;
+    }
+
+    /**
+     * 连接
+     * @param string $str
+     * @return $this
+     */
+    public function join($str=''){
+        if(is_string($str) && $str !== ''){
+            $str = trim($str,' ');
+            if(!stristr($str,'join'))
+                $str = 'INNER JOIN '.$str;
+            $this->options['join'][] = $str;
         }
         return $this;
     }
@@ -309,10 +324,11 @@ class Model{
     }
 
     /**
+     * @param string $str
      * 解析 $this->options['from']
      */
-    protected function analysis_from(){
-        $this->options_sql['from'] = 'FROM `'.$this->options['from'].'`';
+    protected function analysis_from($str=''){
+        $this->options_sql['from'] = 'FROM '.$this->filterColumn($str).' ';
     }
 
     /**

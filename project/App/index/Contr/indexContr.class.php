@@ -20,11 +20,12 @@ class indexContr extends Controller\HttpController{
 //        $user->execute();
 //        var_dump($user->execute([':id'=>11]));
         var_dump(obj('userModel')
-            ->where(['id'=>['not between',11,':asd']])
-//            ->where('id=weqwe')
-            ->where(['id'=>['in',[1,11,12,14]]])
-            ->where(['id'=>['not like',':ee']])
-            ->getAll([':asd'=>13,':ee'=>'%3']));
+//            ->where(['id'=>['not between',11,':asd']])
+////            ->where('id=weqwe')
+//            ->where(['id'=>['in',[1,11,12,14]]])
+//            ->where(['id'=>['not like',':ee']])
+                ->from('hk_user as a',true)
+            ->getAll());
 
 //        $user = obj('userModel')->where('id=:id')->select('id,account')->prepare() ;
 //

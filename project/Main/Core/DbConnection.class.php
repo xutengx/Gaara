@@ -180,11 +180,8 @@ class DbConnection{
                 $res->execute($pars);
             }
         }catch(\PDOException $e){
-            echo "有错误！有错误！";
-//            print_r($res->errorInfo());
-            $error = 'wwwww';
 //            obj('\Main\Core\Log')->write($sql."\r\n".$error);
-            if(DEBUG) echo ('query error 已经记录 :</br>'.$sql."</br>".$error."</br>");
+            if(DEBUG) echo ('query error 已经记录 :</br>'.$sql."</br>".$res->errorInfo()."</br>");
             exit;
         }
         return $res;

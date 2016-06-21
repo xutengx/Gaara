@@ -22,37 +22,50 @@ trait WechatModule{
                 $redirect_uri = str_replace(IN_SYS, 'getInfoOnWechat.php', $redirect_uri);
                 $method = $is ? 'get_authorize_url2':'get_authorize_url';
                 $url    = $auth->{$method}($redirect_uri,'STATE');
-                header("Location:".$url); //跳转get_authorize_url2()设好的url，跳转后会跳转回上面指定的url中并且带上code变量，用get方法获取即可
+//                https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx8f0ca1bc115c1fae&redirect_uri=http%3A%2F%2F172.19.5.55%2Fgit%2Fphp_%2Fproject%2FgetInfoOnWechat.php&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect"
+                header('Location:'.$url); //跳转get_authorize_url2()设好的url，跳转后会跳转回上面指定的url中并且带上code变量，用get方法获取即可
             }
             else{
                 $res = $auth -> get_access_token($code);// get_access_token()方法能够获取openid，access_token等信息
                 $explicit = obj('F')->cookie('explicit');
                 if($explicit) $this->wechatinfo = $auth->get_user_info($res['access_token'], $res['openid']);
-                else $this->wechatinfo = $res['openid'];
+                else $this->wechatinfo = ['openid'=>$res['openid']];
                 $this->main_getInfo();
             }
         }
     }
     // 微信授权前的 Session 校验,之后将自动授权,以及记录数据 和 Session
     final protected function main_checkSessionUser($is = false){
-        $openid = obj('F')->session('openid');
-        $obj    = obj('userModule');
-        if($obj->main_checkUser($openid)) return $openid;
+        $user = obj('F')->session('user');
+
+        $arr['openid'] = isset($user['openid']) ? $user['openid'] : null;
+        $arr['time'] = isset($user['time']) ? $user['time'] : null;
+        $res = obj('userModel')->where($arr)->getRow();
+
+        if($res) return $arr['openid'];
         else {
-            $this->set_cookie('Location', $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], time()+60); // 记录url,完成授权后跳转
-            $this->set_cookie('explicit', $is, time()+60); // 记录 是否显式授权
+            $this->setcookie('Location', $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], time()+60); // 记录url,完成授权后跳转
+            $this->setcookie('explicit', $is, time()+60); // 记录 是否显式授权
             $this->getInfoOnWechatProfessional($is);
         }
     }
     // 微信授权后的具体数据存储,设置 Session, 并重定向到授权前url
     final protected function main_getInfo(){
-        $obj = obj('userModule');
-        $openid = ( $openid = $obj->main_checkUser($this->wechatinfo) ) ? $openid : $obj->main_newUser($this->wechatinfo);
-        if($openid) {
-            $location = obj('F')->cookie('Location');
-            $_SESSION['openid'] = $openid;
-            header('Location:'.$location);
+        $obj = obj('userModel');
+
+        if(!$re = $obj->where(['openid'=>$this->wechatinfo['openid']])->getRow()){
+            $arr = [
+                'openid'=>$this->wechatinfo['openid'],
+                'name'=>isset($this->wechatinfo['nickname']) ? $this->wechatinfo['nickname'] : '',
+                'img'=>isset($this->wechatinfo['headimgurl']) ? $this->wechatinfo['headimgurl'] : '',
+                'sex'=>isset($this->wechatinfo['sex']) ? $this->wechatinfo['sex'] : 0,
+                'time'  =>date('Y-m-d H:i:s',$_SERVER['REQUEST_TIME'])
+            ];
+            $obj->data($arr)->insert();
+            $re = $obj->where($arr)->getRow();
         }
-        else exit('微信授权失误!请关闭网页后重试!');
+        $_SESSION['user'] = $re;
+        $location = obj('F')->cookie('Location');
+        header('Location:'.$location);
     }
 }

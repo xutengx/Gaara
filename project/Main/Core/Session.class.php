@@ -32,8 +32,9 @@ class Session {
         ini_set('session.gc_maxlifetime', SESSIONLIFE);
         switch(SESSIONMODULENAME){
             case 'user':
-                $this->db = obj('mysql');
-                $this->sessionTable = $this->db->tablepre.'session';
+                $conf = obj('conf');
+                $this->db = obj('\Main\Core\DbConnection',true, $conf->db);
+                $this->sessionTable = $conf->tablepre.'session';
 //                $this->lifeTime = SESSIONLIFE;
                 if(DEBUG)
                     $this->checkSessionDb();
@@ -52,11 +53,11 @@ class Session {
                 if(!is_dir(SESSIONPATH)) obj('tool')->__mkdir(SESSIONPATH);
                 break;
         }
+        if(SESSION_AUTO_START) session_start();
     }
     private function checkSessionDb(){
         $sql = 'show tables like "'.$this->sessionTable.'"';
-        if($this->db->query($sql)->num_rows) ;
-        else{
+        if(empty($this->db->getRow($sql))){
             $createDb = <<<EEE
 CREATE TABLE {$this->sessionTable} (
 session_id varchar(255) NOT NULL,
@@ -65,9 +66,9 @@ session_data blob,
 UNIQUE KEY `session_id` (`session_id`)
 )ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 EEE;
-            $this->db->query($createDb);
-            return true;
+            $this->db->execute($createDb);
         }
+        return true;
     }
     /**
      * 打开Session

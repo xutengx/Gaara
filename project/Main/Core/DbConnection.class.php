@@ -77,8 +77,8 @@ class DbConnection{
      * @param int    $port          // 端口
      * @param string $user          // 用户名
      * @param string $pwd           // 密码
-     * @param string $tablepre      // 表前缀
-     * @param string $keytable      // 核对表(用于数据库自动创建)
+//     * @param string $tablepre      // 表前缀
+//     * @param string $keytable      // 核对表(用于数据库自动创建)
      * @param string $db            // 数据库
      */
     public function __construct(array $DBconf, $single = true){
@@ -164,6 +164,18 @@ class DbConnection{
     }
 
     /**
+     * 自动建表
+     */
+    private function creatDB(){
+        $arr = explode(';', trim(obj('conf')->getCreateDb()));
+        if($arr[count($arr) - 1] == '') unset($arr[count($arr) - 1]);
+        $PDO = $this->PDO();
+        foreach ($arr as $k=>$v) {
+            $PDO->query($v);
+        }
+        return true;
+    }
+    /**
      * 内部执行, 返回原始数据对象
      * @param string $sql
      * @param array  $pars
@@ -172,7 +184,9 @@ class DbConnection{
      */
     private function query_prepare_execute($sql='',array $pars=[]){
         $PDO = $this->PDO();
+        $i = 0;
         try{
+            loop :
             if(empty($pars))
                 $res = $PDO->query($sql);
             else{
@@ -181,7 +195,13 @@ class DbConnection{
             }
         }catch(\PDOException $e){
 //            obj('\Main\Core\Log')->write($sql."\r\n".$error);
-            if(DEBUG) echo ('query error 已经记录 :</br>'.$sql."</br>".$res->errorInfo()."</br>");
+            if(DEBUG) {
+                if($e->errorInfo[0] === '42S02' && $e->errorInfo[1] === 1146){
+                    if($i ++ === 1) exit('自动化建表 有误 !');
+                    $this->creatDB();
+                    goto loop;
+                }else echo ('query error 已经记录 :</br>'.$sql."</br>".$e->errorInfo[2]."</br>");
+            }
             exit;
         }
         return $res;
@@ -214,6 +234,10 @@ class DbConnection{
         }
         return $res;
     }
+    public function execute($sql='', array $pars=[]){
+        return $this->update($sql, $pars);
+    }
+
     public function insert($sql='', array $pars=[]){
         $this->type = 'INSERT';
         $PDO = $this->PDO();

@@ -33,7 +33,8 @@ class Route{
         self::$conf = obj('conf');
     }
     private static function getUrl(){
-        if( (!isset($_GET[PATH]) || empty($_GET[PATH])) && isset($_GET[MD5(IN_SYS)]) && !empty($_GET[MD5(IN_SYS)]) ) $_GET[PATH] = $_GET[MD5(IN_SYS)];
+        if( (!isset($_GET[PATH]) || empty($_GET[PATH])) && isset($_GET[MD5(IN_SYS)]) && !empty($_GET[MD5(IN_SYS)]) )
+            $_GET[PATH] = $_GET[MD5(IN_SYS)];
         if(isset($_GET[PATH]) && !empty($_GET[PATH])){
             $str            = $_GET[PATH];
             $str            = explode('?',$str);
@@ -63,7 +64,7 @@ class Route{
                 self::filterPars();
             }
             //设置session
-//            obj('session');
+            obj('session');
 //            $func = method_exists($obj,self::$urlArr['method'] ) ? self::$urlArr['method'] : 'indexDo';
             $func = self::$urlArr['method'];
             $obj  = obj($obj, true, $func);

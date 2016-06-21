@@ -1,0 +1,18 @@
+<head>
+    <title>框架</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="<?php echo VIEW;?>css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo VIEW;?>css/bootstrap-theme.min.css">
+    <script type="text/javascript" src="<?php echo VIEW;?>js/bootstrap.min.js"></script>
+</head>
+<body>
+<form action="">
+    手机 : <input type="text" name="account"><br>
+    密码 : <input type="passwd" name="passwd"><br>
+    <input id="login" type="button" value="登入">
+    <input id="reg" type="button" value="注册" onclick="window.location.href=__url__('index','reg','indexDo');">
+    <input  type="button" value="找回" onclick="window.location.href=__url__('index','forgot','indexDo');">
+</form>
+</body>
+<script>
+</script>

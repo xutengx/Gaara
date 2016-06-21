@@ -3,18 +3,18 @@ namespace App\index\Obj;
 defined('IN_SYS')||exit('ACC Denied');
 class userObj extends \Main\Core\Object{
     protected function bind(){
-        session_start();
-        if(isset($_SESSION['account'])){
-            $re = obj('userModel')->checkUser($_SESSION['account'], $_SESSION['passwd'], $_SESSION['timeLogin']);
-            session_commit();
-            return $re['id'] ? $re : false;
+        if(isset($_SESSION['user'])){
+            $user['time'] = isset($_SESSION['user']['time']) ? $_SESSION['user']['time'] : 0;
+            $user['tel']  = isset($_SESSION['user']['tel']) ? $_SESSION['user']['tel'] : 0;
+            $user['openid']  = isset($_SESSION['user']['openid']) ? $_SESSION['user']['openid'] : '';
+            if($user['tel']===0 && $user['openid']==='' ) return false;
+
+            $re = obj('userModel')->where($user)->getRow();
+            return isset($re['id']) ? $re : false;
         }
-        session_commit();
         return false;
     }
     protected function bindFalse(){
-//        exit(json_encode(['code'=>'0','message'=>'用户验证失败!']));
-        if(CLI) return false;
-        headerTo('index/login/indexDo/','请先登入!');
+        headerTo('index/nologin/indexDo/');
     }
 }

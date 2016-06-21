@@ -49,7 +49,14 @@ function headerTo($where='', $msg = false, array $pars = array()){
         $str .= $k.'/'.$v.'/';
     }
     $where = IN_SYS.'?'.PATH.'='.$where.$str;
-    ( $msg!==false ) ? obj('template')->jumpTo($msg, $where) : header('location:'.$where);
+//    try{
+        $t = ( ( $msg!==false ) ? obj('template')->jumpTo($msg, $where) : header('location:'.$where) );
+        if(!$t) throw new \Exception;
+//    }
+//    catch (\Exception $e){
+//        var_dump($e->getTrace());
+//        exit;
+//    }
 }
 
 // 运行状态统计

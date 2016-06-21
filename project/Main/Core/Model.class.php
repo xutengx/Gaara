@@ -37,8 +37,8 @@ class Model{
         $this->tablepre = $conf->tablepre;
         $classname = get_class($this);
         $classname = substr($classname,strrpos($classname,'\\')+1);
-        if($this->tablename == '') $this->tablename=strtr($classname, array('Model'=>''));
-        $this->table = $conf->tablepre.$this->tablename;
+        if($this->tablename === '') $this->tablename=strtr($classname, array('Model'=>''));
+        if($this->table === '') $this->table = $conf->tablepre.$this->tablename;
     }
     public function tbname(){
         return $this->table;
@@ -54,7 +54,7 @@ class Model{
             $values .= $values ? ",'{$v}'" : "'{$v}'";
         }
         $sql = 'INSERT INTO '.$this->table." ({$fileds}) VALUES ({$values})";
-        return $this->db->lastInsertId($sql);
+        return $this->db->insert($sql);
     }
     //以数组形式 update 一条数据,条件为 表主键
     public function updateData($cols, $addslashes=true) {
@@ -89,30 +89,31 @@ class Model{
         $sql = 'select * from '.$this->table.' '.$where;
         return $this->db->getRow($sql);
     }
+//---------------------------------------------------------- 微信授权 -----------------------------------------------------//
     // 核对此openid是否已经记录
     // param 包含openid的一维数组 or openid
     // return string or false
-    final public function main_checkUser($wechatinfo){
-        if(is_array($wechatinfo)) $openid = $wechatinfo['openid'];
-        else $openid = $wechatinfo;
-        $sql    = 'select openid from '.$this->table.' where openid="'.$openid.'"';
-        $re     = $this->db->getRow($sql);
-        return $re['openid'] ? $re['openid'] : false;
-    }
+//    final public function main_checkUser($wechatinfo,$time){
+//        if(is_array($wechatinfo)) $openid = $wechatinfo['openid'];
+//        else $openid = $wechatinfo;
+//        $sql    = 'select openid from '.$this->table.' where openid="'.$openid.'"  and `time`="'.$time.'"';
+//        $re     = $this->db->getRow($sql);
+//        return isset($re['openid']) ? $re['openid'] : false;
+//    }
     // 建立新的openid记录
     // param 包含openid的一维数组 or openid
     // return string or false
-    final public function main_newUser($wechatinfo){
-        if(!$wechatinfo) return false;
-        if(is_array($wechatinfo)) {
-            $openid = $wechatinfo['openid'];
-            $sql = 'insert into '.$this->table.' (`name`,`img`,`sex`,`openid`) values ("'.$wechatinfo['nickname'].'","'.$wechatinfo['headimgurl'].'","'.$wechatinfo['sex'].'","'.$openid.'")';
-        }
-        else $sql = 'insert into '.$this->table.' (`openid`) values ("'.$wechatinfo.'")';
-        $openid = $openid ? $openid : $wechatinfo;
-        if($this->db->execute($sql)) return $openid;
-        return false;
-    }
+//    final public function main_newUser($wechatinfo){
+//        if(!$wechatinfo) return false;
+//        if(is_array($wechatinfo)) {
+//            $openid = $wechatinfo['openid'];
+//            $sql = 'insert into '.$this->table.' (`name`,`img`,`sex`,`openid`,`time`) values ("'.$wechatinfo['nickname'].'","'.$wechatinfo['headimgurl'].'","'.$wechatinfo['sex'].'","'.$openid.'","'.date('Y-m-d H:i:s',$_SERVER['REQUEST_TIME'] ).'")';
+//        }
+//        else $sql = 'insert into '.$this->table.' (`openid`,`time`) values ("'.$wechatinfo.'","'.date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'] ).'")';
+//        $openid = isset($openid) ? $openid : $wechatinfo;
+//        if($this->db->execute($sql)) return $openid;
+//        return false;
+//    }
 //---------------------------------------------------------- 链式操作 -----------------------------------------------------//
     /**
      * sql条件
@@ -578,7 +579,7 @@ class Model{
      */
     protected function filterPars($str=''){
         $str = trim($str, ' ');
-        if(strstr($str,':'))
+        if(strstr($str,':') && !strtotime($str))
             return $str;
         else return '"'.$str.'"';
     }

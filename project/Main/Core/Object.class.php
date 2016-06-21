@@ -26,7 +26,7 @@ abstract class Object{
     }
 
     /**
-     * 绑定 obj 到 model
+     * 绑定 model 到 obj
      * @return array|false 一维数组
      */
     abstract protected function bind();

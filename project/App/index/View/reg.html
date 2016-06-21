@@ -6,7 +6,13 @@
     <script type="text/javascript" src="<?php echo VIEW;?>js/bootstrap.min.js"></script>
 </head>
 <body>
-
+<form action="">
+    手机号码 : <input type="text"><br>
+    验证码 : <input type="text"><input type="button" value="获取验证码"><br>
+    密码 : <input type="text"><br>
+    <input type="button" value="提交">
+    <input type="button" value="已有账号"  onclick="window.location.href=__url__('index','nologin','indexDo');">
+</form>
 </body>
 <script>
 

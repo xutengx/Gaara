@@ -1,54 +1,22 @@
 <?php
 defined('IN_SYS')||exit('ACC Denied');
 return [
-    'path'=>'path',                         // 路由关键字      // 全局PATH常量
-    'timezone'=>'PRC',                       // 时区
-    'sessionModuleName'=>'user',              // session存储方式  user|file
+    'path'=>'path',                            // 路由关键字      // 全局PATH常量
+    'timezone'=>'PRC',                         // 时区
+    'sessionModuleName'=>'user',             // session存储方式  user|file
     'sessionPath'=>'data/Session',           // session存储路径 // 全局SESSIONPATH常量
-    'sessionLife'=>3600*24*7,                 // session 时效性  // 全局SESSIONLIFE常量
-    'sessionHostOnly'=>true,                 // session
+    'sessionLife'=>3600*24*7,                  // session 时效性  // 全局SESSIONLIFE常量
+    'sessionHostOnly'=>true,                  // session
+    'sessionAutoStart'=>true,                  // session 自动开启
 
-    'appid_poster'=>'wx996bd5d838d5d827',
-    'appsecret_poster'=>'d3927177ebc315da18681dd9876ed073',
-    'debug_poster'=>false,
-
-    'appid_wx'=>'wxf104d7a120384fec',
-    'appsecret_wx'=>'10b05e039778ec7fdb6344b969ed4c1e',
+    'appid_mq'=>'wx996bd5d838d5d827',
+    'appsecret_mq'=>'d3927177ebc315da18681dd9876ed073',
+    'debug_mq'=>false,
 
     'appid_test'=>'wx8f0ca1bc115c1fae',
     'appsecret_test'=>'d4624c36b6795d1d99dcf0547af5443d',
 
-    'db'=>[
-        'write'=>[
-            [
-                'weight'=>10,
-                'type'=>'mysql',
-                'host'=>'10.4.17.219',
-                'port'=>3306,
-                'user'=>'root',
-                'pwd'=>'Huawei$123#_',
-                'char'=>'UTF8',
-                'tablepre'=>'hk_',
-                'keytable'=>'user',
-                'db'=>'hk'
-            ]
-        ],
-        'read'=>[
-            [
-                'weight'=>10,
-                'type'=>'mysql',
-                'host'=>'10.4.17.219',
-                'port'=>3306,
-                'user'=>'root',
-                'pwd'=>'Huawei$123#_',
-                'char'=>'UTF8',
-                'tablepre'=>'hk_',
-                'keytable'=>'user',
-                'db'=>'hk'
-            ]
-        ]
-    ],
-    'db_hk' => [
+    'db_mq' => [
         'write'=>[
             [
                 'weight'=>10,
@@ -58,23 +26,7 @@ return [
                 'user'=>'root',
                 'pwd'=>'Passwd@123456',
                 'char'=>'UTF8',
-                'tablepre'=>'hk_',
-                'keytable'=>'user',
-                'db'=>'hk'
-            ]
-        ],
-        'read' => [
-            [
-                'weight'=>10,
-                'type'=>'mysql',
-                'host' => '127.0.0.1',
-                'port'=>3306,
-                'user' => 'root',
-                'pwd' => 'Passwd@123456',
-                'char'=>'UTF8',
-                'tablepre'=>'hk_',
-                'keytable'=>'user',
-                'db' => 'hk'
+                'db'=>'mq'
             ]
         ]
     ],
@@ -88,9 +40,7 @@ return [
                 'user'=>'root',
                 'pwd'=>'root',
                 'char'=>'UTF8',
-                'tablepre'=>'hk_',
-                'keytable'=>'user',
-                'db'=>'hk'
+                'db'=>'mq'
             ]
         ],
         'read'=>[
@@ -102,9 +52,7 @@ return [
                 'user'=>'root',
                 'pwd'=>'root',
                 'char'=>'UTF8',
-                'tablepre'=>'hk_',
-                'keytable'=>'user',
-                'db'=>'hk'
+                'db'=>'mq'
             ],
             [
                 'weight'=>2,
@@ -114,18 +62,14 @@ return [
                 'user'=>'root',
                 'pwd'=>'root',
                 'char'=>'UTF8',
-                'tablepre'=>'hk_',
-                'keytable'=>'user',
-                'db'=>'hk'
+                'db'=>'mq'
             ]
         ]
     ],
 
     'debug'=>true,
     'minjs'=>true,
-    'tablepre'=>'hk_',
-//    'keytable'=>'hk_user',
-//    'char'=>'UTF8',
+    'tablepre'=>'mq_',
     /**
      * @return string 多配置关键字
      */

@@ -9,8 +9,8 @@ return [
     'sessionHostOnly'=>true,                  // session
     'sessionAutoStart'=>true,                  // session 自动开启
 
-    'appid_mq'=>'wx996bd5d838d5d827',
-    'appsecret_mq'=>'d3927177ebc315da18681dd9876ed073',
+    'appid_mq'=>'wx7cdc6e6a298c7d80',
+    'appsecret_mq'=>'e0c47bb90180097a38b21953a5bb2954',
     'debug_mq'=>false,
 
     'appid_test'=>'wx8f0ca1bc115c1fae',
@@ -38,7 +38,7 @@ return [
                 'host'=>'127.0.0.1',
                 'port'=>3306,
                 'user'=>'root',
-                'pwd'=>'root',
+                'pwd'=>'d3e2b90ee3',
                 'char'=>'UTF8',
                 'db'=>'mq'
             ]

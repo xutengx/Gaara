@@ -8,21 +8,21 @@
 <body>
 <div class="main bluetooth">
     <div class="blue_ts">
-        <h1>正在搜索自能把立</h1>
-        <p>请将手机贴近把立</p>
+        <h1>蓝牙未开启</h1>
+        <p>在弹出的对话框中点击设置</p>
     </div>
-    <div class="search_main">
-        <div class="search_num"></div><!--正在搜索时添加class【radius_animent】  搜索完成 再删除该class-->
-        <div class="search_md font_num">0</div>
-    </div>
+    <button class="blue_btn">
+        <span class="iconfont icon-lanya"></span>
+        <p>点击开启</p>
+    </button>
 
     <!--打开蓝牙提示弹窗- start-------------- --------------------->
     <div class="mcts" style="display:none;">
         <div class="blue_tooth_tc">
-            <div class="tile">未发现把立，请确保把立有点并且贴近手机</div>
+            <div class="tile">打开蓝牙来允许‘米骑’链接到设备</div>
             <div class="blue_btns clearfix">
-                <div class="flt col-xs-6"><button class="btn">暂不绑定</button></div>
-                <div class="frt col-xs-6"><button class="btn">重试</button></div>
+                <div class="flt col-xs-6"><button class="btn">设置</button></div>
+                <div class="frt col-xs-6"><button class="btn">好</button></div>
             </div>
         </div>
     </div>

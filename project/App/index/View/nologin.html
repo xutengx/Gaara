@@ -1,15 +1,18 @@
 <head>
-    <title>框架</title>
-    <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="<?php echo VIEW;?>css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo VIEW;?>css/bootstrap-theme.min.css">
-    <script type="text/javascript" src="<?php echo VIEW;?>js/bootstrap.min.js"></script>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="<?php echo VIEW;?>css/style.css" />
+    <link rel="stylesheet" href="<?php echo VIEW;?>css/iconfont.css" />
+    <title>米骑</title>
 </head>
 <body>
-<input type="button" value="微信登入" onclick="window.location.href=__url__('index','login','indexDo');">
-<input type="button" value="电话登入" onclick="window.location.href=__url__('index','tellogin','indexDo');">
-<input type="button" value="电话注册" onclick="window.location.href=__url__('index','reg','indexDo');">
+<div class="sign_in">
+    <div class="sign_box">
+        <button><span class="iconfont icon-weixin" onclick="window.location.href=__url__('index','login','indexDo');"></span>微信登录</button>
+        <div class="other_sign clearfix">
+            <span class="flt"><a href="javascript:window.location.href=__url__('index','tellogin','indexDo');">手机登录</a></span>
+            <span class="frt"><a href="javascript:window.location.href=__url__('index','reg','indexDo');">手机注册</a></span>
+        </div>
+    </div>
+</div>
 </body>
-<script>
-
-</script>

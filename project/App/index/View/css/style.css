@@ -1,0 +1,397 @@
+
+@media only screen and (max-width: 1242px) {
+	html,
+   body {
+		font-size: 38.8125px;
+	}
+}
+@media only screen and (max-width: 1136px) {
+	html,
+   body {
+		font-size: 35.5px;
+	}
+}
+  /* for 1242 px width screen */
+@media only screen and (max-width: 1080px) {
+	html,
+   body {
+		font-size: 33.75px;
+	}
+}
+ /* for 1080 px width screen */
+@media only screen and (max-width: 960px) {
+	html,
+   body {
+		font-size: 30px;
+	}
+}
+@media only screen and (max-width: 768px) {
+	html,
+   body {
+		font-size: 24px;
+	}
+}
+@media only screen and (max-width: 750px) {
+	html,
+   body {
+		font-size: 23.4375px;
+	}
+}
+ /* for 720 px width screen */
+@media only screen and (max-width: 720px) {
+	html,
+   body {
+		font-size: 22.5px;
+	}
+}
+ /* for 640 px width screen */
+@media only screen and (max-width: 640px) {
+	html,
+   body {
+		font-size: 20px;
+	}
+}
+ /* for 540 px width screen */
+@media only screen and (max-width: 540px) {
+	html,
+   body {
+		font-size: 16.875px;
+	}
+}
+ /* for 480 px width screen */
+@media only screen and (max-width: 480px) {
+	html,
+   body {
+		font-size: 15px;
+	}
+}
+ /* for 414 px width screen  iphone6+ */
+@media only screen and (max-width: 414px) {
+	html,
+   body {
+		font-size: 13px;
+	}
+}
+ /* for 400 px width screen */
+@media only screen and (max-width: 400px) {
+	html,
+   body {
+		font-size: 12.5px;
+	}
+}
+ /* for 360 px width screen */
+@media only screen and (max-width: 360px) {
+	html,
+   body {
+		font-size: 11.25px;
+	}
+}
+ /* for 320 px width screen */
+@media only screen and (max-width: 320px) {
+	html,
+   body {
+		font-size: 10px;
+	}
+}
+/*重置属性*/
+div,nav,body,html,header,footer,ul,li,h1,h2,h3,h4,h5,h6,span,img,a,i,p,input,button,textarea,select{
+	padding: 0px;
+	margin: 0px;
+}
+
+body {
+	font-family: '微软雅黑';
+}
+
+img {
+	border: none;
+	border: 0;
+	/*vertical-align: middle*/
+}
+
+li {
+	list-style: none;
+}
+
+i {
+	font-style: normal;
+}
+br {
+	height: 0;
+}
+
+button {
+	border: none;
+}
+
+a {
+	text-decoration: none;
+}
+/*H5 input和textarea提示字体样式*/
+input::-webkit-input-placeholder {
+	color: #919191;
+	font-size: 1.2rem;;
+}
+
+input:-moz-placeholder {
+	color: #919191;
+	font-size: 1.2rem;;
+}
+textarea::-webkit-input-placeholder{
+	font-size:1.2rem;
+}
+/*清除浮动*/
+.clear {
+	clear: both;
+}
+
+.clearfix:before,
+.clearfix:after {
+	display: table;
+	content: '';
+}
+
+.clearfix:after {
+	clear: both;
+}
+/*用于朦层禁滑动*/
+.ovfHiden{overflow: hidden;height: 100%;}
+
+		/*左右浮动*/
+.flt {
+	float: left;
+}
+
+.frt {
+	float: right;
+}
+
+
+/*自定义样式*/
+.one,.name-study{
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.two{
+	text-overflow: -o-ellipsis-lastline;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+}
+.three{
+	text-overflow: -o-ellipsis-lastline;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+}
+
+.btn{border-radius:0.5rem;display:block;}
+.li-ft li{float:left}
+.all-pic,.all-pic i{display: block;}
+.all-pic img{width: 100%;height: 100%;vertical-align: middle;}
+.md-img{display:table-cell;text-align:center;vertical-align:middle;}
+.md-img img{max-width:100%; max-height:100%; display: block;margin:0 auto;}
+.dis-b{display:block}
+.dis-ib{display:inline-block;}
+.dis-no{display:none;}
+.no-b{font-weight: normal;}
+.bor_none{border-bottom:none !important;}
+/*字体样式*/
+.color_f{color:#fff}
+.text-cen{text-align: center;}
+.text-left{text-align:left;}
+.text-right{text-align:right;}
+/*背景色*/
+.bg47{background:#474747}
+.bg21{background:#212121}
+/*取消a/input、button点击带框高亮*/
+a,input,button{-webkit-tap-highlight-color:rgba(250,0,0,0);-webkit-tap-highlight-color:transparent;border:none;outline:none;}
+
+.iconpic{display:block;background:url(../img/iconpic.png) no-repeat;}
+/*苏尘栅格系统设置*/
+.col-xs-1, .col-xs-10, .col-xs-11, .col-xs-12, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9{position:relative;box-sizing:border-box;-webkit-user-select:none;outline:0;-webkit-tap-highlight-color:transparent}
+.col-xs-1{width:8.333333%}
+.col-xs-2{width:16.66666667%}
+.col-xs-3{width:25%;}
+.col-xs-4{width:33.33333333%}
+.col-xs-5{width:41.66666667%}
+.col-xs-6{width:50%;}
+.col-xs-7{width:58.33333333%}
+.col-xs-8{width:66.6666666%}
+.col-xs-9{width:75%;}
+.col-xs-10{width:83.33333333%}
+.col-xs-11{width:91.66666667%}
+.col-xs-12{width:100%;}
+
+.content{margin-left:1rem;margin-right:1rem;}
+.content2{padding-left:1rem;padding-right:1rem;box-sizing:border-box;}
+
+@font-face {				/*只限用于阿拉伯数字*/
+  font-family: 'MyNewFont';   /*字体名称   微信端字体是根据微信固定字体，微信字体又可以根据手机字体，故字体无法做更改   但阿拉伯数字可以更改 */
+  src: url('../font/tt0248m_.ttf');       /*字体源文件*/
+}
+
+
+
+.font_num{font-family:'MyNewFont';}
+
+/*-----------------------------------------------------------*/
+/*登录*/
+.sign_in{position:absolute;width:100%;height:100%;background:url(../img/signin_bg.png) no-repeat;background-size:100% 100%;}
+.sign_box{height:40%;padding-top:10%;box-sizing:border-box;width:100%;background:rgba(0,0,0,0.5);position:absolute;bottom:0;}
+.sign_box button{width:85%;height:4.6rem;display:block;margin:auto;border-radius:5rem;background:#45c01a;color:#fff;font-size:1.6rem;}
+.sign_box button span.iconfont:before{color:#fff;font-size:2rem;margin-right:1rem;}
+.other_sign{margin-left:4rem;margin-right:4rem;margin-top:7%;}
+.other_sign a{color:#fff;font-size:1.2rem;}
+
+
+/*蓝牙*/
+.main{position:absolute;width:100%;height:100%;left:0;top:0;bottom:0;right:0;}
+.bluetooth{background:#212121;}
+.blue_ts{text-align: center;}
+.blue_ts h1{font-weight:normal;color:#fff;margin-top:10%;font-size:2.3rem;}
+.blue_ts p{color:#d6d6d6;font-size:1rem;margin-top:2%;}
+.blue_btn{display:block;border-radius:50%;width:20.5rem;height:20.5rem;border:0.1rem #545454 solid;margin:auto;margin-top:20%;background:#131313}
+.blue_btn p{color:#fff;margin-top:3rem;font-size:1.2rem;}
+.blue_btn span.iconfont:before{color:#c8c8c8;font-size:6rem;line-height:8rem;}
+.mcts{position:absolute;width:100%;height:100%;left:0;top:0;bottom:0;right:0;z-index:998;}
+.blue_tooth_tc{width:85%;min-height:50px;background:#fff;border-radius:0.5rem;margin:auto;margin-top:40%;padding:0.6rem;box-sizing:border-box;}
+.blue_tooth_tc .tile{padding:0 3rem;font-size:1.4rem;text-align: center;line-height:2rem;margin-top:1rem;}
+.blue_btns{border-top:0.1rem #e5e5e5 solid;margin-top:2rem;padding:0.2rem;box-sizing:border-box;}
+.blue_btns div:nth-child(1){border-right:0.1rem #e5e5e5 solid;}
+.blue_btns div{height:4.3rem;}
+.blue_btns div button{width:80%;height:3.4rem;margin:auto;margin-top:0.7rem;font-size:1.2rem;}
+.blue_btns div:nth-child(1) button{background:#e5e5e5;color:#6f6f6f;}
+.blue_btns div:nth-child(2) button{background:#fee101;color:#212121;}
+
+/**历史记录**/
+.date{line-height:3rem;padding:0 1rem;font-size:1.1rem;color:#ffdc0a}
+.history{}
+.history-ul{}
+.history-ul li{padding:1rem;background:#212121;height:7.4rem;box-sizing:border-box;overflow:hidden;}
+.history-ul li label{font-size:1.1rem;color:#fff;line-height:2rem;}
+.history_content{line-height:4rem;color:#fff;}
+.history_content .iconfont:before{color:#fedc09;}
+.history_content .icon-qixing:before{font-size:2rem;}
+.history_num{font-size:1.1rem;margin-left:0.8rem;}
+.history_num span{font-size:2rem;margin:0 0.6rem;}
+.history_content div.col-xs-6.frt{line-height:2rem;margin-top:1.5rem;}
+.history_content div.col-xs-6.frt .iconfont{margin-left:0.8rem;margin-right:0.3rem;}
+.history-ul li{border-bottom:0.1rem #959595 solid;}
+.history-ul li:nth-last-child(1){border:none;}
+
+/*手机登录*/
+.phone_sign{position:absolute;width:100%;height:100%;background:rgba(0,0,0,0.6);}
+.miqi_head{height:4.7rem;line-height:4.7rem;overflow:hidden;border-bottom:0.1rem #949594 solid;padding:0 1rem;color:#fff;font-size:1.4rem}
+.phone_sign_ipt{padding:0 3rem;margin-top:20%;}
+.phone_sign_ipt li{height:3.5rem;line-height:3.5rem;margin-top:10%;border-bottom:0.1rem #938882 solid;padding:0 1rem;}
+.phone_sign_ipt li div{height:100%;}
+.phone_sign_ipt li input{height:100%;width:100%;border:none;padding:0.8rem 1rem;box-sizing:border-box;line-height:1.6rem;background:none;color:#fff;font-size:1.2rem;}
+.phone_sign_ipt li input::-moz-placeholder{color:#fff;font-size:1.2rem;}
+.phone_sign_ipt li input::-webkit-input-placeholder{color:#fff;font-size:1.2rem}
+.phone_sign_ipt li input::-moz-placeholder{color:#fff;font-size:1.2rem}
+.phone_sign_ipt li .iconfont:before{color:#fee101}
+.rg_fgtpswd a{color:#fff;}
+.rg_fgtpswd{margin:2rem 1rem;font-size:1.2rem;}
+.btn2{display:block;border-radius:2rem;}
+.phone_sign_btn{height:4.1rem;width:100%;background:#fee101;margin-top:5%;color:#1b1d1c;font-size:1.4rem;}
+
+
+
+/*手机注册*/
+.register{margin-top:5%;}
+.register .phone_sign_btn{margin-top:15%;}
+.have{text-align: center;line-height:5rem;font-size:1.1rem;color:#fff;}
+.have a{color:#fee004}
+.yzmbtn{width:7rem;height:2.9rem;font-size:1.1rem;background:#fee101;color:#181818;}
+
+/*s搜索*/
+.search_main{width:15.6rem;height:15.6rem;border-radius:50%;position:relative;margin:auto;margin-top:20%;}
+.search_num{width:15.6rem;height:15.6rem;border-radius:50%;position:absolute;left:0;top:0;
+background: #ffffff; /* Old browsers */
+background: -moz-linear-gradient(left, #ffffff 0%, #3e3e3e 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(left, #ffffff 0%,#3e3e3e 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to right, #ffffff 0%,#3e3e3e 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#3e3e3e',GradientType=1 ); }
+.search_md{position:relative;width:15.4rem;height:15.4rem;line-height:15.4rem;text-align:center;border-radius:50%;left:0.1rem;top:0.1rem;background:#212121;font-size:6rem;color:#fff;}
+
+
+.radius_animent{-webkit-animation: suchen 1s linear infinite;}
+@-webkit-keyframes suchen{
+	0%{-webkit-transform: rotate(0);}
+	100%{-webkit-transform:rotate(360deg)}
+}
+
+
+
+/*骑行*/
+.cycling{background:url(../img/qixingbg.png) no-repeat;background-size:100% 100%;}
+.cycling .all_cycling{color:#fff;text-align: center;margin-top:15%;font-size:9rem;}
+.cycling p.cycline_unit{color:#bdbdbd;font-size:1.2rem;}
+.classify{color:#bcbcbc;padding:0 5rem;margin-top:5%;}
+.classify .font_num{font-size:2.5rem;color:#fff}
+.classify li{text-align: center;}
+.classify ul{padding:8% 0;}
+.classify ul:nth-child(1){border-bottom:0.1rem #959595 solid;}
+.classify ul li:nth-child(1){border-right:0.1rem #959595 solid;}
+.classify ul li p{font-size:1.2rem;}
+.history_btn{margin:auto;width:32%;height:3.2rem;color:#020300;background:#fee101;font-size:1.2rem;margin-top:10%;}
+.history_btn .iconfont:before{color:#020300;margin-right:0.5rem;}
+
+
+/*骑行记录*/
+.record_title{padding:0 2rem;}
+.record_title li div{margin:auto;width:30%;height:3.5rem;line-height:3.5rem;text-align: center;font-size:1.5rem;border-bottom:0.1rem transparent solid;color:#fff;}
+.record_title li.on div{border-color:#fddc0a;color:#fddc0a}
+.record_content{padding:0 1rem;}
+.miqi{padding:0.3rem;background:#030303;display:inline-block;border-radius:2rem;color:#fddc0a;height:1.6rem;line-height:1.6rem;overflow:hidden;margin-top:5%;margin-left:2%;}
+.miqi span.miqibtn{display:inline-block;background:#fddc0a;padding:0 0.5rem;border-radius:2rem;font-size:1.1rem;color:#030303;height:1.6rem;line-height:1.6rem;}
+.miqi div{display:inline-block;line-height:1.2rem;}
+.miqi span.iconfont:before{margin:0 0.5rem;font-size:1.2rem;position:relative;top:0.2rem;color:#fddc0a}
+.detail_nm{color:#fff;text-align: center; font-size:9rem;line-height:10rem;}
+.detail_nm p{font-size:1.1rem;line-height:1.2rem;color:#bdbdbd;margin-bottom:1rem;}
+.cycling_list li{height:5.7rem;border-bottom:0.1rem #434343 solid;overflow:hidden;padding-top:0.5rem;box-sizing: border-box;}
+.cycling_list .iconfont{}
+.cycling_list li div.col-xs-3{text-align: center;}
+.cycling_list li div.col-xs-9{padding:0.5rem 0;box-sizing: border-box;}
+.cycling_list .icon-time-s:before{color:#eb7070;font-size:2.2rem;}
+.cycling_list .icon-kaluli:before{color:#eb7070;font-size:2.2rem;}
+.cycling_list li p{line-height:2rem;}
+.cycling_list li p:nth-child(1){color:#fff;font-size:1.5rem;}
+.cycling_list li p:nth-child(2){color:#bdbdbd;font-size:1.1rem;}
+.record_title{height:10%;}
+.record_all{height:90%;position:relative;}
+.cycling_list i{background-size:15rem 15rem;width:2.1rem;height:2.1rem;margin-top:0.5rem;}
+.duration{background-position:-7.2rem 0rem;}/*时长*/
+.calorie{background-position:-4.9rem 0rem;}/*卡路里*/
+.swift{background-position:-9.6rem 0rem;}/*最高速度*/
+.average{background-position:-11.9rem 0rem;}/*平均速度*/
+.max-cadence{background-position:-2.4rem 0rem;}/*最高踏频*/
+.ave_cadence{background-position:0rem 0rem;}/*平均踏频*/
+.total_time{background-position:-2.4rem -2.4rem;}/*总时长*/
+.mileage{background-position:0rem -2.4rem;}/*总里程*/
+
+
+.map{position:absolute;width:100%;height:100%;left:0;top:0;z-index:2;background: url(../images/map.png) no-repeat 100% 100% /cover;}
+.cyc{position:absolute;width:100%;height:100%;left:0;top:0;z-index:3;background: -moz-linear-gradient(top, rgba(68,68,68,0.32) 0%, rgba(64,64,64,0.74) 72%, rgba(62,62,62,0.91) 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(top, rgba(68,68,68,0.32) 0%,rgba(64,64,64,0.74) 72%,rgba(62,62,62,0.91) 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to bottom, rgba(68,68,68,0.32) 0%,rgba(64,64,64,0.74) 72%,rgba(62,62,62,0.91) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#52444444', endColorstr='#e83e3e3e',GradientType=0 ); }
+.trail{height:30%;width:100%;position:absolute;bottom:0;padding:1rem;box-sizing:border-box;}
+.trail_num{font-size:1.2rem;color:#bdbdbd}
+.trail_num span{font-size:4.4rem;color:#fff;margin-right:0.5rem;}
+.trail ul{position:absolute;bottom:0;padding:1rem 0;left:0;right:0;width:100%;box-sizing:border-box;}
+.trail ul li{height:4rem;border-right:0.1rem #959595 solid;text-align:center;line-height:2rem;}
+.trail ul li:nth-last-child(1){border:none;}
+.trail ul li h4{font-size:1.4rem;color:#fff;}
+.trail ul li p{font-size:0.9rem;color:#b9b9b9;}
+.max_cyc{position:absolute;right:0.5rem;width:3rem;text-align: center;color:#fff}
+.max_cyc div{width:2.1rem;height:2.1rem;background:rgba(0,0,0,0.2);border-radius:50%;line-height:2.4rem;margin:auto;font-size:1.2rem;overflow:hidden;}
+.max_cyc p{font-size:0.6rem;line-height:2rem;}
+.tp{bottom:30%;}
+.sd{bottom:18%;}

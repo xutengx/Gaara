@@ -7,8 +7,6 @@
  */
 namespace Main\Core;
 class Secure{
-    // 过期时间
-    private $ovartime = 600;
     // 加解密关键字
     private $key = 'key';
     //延伸的md5方法
@@ -19,17 +17,20 @@ class Secure{
     // 应用于Controller->display();
     // return string
     public function csrfAjax($classname){
-        $time = time()+ $this->ovartime;
-        $csrftoken =  $this->encrypt($classname.$time);
+        $time = $_SERVER['REQUEST_TIME'];
+        $csrftoken =  $this->encrypt($classname.'|'.$time);
         return '(function($){var _ajax=$.ajax;$.ajax=function(opt){ var fn = {beforeSend: function(request) {}};if(opt.beforeSend) fn.beforeSend=opt.beforeSend; var _opt = $.extend(opt,{beforeSend: function(request) {request.setRequestHeader("SCRFTOKEN", "'.$csrftoken.'");fn.beforeSend(request); }});_ajax(_opt);};})(jQuery);';
     }
     // 核对http头部的csrftaoken
     // 应用于Controller->post();
     // return bool
-    public function checkCsrftoken($classname){
-        if(isset($_SERVER['HTTP_SCRFTOKEN']) &&  $csrftoken = $_SERVER['HTTP_SCRFTOKEN']){
-            $time = (int)str_replace($classname,'', $this->decrypt($csrftoken));
-            if( $time > time() ) return true;
+    public function checkCsrftoken($classname, $overTime){
+        if(isset($_SERVER['HTTP_SCRFTOKEN']) && $csrftoken = $_SERVER['HTTP_SCRFTOKEN']){
+            $str = $this->decrypt($csrftoken);
+            $arr = explode('|',$str);
+            if($classname != $arr[0]) return false;
+            if( ($overTime != 0 && (($arr[1] + $overTime) > $_SERVER['REQUEST_TIME'])) || $overTime == 0)
+                return true;
         }
         return false;
     }

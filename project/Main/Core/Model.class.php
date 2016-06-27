@@ -12,11 +12,11 @@ class Model{
     // 表名
     protected $table        = '';
     // 表字段6
-    protected $attribute = [];
+    protected $attribute = array();
     // 链式操作集合
-    protected $options = [];
+    protected $options = array();
     // 链式操作 sql
-    protected $options_sql = [];
+    protected $options_sql = array();
     // 链式操作集合
 //    protected $options_analysis = [];
     // 链式操作 类型 select update delete insert
@@ -43,77 +43,6 @@ class Model{
     public function tbname(){
         return $this->table;
     }
-    // 以数组形式 insert 一条数据
-    // return 新数据的主键
-    public function insertData($cols, $addslashes=true) {
-        $fileds = '';
-        $values = '';
-        foreach ($cols as $f => $v) {
-            $fileds .= $fileds ? ",{$f}" : $f;
-            if ($addslashes) $v = addslashes($v);
-            $values .= $values ? ",'{$v}'" : "'{$v}'";
-        }
-        $sql = 'INSERT INTO '.$this->table." ({$fileds}) VALUES ({$values})";
-        return $this->db->insert($sql);
-    }
-    //以数组形式 update 一条数据,条件为 表主键
-    public function updateData($cols, $addslashes=true) {
-        $fileds = '';
-        foreach ($cols as $f => $v) {
-            if ($addslashes) $v = addslashes($v);
-            $fileds .= $fileds ? ",{$f}='{$v}'" : "{$f}='{$v}'";
-        }
-        $sql = 'UPDATE '.$this->table." SET $fileds WHERE ".$this->key.'='.$cols[$this->key];
-        return $this->db->execute($sql);
-    }
-    // 以主键是否存在,对一条数据进行 insert or update
-    public function modifyData($cols){
-        $fileds = '';
-        $values = '';
-        foreach ($cols as $f => $v) {
-            $fileds .= $fileds ? ",{$f}" : $f;
-            $values .= $values ? ",'{$v}'" : "'{$v}'";
-        }
-        $sql = 'REPLACE INTO '.$this->table." ({$fileds}) VALUES ({$values})";
-        return $this->db->execute($sql);
-    }
-
-    public function selAll($where = false){
-        $where = $where ? ' where '.$where : '';
-        $sql = 'select * from '.$this->table.' '.$where;
-        return $this->db->getAll($sql);
-    }
-
-    public function selRow($where = false){
-        $where = is_numeric($where) ? ' where `'.$this->key.'`="'.$where.'" ': ($where ? ' where '.$where : '') ;
-        $sql = 'select * from '.$this->table.' '.$where;
-        return $this->db->getRow($sql);
-    }
-//---------------------------------------------------------- 微信授权 -----------------------------------------------------//
-    // 核对此openid是否已经记录
-    // param 包含openid的一维数组 or openid
-    // return string or false
-//    final public function main_checkUser($wechatinfo,$time){
-//        if(is_array($wechatinfo)) $openid = $wechatinfo['openid'];
-//        else $openid = $wechatinfo;
-//        $sql    = 'select openid from '.$this->table.' where openid="'.$openid.'"  and `time`="'.$time.'"';
-//        $re     = $this->db->getRow($sql);
-//        return isset($re['openid']) ? $re['openid'] : false;
-//    }
-    // 建立新的openid记录
-    // param 包含openid的一维数组 or openid
-    // return string or false
-//    final public function main_newUser($wechatinfo){
-//        if(!$wechatinfo) return false;
-//        if(is_array($wechatinfo)) {
-//            $openid = $wechatinfo['openid'];
-//            $sql = 'insert into '.$this->table.' (`name`,`img`,`sex`,`openid`,`time`) values ("'.$wechatinfo['nickname'].'","'.$wechatinfo['headimgurl'].'","'.$wechatinfo['sex'].'","'.$openid.'","'.date('Y-m-d H:i:s',$_SERVER['REQUEST_TIME'] ).'")';
-//        }
-//        else $sql = 'insert into '.$this->table.' (`openid`,`time`) values ("'.$wechatinfo.'","'.date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'] ).'")';
-//        $openid = isset($openid) ? $openid : $wechatinfo;
-//        if($this->db->execute($sql)) return $openid;
-//        return false;
-//    }
 //---------------------------------------------------------- 链式操作 -----------------------------------------------------//
     /**
      * sql条件
@@ -182,7 +111,7 @@ class Model{
      */
     public function select($what){
         if(is_array($what) && !empty($what))
-            $this->options['select'] = array_merge(isset($this->options['select']) ? $this->options['select'] : [], $what);
+            $this->options['select'] = array_merge(isset($this->options['select']) ? $this->options['select'] : array(), $what);
         else $this->options['select']['__string'][] = $what;
         return $this;
     }
@@ -212,7 +141,7 @@ class Model{
 
     public function data($set){
         if(is_array($set) && !empty($set))
-            $this->options['data'] = array_merge(isset($this->options['data']) ? $this->options['data'] : [], $set);
+            $this->options['data'] = array_merge(isset($this->options['data']) ? $this->options['data'] : array(), $set);
         else $this->options['data']['__string'][] = $set;
         return $this;
     }
@@ -276,7 +205,7 @@ class Model{
      */
     public function group($group){
         if(is_array($group) && !empty($group))
-            $this->options['group'] = array_merge(isset($this->options['group']) ? $this->options['group'] : [], $group);
+            $this->options['group'] = array_merge(isset($this->options['group']) ? $this->options['group'] : array(), $group);
         else $this->options['group']['__string'][] = $group;
         return $this;
     }
@@ -363,15 +292,15 @@ class Model{
      */
     public function limit($start=0, $max=1){
         if(func_num_args() === 1)
-            $this->options['limit'] = [
+            $this->options['limit'] = array(
                 'start' => 0,
                 'max'   => $start
-            ];
+            );
         else
-            $this->options['limit'] = [
+            $this->options['limit'] = array(
                 'start' => $start,
                 'max'   => $max
-            ];
+            );
         return $this;
     }
     protected function analysis_limit(array $arr){
@@ -442,11 +371,11 @@ class Model{
      */
     protected function reset(){
         // 链式操作集合
-        $this->options = [];
+        $this->options = array();
         // 链式操作 sql
-        $this->options_sql = [];
+        $this->options_sql = array();
         // 链式操作集合
-//        $this->options_analysis = [];
+//        $this->options_analysis = array();
         // 链式操作 类型 select update delete insert
         $this->options_type = null;
     }
@@ -455,21 +384,22 @@ class Model{
      * 参数绑定, 并执行
      * @param array $pars
      */
-    public function execute($pars = []){
+    public function execute($pars = array()){
         $this->PDOStatement->execute($pars);
         return $this->PDOStatement->fetchall(\PDO::FETCH_ASSOC);
     }
 
-    public function getRow($pars = []){
+    public function getRow($pars = array()){
         $this->options_type = 'SELECT';
-        $this->limit(1);
+        if(!isset($this->options['limit']))
+            $this->limit(1);
         $sql = $this->prepare(true);
         if($pars === false) return $sql;
         elseif($pars === true) exit($sql);
         return $this->db->getRow($sql, $pars);
     }
 
-    public function getAll($pars = []){
+    public function getAll($pars = array()){
         $this->options_type = 'SELECT';
         $sql = $this->prepare(true);
         if($pars === false) return $sql;
@@ -477,7 +407,7 @@ class Model{
         return $this->db->getAll($sql, $pars);
     }
 
-    public function update($pars = []){
+    public function update($pars = array()){
         $this->options_type = 'UPDATE';
         if(!isset($this->options['data']))
             throw new Exception('要执行UPDATE操作, 需要使用data方法设置更新的值');
@@ -488,7 +418,7 @@ class Model{
 
     }
 
-    public function insert($pars = []){
+    public function insert($pars = array()){
         $this->options_type = 'INSERT';
         if(!isset($this->options['data']))
             throw new Exception('要执行INSERT操作, 需要使用data方法设置新增的值');
@@ -498,7 +428,7 @@ class Model{
         return $this->db->insert($sql, $pars);
     }
 
-    public function delete($pars = []){
+    public function delete($pars = array()){
         $this->options_type = 'DELETE';
         if(!isset($this->options['where']))
             throw new Exception('执行 DELETE 操作并没有相应的 where 约束, 请确保操作正确, 使用where(1)将强制执行.');
@@ -508,7 +438,7 @@ class Model{
         return $this->db->update($sql, $pars);
     }
 
-    public function replace($pars = []){
+    public function replace($pars = array()){
         $this->options_type = 'REPLACE';
         if(!isset($this->options['data']))
             throw new Exception('要执行REPLACE操作, 需要使用data方法设置新增or修改的值');
@@ -516,6 +446,15 @@ class Model{
         if($pars === false) return $sql;
         elseif($pars === true) exit($sql);
         return $this->db->update($sql, $pars);
+    }
+    public function begin(){
+        return $this->db->begin();
+    }
+    public function commit(){
+        return $this->db->commit();
+    }
+    public function rollBack(){
+        return $this->db->rollBack();
     }
 
     /**
@@ -532,8 +471,8 @@ class Model{
         };
         $temp = '';
         $str = trim($str,' ');
-        if($as = stristr($str,'as')){
-            $array = explode(substr($as,0,2), $str);
+        if($as = stristr($str,' as ')){
+            $array = explode(substr($as,0,4), $str);
             $array[0] = trim($array[0],' ');
             $array[1] = trim($array[1],' ');
             // 将 count(hk_user.account) 过滤为 count(`hk_user`.`account`)
@@ -584,9 +523,4 @@ class Model{
         else return '"'.$str.'"';
     }
 
-//    final public function __call($fun, $par=null){
-//        if(method_exists($this->db, $fun) && ($par !== null))
-//            return call_user_func_array([$this->db, $fun], $par);
-//        else throw new \Main\Core\Exception('方法没定义!');
-//    }
 }

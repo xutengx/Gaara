@@ -1,6 +1,6 @@
 <?php
 defined('IN_SYS')||exit('ACC Denied');
-return [
+return array(
     'path'=>'path',                            // 路由关键字      // 全局PATH常量
     'timezone'=>'PRC',                         // 时区
     'sessionModuleName'=>'user',             // session存储方式  user|file
@@ -11,28 +11,14 @@ return [
 
     'appid_mq'=>'wx7cdc6e6a298c7d80',
     'appsecret_mq'=>'e0c47bb90180097a38b21953a5bb2954',
-    'debug_mq'=>false,
+//    'debug_mq'=>false,
 
     'appid_test'=>'wx8f0ca1bc115c1fae',
     'appsecret_test'=>'d4624c36b6795d1d99dcf0547af5443d',
 
-    'db_mq' => [
-        'write'=>[
-            [
-                'weight'=>10,
-                'type'=>'mysql',
-                'host'=>'127.0.0.1',
-                'port'=>3306,
-                'user'=>'root',
-                'pwd'=>'Passwd@123456',
-                'char'=>'UTF8',
-                'db'=>'mq'
-            ]
-        ]
-    ],
-    'db_test'=>[
-        'write'=>[
-            [
+    'db_mq' => array(
+        'write'=>array(
+            array(
                 'weight'=>10,
                 'type'=>'mysql',
                 'host'=>'127.0.0.1',
@@ -41,10 +27,24 @@ return [
                 'pwd'=>'d3e2b90ee3',
                 'char'=>'UTF8',
                 'db'=>'mq'
-            ]
-        ],
-        'read'=>[
-            [
+            )
+        )
+    ),
+    'db_test'=>array(
+        'write'=>array(
+            array(
+                'weight'=>10,
+                'type'=>'mysql',
+                'host'=>'127.0.0.1',
+                'port'=>3306,
+                'user'=>'root',
+                'pwd'=>'root',
+                'char'=>'UTF8',
+                'db'=>'mq'
+            )
+        ),
+        'read'=>array(
+            array(
                 'weight'=>1,
                 'type'=>'mysql',
                 'host'=>'127.0.0.1',
@@ -53,8 +53,8 @@ return [
                 'pwd'=>'root',
                 'char'=>'UTF8',
                 'db'=>'mq'
-            ],
-            [
+            ),
+            array(
                 'weight'=>2,
                 'type'=>'mysql',
                 'host'=>'127.0.0.1',
@@ -63,9 +63,9 @@ return [
                 'pwd'=>'root',
                 'char'=>'UTF8',
                 'db'=>'mq'
-            ]
-        ]
-    ],
+            )
+        )
+    ),
 
     'debug'=>true,
     'minjs'=>true,
@@ -74,14 +74,11 @@ return [
      * @return string 多配置关键字
      */
     'chooseConfig'=> function(){
-        if(isset($_SERVER['HTTP_HOST']) && ($_SERVER['HTTP_HOST'] == 'poster.issmart.com.cn')){
-            return '_poster';
-        }else if(isset($_SERVER['HTTP_HOST']) && ( $_SERVER['HTTP_HOST'] == 'wx.issmart.com.cn')){
-            return '_wx';
+        if(isset($_SERVER['HTTP_HOST']) && ( $_SERVER['HTTP_HOST'] == 'hi.misbike.com')){
+            return '_mq';
         }else if( (isset($_SERVER['HTTP_HOST']) && ( $_SERVER['HTTP_HOST'] == '123.206.8.25') )
             || (isset($_SERVER['HOSTNAME']) && ( $_SERVER['HOSTNAME'] == 'VM_61_217_centos') ) ){
             return '_hk';
         }return '_test';
-    },
-//    'mima' => 'Passwd@123456'
-];
+    }
+);

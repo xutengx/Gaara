@@ -2,6 +2,8 @@
 namespace Main\Core\Controller\Module;
 defined('IN_SYS')||exit('ACC Denied');
 trait ViewModule{
+    // 页面过期时间  0 : 不过期
+    protected $viewOverTime = 0;
     // 缓存js赋值
     protected $cache = ';';
     // 缓存php赋值
@@ -127,7 +129,7 @@ EEE;
     }
     final public function __call($fun, $par=array()){
         if(in_array(strtolower($fun), array('post','put','delete'))){
-            if(!obj('Secure')->checkCsrftoken( $this->classname ))  $this->returnMsg(0, '页面已过期,请刷新!!') && exit ;
+            if(!obj('Secure')->checkCsrftoken( $this->classname , $this->viewOverTime))  $this->returnMsg(0, '页面已过期,请刷新!!') && exit ;
             loop : if(!empty($par)){
                 $bool = call_user_func_array(array(obj('f'),$fun), $par);
                 if($bool === false ) {

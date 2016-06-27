@@ -10,7 +10,7 @@ defined('IN_SYS')||exit('ACC Denied');
  */
 class loginContr extends Controller\HttpController{
     public function indexDo(){
-       if($this->main_checkSessionUser())
+       if($this->main_checkSessionUser(1))
            headerTo('index/index/indexDo');
     }
 }

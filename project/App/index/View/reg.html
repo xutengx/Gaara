@@ -3,6 +3,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="<?php echo VIEW;?>css/style.css" />
     <link rel="stylesheet" href="<?php echo VIEW;?>css/iconfont.css" />
+    <script src="<?php echo VIEW;?>js/md5.js"></script>
     <title>米骑</title>
 </head>
 <body>
@@ -17,20 +18,20 @@
             <ul class="clearfix">
                 <li class="clearfix">
                     <div class="col-xs-1 flt text-cen"><span class="iconfont icon-shouji"></span></div>
-                    <div class="col-xs-11 flt"><input type="text" placeholder="请输入账号" maxlength="11"/></div>
+                    <div class="col-xs-11 flt"><input id="tel" type="text" placeholder="请输入账号" maxlength="11"/></div>
                 </li>
                 <li class="clearfix">
                     <div class="col-xs-1 flt text-cen"><span class="iconfont icon-yaoshi"></span></div>
-                    <div class="col-xs-8 flt"><input type="text" placeholder="请输入验证码"/></div>
+                    <div class="col-xs-8 flt"><input id="yzm" type="text" placeholder="请输入验证码"/></div>
                     <div class="col-xs-3 flt"><button id="duanxin" class="btn2 yzmbtn">获取验证码</button></div>
                 </li>
                 <li class="clearfix">
                     <div class="col-xs-1 flt text-cen"><span class="iconfont icon-mima"></span></div>
-                    <div class="col-xs-11 flt"><input type="text" placeholder="请输入密码"/></div>
+                    <div class="col-xs-11 flt"><input id="passwd" type="text" placeholder="请输入密码"/></div>
                 </li>
             </ul>
             <div class="clearfix">
-                <button class="btn2 phone_sign_btn">注册</button>
+                <button id="chuce" class="btn2 phone_sign_btn">注册</button>
             </div>
             <p class="have">已注册米骑？点击<a href="javascript:window.location.href=__url__('index','nologin','indexDo');">登录</a></p>
         </div>
@@ -40,13 +41,30 @@
 <script>
     $('#duanxin').on('click',function(){
         $.ajax({
-            url:__url__('message'),
+            url:__url__('sendYZM'),
             type:'post',
             data:{'tel':$('#tel').val()},
             dataType:'json',
             success:function(re){
-                console.log(re);
+                if(re.state == 1)
+                    alert('发送成功!');
+                else if(re.state == 0)
+                    alert(re.msg);
             }
         })
-    })
+    });
+    $('#chuce').on('click',function(){
+        $.ajax({
+            url:__url__('reg'),
+            type:'post',
+            data:{'tel':$('#tel').val(),'yzm':$('#yzm').val(),'passwd': $.md5($('#passwd').val())},
+            dataType:'json',
+            success:function(re){
+                if(re.state == 1)
+                    window.location.href = __url__('index','index','indexDo');
+                else if(re.state == 0)
+                    alert(re.msg);
+            }
+        })
+    });
 </script>

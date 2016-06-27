@@ -8,17 +8,17 @@ class DbConnection{
     // 是否主从分离数据库
     static $Master_slave = true;
     // 数据库 读 连接集合
-    static $dbRead            = [];
+    static $dbRead            = array();
     // 数据库 读 权重
-    static $dbReadWeight      = [];
+    static $dbReadWeight      = array();
     // 数据库 写 连接集合
-    static $dbWrite           = [];
+    static $dbWrite           = array();
     // 数据库 写 权重
-    static $dbWriteWeight     = [];
+    static $dbWriteWeight     = array();
     // 当前操作类型 SELECT UPDATE DELETE INSERT
     private $type = 'SELECT';
     // 是否事务过程中 不进行数据库更换
-    private $transaction = false;
+//    private $transaction = false;
     // ---------------------------- 单进程 ----------------------------- //
     // 单进程不进行数据库更换
     private $single = true;
@@ -41,8 +41,6 @@ class DbConnection{
                 'port'=>3306,
                 'user'=>'root',
                 'pwd'=>'Huawei$123#_',
-                'tablepre'=>'hk_',
-                'keytable'=>'user',
                 'db'=>'hk'
             ]
         ],
@@ -54,8 +52,6 @@ class DbConnection{
                 'port'=>3306,
                 'user'=>'root',
                 'pwd'=>'Huawei$123#_',
-                'tablepre'=>'hk_',
-                'keytable'=>'user',
                 'db'=>'hk'
             ],
             [
@@ -65,8 +61,6 @@ class DbConnection{
                 'port'=>3306,
                 'user'=>'root',
                 'pwd'=>'Huawei$123#_',
-                'tablepre'=>'hk_',
-                'keytable'=>'user',
                 'db'=>'hk'
             ]
         ]
@@ -77,15 +71,14 @@ class DbConnection{
      * @param int    $port          // 端口
      * @param string $user          // 用户名
      * @param string $pwd           // 密码
-//     * @param string $tablepre      // 表前缀
-//     * @param string $keytable      // 核对表(用于数据库自动创建)
      * @param string $db            // 数据库
      */
     public function __construct(array $DBconf, $single = true){
         $this->single = $single;
         foreach($DBconf['write'] as $k=>$v){
             self::$dbWrite[serialize($v)] = $v;
-            if(empty(end(self::$dbWriteWeight)))
+            $t = end(self::$dbWriteWeight);
+            if(empty($t))
                 self::$dbWriteWeight[$v['weight']] = serialize($v);
             else {
                 $weight = array_keys(self::$dbWriteWeight);
@@ -95,7 +88,8 @@ class DbConnection{
         if(isset($DBconf['read'])){
             foreach($DBconf['read'] as $k=>$v){
                 self::$dbRead[serialize($v)] = $v;
-                if(empty(end(self::$dbReadWeight)))
+                $t = end(self::$dbReadWeight);
+                if(empty($t))
                     self::$dbReadWeight[$v['weight']] = serialize($v);
                 else {
                     $weight = array_keys(self::$dbReadWeight);
@@ -182,7 +176,7 @@ class DbConnection{
      *
      * @return mixed
      */
-    private function query_prepare_execute($sql='',array $pars=[]){
+    private function query_prepare_execute($sql='',array $pars=array()){
         $PDO = $this->PDO();
         $i = 0;
         try{
@@ -194,26 +188,30 @@ class DbConnection{
                 $res->execute($pars);
             }
         }catch(\PDOException $e){
-//            obj('\Main\Core\Log')->write($sql."\r\n".$error);
-            if(DEBUG) {
-                if($e->errorInfo[0] === '42S02' && $e->errorInfo[1] === 1146){
-                    if($i ++ === 1) exit('自动化建表 有误 !');
-                    $this->creatDB();
-                    goto loop;
-                }else echo ('query error 已经记录 :</br>'.$sql."</br>".$e->errorInfo[2]."</br>");
+            if($e->errorInfo[0] === '42S02' && $e->errorInfo[1] === 1146){
+                if($i ++ === 1) exit('自动化建表语句有误,请核对');
+                $this->creatDB();
+                goto loop;
+            }else {
+                $er = 'query error 已经记录 :</br>'.$sql."</br>".$e->errorInfo[2]."</br>";
+                obj('\Main\Core\Log')->write($sql."\r\n".$e->errorInfo[2]);
+                if(DEBUG)
+                    echo $er;
             }
             exit;
         }
+        if($this->type === 'INSERT')
+            return $PDO;
         return $res;
     }
-    public function getAll($sql='', array $pars=[]){
+    public function getAll($sql='', array $pars=array()){
         $this->type = 'SELECT';
         return $this->query_prepare_execute($sql, $pars)->fetchall(\PDO::FETCH_ASSOC);
     }
-    public function getRow($sql='', array $pars=[]){
+    public function getRow($sql='', array $pars=array()){
         $this->type = 'SELECT';
         $re = $this->query_prepare_execute($sql, $pars)->fetch(\PDO::FETCH_ASSOC);
-        return $re ? $re : [];
+        return $re ? $re : array();
     }
 
     /**
@@ -222,31 +220,21 @@ class DbConnection{
      *
      * @return 1|0
      */
-    public function update($sql='', array $pars=[]) {
+    public function update($sql='', array $pars=array()) {
         $this->type = 'UPDATE';
-        $PDO = $this->PDO();
-        if(empty($pars))
-            $res = $PDO->exec($sql);
-        else{
-            $res = $PDO->prepare($sql);
-            $res->execute($pars);
-            $res = $res->rowCount();
-        }
-        return $res;
+        $res = $this->query_prepare_execute($sql, $pars);
+        if($res)
+            return $res->rowCount();
     }
-    public function execute($sql='', array $pars=[]){
+    public function execute($sql='', array $pars=array()){
         return $this->update($sql, $pars);
     }
 
-    public function insert($sql='', array $pars=[]){
+    public function insert($sql='', array $pars=array()){
         $this->type = 'INSERT';
-        $PDO = $this->PDO();
-        if(empty($pars))
-            $PDO->exec($sql);
-        else
-            $PDO->prepare($sql)->execute($pars);
-        $res = $PDO->lastinsertid();
-        return $res;
+        $res = $this->query_prepare_execute($sql, $pars);
+        if($res)
+            return $res->lastInsertId();
     }
     public function count($sql=''){
         $this->type = 'SELECT';
@@ -256,6 +244,20 @@ class DbConnection{
     public function prepare($sql='', $type='UPTATE'){
         $this->type = $type;
         return $this->PDO()->prepare($sql);
+    }
+    public function begin(){
+        if($this->single !== true)
+            throw new \Exception('非常不建议在单进程,多数据库切换模式下开启事务!');
+        $PDO = $this->PDO();
+        $PDO->beginTransaction();
+    }
+    public function commit(){
+        $PDO = $this->PDO();
+        $PDO->commit();
+    }
+    public function rollBack(){
+        $PDO = $this->PDO();
+        $PDO->rollBack();
     }
 
     /**

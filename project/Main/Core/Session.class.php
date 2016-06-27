@@ -57,7 +57,8 @@ class Session {
     }
     private function checkSessionDb(){
         $sql = 'show tables like "'.$this->sessionTable.'"';
-        if(empty($this->db->getRow($sql))){
+        $re = $this->db->getRow($sql);
+        if(empty($re)){
             $createDb = <<<EEE
 CREATE TABLE {$this->sessionTable} (
 session_id varchar(255) NOT NULL,

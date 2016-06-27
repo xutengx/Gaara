@@ -8,7 +8,7 @@
 namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 class Route{
-    public static $conf       = null;
+    private static $conf       = null;
     private static $url;
     private static $urlArr = array(
         'application'   => 'index',
@@ -19,7 +19,7 @@ class Route{
     private static $urlPars = array();
 
     public static function Start(){
-        self::getConf();
+        self::$conf = obj('conf');
         //获取路由路径
         self::getUrl();
         //获取不包含路由路径的url中的get参数
@@ -28,9 +28,6 @@ class Route{
         self::getController();
         //整合参数并执行
         self::doMethod();
-    }
-    private static function getConf(){
-        self::$conf = obj('conf');
     }
     private static function getUrl(){
         if( (!isset($_GET[PATH]) || empty($_GET[PATH])) && isset($_GET[MD5(IN_SYS)]) && !empty($_GET[MD5(IN_SYS)]) )

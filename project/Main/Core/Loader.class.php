@@ -133,7 +133,7 @@ class Loader{
      *  用于隔离子进程之间的资源句柄
      */
     public static function unsetAllObj(){
-        self::$obj_ins = [];
+        self::$obj_ins = array();
         return true;
     }
     /**

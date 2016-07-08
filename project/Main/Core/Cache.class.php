@@ -2,40 +2,94 @@
 namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 class Cache {
-    // 缓存目录
-    private $cacheRoot        ;
-    // 默认缓存更新时间秒数，0为不缓存
-    private $cacheLimitTime   = 30;
-    // 缓存扩展名
-    private $cacheFileExt     = "html";
+    // 缓存驱动池
+    private $Drivers = [];
+    // 默认缓存更新时间秒数
+    public $cacheLimitTime   = 30;
+
     final public function __construct($time = 30){
-        $this->cacheRoot = ROOT.'data/Cache/';
         $this->cacheLimitTime = (int)$time;
+        $this->Drivers[] = new \Main\Core\Cache\Driver\Redis();
+        $this->Drivers[] = new \Main\Core\Cache\Driver\File();
     }
+
     /**
-     * 获取缓存
-     * @param string    $cachedir 缓存文件地址
-     * @param int|false $cacheTime 缓存过期时间
+     * 方法缓存 兼容 return 与 打印输出
+     * @param object  $obj 执行对象
+     * @param string  $func 执行方法
+     * @param bool|true $cacheTime 缓存过期时间
      *
-     * @return array|bool
+     * @return mixed
      */
-    private function getCache($cachedir = '', $cacheTime){
-        $echo = $cachedir.'echo.'.$this->cacheFileExt;
-        $return = $cachedir.'return.'.$this->cacheFileExt;
-        if(file_exists($echo) || file_exists($return) && $this->cacheLimitTime !== 0){
-            $cTime = ($t = $this->getFileCreateTime($echo)) ? $t : $this->getFileCreateTime($return);
-            $cacheTime = $cacheTime ? (int)$cacheTime : $this->cacheLimitTime;
-            if(($cTime + $cacheTime) > time()){
-                $data = NULL;
-                if(file_exists($echo))
-                    echo file_get_contents($echo);
-                if(file_exists($return))
-                    $data = unserialize(file_get_contents($return));
-                return array('status' => true, 'data' => $data);
-            }
+    public function call($obj, $func, $cacheTime=true){
+        $cacheTime = is_numeric($cacheTime) ? (int)$cacheTime : $this->cacheLimitTime;
+        $pars = func_get_args();
+        unset($pars[0]);
+        unset($pars[1]);
+        unset($pars[2]);
+        $par = array_values($pars);
+        $key = $this->makeCacheDir($obj, $func, $par);
+//        var_dump($key);exit;
+
+        foreach($this->Drivers as $v){
+            $re = $v->callget($key, $cacheTime);
+            if($re['code'] === 200)
+                return $re['data'];
+        }
+        ob_start();
+        $return = $this->runFunc($obj, $func, $par);
+        $echo = ob_get_contents();
+        ob_end_flush();
+        foreach($this->Drivers as $v){
+            $re = $v->callset($key,$echo, $return);
+            if($re['code'] === 200)
+                return $re['data'];
+        }
+        return $return;
+    }
+    public function clear($obj, $func){
+        $pars = func_get_args();
+        unset($pars[0]);
+        unset($pars[1]);
+        $par = array_values($pars);
+        $key = $this->makeCacheDir($obj, $func, $par);
+        foreach($this->Drivers as $v){
+            $v->clear($key);
+        }
+        return true;
+    }
+    public function set($key, $velue, $cacheTime=false){
+        $cacheTime = is_numeric($cacheTime) ? (int)$cacheTime : $this->cacheLimitTime;
+        foreach($this->Drivers as $v){
+            $re = $v->set($key, $velue, $cacheTime);
+            if($re)
+                return true;
         }
         return false;
     }
+    public function get($key, $callback=false, $cacheTime=false){
+        $cacheTime = is_numeric($cacheTime) ? (int)$cacheTime : $this->cacheLimitTime;
+        foreach($this->Drivers as $v){
+            $re = $v->get($key);
+            if($re['code'] === 200)
+                return $re['data'];
+        }
+        if($callback !== false){
+            $re = call_user_func($callback);
+            if($this->set($key, $re, $cacheTime))
+                return $re;
+        }
+        return false;
+    }
+    public function rm($key){
+        foreach($this->Drivers as $v){
+            $re = $v->rm($key);
+            if($re)
+                return true;
+        }
+        return false;
+    }
+
     /**
      * @param object $obj 执行对象
      * @param string $func 执行方法
@@ -43,123 +97,24 @@ class Cache {
      *
      * @return string 缓存文件地址
      */
-    private function makeCacheDir($obj, $func='', array $keyArray){
-        $dir = str_replace('\\','/',get_class($obj).'/'.$func.'/');
-        $key = '';
-        if(!empty($keyArray) )
-            foreach($keyArray as $k=>$v){
-                if($v === true) $key .= '_boolean-true';
-                elseif($v === false) $key .= '_boolean-false';
-                else $key .= '_'.gettype($v).'-'.$v;
-            }
-        else $key .= '#default';
-        return $this->cacheRoot .$dir.$key.'/';
-    }
-    // 执行方法
-    private function runFunc($obj, $func, $args){
-        if (method_exists($obj, 'runProtectedFunction')) return $obj->runProtectedFunction($func, $args);
-        else return call_user_func_array(array($obj, $func), $args);
-    }
-    /**
-     * 缓存方法 兼容 return 与 打印输出
-     * @param object  $obj 执行对象
-     * @param string  $func 执行方法
-     * @param bool|true $cacheTime 缓存过期时间
-     *
-     * @return mixed
-     */
-    public function cacheCall($obj, $func, $cacheTime=true){
-        if($cacheTime === true ) $cacheTime = false;
-        $pars = func_get_args();
-        unset($pars[0]);
-        unset($pars[1]);
-        unset($pars[2]);
-        $par = array_values($pars);
-        $cachedir = $this->makeCacheDir($obj, $func, $par);
-        if($re = $this->getCache($cachedir, $cacheTime)  )
-            return $re['data'];
-        else{
-            ob_start();
-            $return = $this->runFunc($obj, $func, $par);
-            $echo = ob_get_contents();
-            ob_end_flush();
-            $this->saveFile($cachedir.'echo.html', $echo);
-            $this->saveFile($cachedir.'return.html', serialize($return));
-            return $return;
-        }
-    }
-    /**
-     * 清除指定缓存
-     * @param object|false $obj 执行对象
-     * @param string|false $func 执行方法
-     */
-    public function cacheClear($obj=false, $func=false){
-        $cachedir = $this->cacheRoot;
-        $cachedir .= $obj ? str_replace('\\','/',get_class($obj)) : '' ;
-        $cachedir .= $func ? '/'.$func : '';
-        $pars = func_get_args();
-        unset($pars[0]);
-        unset($pars[1]);
-        $keyArray = array_values($pars);
+    private function makeCacheDir($obj, $func=false, array $keyArray = array()){
+        $funDir = $func ? get_class($obj).'/'.$func.'/' : get_class($obj);
+        $dir = str_replace('\\','/',$funDir);
         $key = '';
         if(!empty($keyArray) ){
             foreach($keyArray as $k=>$v){
                 if($v === true) $key .= '_boolean-true';
                 elseif($v === false) $key .= '_boolean-false';
-                else $key .= '_'.gettype($v).'-'.$v;
+                else $key .= '_'.gettype($v).'-'.(is_array($v)?serialize($v):$v);
             }
-            $cachedir .= '/'.$key.'/';
+            $key =md5($key);
         }
-        $this->del_DirAndFile($cachedir);
+        else $key .= '#default';
+        return  $func ? $dir.$key.'/' : $dir.'/' ;
     }
-    // 递归删除 目录(绝对路径)下的所有文件,不包括自身
-    private function del_DirAndFile($dirName){
-        if (is_dir($dirName) && $dir_arr = scandir($dirName)){
-            foreach($dir_arr as $k=>$v){
-                if($v == '.' || $v == '..'){}
-                else{
-                    if(is_dir($dirName.'/'.$v)){
-                        $this->del_DirAndFile($dirName.'/'.$v);
-                        rmdir($dirName.'/'.$v);
-                    }else unlink($dirName.'/'.$v);
-                }
-            }
-        }
-    }
-    /*
-     * 缓存文件建立时间
-     * string $fileName   缓存文件名（绝对路径）
-     * 返回：文件生成时间秒数，文件不存在返回0
-     */
-    private function getFileCreateTime( $fileName ) {
-        if( ! trim($fileName) ) return 0;
-        if( file_exists( $fileName ) ) {
-            return (int)filemtime($fileName);
-        }else return 0;
-    }
-    /*
-     * 保存文件
-     * string $fileName  文件名（含相对路径）
-     * string $text      文件内容
-     * 返回：成功返回ture，失败返回false
-     */
-    private function saveFile($fileName, $text) {
-        if( ! $fileName || ! $text ) return false;
-        if(!file_exists($fileName)){
-            if(is_dir(dirname($fileName)) || $this->_mkdir(dirname($fileName))) touch($fileName);
-        }
-        if( $fp = fopen( $fileName, "wb" ) ) {
-            flock($fp, LOCK_EX | LOCK_NB);
-            if(fwrite( $fp, $text ) ) {
-                fclose($fp);
-                return true;
-            }else {
-                fclose($fp);
-                return false;
-            }
-        }return false;
-    }
-    private function _mkdir($dir, $mode = 0777 ){
-        if(is_dir(dirname($dir)) || $this->_mkdir(dirname($dir))) return mkdir($dir, $mode);
+    // 执行方法
+    private function runFunc($obj, $func, $args){
+        if (method_exists($obj, 'runProtectedFunction')) return $obj->runProtectedFunction($func, $args);
+        else return call_user_func_array(array($obj, $func), $args);
     }
 }

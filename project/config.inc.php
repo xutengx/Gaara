@@ -12,6 +12,8 @@ return array(
     'appid_mq'=>'wx7cdc6e6a298c7d80',
     'appsecret_mq'=>'e0c47bb90180097a38b21953a5bb2954',
 //    'debug_mq'=>false,
+    //服务器的信息
+//    121.40.86.93 root 1d3283e6
 
     'appid_test'=>'wx8f0ca1bc115c1fae',
     'appsecret_test'=>'d4624c36b6795d1d99dcf0547af5443d',

@@ -33,7 +33,6 @@ EOF;
     /**
      * 将完整类名,分割成 命名空间 和 类名
      * @param $classname
-     *
      * @return string &$classname
      */
     private function makeNamespace(&$classname){

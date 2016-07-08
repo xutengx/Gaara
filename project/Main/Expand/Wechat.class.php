@@ -21,8 +21,10 @@ class Wechat{
      * 有效期2小时,每日获取次数有限,建议外部缓存
      * @return mixed
      */
-    public function wx_get_token(){
-        $res = file_get_contents('https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$this->app_id.'&secret='.$this->app_secret);
+    public function wx_get_token($app_id=false, $app_secret=false){
+        $app_id = $app_id ? $app_id : $this->app_id;
+        $app_secret = $app_secret ? $app_secret : $this->app_secret;
+        $res = file_get_contents('https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$app_id.'&secret='.$app_secret);
         $res = json_decode($res, true);
         $token = $res['access_token'];
         return $token;
@@ -33,7 +35,7 @@ class Wechat{
      * @return array|mixed|string|void
      */
     public function wx_get_jsapi_ticket(){
-        $token = obj('cache')->cacheCall($this, 'wx_get_token',7000);
+        $token = obj('cache')->call($this, 'wx_get_token',7000, $this->app_id, $this->app_secret);
         $url2 = sprintf("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi",
             $token);
         $res = file_get_contents($url2);
@@ -51,7 +53,7 @@ class Wechat{
     public function get_signature($nonceStr){
         $timestamp = $_SERVER['REQUEST_TIME'];
         $wxnonceStr = $nonceStr;
-        $wxticket = obj('cache')->cacheCall($this, 'wx_get_jsapi_ticket',7000);
+        $wxticket = obj('cache')->call($this, 'wx_get_jsapi_ticket',7000);
         $wxOri = sprintf(
             "jsapi_ticket=%s&noncestr=%s&timestamp=%s&url=%s",
             $wxticket, $wxnonceStr, $timestamp,
@@ -69,10 +71,10 @@ class Wechat{
     public function get_addrSign($nonceStr){
         $timestamp = $_SERVER['REQUEST_TIME'];
         $wxnonceStr = $nonceStr;
-        $accesstoken = obj('cache')->cacheCall($this, 'wx_get_token',7000);
+        $accesstoken = obj('cache')->call($this, 'wx_get_token',7000);
         $wxOri = sprintf(
             "&accesstoken=%s&appid=%snoncestr=%s&timestamp=%s&url=%s",
-            $accesstoken, APPID, $wxnonceStr, $timestamp,
+            $accesstoken, $this->app_id, $wxnonceStr, $timestamp,
             'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']
         );
         return sha1($wxOri);

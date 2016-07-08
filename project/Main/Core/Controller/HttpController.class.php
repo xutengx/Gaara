@@ -165,7 +165,7 @@ abstract class HttpController extends \Main\Core\Controller{
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 EEE;
         // 公用view
-        obj('cache')->cacheCall(obj('Template'), 'includeFiles', 3600, MINJS);
+        obj('cache')->call(obj('Template'), 'includeFiles', 3600, MINJS);
         // 页面各种赋值
         echo '<script>'.$ajax,$this->cache,$str.'</script>';
         // 重置

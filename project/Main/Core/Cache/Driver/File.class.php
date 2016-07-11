@@ -36,14 +36,8 @@ class File implements DriverInterface {
 //        $this->del_DirAndFile($cachedir);
 //    }
 
-    /**
-     * 数据缓存
-     * @param $key
-     * @param $velue
-     * @param $cacheTime
-     * @return bool
-     */
-    public function set($key, $velue, $cacheTime=false){
+
+    public function set($key, $velue, $cacheTime){
         $filename = $this->makeFilename($key);
         $data    = "<?php\n//".sprintf('%012d',$cacheTime).serialize($velue)."\n?>";
         return $this->saveFile($filename,$data);
@@ -122,8 +116,8 @@ class File implements DriverInterface {
                     }else unlink($dirName.'/'.$v);
                 }
             }
+            return rmdir($dirName);
         }
-        return rmdir($dirName);
     }
     /*
      * 缓存文件建立时间

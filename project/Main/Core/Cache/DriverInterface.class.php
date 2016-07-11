@@ -1,9 +1,34 @@
 <?php
 namespace Main\Core\Cache;
 interface DriverInterface{
+    /**
+     * 读取缓存
+     * @param string $key 键
+     * @return array ['code'=> 200,'data'=>$content] or ['code'=>0]
+     */
     public function get($key);
-    public function set($key, $velue, $cacheTime=false);
+
+    /**
+     * 设置缓存
+     * @param string $key 键
+     * @param string $velue 值
+     * @param int $cacheTime 缓存有效时间
+     * @return bool
+     */
+    public function set($key, $velue, $cacheTime);
+
+    /**
+     * 删除单一缓存
+     * @param string $key 键
+     * @return bool
+     */
     public function rm($key);
+
+    /**
+     * 清除缓存
+     * @param $key
+     * @return mixed
+     */
     public function clear($key);
 
     /**
@@ -11,8 +36,17 @@ interface DriverInterface{
      * @param string    $cachedir 缓存文件地址
      * @param int|false $cacheTime 缓存过期时间
      *
-     * @return array|bool
+     * @echo string
+     * @return array ['code'=> 200,'data'=>$content] or ['code'=>0]
      */
     public function callget($key,$cacheTime);
-    public function callset($cachedir, $echo='',$return);
+
+    /**
+     * 设置缓存
+     * @param $cachedir
+     * @param string $echo 函数打印
+     * @param string $return 函数返回
+     * @return array ['code'=> 200,'data'=>$content] or ['code'=>0]
+     */
+    public function callset($cachedir, $echo,$return);
 }

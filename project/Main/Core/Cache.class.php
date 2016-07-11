@@ -29,8 +29,6 @@ class Cache {
         unset($pars[2]);
         $par = array_values($pars);
         $key = $this->makeCacheDir($obj, $func, $par);
-//        var_dump($key);exit;
-
         foreach($this->Drivers as $v){
             $re = $v->callget($key, $cacheTime);
             if($re['code'] === 200)
@@ -75,7 +73,9 @@ class Cache {
                 return $re['data'];
         }
         if($callback !== false){
-            $re = call_user_func($callback);
+            if(is_string($callback) || is_numeric($callback) || is_array($callback))
+                $re = $callback;
+            else $re = call_user_func($callback);
             if($this->set($key, $re, $cacheTime))
                 return $re;
         }

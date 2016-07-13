@@ -6,3 +6,7 @@ You have an error in your SQL syntax; check the manual that corresponds to your 
 SELECT * FROM `mq_user` WHERE `openid`=:openid AND `name`=:name AND `img`=:img AND `sex`=:sex AND `time`="2016-06-27 14:21:56" LIMIT 0,1
 
 
+2016-07-13 11:15:07
+SHOW COLUMNS FROM 'mq_user '
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''mq_user '' at line 1
+

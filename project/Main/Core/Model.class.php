@@ -5,14 +5,14 @@ class Model{
     protected $db ;
     // 表名,不包含表前缀
     protected $tablename   = '';
-    // 表名,不包含表前缀
+    // 表前缀
     protected $tablepre   = '';
     // 主键的字段
-    protected $key          = 'id';
+    protected $key          = null;
     // 表名
     protected $table        = '';
-    // 表字段6
-    protected $attribute = array();
+    // 表信息
+    protected $field = array();
     // 链式操作集合
     protected $options = array();
     // 链式操作 sql
@@ -39,9 +39,26 @@ class Model{
         $classname = substr($classname,strrpos($classname,'\\')+1);
         if($this->tablename === '') $this->tablename=strtr($classname, array('Model'=>''));
         if($this->table === '') $this->table = $conf->tablepre.$this->tablename;
+        $this->getTableInfo();
     }
     public function tbname(){
         return $this->table;
+    }
+    // 获取表信息
+    protected function getTableInfo(){
+        $this->field = obj('cache')->get(true, function(){
+            return $this->db->getAll('SHOW COLUMNS FROM `'.$this->table.'`');
+        },3600);
+        foreach($this->field as $v){
+            if($v['Extra'] == 'auto_increment'){
+                $this->key = $v['Field'];
+                break;
+            }
+        }
+    }
+    // 在外执行
+    final public function runProtectedFunction( $func='', array $agrs = array() ){
+        return call_user_func_array( array( $this, $func ), $agrs );
     }
 //---------------------------------------------------------- 链式操作 -----------------------------------------------------//
     /**
@@ -323,6 +340,13 @@ class Model{
             $funcName = 'analysis_'.$k;
             $this->$funcName($v);
         }
+        if(!isset($this->options_sql['select'])){
+            $str = '';
+            foreach($this->field as $v){
+                $str .= '`'.$this->table.'`.`'.$v['Field'].'`,';
+            }
+            $this->options_sql['select'] = trim($str, ',').' ';
+        }
         $sql = '';
         switch($this->options_type){
             case 'SELECT':
@@ -523,4 +547,8 @@ class Model{
         else return '"'.$str.'"';
     }
 
+    public function __get($attr){
+        if($attr === 'db')
+            return $this->db;
+    }
 }

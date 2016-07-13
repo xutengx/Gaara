@@ -28,16 +28,28 @@ class indexContr extends Controller\HttpController{
 //        obj('cache')->get('ff',function(){
 //            return $this->tt('wwwww2222wwwwww');
 //        });
-
-        $c = obj('cache');
-//        $re = obj('cache')->get('ff');
-
+//
+        $re = obj('userModel')->getAll();
+        var_dump($re);
+//        $c = obj('cache');
+////        $re = obj('cache')->get('ff');
+//
 //        $re = obj('cache')->call($this,'tt',true,222222);
-//        var_dump($re);
-        $rr = $c->get('ttt',123123);
-        echo $rr;
-        $c->rm('ttt');
-        obj('cache')->clear($this,'tt',222222);
+//        $r = 123123123123;
+//        $rr = $c->get(true,function()use($r){
+//            return $this->tt($r);
+//        },66666);
+////
+//////                var_dump($re);
+//                var_dump($rr);
+//        echo $rr;
+//        $c->rm('ttt');
+//        obj('cache')->clear($this,'tt',222222);
+
+
+
+
+
 
     }
     public function tt($r){

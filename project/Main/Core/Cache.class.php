@@ -56,8 +56,9 @@ class Cache {
         }
         return true;
     }
-    public function set($key, $velue, $cacheTime=false){
+    public function set($key=true, $velue, $cacheTime=false){
         $cacheTime = is_numeric($cacheTime) ? (int)$cacheTime : $this->cacheLimitTime;
+        $key        = ($key === true) ? $this->autoKey() : $key;
         foreach($this->Drivers as $v){
             $re = $v->set($key, $velue, $cacheTime);
             if($re)
@@ -65,8 +66,9 @@ class Cache {
         }
         return false;
     }
-    public function get($key, $callback=false, $cacheTime=false){
+    public function get($key=true, $callback=false, $cacheTime=false){
         $cacheTime = is_numeric($cacheTime) ? (int)$cacheTime : $this->cacheLimitTime;
+        $key        = ($key === true) ? $this->autoKey() : $key;
         foreach($this->Drivers as $v){
             $re = $v->get($key);
             if($re['code'] === 200)
@@ -81,6 +83,7 @@ class Cache {
         }
         return false;
     }
+
     public function rm($key){
         foreach($this->Drivers as $v){
             $re = $v->rm($key);
@@ -89,7 +92,27 @@ class Cache {
         }
         return false;
     }
-
+    // 在 调用方法 中,不应使用多于一个的自动命名
+    // 由执行缓存方法的环境,生成缓存 key = 调用类\-\调用方法
+    private function autoKey(){
+        $class = '';                // 缓存调用类
+        $func = '';                 // 缓存调用方法
+        $debug = debug_backtrace();
+        // 自动生成 缓存键
+//        if($debug[1]['args'][0] === true){
+//            // 数据来源是闭包函数
+//            if($debug[1]['args'][1] instanceof \Closure){
+                foreach($debug as $v){
+                    if(!($v['object'] instanceof \Main\Core\Cache)){
+                        $class = get_class($v['object']);
+                        $func = $v['function'];
+                        break;
+                    }
+//                }
+//            }
+        }
+        return $class.'\-\\'.$func;
+    }
     /**
      * @param object $obj 执行对象
      * @param string $func 执行方法

@@ -56,6 +56,7 @@ class Cache {
         unset($pars[1]);
         $par = array_values($pars);
         $key = $this->makeCacheDir($obj, $func, $par);
+        $key = str_replace('/#default/', '', $key);
         foreach($this->Drivers as $v){
             $v->clear($key);
         }

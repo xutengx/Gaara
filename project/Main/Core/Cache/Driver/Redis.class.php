@@ -58,11 +58,14 @@ class Redis implements DriverInterface {
         return true;
     }
     public function clear($key){
-
+        $arr = $this->handler->keys($this->prefix.$key.'*');
+        foreach($arr as $v){
+            $this->handler->delete($v);
+        }
     }
     public function callget($key,$cacheTime){
-        $echo = md5($key.'-echo');
-        $return = md5($key.'-return');
+        $echo = ($key.'echo');
+        $return = ($key.'return');
         
         $echo_content = $this->get($echo);
         $return_content = $this->get($return);
@@ -77,8 +80,8 @@ class Redis implements DriverInterface {
 
     }
     public function callset($cachedir, $echo='',$return, $cacheTime){
-        $echo_key = md5($cachedir.'-echo');
-        $return_key = md5($cachedir.'-return');
+        $echo_key = ($cachedir.'echo');
+        $return_key = ($cachedir.'return');
         
         $a = $this->set($echo_key, $echo, $cacheTime);
         $b = $this->set($return_key, $return, $cacheTime);
@@ -89,8 +92,6 @@ class Redis implements DriverInterface {
             );
         }
     }
-
-    
     
     public function __call($func, $pars){
         if(method_exists($this->handler, $func)){

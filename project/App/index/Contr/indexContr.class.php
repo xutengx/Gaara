@@ -9,7 +9,7 @@ class indexContr extends Controller\HttpController{
     }
     public function indexDo(){
         $c = obj('cache');
-//        $re = obj('cache')->call($this,'cacheTest',10 ,6);
+        $re = obj('cache')->call($this,'cacheTest',1110 ,6);
 //        $re = obj('cache')->get(true, function(){
 //            return $this->cacheTest(3);
 //            
@@ -18,6 +18,7 @@ class indexContr extends Controller\HttpController{
             $c->set('qwe_1232', 'qwe_1232', 666);
             $c->set('qwe_124', 'qwe_124', 666);
             $c->set('qwe_126', 'qwe_126', 666);
+        $c->clear($this, 'cacheTest');
         $re = obj('cache')->keys($c->redis->prefix.'*');
         var_dump($re);
         

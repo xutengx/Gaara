@@ -69,6 +69,7 @@ class File implements DriverInterface {
         return true;
     }
     public function clear($cachedir){
+        $cachedir = $this->cacheRoot.$cachedir;
         return $this->del_DirAndFile($cachedir);
     }
 
@@ -107,7 +108,6 @@ class File implements DriverInterface {
 
     // 递归删除 目录(绝对路径)下的所有文件,包括自身
     private function del_DirAndFile($dirName){
-        $dirName = $this->cacheRoot.$dirName;
         if (is_dir($dirName) && $dir_arr = scandir($dirName)){
             foreach($dir_arr as $k=>$v){
                 if($v == '.' || $v == '..'){}
@@ -118,7 +118,7 @@ class File implements DriverInterface {
                     }else unlink($dirName.'/'.$v);
                 }
             }
-            return rmdir($dirName);
+//            return rmdir($dirName);
         }
     }
     /*

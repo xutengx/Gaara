@@ -64,7 +64,9 @@ class File implements DriverInterface {
     }
     public function rm($key){
         $filename = $this->makeFilename($key);
-        return unlink($filename);
+        if(file_exists($filename))
+            return unlink($filename);
+        return true;
     }
     public function clear($cachedir){
         return $this->del_DirAndFile($cachedir);
@@ -89,7 +91,7 @@ class File implements DriverInterface {
         }
         return false;
     }
-    public function callset($cachedir, $echo='', $return){
+    public function callset($cachedir, $echo='', $return, $cacheTime){
         $this->saveFile($this->cacheRoot.$cachedir.'echo.'.$this->cacheFileExt, $echo);
         $this->saveFile($this->cacheRoot.$cachedir.'return.'.$this->cacheFileExt, serialize($return));
         clearstatcache();

@@ -48,6 +48,8 @@ class Session {
                     array(&$this, 'gc')
                 );
                 break;
+            case 'redis':
+                break;
             default:
                 ini_set('session.save_path',SESSIONPATH);
                 if(!is_dir(SESSIONPATH)) obj('tool')->__mkdir(SESSIONPATH);

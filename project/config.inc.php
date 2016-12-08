@@ -3,12 +3,14 @@ defined('IN_SYS')||exit('ACC Denied');
 return array(
     'path'=>'path',                            // 路由关键字      // 全局PATH常量
     'timezone'=>'PRC',                         // 时区
-    'sessionModuleName'=>'user',             // session存储方式  user|file
+    'sessionModuleName'=>'user',             // session存储方式  user|file|redis 若为redis,则在php.ini中配置
     'sessionPath'=>'data/Session',           // session存储路径 // 全局SESSIONPATH常量
     'sessionLife'=>3600*24*7,                  // session 时效性  // 全局SESSIONLIFE常量
     'sessionHostOnly'=>true,                  // session
     'sessionAutoStart'=>true,                  // session 自动开启
 
+    'cacheDriver'=>'redis',                     // 缓存存储方式  redis|file                  
+    
     'appid_mq'=>'wx7cdc6e6a298c7d80',
     'appsecret_mq'=>'e0c47bb90180097a38b21953a5bb2954',
 //    'debug_mq'=>false,

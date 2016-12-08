@@ -42,6 +42,7 @@ class Conf{
         define('SESSIONLIFE', $this->data['sessionLife']);
         define('SESSIONMODULENAME', $this->data['sessionModuleName']);
         define('SESSION_AUTO_START', $this->data['sessionAutoStart']);
+        define('CACHEDRIVER', $this->data['cacheDriver']);
 
         define('APPID', $this->data['appid']);
         define('APPSECRET', $this->data['appsecret']);

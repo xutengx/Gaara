@@ -46,7 +46,8 @@ interface DriverInterface{
      * @param $cachedir
      * @param string $echo 函数打印
      * @param string $return 函数返回
+     * @param int|false $cacheTime 缓存过期时间
      * @return array ['code'=> 200,'data'=>$content] or ['code'=>0]
      */
-    public function callset($cachedir, $echo,$return);
+    public function callset($cachedir, $echo,$return,$cacheTime);
 }

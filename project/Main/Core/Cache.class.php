@@ -9,8 +9,12 @@ class Cache {
 
     final public function __construct($time = 30){
         $this->cacheLimitTime = (int)$time;
-        $this->Drivers[] = new \Main\Core\Cache\Driver\Redis();
-        $this->Drivers[] = new \Main\Core\Cache\Driver\File();
+        if (CACHEDRIVER === 'redis')
+            $this->Drivers['redis'] = new \Main\Core\Cache\Driver\Redis(
+                    ['host' => '172.19.6.105']
+            );
+        else
+            $this->Drivers['file'] = new \Main\Core\Cache\Driver\File();
     }
 
     /**
@@ -18,6 +22,7 @@ class Cache {
      * @param object  $obj 执行对象
      * @param string  $func 执行方法
      * @param bool|true $cacheTime 缓存过期时间
+     * @param $par 非限定参数 
      *
      * @return mixed
      */
@@ -39,7 +44,7 @@ class Cache {
         $echo = ob_get_contents();
         ob_end_flush();
         foreach($this->Drivers as $v){
-            $re = $v->callset($key,$echo, $return);
+            $re = $v->callset($key,$echo, $return, $cacheTime);
             if($re['code'] === 200)
                 return $re['data'];
         }
@@ -85,6 +90,7 @@ class Cache {
     }
 
     public function rm($key){
+        $key = ($key === true) ? $this->autoKey() : $key;
         foreach($this->Drivers as $v){
             $re = $v->rm($key);
             if($re)
@@ -92,7 +98,7 @@ class Cache {
         }
         return false;
     }
-    // 在 调用方法 中,不应使用多于一个的自动命名
+    // 在"同一调用方法"中,不应使用多于一个的自动命名
     // 由执行缓存方法的环境,生成缓存 key = 调用类\-\调用方法
     private function autoKey(){
         $class = '';                // 缓存调用类
@@ -139,5 +145,27 @@ class Cache {
     private function runFunc($obj, $func, $args){
         if (method_exists($obj, 'runProtectedFunction')) return $obj->runProtectedFunction($func, $args);
         else return call_user_func_array(array($obj, $func), $args);
+    }
+    public function __get($par){
+        if(isset($this->Drivers[strtolower($par)]))
+            return $this->Drivers[strtolower($par)];
+        else throw new Exception('需要的缓存驱动不存在!');
+    }
+    // 使用Driver中额外支持的方法(多层__call调用)
+    public function __call($fun, $par=array()){
+        $parstr = '';
+        if($par !== NULL){
+            $par = array_values($par);
+            for( $i = 0 ; $i < count($par) ; $i++ )
+                $parstr .= ',$par['.$i.']';
+            $parstr = ltrim($parstr, ',');
+        }
+        foreach ($this->Drivers as $v) {
+            $eval = '$v->$fun('.$parstr.');';
+            $re = eval('return '.$eval);
+            if($re['code'] === 200)
+                return $re['data'];
+        }
+        throw new Exception('缓存驱动无法执行"'.$fun.'"方法');
     }
 }

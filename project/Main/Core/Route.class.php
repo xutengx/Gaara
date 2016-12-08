@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2015/12/21 0021
- * Time: 17:12
- */
 namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 class Route{

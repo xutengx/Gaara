@@ -11,31 +11,6 @@ class File implements DriverInterface {
     final public function __construct(){
         $this->cacheRoot = ROOT.'data/Cache/';
     }
-    /**
-     * 清除指定缓存
-     * @param object|false $obj 执行对象
-     * @param string|false $func 执行方法
-     */
-//    public function cacheClear($obj=false, $func=false){
-//        $cachedir = $this->cacheRoot;
-//        $cachedir .= $obj ? str_replace('\\','/',get_class($obj)) : '' ;
-//        $cachedir .= $func ? '/'.$func : '';
-//        $pars = func_get_args();
-//        unset($pars[0]);
-//        unset($pars[1]);
-//        $keyArray = array_values($pars);
-//        $key = '';
-//        if(!empty($keyArray) ){
-//            foreach($keyArray as $k=>$v){
-//                if($v === true) $key .= '_boolean-true';
-//                elseif($v === false) $key .= '_boolean-false';
-//                else $key .= '_'.gettype($v).'-'.$v;
-//            }
-//            $cachedir .= '/'.$key.'/';
-//        }
-//        $this->del_DirAndFile($cachedir);
-//    }
-
 
     public function set($key, $velue, $cacheTime){
         $filename = $this->makeFilename($key);

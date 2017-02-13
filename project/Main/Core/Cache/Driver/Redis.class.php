@@ -22,18 +22,16 @@ class Redis implements DriverInterface {
     }
 
     public function get($key){
-        if(!$this->handler->exists($this->prefix.$key))
-                goto end;
+        if (!$this->handler->exists($this->prefix . $key))
+            return array(
+                'code' => 0
+            );
         $value = $this->handler->get($this->prefix.$key);
         $data  = json_decode( $value, true );
         $data  = ($data === null) ? $value : $data;
         return array(
             'code'=> 200,
             'data'=>$data
-        );
-        end : 
-        return array(
-            'code'=>0
         );
     }
     public function set($key, $value, $cacheTime=false){

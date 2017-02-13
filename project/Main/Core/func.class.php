@@ -64,8 +64,8 @@ function statistic(){
     global $statistic;
     $runtime = ( microtime( true ) - $statistic['_beginTime'] ) * 1000; //将时间转换为毫秒
     $usedMemory = ( memory_get_usage() - $statistic['_beginMemory'] ) / 1024;
-    $time = obj( 'mysql' )->queryTimes;
+//    $time = obj( 'mysql' )->queryTimes;
     echo "<br /><br />运行时间: {$runtime} 毫秒<br />";
     echo "耗费内存: {$usedMemory} K<br />";
-    echo "数据库操作次数: {$time} 次<br /><br /><br />";
+//    echo "数据库操作次数: {$time} 次<br /><br /><br />";
 }

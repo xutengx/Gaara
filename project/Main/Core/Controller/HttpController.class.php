@@ -205,7 +205,6 @@ EEE;
                 break;
             default:
                 throw new \Main\Core\Exception('暂不支持的数据类型!');
-                break;
         }
     }
     /**

@@ -54,7 +54,6 @@ class Tool{
         exit();
     }
     // curl发送post请求
-    // test
     final public function sendPost($url, array $data=array()){
         //初始化
         $curl = curl_init();
@@ -69,15 +68,18 @@ class Tool{
         //设置post数据
         curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
         //执行命令
-        $data = curl_exec($curl);
+        $re = curl_exec($curl);
         //关闭URL请求
         curl_close($curl);
         //显示获得的数据
-        return $data;
+        return $re;
     }
     // curl发送get请求
-    // test
     final public function sendGet($url, array $data=array()){
+        if(!empty($data)){
+            $query = http_build_query($data);
+            $url .= strpos($url, '?') ? '&'.$query : '?'/$query;
+        }
         //初始化
         $curl = curl_init();
         //设置抓取的url
@@ -87,11 +89,11 @@ class Tool{
         //设置获取的信息以文件流的形式返回，而不是直接输出。
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         //执行命令
-        $data = curl_exec($curl);
+        $re = curl_exec($curl);
         //关闭URL请求
         curl_close($curl);
         //显示获得的数据
-        print_r($data);
+        print_r($re);
     }
     //参数1：访问的URL，参数2：post数据(不填则为GET)，参数3：提交的$cookies,参数4：是否返回$cookies
     // test
@@ -226,6 +228,7 @@ class Tool{
      * @return string
      */
     final public function makeFilename($dir='', $ext='', $id=123){
+        $ext = $ext ? $ext : '';
 //        $this->absoluteDir($dir);
         $dir = $dir?rtrim($dir,'/').'/':'./';
         if(!is_dir($dir)) $this->__mkdir($dir);

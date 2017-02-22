@@ -13,9 +13,9 @@ class Model{
     protected $table        = '';
     // 表信息
     protected $field = array();
-//    // 链式操作集合
+    // 链式操作集合
     protected $options = array();
-//    // 链式操作 sql
+    // 链式操作 sql
     protected $options_sql = array();
     // 链式操作 类型 select update delete insert
     protected $options_type = null;

@@ -48,15 +48,32 @@ function headerTo($where='', $msg = false, array $pars = array()){
     foreach($pars as $k=>$v){
         $str .= $k.'/'.$v.'/';
     }
-    $where = IN_SYS.'?'.PATH.'='.$where.$str;
-//    try{
+    $where = IN_SYS.'?'.PATH.'='.trim($where, '/').'/'.$str;
         $t = ( ( $msg!==false ) ? obj('template')->jumpTo($msg, $where) : header('location:'.$where) );
         if(!$t) throw new \Exception;
-//    }
-//    catch (\Exception $e){
-//        var_dump($e->getTrace());
-//        exit;
-//    }
+}
+
+/**
+ * 异步执行
+ * @param string        $where  指定路由,如:index/index/indexDo/
+ * @param array         $pars   参数数组
+ * @param string        $scheme http/https
+ * @param string        $host   异步执行的服务器ip
+ */
+function asynExe($where='', array $pars = array(), $scheme = 'http', $host = '127.0.0.1'){
+    $where = trim($where, '/').'/';
+    foreach($pars as $k=>$v){
+        $where .= $k.'/'.$v.'/';
+    }
+    $url = $scheme.'://'.$host.$_SERVER['SCRIPT_NAME'].'?'.PATH.'='.$where;
+   
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1);
+    curl_exec($ch);
+    curl_close($ch);
+    return true;
 }
 
 // 运行状态统计

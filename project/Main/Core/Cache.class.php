@@ -11,7 +11,7 @@ class Cache {
         $this->cacheLimitTime = (int)$time;
         if (CACHEDRIVER === 'redis')
             $this->Drivers['redis'] = new \Main\Core\Cache\Driver\Redis(
-                    ['host' => '172.19.6.105']
+                    ['host' =>REDISHOST]
             );
         else
             $this->Drivers['file'] = new \Main\Core\Cache\Driver\File();

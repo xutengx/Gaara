@@ -18,9 +18,11 @@ class indexContr extends Controller\HttpController {
     }
 
     public function indexDo() {
-        $r = asynExe('index/index/test',['ttt'=>'tt','id'=>2]);
-        var_dump($r);
-        exit;
+        $a = unserialize('a:2:{s:5:"hotel";a:3:{i:1;s:6:"100758";i:2;s:6:"100722";i:3;s:6:"100699";}s:4:"room";a:3:{i:1;s:0:"";i:2;s:0:"";i:3;s:0:"";}}');
+        var_dump($a);exit;
+//        $r = asynExe('index/index/test',['ttt'=>'tt','id'=>2]);
+//        var_dump($r);
+//        exit;
     }
 
     public function test() {

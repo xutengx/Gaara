@@ -28,6 +28,7 @@ class Session {
     final public function __construct($Manual = false){
         $this->Manual = $Manual;
         $this->lifeTime = ini_get('session.gc_maxlifetime');
+        ini_set('session.cookie_httponly', SESSIONHOSTONLY);
         ini_set('session.cookie_lifetime', SESSIONLIFE);
         ini_set('session.gc_maxlifetime', SESSIONLIFE);
         switch(SESSIONMODULENAME){

@@ -40,6 +40,7 @@ class Conf{
 
         define('SESSIONPATH', ROOT.$this->data['sessionPath']);
         define('SESSIONLIFE', $this->data['sessionLife']);
+        define('SESSIONHOSTONLY', $this->data['sessionHostOnly']);
         define('SESSIONMODULENAME', $this->data['sessionModuleName']);
         define('SESSION_AUTO_START', $this->data['sessionAutoStart']);
         define('CACHEDRIVER', $this->data['cacheDriver']);
@@ -58,6 +59,6 @@ class Conf{
         }else ini_set('display_errors', 0);
     }
     public function getCreateDb(){
-        return require(ROOT.'db.inc.php'); //配置文件信息,读过来,赋给data属性
+        return require(ROOT.'db.inc.php'); 
     }
 }

@@ -51,13 +51,13 @@ class Template {
             $ext = strrchr($v , '.');
             switch ($ext) {
                 case '.js' :
-                    $str .= '<script src="'.$v.'"></script>';
+                    $str .= '<script src="'.HOST.$v.'"></script>';
                     break;
                 case '.css' :
-                    $str .= '<link rel="stylesheet" href="'.$v.'" />';
+                    $str .= '<link rel="stylesheet" href="'.HOST.$v.'" />';
                     break;
                 case '.ico' :
-                    $str .= '<link rel="shortcut icon" href="'.$v.'" type="image/x-icon">';
+                    $str .= '<link rel="shortcut icon" href="'.HOST.$v.'" type="image/x-icon">';
                     break;
                 default:
                     break;

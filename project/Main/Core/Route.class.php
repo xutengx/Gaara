@@ -48,8 +48,7 @@ class Route{
     private static function doMethod(){
         $obj = 'App\\'.self::$urlArr['application'].'\Contr\\'.self::$urlArr['controller'];
         if(file_exists(ROOT.'App/'.self::$urlArr['application'].'/Contr/'.self::$urlArr['controller'].'.class.php')){
-            define('APP',self::$urlArr['application']);
-            define('VIEW','App/'.self::$urlArr['application'].'/View/');
+            self::defineV(self::$urlArr['application']);
             self::$urlArr['pramers'] = array_merge(self::$urlArr['pramers'], self::$urlPars);
             if(!CLI) {
                 self::filterPars();
@@ -81,6 +80,13 @@ class Route{
             }
         }
         return $data;
+    }
+    // 定义部分常量
+    private static function defineV($app){
+        define('APP',$app);
+        $script_name = str_replace(IN_SYS, '',$_SERVER['SCRIPT_NAME']);
+        define('HOST',$_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$script_name); 
+        define('VIEW',HOST.'App/'.$app.'/View/');
     }
     // 参数过滤
     private static function filterPars(){

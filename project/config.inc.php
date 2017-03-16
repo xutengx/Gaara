@@ -9,7 +9,7 @@ return array(
     'sessionHostOnly'=>true,                    // session js不获取cookie
     'sessionAutoStart'=>true,                  // session 自动开启
 
-    'cacheDriver'=>'redis',                     // 缓存存储方式  redis|file                  
+    'cacheDriver'=>'file',                     // 缓存存储方式  redis|file                  
     'redis_host'=>'127.0.0.1',      // 缓存存储方式  redis|file
     
     'appid_mq'=>'wx7cdc6e6a298c7d80',

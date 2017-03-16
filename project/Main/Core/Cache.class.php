@@ -5,9 +5,9 @@ class Cache {
     // 缓存驱动池
     private $Drivers = [];
     // 默认缓存更新时间秒数
-    public $cacheLimitTime   = 30;
+    public $cacheLimitTime   = 300;
 
-    final public function __construct($time = 30){
+    final public function __construct($time = 300){
         $this->cacheLimitTime = (int)$time;
         if (CACHEDRIVER === 'redis')
             $this->Drivers['redis'] = new \Main\Core\Cache\Driver\Redis(
@@ -56,7 +56,7 @@ class Cache {
         unset($pars[1]);
         $par = array_values($pars);
         $key = $this->makeCacheDir($obj, $func, $par);
-        $key = str_replace('/#default/', '', $key);
+        $key = str_replace('/#d/', '', $key);
         foreach($this->Drivers as $v){
             $v->clear($key);
         }
@@ -133,13 +133,13 @@ class Cache {
         $key = '';
         if(!empty($keyArray) ){
             foreach($keyArray as $k=>$v){
-                if($v === true) $key .= '_boolean-true';
-                elseif($v === false) $key .= '_boolean-false';
+                if($v === true) $key .= '_bool-t';
+                elseif($v === false) $key .= '_bool-f';
                 else $key .= '_'.gettype($v).'-'.(is_array($v)?serialize($v):$v);
             }
             $key =md5($key);
         }
-        else $key .= '#default';
+        else $key .= '#d'; // default
         return  $func ? $dir.$key.'/' : $dir.'/' ;
     }
     // 执行方法
@@ -167,6 +167,6 @@ class Cache {
             if($re['code'] === 200)
                 return $re['data'];
         }
-        throw new Exception('缓存驱动无法执行"'.$fun.'"方法');
+        throw new Exception('缓存驱动无法执行"'.$fun.'"方法 or 方法返回不正常');
     }
 }

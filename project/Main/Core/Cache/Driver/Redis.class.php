@@ -6,7 +6,7 @@ use Main\Core\Exception;
 defined('IN_SYS')||exit('ACC Denied');
 class Redis implements DriverInterface {
     // 键名前缀
-    public $prefix = 'RedisFor1-';
+    public $prefix = 'RF1:';
     private $handler = null;
 
     public function __construct($options=array()){
@@ -55,15 +55,24 @@ class Redis implements DriverInterface {
         }
         return true;
     }
+//    public function clear($key){
+//        $arr = $this->handler->keys($this->prefix.$key.'*');
+//        foreach($arr as $v){
+//            $this->handler->delete($v);
+//        }
+//    }
+    // 以scan替代keys, 解决大数据时redis堵塞的问题, 但是存在数据不准确(清除数据不完整)的情况
     public function clear($key){
-        $arr = $this->handler->keys($this->prefix.$key.'*');
-        foreach($arr as $v){
-            $this->handler->delete($v);
+        $it = \NULL; /* Initialize our iterator to NULL */
+        while($arr_keys = $this->handler->scan($it, $this->prefix.$key.'*', 10000)) {
+            foreach($arr_keys as $str_key) {
+                $this->handler->delete($str_key);
+            }
         }
     }
     public function callget($key,$cacheTime){
-        $echo = ($key.'echo');
-        $return = ($key.'return');
+        $echo = ($key.'e');
+        $return = ($key.'r');
         
         $echo_content = $this->get($echo);
         $return_content = $this->get($return);
@@ -78,8 +87,8 @@ class Redis implements DriverInterface {
 
     }
     public function callset($cachedir, $echo='',$return, $cacheTime){
-        $echo_key = ($cachedir.'echo');
-        $return_key = ($cachedir.'return');
+        $echo_key = ($cachedir.'e');
+        $return_key = ($cachedir.'r');
         
         $a = $this->set($echo_key, $echo, $cacheTime);
         $b = $this->set($return_key, $return, $cacheTime);

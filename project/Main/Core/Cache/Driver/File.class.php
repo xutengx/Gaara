@@ -45,7 +45,8 @@ class File implements DriverInterface {
     }
     public function clear($cachedir){
         $cachedir = $this->cacheRoot.$cachedir;
-        return $this->del_DirAndFile($cachedir);
+        $this->del_DirAndFile($cachedir);
+        return rmdir($cachedir);
     }
 
     public function callget($cachedir, $cacheTime ){

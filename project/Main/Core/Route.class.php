@@ -85,7 +85,8 @@ class Route{
     private static function defineV($app){
         define('APP',$app);
         $script_name = str_replace(IN_SYS, '',$_SERVER['SCRIPT_NAME']);
-        define('HOST',$_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$script_name); 
+        $host = isset($_SERVER['HTTP_HTTPS']) ? $_SERVER['HTTP_HTTPS'] : $_SERVER['REQUEST_SCHEME'];  // nginx 自定配置 proxy_set_header https https;
+        define('HOST',$host.'://'.$_SERVER['HTTP_HOST'].$script_name); 
         define('VIEW',HOST.'App/'.$app.'/View/');
     }
     // 参数过滤

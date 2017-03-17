@@ -33,7 +33,7 @@ class Model{
     final public function __construct($DbConnection = null){
         $this->db = is_null($DbConnection) ? obj('\Main\Core\DbConnection',true, obj('conf')->db) : $DbConnection;
         $this->collect = new \Main\Core\Model\collect($this->options);
-        $this->analysis = new \Main\Core\Model\analysis($this->options, $this->options_type);
+        $this->analysis = new \Main\Core\Model\analysis();
         $this->get_thisTable();
         $this->construct();
     }
@@ -84,15 +84,15 @@ class Model{
         if(!$this->from)
             $this->collect->from($this->table);
         // 填充select       
-        if(!isset($this->options_sql['select'])){
+        if(!isset($this->options_sql['select']) && $this->options_type == 'SELECT'){
             $str = '';
             foreach($this->field as $v){
                 $str .= '`'.$this->table.'`.`'.$v['Field'].'`,';
             }
             $this->options['select']['__string'][] = trim($str, ',').' ';
         }
-        $sql = $this->analysis->todo_analysis();
-       
+        $sql = $this->analysis->todo_analysis($this->options, $this->options_type);
+//        if($this->options_type=='UPDATE') var_dump($this->options);
         $this->reset();
         if($onlyOnce)
             return $sql;

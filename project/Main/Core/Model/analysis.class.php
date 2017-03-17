@@ -14,11 +14,13 @@ final class analysis{
     // 最终sql
 //    private $sql = '';
 
-    public function __construct(&$options, $options_type) {
-        $this->options = &$options;
-        $this->options_type = &$options_type;
+    public function __construct() {
     }
-    public function todo_analysis(){
+    public function todo_analysis($options, $options_type){
+        
+        $this->options = $options;
+        $this->options_type = $options_type;
+//        if($options_type == "UPDATE") var_dump ($options);
         foreach($this->options as $k => $v){
             $this->$k($v);
         }
@@ -58,8 +60,14 @@ final class analysis{
             ( isset($this->options_sql['having']) ? $this->options_sql['having'] : '').
             ( isset($this->options_sql['order']) ? $this->options_sql['order'] : '').
             ( isset($this->options_sql['limit']) ? $this->options_sql['limit'] : '');
-        
+        $this->reset();
         return $sql; 
+    }
+    // 重置
+    private function reset(){
+        $this->options = [];
+        $this->options_sql = [];
+        $this->options_type = '';
     }
 
 
@@ -113,7 +121,7 @@ final class analysis{
      */
     private function select(array $arr){
         if(isset($this->options_type) && $this->options_type !== 'SELECT')
-            throw new Exception(' 在非查询语句中,定义了查询字段 ! ');
+            throw new \Exception(' 在非查询语句中,定义了查询字段 ! ');
         $this->options_type = 'SELECT';
         $str = '';
         foreach($arr as $k=>$v){

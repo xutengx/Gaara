@@ -1,288 +1,274 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
+
 <html>
-<head>
-<title>Blog</title>
-<link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
-<link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
-<link href='http://fonts.useso.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
-<link href='http://fonts.useso.com/css?family=Titillium+Web:400,200,200italic,300,300italic,400italic,600,600italic,700,700italic,900' rel='stylesheet' type='text/css'>
-<!-- js -->
-<script src="js/jquery.min.js"></script>
-<!-- //js -->
-<!-- for-mobile-apps -->
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="keywords" content="Bizz Wow Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template, 
-Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
-<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
-		function hideURLbar(){ window.scrollTo(0,1); } </script>
-<!-- //for-mobile-apps -->
-<!-- start-smoth-scrolling -->
-<script type="text/javascript" src="js/move-top.js"></script>
-<script type="text/javascript" src="js/easing.js"></script>
-<script type="text/javascript">
-	jQuery(document).ready(function($) {
-		$(".scroll").click(function(event){		
-			event.preventDefault();
-			$('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
-		});
-	});
-</script>
-<!-- start-smoth-scrolling -->
-</head>
+	<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Concept &mdash; Free Website Template, Free HTML5 Template </title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Free HTML5 Website Template" />
+	<meta name="keywords" content="free website templates, free html5, free template, free bootstrap, free website template, html5, css3, mobile first, responsive" />
 	
-<body>
-	<div class="psd">
-	<div class="container">
-<!-- header -->
-		<div class="header">
-			<div class="logo">
-				<a href="index.html"><img src="images/logo.png" alt=" " /></a>
+
+  	<!-- Facebook and Twitter integration -->
+	<meta property="og:title" content=""/>
+	<meta property="og:image" content=""/>
+	<meta property="og:url" content=""/>
+	<meta property="og:site_name" content=""/>
+	<meta property="og:description" content=""/>
+	<meta name="twitter:title" content="" />
+	<meta name="twitter:image" content="" />
+	<meta name="twitter:url" content="" />
+	<meta name="twitter:card" content="" />
+
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+	
+	<!-- Animate.css -->
+	<link rel="stylesheet" href="css/animate.css">
+	<!-- Icomoon Icon Fonts-->
+	<link rel="stylesheet" href="css/icomoon.css">
+	<!-- Bootstrap  -->
+	<link rel="stylesheet" href="css/bootstrap.css">
+
+	<!-- Magnific Popup -->
+	<link rel="stylesheet" href="css/magnific-popup.css">
+
+	<!-- Theme style  -->
+	<link rel="stylesheet" href="css/style.css">
+
+	<!-- Modernizr JS -->
+	<script src="js/modernizr-2.6.2.min.js"></script>
+	<!-- FOR IE9 below -->
+	<!--[if lt IE 9]>
+	<script src="js/respond.min.js"></script>
+	<![endif]-->
+
+	</head>
+	<body>
+		
+	<div class="fh5co-loader"></div>
+	
+	<div id="page">
+	<nav class="fh5co-nav" role="navigation">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-2 text-left">
+					<div id="fh5co-logo"><a href="index.html">Concept<span>.</span></a></div>
+				</div>
+				<div class="col-xs-10 text-right menu-1">
+					<ul>
+						<li><a href="index.html">Home</a></li>
+						<li class="has-dropdown">
+							<a href="services.html">Services</a>
+							<ul class="dropdown">
+								<li><a href="#">Web Design</a></li>
+								<li><a href="#">eCommerce</a></li>
+								<li><a href="#">Branding</a></li>
+								<li><a href="#">API</a></li>
+							</ul>
+						</li>
+
+						<li><a href="products.html">Products</a></li>
+						<li><a href="about.html">About</a></li>
+						<li class="active"><a href="blog.html">Blog</a></li>
+						<li><a href="contact.html">Contact</a></li>
+					</ul>
+				</div>
 			</div>
-			<div class="logo-right">
-				<span class="menu"><img src="images/menu.png" alt=" "/></span>
-				<ul class="nav1">
-					<li><a href="index.html" class="act">HOME<span>START HERE</span></a></li>
-					<li><a href="index.html" class="act1">ABOUT US<span>KNOW US</span></a></li>
-					<li><a href="index.html" class="act2">FEATURES<span>WE PROVIDE</span></a></li>
-					<li class="cap"><a href="blog.html" class="act3">BLOG<span>READ NEWS</span></a></li>
-					<li><a href="portfolio.html" class="act4">PORTFOLIO<span>OUR WORK</span></a></li>
-					<li><a href="contact.html" class="act5">CONTACT US<span>GET IN TOUCH</span></a></li>
-				</ul>
-			</div>
-			<div class="clearfix"> </div>
-				<!-- script for menu -->
-					<script> 
-						$( "span.menu" ).click(function() {
-						$( "ul.nav1" ).slideToggle( 300, function() {
-						 // Animation complete.
-						});
-						});
-					</script>
-				<!-- //script for menu -->
+			
 		</div>
-<!-- //header -->
-<!-- blog -->
-	<div class="blog">
-		<div class="blog-left">
-			<div class="blog-left-info">
-				<h3><a href="single.html">Duis ultricies pharetra donec accumsan malesuada orci.</a></h3>
-				<a href="single.html"><img src="images/11.jpg" alt=" " /></a>
-				<ul>
-					<li class="men"><a href="#" class="cmn1">SUPER USER</a></li>
-					<li class="date">2015-04-20</li>
-					<li class="com"><a href="#" class="cmn">3 COMMENTS</a></li>
-				</ul>
-				<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. 
-				Praesent vestibulum molestie lacus. Aenean nonummy hendrerit mauris. 
-				Phasellus porta. Fusce suscipit varius mi. Cum sociis natoque penatibus 
-				et magnis dis parturient montes, nascetur ridiculus mus. Nulla dui.
-				Fusce feugiat malesuada odio. Morbi nunc odio, gravida at, cursus nec, 
-				luctus a, lorem. Maecenas tristique orci ac sem. Duis ultricies pharetra magna. 
-				Donec accumsan malesuada orci. Donec sit amet eros. Lorem ipsum dolor sit amet, 
-				consectetuer adipiscing elit. Mauris fermentum dictum magna. Sed laoreet aliquam leo. 
-				Ut tellus dolor, dapibus eget, elementum vel, cursus eleifend, elit. Aenean auctor wisi
-				et urna. Aliquam erat volutpat. Duis ac turpis. Integer rutrum ante eu lacus.</p>
-				<a href="single.html" class="hvr-bounce-to-left2">READ MORE</a>
-			</div>
-			<div class="blog-left-info">
-				<h3><a href="single.html">Duis ultricies pharetra donec accumsan malesuada orci.</a></h3>
-				<a href="single.html"><img src="images/12.jpg" alt=" " /></a>
-				<ul>
-					<li class="men"><a href="#" class="cmn1">SUPER USER</a></li>
-					<li class="date">2015-04-20</li>
-					<li class="com"><a href="#" class="cmn">3 COMMENTS</a></li>
-				</ul>
-				<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. 
-				Praesent vestibulum molestie lacus. Aenean nonummy hendrerit mauris. 
-				Phasellus porta. Fusce suscipit varius mi. Cum sociis natoque penatibus 
-				et magnis dis parturient montes, nascetur ridiculus mus. Nulla dui.
-				Fusce feugiat malesuada odio. Morbi nunc odio, gravida at, cursus nec, 
-				luctus a, lorem. Maecenas tristique orci ac sem. Duis ultricies pharetra magna. 
-				Donec accumsan malesuada orci. Donec sit amet eros. Lorem ipsum dolor sit amet, 
-				consectetuer adipiscing elit. Mauris fermentum dictum magna. Sed laoreet aliquam leo. 
-				Ut tellus dolor, dapibus eget, elementum vel, cursus eleifend, elit. Aenean auctor wisi
-				et urna. Aliquam erat volutpat. Duis ac turpis. Integer rutrum ante eu lacus.</p>
-				<a href="single.html" class="hvr-bounce-to-left2">READ MORE</a>
-			</div>
-		</div>
-		<div class="blog-right">
-			<h3>Categories</h3>
-			<ul>
-				<li><a href="#">Aliquam erat volutpat</a></li>
-				<li><a href="#">Integer rutrum ante eu lacus</a></li>
-				<li><a href="#">Cum sociis natoque penatibus</a></li>
-				<li><a href="#">Mauris fermentum dictum magna</a></li>
-				<li><a href="#">Sed laoreet aliquam leo</a></li>
-				<li><a href="#">Cum sociis natoque penatibus</a></li>
-			</ul>
-			<div class="recent">
-				<h3>Recent Comments</h3>
-				<div class="recent-grids">
-					<div class="recent-grid">
-						<div class="wom">
-							<a href="#"><img src="images/ff.jpg" alt=" " /></a>
+	</nav>
+
+	<header id="fh5co-header" class="fh5co-cover fh5co-cover-sm" role="banner" style="background-image:url(images/img_bg_1.jpg);" data-stellar-background-ratio="0.5">
+		<div class="overlay"></div>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-7 text-left">
+					<div class="display-t">
+						<div class="display-tc animate-box" data-animate-effect="fadeInUp">
+							<h1 class="mb30">Our Blog</h1>
 						</div>
-						<div class="wom-right">
-							<h4><a href="#">Integer rutrum ante eu</a></h4>
-							<p>Mauris fermentum dictum magna. Sed laoreet aliquam leo. 
-								Ut tellus dolor, dapibus eget, elementum vel, cursus eleifend, elit.</p>
-						</div>
-						<div class="clearfix"> </div>
 					</div>
-					<div class="recent-grid">
-						<div class="wom">
-							<a href="#"><img src="images/cc.jpg" alt=" " /></a>
-						</div>
-						<div class="wom-right">
-							<h4><a href="#">Integer rutrum ante eu</a></h4>
-							<p>Mauris fermentum dictum magna. Sed laoreet aliquam leo. 
-								Ut tellus dolor, dapibus eget, elementum vel, cursus eleifend, elit.</p>
-						</div>
-						<div class="clearfix"> </div>
-					</div>
-					<div class="recent-grid">
-						<div class="wom">
-							<a href="#"><img src="images/ff.jpg" alt=" " /></a>
-						</div>
-						<div class="wom-right">
-							<h4><a href="#">Integer rutrum ante eu</a></h4>
-							<p>Mauris fermentum dictum magna. Sed laoreet aliquam leo. 
-								Ut tellus dolor, dapibus eget, elementum vel, cursus eleifend, elit.</p>
-						</div>
-						<div class="clearfix"> </div>
-					</div>
-				</div>
-			</div>
-			<div class="footer-top-grid1">
-				<h3>Recent Tags</h3>
-				<ul class="tag2">
-					<li><a href="#">awesome</a></li>
-					<li><a href="#">strategy</a></li>
-					<li><a href="#">development</a></li>
-				</ul>
-				<ul class="tag2">
-					<li><a href="#">css</a></li>
-					<li><a href="#">photoshop</a></li>
-					<li><a href="#">photography</a></li>
-					<li><a href="#">html</a></li>
-				</ul>
-				<ul class="tag2">
-					<li><a href="#">awesome</a></li>
-					<li><a href="#">strategy</a></li>
-					<li><a href="#">development</a></li>
-				</ul>
-				<ul class="tag2">
-					<li><a href="#">css</a></li>
-					<li><a href="#">photoshop</a></li>
-					<li><a href="#">photography</a></li>
-					<li><a href="#">html</a></li>
-				</ul>
-				<ul class="tag2">
-					<li><a href="#">awesome</a></li>
-					<li><a href="#">strategy</a></li>
-					<li><a href="#">development</a></li>
-				</ul>
-			</div>
-			<div class="poll">
-				<h3>Poll</h3>
-					<div class="bar">
-						<p>UX/UX</p>
-					</div>
-					<div class="bar1">
-						<p>38%</p>
-					</div>
-					<div class="clearfix"> </div>
-				<div class="skills">
-					 <div class="skill1" style="width:100%"> </div>							
-				</div>
-					<div class="bar">
-						<p>HTML / CSS3 / SASS</p>
-					</div>
-					<div class="bar1">
-						<p>10%</p>
-					</div>
-					<div class="clearfix"> </div>
-				<div class="skills">
-					 <div class="skill2" style="width:90%"> </div>							
-				</div>
-					<div class="bar">
-						<p>Javascript</p>
-					</div>
-					<div class="bar1">
-						<p>50%</p>
-					</div>
-					<div class="clearfix"> </div>
-				<div class="skills">
-					 <div class="skill3" style="width:75%"> </div>							
-				</div>
-					<div class="bar">
-						<p>Wordpress</p>
-					</div>
-					<div class="bar1">
-						<p>38%</p>
-					</div>
-					<div class="clearfix"> </div>
-				<div class="skills">
-					 <div class="skill4" style="width:60%"> </div>							
-				</div>
-					<div class="bar">
-						<p>Php</p>
-					</div>
-					<div class="bar1">
-						<p>30%</p>
-					</div>
-					<div class="clearfix"> </div>
-				<div class="skills">
-					 <div class="skill5" style="width:60%"> </div>							
 				</div>
 			</div>
 		</div>
-		<div class="clearfix"> </div>
-		<div class="news-bottom">
-			<ul>
-				<li><a href="#" class="new1">PREV</a></li>
-				<li><a href="#">1</a></li>
-				<li><a href="#">2</a></li>
-				<li><a href="#">3</a></li>
-				<li><a href="#">4</a></li>
-				<li><a href="#" class="new1">NEXT</a></li>
-			</ul>
+	</header>
+
+	
+
+	<div id="fh5co-blog" class="fh5co-bg-section">
+		<div class="container">
+			<div class="row animate-box row-pb-md" data-animate-effect="fadeInUp">
+				<div class="col-md-8 col-md-offset-2 text-left fh5co-heading">
+					<span>Thoughts &amp; Ideas</span>
+					<h2>Our Blog</h2>
+					<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius.</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4 col-sm-6 animate-box" data-animate-effect="fadeInUp">
+					<div class="fh5co-post">
+						<span class="fh5co-date">Sep. 12th</span>
+						<h3><a href="#">Web Design for the Future</a></h3>
+						<p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto culpa amet.</p>
+						<p class="author"><img src="images/person1.jpg" alt="Free HTML5 Bootstrap Template by gettemplates.co"> <cite> Mike Adam</cite></p>
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-6 animate-box" data-animate-effect="fadeInUp">
+					<div class="fh5co-post">
+						<span class="fh5co-date">Sep. 23rd</span>
+						<h3><a href="#">Web Design for the Future</a></h3>
+						<p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto culpa amet.</p>
+						<p class="author"><img src="images/person1.jpg" alt="Free HTML5 Bootstrap Template by gettemplates.co"> <cite> Mike Adam</cite></p>
+					</div>
+				</div>
+				<div class="clearfix visible-sm-block"></div>
+
+				<div class="col-md-4 col-sm-6 animate-box" data-animate-effect="fadeInUp">
+					<div class="fh5co-post">
+						<span class="fh5co-date">Sep. 24th</span>
+						<h3><a href="#">Web Design for the Future</a></h3>
+						<p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto culpa amet.</p>
+						<p class="author"><img src="images/person1.jpg" alt="Free HTML5 Bootstrap Template by gettemplates.co"> <cite> Mike Adam</cite></p>
+					</div>
+				</div>
+
+				<div class="clearfix visible-md-block"></div>
+
+				<div class="col-md-4 col-sm-6 animate-box" data-animate-effect="fadeInUp">
+					<div class="fh5co-post">
+						<span class="fh5co-date">Sep. 12th</span>
+						<h3><a href="#">Web Design for the Future</a></h3>
+						<p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto culpa amet.</p>
+						<p class="author"><img src="images/person1.jpg" alt="Free HTML5 Bootstrap Template by gettemplates.co"> <cite> Mike Adam</cite></p>
+					</div>
+				</div>
+
+				<div class="clearfix visible-sm-block"></div>
+
+				<div class="col-md-4 col-sm-6 animate-box" data-animate-effect="fadeInUp">
+					<div class="fh5co-post">
+						<span class="fh5co-date">Sep. 23rd</span>
+						<h3><a href="#">Web Design for the Future</a></h3>
+						<p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto culpa amet.</p>
+						<p class="author"><img src="images/person1.jpg" alt="Free HTML5 Bootstrap Template by gettemplates.co"> <cite> Mike Adam</cite></p>
+					</div>
+				</div>
+
+				<div class="col-md-4 col-sm-6 animate-box" data-animate-effect="fadeInUp">
+					<div class="fh5co-post">
+						<span class="fh5co-date">Sep. 24th</span>
+						<h3><a href="#">Web Design for the Future</a></h3>
+						<p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto culpa amet.</p>
+						<p class="author"><img src="images/person1.jpg" alt="Free HTML5 Bootstrap Template by gettemplates.co"> <cite> Mike Adam</cite></p>
+					</div>
+				</div>
+				
+				<div class="clearfix visible-md-block"></div>
+
+
+			</div>
 		</div>
 	</div>
-<!-- //blog -->
-<!-- footer -->
-	<div class="footer">
-		<div class="footer-left">
-			<ul>
-				<li><a href="index.html"><img src="images/logo1.png" alt=" " /></a><span> |</span></li>
-				<li><p>The awesome agency. <span>0800 (123) 4567 // Los Angeles 746 PO</span></p></li>
-			</ul>
+
+
+
+	
+	<div id="fh5co-started">
+		<div class="container">
+			<div class="row animate-box">
+				<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
+					<span>Let's work together</span>
+					<h2>Try this template for free</h2>
+					<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius.</p>
+					<p><button type="submit" class="btn btn-default">Get In Touch</button></p>
+				</div>
+			</div>
 		</div>
-		<div class="footer-right">
-			<p>Copyright &copy; 2015.Company name All rights reserved.</p>
+	</div>
+
+	<footer id="fh5co-footer" role="contentinfo">
+		<div class="container">
+			<div class="row row-pb-md">
+				<div class="col-md-4 fh5co-widget ">
+					<h3>Concept.</h3>
+					<p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto culpa amet.</p>
+					<p><a href="#">Learn More</a></p>
+				</div>
+				<div class="col-md-2 col-sm-4 col-xs-6 col-md-push-1 ">
+					<ul class="fh5co-footer-links">
+						<li><a href="#">About</a></li>
+						<li><a href="#">Help</a></li>
+						<li><a href="#">Contact</a></li>
+						<li><a href="#">Terms</a></li>
+						<li><a href="#">Meetups</a></li>
+					</ul>
+				</div>
+
+				<div class="col-md-2 col-sm-4 col-xs-6 col-md-push-1 ">
+					<ul class="fh5co-footer-links">
+						<li><a href="#">Shop</a></li>
+						<li><a href="#">Privacy</a></li>
+						<li><a href="#">Testimonials</a></li>
+						<li><a href="#">Handbook</a></li>
+						<li><a href="#">Held Desk</a></li>
+					</ul>
+				</div>
+
+				<div class="col-md-2 col-sm-4 col-xs-6 col-md-push-1 ">
+					<ul class="fh5co-footer-links">
+						<li><a href="#">Find Designers</a></li>
+						<li><a href="#">Find Developers</a></li>
+						<li><a href="#">Teams</a></li>
+						<li><a href="#">Advertise</a></li>
+						<li><a href="#">API</a></li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="row copyright">
+				<div class="col-md-12 text-center">
+					<p>
+						<small class="block">&copy; 2016 Free HTML5. All Rights Reserved.</small> 
+						<small class="block">More Templates <a href="http://www.cssmoban.com/" target="_blank" title="模板之家">模板之家</a> - Collect from <a href="http://www.cssmoban.com/" title="网页模板" target="_blank">网页模板</a> Demo Images: <a href="#" target="_blank">Pixeden</a> &amp; <a href="#" target="_blank">Unsplash</a></small>
+					</p>
+					<p>
+						<ul class="fh5co-social-icons">
+							<li><a href="#"><i class="icon-twitter"></i></a></li>
+							<li><a href="#"><i class="icon-facebook"></i></a></li>
+							<li><a href="#"><i class="icon-linkedin"></i></a></li>
+							<li><a href="#"><i class="icon-dribbble"></i></a></li>
+						</ul>
+					</p>
+				</div>
+			</div>
+
 		</div>
-		<div class="clearfix"> </div>
+	</footer>
 	</div>
-<!-- //footer -->
+
+	<div class="gototop js-top">
+		<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
 	</div>
-	</div>
-<!-- here stars scrolling icon -->
-	<script type="text/javascript">
-									$(document).ready(function() {
-										/*
-										var defaults = {
-								  			containerID: 'toTop', // fading element id
-											containerHoverID: 'toTopHover', // fading element hover id
-											scrollSpeed: 1200,
-											easingType: 'linear' 
-								 		};
-										*/
-										
-										$().UItoTop({ easingType: 'easeOutQuart' });
-										
-									});
-	</script>
-<!-- //here ends scrolling icon -->
-</body>
+	
+	<!-- jQuery -->
+	<script src="js/jquery.min.js"></script>
+	<!-- jQuery Easing -->
+	<script src="js/jquery.easing.1.3.js"></script>
+	<!-- Bootstrap -->
+	<script src="js/bootstrap.min.js"></script>
+	<!-- Waypoints -->
+	<script src="js/jquery.waypoints.min.js"></script>
+	<!-- countTo -->
+	<script src="js/jquery.countTo.js"></script>
+	<!-- Magnific Popup -->
+	<script src="js/jquery.magnific-popup.min.js"></script>
+	<script src="js/magnific-popup-options.js"></script>
+	<!-- Stellar -->
+	<script src="js/jquery.stellar.min.js"></script>
+	<!-- Main -->
+	<script src="js/main.js"></script>
+
+	</body>
 </html>
+

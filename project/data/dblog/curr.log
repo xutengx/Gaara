@@ -13,3 +13,35 @@ tt
 2017-02-22 16:27:51
 tt
 
+2017-03-17 16:19:10
+UPDATE `balloon_admin` SET `ip`="2" WHERE `id`="1" 
+Unknown column 'ip' in 'field list'
+
+2017-03-17 16:19:45
+UPDATE `balloon_admin` SET `last_login_time`=:last_login_time,`last_login_ip`=:last_login_ip WHERE `id`="1" LIMIT 0,1
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '1' at line 1
+
+2017-03-17 16:21:28
+UPDATE `balloon_admin` SET `last_login_time`=:last_login_time,`last_login_ip`=:last_login_ip WHERE `id`="1" LIMIT 0,1
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '1' at line 1
+
+2017-03-17 16:21:47
+UPDATE `balloon_admin` SET `ip`="2" WHERE `id`="1" 
+Unknown column 'ip' in 'field list'
+
+2017-03-17 16:24:38
+UPDATE `balloon_admin` SET `last_login_time`=:last_login_time,`last_login_ip`=:last_login_ip WHERE `id`="1" LIMIT 0,1
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '1' at line 1
+
+2017-03-17 16:25:51
+UPDATE `balloon_admin` SET `last_login_time`=:last_login_time,`last_login_ip`=:last_login_ip WHERE `id`="1" LIMIT 0,1
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '1' at line 1
+
+2017-03-17 16:29:00
+UPDATE `balloon_admin` SET `last_login_time`=:last_login_time,`last_login_ip`=:last_login_ip WHERE `id`="1" LIMIT 0,1
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '1' at line 1
+
+2017-03-17 16:33:58
+UPDATE `balloon_admin` SET `last_login_time`=:last_login_time,`last_login_ip`=:last_login_ip WHERE `id`="1" 
+Data truncated for column 'last_login_ip' at row 1
+

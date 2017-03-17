@@ -13,12 +13,10 @@ class indexContr extends Controller\HttpController {
     }
 
     public function indexDo() {
-        echo VIEW;
-        var_dump('wwwwww');
         $this->display();
     }
 
-    public function __destruct() {
-        \statistic();
-    }
+//    public function __destruct() {
+//        \statistic();
+//    }
 }

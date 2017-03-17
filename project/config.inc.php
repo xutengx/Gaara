@@ -12,8 +12,8 @@ return array(
     'cacheDriver'=>'file',                     // 缓存存储方式  redis|file                  
     'redis_host'=>'127.0.0.1',      // 缓存存储方式  redis|file
     
-    'appid_mq'=>'wx7cdc6e6a298c7d80',
-    'appsecret_mq'=>'e0c47bb90180097a38b21953a5bb2954',
+//    'appid_mq'=>'wx7cdc6e6a298c7d80',
+//    'appsecret_mq'=>'e0c47bb90180097a38b21953a5bb2954',
 //    'debug_mq'=>false,
     //服务器的信息
 //    121.40.86.93 root 1d3283e6
@@ -45,7 +45,7 @@ return array(
                 'user'=>'root',
                 'pwd'=>'root',
                 'char'=>'UTF8',
-                'db'=>'file_system'
+                'db'=>'balloon'
             )
         ),
         'read'=>array(
@@ -57,7 +57,7 @@ return array(
                 'user'=>'root',
                 'pwd'=>'root',
                 'char'=>'UTF8',
-                'db'=>'file_system'
+                'db'=>'balloon'
             ),
             array(
                 'weight'=>2,
@@ -67,14 +67,14 @@ return array(
                 'user'=>'root',
                 'pwd'=>'root',
                 'char'=>'UTF8',
-                'db'=>'file_system'
+                'db'=>'balloon'
             )
         )
     ),
 
     'debug'=>true,
     'minjs'=>true,
-    'tablepre'=>'file_',
+    'tablepre'=>'balloon_',
     /**
      * @return string 多配置关键字
      */

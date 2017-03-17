@@ -1,454 +1,471 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
+
 <html>
-    <head>
-        <title>Home</title>
-        <link href="<?php echo VIEW;?>css/style.css" rel="stylesheet" type="text/css" media="all" />
-        <link href="<?php echo VIEW;?>css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
-        <!--<link href='http://fonts.useso.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
-        <link href='http://fonts.useso.com/css?family=Titillium+Web:400,200,200italic,300,300italic,400italic,600,600italic,700,700italic,900' rel='stylesheet' type='text/css'>-->
-        <!-- js -->
-        <script src="<?php echo VIEW;?>js/jquery.min.js"></script>
-        <!-- //js -->
-        <!-- for-mobile-apps -->
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta name="keywords" content="Bizz Wow Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template, 
-              Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
-        <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
-            function hideURLbar(){ window.scrollTo(0,1); } </script>
-        <!-- //for-mobile-apps -->
-        <!-- start-smoth-scrolling -->
-        <script type="text/javascript" src="<?php echo VIEW;?>js/move-top.js"></script>
-        <script type="text/javascript" src="<?php echo VIEW;?>js/easing.js"></script>
-        <script type="text/javascript">
-jQuery(document).ready(function ($) {
-    $(".scroll").click(function (event) {
-        event.preventDefault();
-        $('html,body').animate({scrollTop: $(this.hash).offset().top}, 1000);
-    });
-});
-        </script>
-        <!-- start-smoth-scrolling -->
-    </head>
-    <body >
-        <div class="psd" style="width:1200">
-            <div class="container">
-                <!-- header -->
-                <div class="header">
-                    <div class="logo">
-                        <a href="index.html"><img src="<?php echo VIEW;?>images/logo.png" alt=" " /></a>
-                    </div>
-                    <div class="logo-right">
-                        <span class="menu"><img src="<?php echo VIEW;?>images/menu.png" alt=" "/></span>
-                        <ul class="nav1">
-                            <li class="cap"><a href="index.html" class="act">HOME<span>START HERE</span></a></li>
-                            <li><a href="#about" class="act1 scroll">ABOUT US<span>KNOW US</span></a></li>
-                            <li><a href="#feature" class="act2 scroll">FEATURES<span>WE PROVIDE</span></a></li>
-                            <li><a href="blog.html" class="act3">BLOG<span>READ NEWS</span></a></li>
-                            <li><a href="portfolio.html" class="act4">PORTFOLIO<span>OUR WORK</span></a></li>
-                            <li><a href="contact.html" class="act5">CONTACT US<span>GET IN TOUCH</span></a></li>
-                        </ul>
-                    </div>
-                    <div class="clearfix"> </div>
-                    <!-- script for menu -->
-                    <script>
-                        $("span.menu").click(function () {
-                            $("ul.nav1").slideToggle(300, function () {
-                                // Animation complete.
-                            });
-                        });
-                    </script>
-                    <!-- //script for menu -->
-                </div>
-                <!-- //header -->
-                <!-- banner -->
-                <div class="banner">
-                    <!-- Slider-starts-Here -->
-                    <script src="<?php echo VIEW;?>js/responsiveslides.min.js"></script>
-                    <script>
-                        // You can also use "$(window).load(function() {"
-                        $(function () {
-                            // Slideshow 4
-                            $("#slider3").responsiveSlides({
-                                auto: true,
-                                pager: false,
-                                nav: true,
-                                speed: 500,
-                                namespace: "callbacks",
-                                before: function () {
-                                    $('.events').append("<li>before event fired.</li>");
-                                },
-                                after: function () {
-                                    $('.events').append("<li>after event fired.</li>");
-                                }
-                            });
-                        });
-                    </script>
-                    <!--//End-slider-script -->
-                    <div  id="top" class="callbacks_container wow fadeInUp" data-wow-delay="0.5s">
-                        <ul class="rslides" id="slider3">
-                            <li>
-                                <div class="banner1">
-                                    <div class="banner-info">
-                                        <h3>SHOWCASE YOUR <span>WORK.</span></h3>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="banner2">
-                                    <div class="banner-info">
-                                        <h3>SHOWCASE YOUR <span>WEB DESIGN.</span></h3>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="banner1">
-                                    <div class="banner-info">
-                                        <h3>SHOWCASE YOUR <span>DESIGN.</span></h3>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="banner2">
-                                    <div class="banner-info">
-                                        <h3>SHOWCASE YOUR <span>WEB.</span></h3>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>			
-                </div>
-                <!-- //banner -->
-                <!-- banner-bottom -->
-                <div id="feature" class="banner-bottom">
-                    <div class="banner-bottom-grids">
-                        <div class="banner-bottom-grid">
-                            <div class="um-fig">
-                                <span> </span>
-                            </div>
-                            <div class="um-text">
-                                <h3>FOLD <span>PAPER.</span></h3>
-                                <p>A human being is a part of a whole, called by the magic and know universe.</p>
-                            </div>
-                            <div class="clearfix"> </div>
-                        </div>
-                        <div class="banner-bottom-grid">
-                            <div class="t-fig">
-                                <span> </span>
-                            </div>
-                            <div class="um-text">
-                                <h3>TASTE <span>COFFEE.</span></h3>
-                                <p>A human being is a part of a whole, called by the magic and know universe.</p>
-                            </div>
-                            <div class="clearfix"> </div>
-                        </div>
-                    </div>
-                    <div class="banner-bottom-grids">
-                        <div class="banner-bottom-grid">
-                            <div class="toy-fig">
-                                <span> </span>
-                            </div>
-                            <div class="um-text">
-                                <h3>PLAY <span>HARD.</span></h3>
-                                <p>A human being is a part of a whole, called by the magic and know universe.</p>
-                            </div>
-                            <div class="clearfix"> </div>
-                        </div>
-                        <div class="banner-bottom-grid">
-                            <div class="tie-fig">
-                                <span> </span>
-                            </div>
-                            <div class="um-text">
-                                <h3>WEAR <span>TIES.</span></h3>
-                                <p>A human being is a part of a whole, called by the magic and know universe.</p>
-                            </div>
-                            <div class="clearfix"> </div>
-                        </div>
-                    </div>
-                    <div class="banner-bottom-grids">
-                        <div class="banner-bottom-grid">
-                            <div class="arr-fig">
-                                <span> </span>
-                            </div>
-                            <div class="um-text">
-                                <h3>STRECH <span>THINGS.</span></h3>
-                                <p>A human being is a part of a whole, called by the magic and know universe.</p>
-                            </div>
-                            <div class="clearfix"> </div>
-                        </div>
-                        <div class="banner-bottom-grid">
-                            <div class="graph-fig">
-                                <span> </span>
-                            </div>
-                            <div class="um-text">
-                                <h3>INCREASE <span>SALES.</span></h3>
-                                <p>A human being is a part of a whole, called by the magic and know universe.</p>
-                            </div>
-                            <div class="clearfix"> </div>
-                        </div>
-                    </div>
-                    <div class="banner-bottom-grids">
-                        <div class="banner-bottom-grid">
-                            <div class="box-fig">
-                                <span> </span>
-                            </div>
-                            <div class="um-text">
-                                <h3>MAXIMIZE <span>TASK.</span></h3>
-                                <p>A human being is a part of a whole, called by the magic and know universe.</p>
-                            </div>
-                            <div class="clearfix"> </div>
-                        </div>
-                        <div class="banner-bottom-grid">
-                            <div class="rod-fig">
-                                <span> </span>
-                            </div>
-                            <div class="um-text">
-                                <h3>COMPLETE <span>JOB.</span></h3>
-                                <p>A human being is a part of a whole, called by the magic and know universe.</p>
-                            </div>
-                            <div class="clearfix"> </div>
-                        </div>
-                    </div>
-                    <div class="clearfix"> </div>
-                </div>
-                <!-- //banner-bottom -->
-                <!-- work -->
-                <div id="about" class="work">
-                    <div class="buy">
-                        <div class="buy-text">
-                            <h3>Hi there. I am a new theme, with attitude. I am also responsive and easy do edit. 
-                                Why don’t you try me ?</h3>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque quis nulla vel
-                                dolor ultrices blandit nec sit amet. turpis it amet, consectetur adipiscing.</p>
-                        </div>
-                        <div class="buy-now">
-                            <a href="single.html" class="hvr-bounce-to-left">BUY NOW!</a>
-                        </div>
-                        <div class="clearfix"> </div>
-                    </div>
-                    <div class="line">
-                        <span> </span>
-                    </div>
-                    <div class="awesome">
-                        <div class="awesome-left">
-                            <h3>THE AWESOME <span>WORK.</span></h3>
-                            <p>Too many of us look upon Americans as dollar chasers.
-                                This is a cruel libel, even if it is reiterated thoughtlessly.</p>
-                            <a href="single.html" class="hvr-bounce-to-left1">ALL WORK.</a>
-                        </div>
-                        <div class="awesome-right">
-                            <div class="awesome-right-grid">
-                                <a href="<?php echo VIEW;?>images/3-.jpg" class="b-link-stripe b-animate-go   swipebox"  title="">
-                                    <img class="one" src="<?php echo VIEW;?>images/3.jpg" alt=" " title="Science Laboratory" />
-                                    <div class="b-wrapper">
-                                        <h2 class="b-animate b-from-left    b-delay03 ">
-                                            <img class="img-responsive" src="<?php echo VIEW;?>images/plus.png" class="zoom" alt=""/>
-                                        </h2>
-                                    </div>
-                                </a>
-                                <h4>HAVING SOME LAUNCH</h4>
-                                <p>Webdesign // Photography</p>				
-                                <div class="social">
-                                    <ul>
-                                        <li><a href="single.html" class="cam"> </a></li>
-                                        <li><a href="single.html" class="gal"> </a></li>
-                                        <li><a href="single.html" class="lin"> </a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="awesome-right-grid">
-                                <a href="<?php echo VIEW;?>images/1-.jpg" class="b-link-stripe b-animate-go   swipebox"  title="">
-                                    <img class="one" src="<?php echo VIEW;?>images/1.jpg" alt=" " title="Science Laboratory" />
-                                    <div class="b-wrapper">
-                                        <h2 class="b-animate b-from-left    b-delay03 ">
-                                            <img class="img-responsive" src="<?php echo VIEW;?>images/plus.png" class="zoom" alt=""/>
-                                        </h2>
-                                    </div>
-                                </a>
-                                <h4>TAKE YOUR TIME AND RELAX</h4>
-                                <p>Webdesign // Photography</p>				
-                                <div class="social">
-                                    <ul>
-                                        <li><a href="single.html" class="cam"> </a></li>
-                                        <li><a href="single.html" class="gal"> </a></li>
-                                        <li><a href="single.html" class="lin"> </a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="awesome-right-grid">
-                                <a href="<?php echo VIEW;?>images/2-.jpg" class="b-link-stripe b-animate-go   swipebox"  title="">
-                                    <img class="one" src="<?php echo VIEW;?>images/2.jpg" alt=" " title="Science Laboratory" />
-                                    <div class="b-wrapper">
-                                        <h2 class="b-animate b-from-left    b-delay03 ">
-                                            <img class="img-responsive" src="<?php echo VIEW;?>images/plus.png" class="zoom" alt=""/>
-                                        </h2>
-                                    </div>
-                                </a>
-                                <h4>WIRES...WIRES EVERYWHERE</h4>
-                                <p>Webdesign // Photography</p>				
-                                <div class="social">
-                                    <ul>
-                                        <li><a href="single.html" class="cam"> </a></li>
-                                        <li><a href="single.html" class="gal"> </a></li>
-                                        <li><a href="single.html" class="lin"> </a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="clearfix"> </div>
-                        </div>
-                        <link rel="stylesheet" href="<?php echo VIEW;?>css/swipebox.css">
-                        <script src="<?php echo VIEW;?>js/jquery.swipebox.min.js"></script> 
-                        <script type="text/javascript">
-                        jQuery(function ($) {
-                            $(".swipebox").swipebox();
-                        });
-                        </script>
-                        <script type="text/javascript" src="<?php echo VIEW;?>js/jquery.mixitup.min.js"></script>
-                        <script type="text/javascript">
-                        $(function () {
-                            var filterList = {
-                                init: function () {
-                                    // MixItUp plugin
-                                    // http://mixitup.io
-                                    $('#portfoliolist').mixitup({
-                                        targetSelector: '.portfolio',
-                                        filterSelector: '.filter',
-                                        effects: ['fade'],
-                                        easing: 'snap',
-                                        // call the hover effect
-                                        onMixEnd: filterList.hoverEffect()
-                                    });
-                                },
-                                hoverEffect: function () {
-                                    // Simple parallax effect
-                                    $('#portfoliolist .portfolio').hover(
-                                            function () {
-                                                $(this).find('.label').stop().animate({bottom: 0}, 200, 'easeOutQuad');
-                                                $(this).find('img').stop().animate({top: -30}, 500, 'easeOutQuad');
-                                            },
-                                            function () {
-                                                $(this).find('.label').stop().animate({bottom: -40}, 200, 'easeInQuad');
-                                                $(this).find('img').stop().animate({top: 0}, 300, 'easeOutQuad');
-                                            }
-                                    );
-                                }
-                            };
-                            // Run the show!
-                            filterList.init();
-                        });
-                        </script>
-                        <div class="clearfix"> </div>
-                    </div>
-                </div>
-                <!-- //work -->
-                <!-- footer-top -->
-                <div class="footer-top">
-                    <div class="footer-top-grid">
-                        <h3>ABOUT <span>BIZZWOW</span></h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque 
-                            id arcu neque, at convallis est felis. 
-                            <span>Aliquam lacus ligula, consectetur vel egestas quis,
-                                tincidunt et massa. Mauris et lacus elit. Praesent hendrerit.</span></p>
-                    </div>
-                    <div class="footer-top-grid">
-                        <h3>THE <span>TAGS</span></h3>
-                        <div class="unorder">
-                            <ul class="tag2">
-                                <li><a href="#">awesome</a></li>
-                                <li><a href="#">strategy</a></li>
-                                <li><a href="#">development</a></li>
-                            </ul>
-                            <ul class="tag2">
-                                <li><a href="#">css</a></li>
-                                <li><a href="#">photoshop</a></li>
-                                <li><a href="#">photography</a></li>
-                                <li><a href="#">html</a></li>
-                            </ul>
-                            <ul class="tag2">
-                                <li><a href="#">awesome</a></li>
-                                <li><a href="#">strategy</a></li>
-                                <li><a href="#">development</a></li>
-                            </ul>
-                            <ul class="tag2">
-                                <li><a href="#">css</a></li>
-                                <li><a href="#">photoshop</a></li>
-                                <li><a href="#">photography</a></li>
-                                <li><a href="#">html</a></li>
-                            </ul>
-                            <ul class="tag2">
-                                <li><a href="#">awesome</a></li>
-                                <li><a href="#">strategy</a></li>
-                                <li><a href="#">development</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="footer-top-grid">
-                        <h3>LATEST <span>TWEETS</span></h3>
-                        <ul class="twi">
-                            <li>I like this awesome freebie. Check it out <a href="mailto:info@example.com" class="mail">
-                                    @http://t.co/9vslJFpW</a> <span>ABOUT 15 MINS</span></li>
-                            <li>I like this awesome freebie. You can view it online here<a href="mailto:info@example.com" class="mail">
-                                    @http://t.co/9vslJFpW</a> <span>ABOUT 2 HOURS AGO</span></li>
-                        </ul>
-                    </div>
-                    <div class="footer-top-grid">
-                        <h3>FLICKR <span>FEED</span></h3>
-                        <div class="flickr-grids">
-                            <div class="flickr-grid">
-                                <img src="<?php echo VIEW;?>images/15.png" alt=" " title="CEO" />
-                            </div>
-                            <div class="flickr-grid">
-                                <img src="<?php echo VIEW;?>images/16.png" alt=" " title="GM" />
-                            </div>
-                            <div class="flickr-grid">
-                                <img src="<?php echo VIEW;?>images/17.png" alt=" " title="CEO" />
-                            </div>
-                            <div class="clearfix"> </div>
-                            <div class="flickr-grid">
-                                <img src="<?php echo VIEW;?>images/16.png" alt=" " title="GM" />
-                            </div>
-                            <div class="flickr-grid">
-                                <img src="<?php echo VIEW;?>images/17.png" alt=" " title="CEO" />
-                            </div>
-                            <div class="flickr-grid">
-                                <img src="<?php echo VIEW;?>images/15.png" alt=" " title="GM" />
-                            </div>
-                            <div class="clearfix"> </div>
-                        </div>
-                    </div>
-                    <div class="clearfix"> </div>
-                </div>
-                <!-- //footer-top -->
-                <!-- footer -->
-                <div class="footer">
-                    <div class="footer-left">
-                        <ul>
-                            <li><a href="index.html"><img src="<?php echo VIEW;?>images/logo1.png" alt=" " /></a><span> |</span></li>
-                            <li><p>The awesome agency. <span>0800 (123) 4567 // Los Angeles 746 PO</span></p></li>
-                        </ul>
-                    </div>
-                    <div class="footer-right">
-                        <p>Copyright &copy; 2015.Company name All rights reserved.</p>
-                    </div>
-                    <div class="clearfix"> </div>
-                </div>
-                <!-- //footer -->
-            </div>
-        </div>
-        <!-- here stars scrolling icon -->
-        <script type="text/javascript">
-            $(document).ready(function () {
-                /*
-                 var defaults = {
-                 containerID: 'toTop', // fading element id
-                 containerHoverID: 'toTopHover', // fading element hover id
-                 scrollSpeed: 1200,
-                 easingType: 'linear' 
-                 };
-                 */
-                $().UItoTop({easingType: 'easeOutQuart'});
-            });
-        </script>
-        <!-- //here ends scrolling icon -->
-    </body>
+	<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>BluePay</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="description of bluepay" />
+	<meta name="keywords" content="bluepay, balloon, bluepay balloon" />
+	
+
+  	<!-- Facebook and Twitter integration -->
+	<meta property="og:title" content=""/>
+	<meta property="og:image" content=""/>
+	<meta property="og:url" content=""/>
+	<meta property="og:site_name" content=""/>
+	<meta property="og:description" content=""/>
+	<meta name="twitter:title" content="" />
+	<meta name="twitter:image" content="" />
+	<meta name="twitter:url" content="" />
+	<meta name="twitter:card" content="" />
+
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+	
+	<!-- Animate.css -->
+        <link rel="stylesheet" href="<?php echo VIEW;?>css/animate.css">
+	<!-- Icomoon Icon Fonts-->
+	<link rel="stylesheet" href="<?php echo VIEW;?>css/icomoon.css">
+	<!-- Bootstrap  -->
+	<link rel="stylesheet" href="<?php echo VIEW;?>css/bootstrap.css">
+
+	<!-- Magnific Popup -->
+	<link rel="stylesheet" href="<?php echo VIEW;?>css/magnific-popup.css">
+
+	<!-- Theme style  -->
+	<link rel="stylesheet" href="<?php echo VIEW;?>css/style.css">
+
+	<!-- Modernizr JS -->
+	<script src="<?php echo VIEW;?>js/modernizr-2.6.2.min.js"></script>
+	<!-- FOR IE9 below -->
+	<!--[if lt IE 9]>
+	<script src="js/respond.min.js"></script>
+	<![endif]-->
+
+	</head>
+	<body>
+		
+	<div class="fh5co-loader"></div>
+	
+	<div id="page">
+	<nav class="fh5co-nav" role="navigation">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-2 text-left">
+					<div id="fh5co-logo"><a href="index.html">Concept<span>.</span></a></div>
+				</div>
+				<div class="col-xs-10 text-right menu-1">
+					<ul>
+						<li class="active"><a href="index.html">Home</a></li>
+						<li class="has-dropdown">
+							<a href="services.html">Article</a>
+							<ul class="dropdown">
+								<li><a href="#">第一类文章</a></li>
+								<li><a href="#">第二类文章</a></li>
+								<li><a href="#">第三类文章</a></li>
+								<li><a href="#">第四类文章</a></li>
+							</ul>
+						</li>
+
+						<li><a href="products.html">Products</a></li>
+						<li><a href="about.html">About</a></li>
+						<li><a href="blog.html">Blog</a></li>
+						<li><a href="contact.html">Contact</a></li>
+					</ul>
+				</div>
+			</div>
+			
+		</div>
+	</nav>
+
+	<header id="fh5co-header" class="fh5co-cover" role="banner" style="background-image:url(<?php echo VIEW;?>images/img_bg_1.jpg);" data-stellar-background-ratio="0.5">
+		<div class="overlay"></div>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-7 text-left">
+					<div class="display-t">
+						<div class="display-tc animate-box" data-animate-effect="fadeInUp">
+							<h1 class="mb30">Let us build brands together shall we?</h1>
+							<p>
+								<a href="http://gettemplates.co/" target="_blank" class="btn btn-primary">Get Started</a>  <em class="or">or</em> 
+								<a href="#/channels/staffpicks/93951774" class="link-watch popup-vimeo">Watch Video</a>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<div id="fh5co-project">
+		<div class="container">
+			<div class="row row-pb-md">
+				<div class="col-md-8 col-md-offset-2 text-left fh5co-heading  animate-box">
+					<span>Want Some Cool Stuff</span>
+					<h2>Recent Products</h2>
+					<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius.</p>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-4 col-sm-6 fh5co-project animate-box" data-animate-effect="fadeIn">
+					<a href="#"><img src="<?php echo VIEW;?>images/work-1.jpg" alt="Free HTML5 Website Template" class="img-responsive">
+						<div class="fh5co-copy">
+							<h3>Clipboard Office</h3>
+							<p>Web Design</p>
+						</div>
+					</a>
+				</div>
+				<div class="col-md-4 col-sm-6 fh5co-project animate-box" data-animate-effect="fadeIn">
+					<a href="#"><img src="<?php echo VIEW;?>images/work-2.jpg" alt="Free HTML5 Website Template" class="img-responsive">
+						<div class="fh5co-copy">
+							<h3>Smart Layers</h3>
+							<p>Brand &amp; Identity</p>
+						</div>
+					</a>
+				</div>
+				<div class="col-md-4 col-sm-6 fh5co-project animate-box" data-animate-effect="fadeIn">
+					<a href="#"><img src="<?php echo VIEW;?>images/work-3.jpg" alt="Free HTML5 Website Template" class="img-responsive">
+						<div class="fh5co-copy">
+							<h3>Notepad Mockup</h3>
+							<p>Illustration</p>
+						</div>
+					</a>
+				</div>
+
+			</div>
+		</div>
+		
+	</div>
+
+
+    <div class="copyrights">Collect from <a href="http://www.cssmoban.com/" >企业网站模板</a></div>
+    
+	<div id="fh5co-services" class="fh5co-bg-section border-bottom">
+		<div class="container">
+			<div class="row row-pb-md">
+				<div class="col-md-8 col-md-offset-2 text-left animate-box" data-animate-effect="fadeInUp">
+					<div class="fh5co-heading">
+						<span>We're expert</span>
+						<h2>What We Do</h2>
+						<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4 col-sm-6 ">
+					<div class="feature-center animate-box" data-animate-effect="fadeInUp">
+						<span class="icon">
+							<i class="icon-eye"></i>
+						</span>
+						<h3>Retina Ready</h3>
+						<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+						<p><a href="#">Learn more</a></p>
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-6 ">
+					<div class="feature-center animate-box" data-animate-effect="fadeInUp">
+						<span class="icon">
+							<i class="icon-command"></i>
+						</span>
+						<h3>Fully Responsive</h3>
+						<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+						<p><a href="#">Learn more</a></p>
+					</div>
+				</div>
+				<div class="clearfix visible-sm-block"></div>
+				<div class="col-md-4 col-sm-6 ">
+					<div class="feature-center animate-box" data-animate-effect="fadeInUp">
+						<span class="icon">
+							<i class="icon-power"></i>
+						</span>
+						<h3>Web Starter</h3>
+						<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+						<p><a href="#">Learn more</a></p>
+					</div>
+				</div>
+
+				<div class="clearfix visible-md-block"></div>
+
+				<div class="col-md-4 col-sm-6 ">
+					<div class="feature-center animate-box" data-animate-effect="fadeInUp">
+						<span class="icon">
+							<i class="icon-eye"></i>
+						</span>
+						<h3>Retina Ready</h3>
+						<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+						<p><a href="#">Learn more</a></p>
+					</div>
+				</div>
+				<div class="clearfix visible-sm-block"></div>
+				<div class="col-md-4 col-sm-6 ">
+					<div class="feature-center animate-box" data-animate-effect="fadeInUp">
+						<span class="icon">
+							<i class="icon-command"></i>
+						</span>
+						<h3>Fully Responsive</h3>
+						<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+						<p><a href="#">Learn more</a></p>
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-6 ">
+					<div class="feature-center animate-box" data-animate-effect="fadeInUp">
+						<span class="icon">
+							<i class="icon-power"></i>
+						</span>
+						<h3>Web Starter</h3>
+						<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+						<p><a href="#">Learn more</a></p>
+					</div>
+				</div>
+
+				<div class="clearfix visible-md-block"></div>
+
+			</div>
+		</div>
+	</div>
+
+
+	<div id="fh5co-testimonial" class="fh5co-bg-section">
+		<div class="container">
+			<div class="row animate-box row-pb-md">
+				<div class="col-md-8 col-md-offset-2 text-left fh5co-heading">
+					<span>You deserved happiness</span>
+					<h2>Happy Clients</h2>
+					<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius.</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6 animate-box">
+					<div class="testimonial">
+						<blockquote>
+							<p>&ldquo;Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto culpa amet.&rdquo;</p>
+							<p class="author"> <img src="<?php echo VIEW;?>images/person1.jpg" alt="Free HTML5 Bootstrap Template by gettemplates.co"> <cite>&mdash; Mike Adam</cite></p>
+						</blockquote>
+					</div>
+
+					<div class="testimonial fh5co-selected">
+						<blockquote>
+							<p>&ldquo;Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius. Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto culpa amet.&rdquo;</p>
+							<p class="author"><img src="<?php echo VIEW;?>images/person2.jpg" alt="Free HTML5 Bootstrap Template by gettemplates.co"> <cite>&mdash; Eric Miller</cite></p>
+						</blockquote>
+					</div>
+				</div>
+
+				<div class="col-md-6 animate-box">
+					<div class="testimonial fh5co-selected">
+						<blockquote>
+							<p>&ldquo;Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius. Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto culpa amet.&rdquo;</p>
+							<p class="author"><img src="<?php echo VIEW;?>images/person3.jpg" alt="Free HTML5 Bootstrap Template by gettemplates.co"> <cite>&mdash; Eric Miller</cite></p>
+						</blockquote>
+					</div>
+
+					<div class="testimonial">
+						<blockquote>
+							<p>&ldquo;Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto culpa amet.&rdquo;</p>
+							<p class="author"><img src="<?php echo VIEW;?>images/person1.jpg" alt="Free HTML5 Bootstrap Template by gettemplates.co"> <cite>&mdash; Mike Adam</cite></p>
+						</blockquote>
+					</div>
+
+				</div>
+
+				
+
+			</div>
+		</div>
+	</div>
+
+
+	<div id="fh5co-counter">
+		<div class="container">
+
+			<div class="row animate-box" data-animate-effect="fadeInUp">
+				<div class="col-md-8 col-md-offset-2 text-left fh5co-heading">
+					<span>Enjoy it</span>
+					<h2>Fun Facts</h2>
+					<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius.</p>
+				</div>
+			</div>
+
+			<div class="row">
+				
+				<div class="col-md-3 col-sm-6 animate-box" data-animate-effect="fadeInLeft">
+					<div class="feature-center">
+						<span class="icon">
+							<i class="ti-download"></i>
+						</span>
+						<span class="counter"><span class="js-counter" data-from="0" data-to="15" data-speed="1500" data-refresh-interval="50">1</span>M+</span>
+						<span class="counter-label">Downloads</span>
+
+					</div>
+				</div>
+				<div class="col-md-3 col-sm-6 animate-box" data-animate-effect="fadeInLeft">
+					<div class="feature-center">
+							<span class="icon">
+								<i class="ti-face-smile"></i>
+							</span>
+							<span class="counter"><span class="js-counter" data-from="0" data-to="120" data-speed="1500" data-refresh-interval="50">1</span>+</span>
+							<span class="counter-label">Happy Clients</span>
+						</div>
+					</div>
+					<div class="col-md-3 col-sm-6 animate-box" data-animate-effect="fadeInLeft">
+						<div class="feature-center">
+							<span class="icon">
+								<i class="ti-briefcase"></i>
+							</span>
+							<span class="counter"><span class=" js-counter" data-from="0" data-to="90" data-speed="1500" data-refresh-interval="50">1</span>+</span>
+							<span class="counter-label">Projects Done</span>
+						</div>
+					</div>
+					<div class="col-md-3 col-sm-6 animate-box" data-animate-effect="fadeInLeft">
+						<div class="feature-center">
+							<span class="icon">
+								<i class="ti-time"></i>
+							</span>
+							<span class="counter"><span class="js-counter" data-from="0" data-to="12" data-speed="1500" data-refresh-interval="50">1</span>K+</span>
+							<span class="counter-label">Hours Spent</span>
+
+						</div>
+					</div>
+						
+				</div>
+			</div>
+	</div>
+
+	<div id="fh5co-blog" class="fh5co-bg-section">
+		<div class="container">
+			<div class="row animate-box row-pb-md" data-animate-effect="fadeInUp">
+				<div class="col-md-8 col-md-offset-2 text-left fh5co-heading">
+					<span>Thoughts &amp; Ideas</span>
+					<h2>Our Blog</h2>
+					<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius.</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4 col-sm-4 animate-box" data-animate-effect="fadeInUp">
+					<div class="fh5co-post">
+						<span class="fh5co-date">Sep. 12th</span>
+						<h3><a href="#">Web Design for the Future</a></h3>
+						<p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto culpa amet.</p>
+						<p class="author"><img src="<?php echo VIEW;?>images/person1.jpg" alt="Free HTML5 Bootstrap Template by gettemplates.co"> <cite> Mike Adam</cite></p>
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-4 animate-box" data-animate-effect="fadeInUp">
+					<div class="fh5co-post">
+						<span class="fh5co-date">Sep. 23rd</span>
+						<h3><a href="#">Web Design for the Future</a></h3>
+						<p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto culpa amet.</p>
+						<p class="author"><img src="<?php echo VIEW;?>images/person1.jpg" alt="Free HTML5 Bootstrap Template by gettemplates.co"> <cite> Mike Adam</cite></p>
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-4 animate-box" data-animate-effect="fadeInUp">
+					<div class="fh5co-post">
+						<span class="fh5co-date">Sep. 24th</span>
+						<h3><a href="#">Web Design for the Future</a></h3>
+						<p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto culpa amet.</p>
+						<p class="author"><img src="<?php echo VIEW;?>images/person1.jpg" alt="Free HTML5 Bootstrap Template by gettemplates.co"> <cite> Mike Adam</cite></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="fh5co-started">
+		<div class="container">
+			<div class="row animate-box">
+				<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
+					<span>Let's work together</span>
+					<h2>Try this template for free</h2>
+					<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius.</p>
+					<p><button type="submit" class="btn btn-primary">Get In Touch</button></p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<footer id="fh5co-footer" role="contentinfo">
+		<div class="container">
+			<div class="row row-pb-md">
+				<div class="col-md-4 fh5co-widget ">
+					<h3>Concept.</h3>
+					<p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto culpa amet.</p>
+					<p><a href="#">Learn More</a></p>
+				</div>
+				<div class="col-md-2 col-sm-4 col-xs-6 col-md-push-1 ">
+					<ul class="fh5co-footer-links">
+						<li><a href="#">About</a></li>
+						<li><a href="#">Help</a></li>
+						<li><a href="#">Contact</a></li>
+						<li><a href="#">Terms</a></li>
+						<li><a href="#">Meetups</a></li>
+					</ul>
+				</div>
+
+				<div class="col-md-2 col-sm-4 col-xs-6 col-md-push-1 ">
+					<ul class="fh5co-footer-links">
+						<li><a href="#">Shop</a></li>
+						<li><a href="#">Privacy</a></li>
+						<li><a href="#">Testimonials</a></li>
+						<li><a href="#">Handbook</a></li>
+						<li><a href="#">Held Desk</a></li>
+					</ul>
+				</div>
+
+				<div class="col-md-2 col-sm-4 col-xs-6 col-md-push-1 ">
+					<ul class="fh5co-footer-links">
+						<li><a href="#">Find Designers</a></li>
+						<li><a href="#">Find Developers</a></li>
+						<li><a href="#">Teams</a></li>
+						<li><a href="#">Advertise</a></li>
+						<li><a href="#">API</a></li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="row copyright">
+				<div class="col-md-12 text-center">
+					<p>
+						<small class="block">&copy; 2016 Free HTML5. All Rights Reserved.</small> 
+						<small class="block">More Templates <a href="http://www.cssmoban.com/" target="_blank" title="模板之家">模板之家</a> - Collect from <a href="http://www.cssmoban.com/" title="网页模板" target="_blank">网页模板</a> Demo Images: <a href="#" target="_blank">Pixeden</a> &amp; <a href="#" target="_blank">Unsplash</a></small>
+					</p>
+					<p>
+						<ul class="fh5co-social-icons">
+							<li><a href="#"><i class="icon-twitter"></i></a></li>
+							<li><a href="#"><i class="icon-facebook"></i></a></li>
+							<li><a href="#"><i class="icon-linkedin"></i></a></li>
+							<li><a href="#"><i class="icon-dribbble"></i></a></li>
+						</ul>
+					</p>
+				</div>
+			</div>
+
+		</div>
+	</footer>
+	</div>
+
+	<div class="gototop js-top">
+		<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+	</div>
+	
+	<!-- jQuery -->
+	<script src="<?php echo VIEW;?>js/jquery.min.js"></script>
+	<!-- jQuery Easing -->
+	<script src="<?php echo VIEW;?>js/jquery.easing.1.3.js"></script>
+	<!-- Bootstrap -->
+	<script src="<?php echo VIEW;?>js/bootstrap.min.js"></script>
+	<!-- Waypoints -->
+	<script src="<?php echo VIEW;?>js/jquery.waypoints.min.js"></script>
+	<!-- countTo -->
+	<script src="<?php echo VIEW;?>js/jquery.countTo.js"></script>
+	<!-- Magnific Popup -->
+	<script src="<?php echo VIEW;?>js/jquery.magnific-popup.min.js"></script>
+	<script src="<?php echo VIEW;?>js/magnific-popup-options.js"></script>
+	<!-- Stellar -->
+	<script src="<?php echo VIEW;?>js/jquery.stellar.min.js"></script>
+	<!-- Main -->
+	<script src="<?php echo VIEW;?>js/main.js"></script>
+
+	</body>
 </html>
+

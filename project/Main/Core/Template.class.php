@@ -29,8 +29,7 @@ class Template {
      * @param string $message
      * @param string $jumpUrl
      */
-    public function jumpTo($message='', $jumpUrl='index.php?path=index/index/indexDo/'){
-        $waitSecond = 3;
+    public function jumpTo($message='', $jumpUrl='index.php?path=index/index/indexDo/',$waitSecond = 3){
         include ROOT.'Main/Views/tpl/'.$this->jumpTo.'.html';
         exit;
     }

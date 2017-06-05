@@ -144,8 +144,9 @@ final class analysis{
             throw new Core\Exception(' 在非更新语句中,定义了更新字段 ! ');
         $str = '';
         foreach($arr as $k=>$v){
-            if($k === '__string')
-                $str .= $v.',';
+            if($k === '__string') 
+                foreach($v as $kk=>$vv)
+                    $str .= $vv.',';
             else $str .= $this->filterColumn($k).'='.$this->filterPars($v).',';
         }
         $this->options_sql['data'] = trim($str, ',').' ';

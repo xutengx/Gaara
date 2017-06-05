@@ -33,7 +33,7 @@ class indexContr extends Controller\HttpController {
         sleep(3);
         echo 'respenson :'.$id.' time :'.time();
     }
-
+   
     public function __destruct() {
         \statistic();
     }

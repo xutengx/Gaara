@@ -13,7 +13,8 @@ class indexContr extends Controller\HttpController {
     }
 
     public function indexDo() {
-        headerTo('development/index/indexDo/'); // 开发开始
+        obj('development/indexContr')->upload();
+//        headerTo('development/index/indexDo/'); // 开发开始
     }
     
 //    public function __destruct() {

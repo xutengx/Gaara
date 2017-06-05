@@ -119,7 +119,7 @@ abstract class HttpController extends \Main\Core\Controller{
      * @return bool
      */
     protected function returnMsg($re=1, $msg='fail!'){
-        echo json_encode( array('state'=>$re, 'msg'=>$msg));
+        echo json_encode( array('state'=>$re, 'msg'=>$msg), JSON_UNESCAPED_UNICODE);
         return true;
     }
     /**
@@ -130,7 +130,7 @@ abstract class HttpController extends \Main\Core\Controller{
      */
     protected function returnData($re=''){
         if ($re !== false && $re !== null && $re !== 0 && $re !== -1) {
-            echo json_encode(array('state' => 1, 'data' => $re));
+            echo json_encode(array('state' => 1, 'data' => $re),JSON_UNESCAPED_UNICODE);
         } else $this->returnMsg(0);
         return true;
     }

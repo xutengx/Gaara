@@ -1,6 +1,5 @@
 <?php
-
-namespace App\index\Contr;
+namespace App\file\Contr;
 use \Main\Core\Controller;
 defined('IN_SYS') || exit('ACC Denied');
 
@@ -12,8 +11,7 @@ class demoContr extends Controller\HttpController {
         $this->display();
     }
 
-    public function upload() {
-        exit('wwww');
+    public function upload_demo() {
         foreach($_FILES as $v){
             $file_url = './data/' . time() . $v['name'];
             $temp[] = $file_url;
@@ -26,7 +24,7 @@ class demoContr extends Controller\HttpController {
         foreach($temp as $v){
             unlink($v);    
         }
-        var_dump(($result));exit;
+        
         var_dump(json_decode($result));exit;
     }
 }

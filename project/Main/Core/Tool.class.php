@@ -11,10 +11,10 @@ class Tool{
         $dir = str_replace('\\','/',trim($dir));
         if(substr($system,0,5) === 'Linux'){
             $pos = strpos($dir, '/');
-            if($pos === false || $pos !== 0) $dir = ROOT.$dir;
+            if($pos === false || $pos !== 0) $dir = ROOT.ltrim ($dir,'./');
         }else if(substr($system,0,7) === 'Windows'){
             $pos = strpos($dir, ':');
-            if($pos === false || $pos !== 1) $dir = ROOT.$dir;
+            if($pos === false || $pos !== 1) $dir = ROOT.ltrim ($dir,'./');
         }else exit('未兼容的操作系统!');
     }
     // 分割下载

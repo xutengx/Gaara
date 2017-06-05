@@ -25,11 +25,12 @@ class Secure{
     // 应用于Controller->post();
     // return bool
     public function checkCsrftoken($classname, $overTime){
+        if($overTime === 0) return true;
         if(isset($_SERVER['HTTP_SCRFTOKEN']) && $csrftoken = $_SERVER['HTTP_SCRFTOKEN']){
             $str = $this->decrypt($csrftoken);
             $arr = explode('|',$str);
             if($classname != $arr[0]) return false;
-            if( ($overTime != 0 && (($arr[1] + $overTime) > $_SERVER['REQUEST_TIME'])) || $overTime == 0)
+            if( ($overTime != 0 && (($arr[1] + $overTime) > $_SERVER['REQUEST_TIME'])) || $overTime === 0)
                 return true;
         }
         return false;

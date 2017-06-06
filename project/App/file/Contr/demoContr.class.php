@@ -24,7 +24,7 @@ class demoContr extends Controller\HttpController {
         foreach($temp as $v){
             unlink($v);    
         }
-        
+        var_dump($result);
         var_dump(json_decode($result));exit;
     }
 }

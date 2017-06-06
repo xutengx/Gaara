@@ -12,41 +12,65 @@ class indexContr extends Controller\HttpController {
     private $web_addr   = 'https://192.168.43.128/';
 
 
+//    public function upload(){
+//        $version = $this->post('version');
+//        switch ($version) {
+//            case '1':
+//                $this->version_1();
+//                break;
+//            default:
+//                return $this->returnMsg(0, 'version无效');
+//        }
+//    }
     public function upload(){
         $version = $this->post('version');
         switch ($version) {
             case '1':
-                $this->version_1();
+                $res = obj('version1Upload')->upload();
+                break;
+            default:
+                return $this->returnMsg(0, 'version无效');
+        }
+        return $this->returnData($res);
+    }
+    
+    public function download(){
+        $version = $this->get('version');
+        switch ($version) {
+            case '1':
+                $download = $this->get('download');
+                $file_name = $this->get('file_name');
+                obj('version1Upload')->download($file_name, $download);
                 break;
             default:
                 return $this->returnMsg(0, 'version无效');
         }
     }
     
-    /*
-     * 将文件路径转化为网路路径
-     * 
-     */
-    private function make_file_name($file_path){
-        obj('tool')->absoluteDir($file_path);
-        return strtr($file_path, [ $this->nginx_root => $this->web_addr ]);
-    }
-
-
-    private function version_1(){
-        $time = date('Ymd_Hi');
-        $data = [];
-        foreach($_FILES as $v){
-            $file_url = './data/upload/public/' . $time ;
-            $ext = substr(strrchr($v['name'], '.'), 1);
-            $file_name = obj('tool')->makeFilename($file_url, $ext);
-            $re = obj('tool')->printInFile( $file_name, file_get_contents($v['tmp_name']));
-            if($re) {
-                $data[$v['name']] = $this->make_file_name($file_name);
-            }else{
-                $data[$v['name']] = false;
-            }
-        }
-        return $this->returnData($data);
-    }
+//    /*
+//     * 将文件路径转化为网路路径
+//     * 
+//     */
+//    private function make_file_name($file_path){
+//        obj('tool')->absoluteDir($file_path);
+//        return strtr($file_path, [ $this->nginx_root => $this->web_addr ]);
+//    }
+//
+//
+//    private function version_1(){
+//        $time = date('Ymd_Hi');
+//        $data = [];
+//        foreach($_FILES as $v){
+//            $file_url = './data/upload/public/' . $time ;
+//            $ext = substr(strrchr($v['name'], '.'), 1);
+//            $file_name = obj('tool')->makeFilename($file_url, $ext);
+//            $re = obj('tool')->printInFile( $file_name, file_get_contents($v['tmp_name']));
+//            if($re) {
+//                $data[$v['name']] = $this->make_file_name($file_name);
+//            }else{
+//                $data[$v['name']] = false;
+//            }
+//        }
+//        return $this->returnData($data);
+//    }
 }

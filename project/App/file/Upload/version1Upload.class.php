@@ -6,8 +6,6 @@ class version1Upload {
     
     // 网站根目录
     private $config = [
-        'scheme' => 'http',                         // 网站根目录
-        'host'   => '192.168.43.128',               // 网络访问地址
         'save_path' => './data/upload/public/',     // 存储路径
         'key'       => 'version1'                   // 加密key
     ];
@@ -23,9 +21,9 @@ class version1Upload {
      */
     private function make_file_name($file_path){
         obj('tool')->absoluteDir($file_path);
-        $scheme = $this->config['scheme'];                // 'http';
-        $host = $this->config['host'];                  // '192.168.43.128';
-        $pars = [
+        $scheme = $_SERVER['REQUEST_SCHEME'];                // 'http';
+        $host   = $_SERVER['HTTP_HOST'];                  // '192.168.43.128';
+        $pars   = [
             'file_name' => obj('Secure')->encrypt(($file_path), $this->config['key']),
             'version' => 1,
             'download' => 'false'

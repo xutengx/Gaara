@@ -6,8 +6,13 @@ defined('IN_SYS') || exit('ACC Denied');
 class demoContr extends Controller\HttpController {
 
     private $upload_url = 'http://192.168.43.128/git/php_/project/index.php?path=file/index/upload';
+    
+    public function construct() {
+        $this->upload_url = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'].'?path=file/index/upload';
+    }
 
     public function indexDo() {
+        $this->assign('url' , $this->upload_url);
         $this->display();
     }
 

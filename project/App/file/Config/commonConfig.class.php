@@ -5,8 +5,8 @@ defined('IN_SYS') || exit('ACC Denied');
 final class commonConfig {
     
     private $version1 = [
-        'scheme' => 'http',                         // 网站根目录
-        'host'   => '192.168.43.128',               // 网络访问地址
+//        'scheme' => 'http',                         // 网站根目录
+//        'host'   => '192.168.43.128',               // 网络访问地址
         'save_path' => './data/upload/public/',     // 存储路径
         'key'       => 'version1'                   // 加密key
     ];

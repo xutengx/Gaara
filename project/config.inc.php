@@ -45,7 +45,7 @@ return array(
                 'user'=>'root',
                 'pwd'=>'root',
                 'char'=>'UTF8',
-                'db'=>'balloon'
+                'db'=>'test'
             )
         ),
         'read'=>array(
@@ -57,7 +57,7 @@ return array(
                 'user'=>'root',
                 'pwd'=>'root',
                 'char'=>'UTF8',
-                'db'=>'balloon'
+                'db'=>'test'
             ),
             array(
                 'weight'=>2,
@@ -67,14 +67,14 @@ return array(
                 'user'=>'root',
                 'pwd'=>'root',
                 'char'=>'UTF8',
-                'db'=>'balloon'
+                'db'=>'test'
             )
         )
     ),
 
     'debug'=>true,
     'minjs'=>true,
-    'tablepre'=>'balloon_',
+    'tablepre'=>'',
     /**
      * @return string 多配置关键字
      */

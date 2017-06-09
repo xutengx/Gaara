@@ -8,7 +8,8 @@ defined('IN_SYS') || exit('ACC Denied');
 class indexContr extends Controller\HttpController {
 
     private $fun_array = [
-        '10万条数据随机入队、出队，使用SplQueue与Array模拟的队列与redisList的比较' => 'test_1',
+//        '10万条数据随机入队、出队，使用Spl与Array模拟与redis的比较' => 'test_1',
+        '10万条数据随机入栈、出栈，使用Spl与Array模拟与redis的比较' => 'test_2',
     ];
 
     public function indexDo() {
@@ -24,5 +25,8 @@ class indexContr extends Controller\HttpController {
 
     private function test_1() {
         obj('queueContr')->indexDo();
+    }    
+    private function test_2() {
+        obj('stackContr')->indexDo();
     }
 }

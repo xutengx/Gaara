@@ -63,9 +63,9 @@ function headerTo($where = '', $msg = false, array $pars = array()) {
 function statistic() {
     global $statistic;
     $runtime = ( microtime(true) - $statistic['_beginTime'] ) * 1000; //将时间转换为毫秒
-    $usedMemory = ( memory_get_usage() - $statistic['_beginMemory'] ) / 1024;
+    $usedMemory = ( memory_get_peak_usage() - $statistic['_beginMemory'] ) / 1024;
 
     $time = "<br /><br />运行时间: {$runtime} 毫秒<br />";
-    $memory = "耗费内存: {$usedMemory} K<br />";
+    $memory = "耗费内存峰值: {$usedMemory} K<br />";
     echo $time, $memory;
 }

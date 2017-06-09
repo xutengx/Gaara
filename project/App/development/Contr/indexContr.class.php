@@ -3,36 +3,35 @@
 namespace App\development\Contr;
 use \Main\Core\Controller;
 defined('IN_SYS') || exit('ACC Denied');
-
+    
+function convert($size)
+{
+    $unit=array('b','kb','mb','gb','tb','pb');
+    return round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
+}
 class indexContr extends Controller\HttpController {
     public function indexDo() {
-//        $splq = new \SplStack;
-//        
-//        $splq->push(1);
-//        $splq->push(2);
-//        $splq->push(3);
-//        $splq->push(4);
-//        
-//        var_dump($splq->pop());
-//        var_dump($splq->pop());
-//        var_dump($splq->shift());
-//        var_dump($splq->shift());
-        $arr[] = 1;
-        $arr[] = 2;
-        $arr[3] = 4;
-        $arr[4] = 3;
-        
-        $tt = [];
-        array_push($tt, 1);
-        array_push($tt, 2);
-        array_push($tt, 4);
-        array_push($tt, 3);
-        
-        var_dump($arr);
-        var_dump($tt);
+        $size = 1900000;
+        $format = 'Time spent of %s(%d) is : %f seconds.</br>';
+        // test of splFixedArray
+        $spl_arr = new \splFixedArray($size);
+        $start_time = microtime(true);
+        for ($i = 0; $i < $size; $i++) {
+            $spl_arr[$i] = $i;
+        }
+        $time_spent = microtime(true) - $start_time;
+        printf($format, "splFixedArray", $size, $time_spent);
+
+        // test of PHP array
+        $php_arr = array();
+        $start_time = microtime(true);
+        for ($i = 0; $i < $size; $i++) {
+            $php_arr[$i] = $i;
+        }
+        $time_spent = microtime(true) - $start_time;
+        printf($format, "PHP array", $size, $time_spent);
         
     }
-    
 
    
     public function __destruct() {

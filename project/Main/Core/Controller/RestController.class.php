@@ -1,6 +1,5 @@
 <?php
 namespace Main\Core\Controller;
-use \Main\Core\Controller\Module;
 defined('IN_SYS')||exit('ACC Denied');
 /**
  * RESTful API 控制器类

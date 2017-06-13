@@ -62,10 +62,22 @@ function headerTo($where = '', $msg = false, array $pars = array()) {
 // 运行状态统计
 function statistic() {
     global $statistic;
+    // 框架初始化消耗时间
+    $initTime = ( $statistic['_initTime'] - $statistic['_beginTime'] ) * 1000; //将时间转换为毫秒
+    // 框架初始化消耗内存
+    $initMemory = ( $statistic['_initMemory'] - $statistic['_beginMemory'] ) / 1024;
+    // 总体消耗时间
     $runtime = ( microtime(true) - $statistic['_beginTime'] ) * 1000; //将时间转换为毫秒
+    // 程序消耗内存峰值
     $usedMemory = ( memory_get_peak_usage() - $statistic['_beginMemory'] ) / 1024;
-
-    $time = "<br /><br />运行时间: {$runtime} 毫秒<br />";
-    $memory = "耗费内存峰值: {$usedMemory} K<br />";
-    echo $time, $memory;
+    // 总体消耗内存峰值
+    $totleMemory = ( memory_get_peak_usage() ) / 1024;
+    
+    $report = '<br /><br />';
+    $report .= "框架初始化消耗时间 : {$initTime} 毫秒<br />";
+    $report .= "总体消耗时间 : {$runtime} 毫秒<br />";
+    $report .= "框架初始化消耗内存 : {$initMemory} K<br />";
+    $report .= "程序消耗内存峰值 : {$usedMemory} K<br />";
+    $report .= "总体消耗内存峰值 : {$totleMemory} K<br />";
+    echo $report;
 }

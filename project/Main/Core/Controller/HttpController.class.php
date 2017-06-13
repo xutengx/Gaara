@@ -1,6 +1,5 @@
 <?php
 namespace Main\Core\Controller;
-use \Main\Core\Controller\Module;
 defined('IN_SYS')||exit('ACC Denied');
 /**
  * 响应页面
@@ -8,6 +7,12 @@ defined('IN_SYS')||exit('ACC Denied');
  * @package Main\Core\Controller
  */
 abstract class HttpController extends \Main\Core\Controller{
+    // 可以使用 $this->post('id', '/^1[3|4|5|7|8][0-9]\d{8}$/', 'id不合法!'); 过滤参数
+    use Traits\requestTrait;
+    
+    // 可以使用 $this->getInfoOnWechatProfessional(); 一键授权(对数据库字段有一定要求)
+    // use Traits\wechatTrait;
+
     // 页面过期时间  0 : 不过期
     protected $viewOverTime = 0;
     // 缓存js赋值
@@ -18,8 +23,6 @@ abstract class HttpController extends \Main\Core\Controller{
     protected $app = NULL;
     // 当前Contr名
     protected $classname = NULL;
-    // 缓存微信授权返回值
-    protected $wechatinfo = array();
 
     public function __construct(){
         $app = explode('\\', get_class($this));
@@ -30,75 +33,7 @@ abstract class HttpController extends \Main\Core\Controller{
         $this->construct();
     }
     public function construct(){}
-    // 微信授权,$is = 0 为静默授权
-    // 配合 getInfoOnWechat.php 入口文件使用, 防止路由参数导致的手机不兼容
-    // return 用户信息 $this->wechatinfo
-    public function getInfoOnWechatProfessional($is = false){
-        $user_agent = $_SERVER['HTTP_USER_AGENT'];
-        if (strpos($user_agent, 'MicroMessenger') === false){
-            header("Content-type: text/html; charset=utf-8");
-            echo '<p>请在微信中打开</p>';
-            if(!DEBUG) exit();
-        }else{
-            $code = obj('F')->get('code');
-            //获取授权
-            $auth = obj('\Main\Expand\Wechat',true, APPID, APPSECRET);
-            if($code === null){
-                $redirect_uri = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'];
-                $redirect_uri = str_replace(IN_SYS, 'getInfoOnWechat.php', $redirect_uri);
-                $method = $is ? 'get_authorize_url2':'get_authorize_url';
-                $url    = $auth->{$method}($redirect_uri,'STATE');
-                //                https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx8f0ca1bc115c1fae&redirect_uri=http%3A%2F%2F172.19.5.55%2Fgit%2Fphp_%2Fproject%2FgetInfoOnWechat.php&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect"
-                header('Location:'.$url); //跳转get_authorize_url2()设好的url，跳转后会跳转回上面指定的url中并且带上code变量，用get方法获取即可
-            }
-            else{
-                $res = $auth -> get_access_token($code);// get_access_token()方法能够获取openid，access_token等信息
-                $explicit = obj('F')->cookie('explicit');
-                if($explicit) $this->wechatinfo = $auth->get_user_info($res['access_token'], $res['openid']);
-                else $this->wechatinfo = array('openid'=>$res['openid']);
-                $this->main_getInfo();
-            }
-        }
-    }
-    // 微信授权前的 Session 校验,之后将自动授权,以及记录数据 和 Session
-    final protected function main_checkSessionUser($is = false){
-        $user = obj('F')->session('user');
-
-        $arr['openid'] = isset($user['openid']) ? $user['openid'] : null;
-        $arr['time'] = isset($user['time']) ? $user['time'] : null;
-        $res = obj('userModel')->where($arr)->getRow();
-
-        if($res) return $arr['openid'];
-        else {
-            $this->setcookie('Location', $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], time()+60); // 记录url,完成授权后跳转
-            $this->setcookie('explicit', $is, time()+60); // 记录 是否显式授权
-            $this->getInfoOnWechatProfessional($is);
-        }
-    }
-    // 微信授权后的具体数据存储,设置 Session, 并重定向到授权前url
-    final protected function main_getInfo(){
-        $obj = obj('userModel');
-        if(!$re = $obj->where(array('openid'=>$this->wechatinfo['openid']))->getRow()){
-            $arr = array(
-                'openid'=>':openid',
-                'name'=>':name',
-                'img'=>':img',
-                'sex'=>':sex',
-                'time'  =>date('Y-m-d H:i:s',$_SERVER['REQUEST_TIME'])
-            );
-            $par = array(
-                ':openid'=>$this->wechatinfo['openid'],
-                ':name'=>isset($this->wechatinfo['nickname']) ? $this->wechatinfo['nickname'] : '',
-                ':img'=>isset($this->wechatinfo['headimgurl']) ? $this->wechatinfo['headimgurl'] : '',
-                ':sex'=>isset($this->wechatinfo['sex']) ? $this->wechatinfo['sex'] : 0
-            );
-            $id = $obj->data($arr)->insert($par);
-            $re = $obj->where('id='.$id)->getRow();
-        }
-        $_SESSION['user'] = $re;
-        $location = obj('F')->cookie('Location');
-        header('Location:'.$location);
-    }
+    
     // cookie即时生效
     protected function setcookie($var, $value = '', $time = 0, $path = '', $domain = '', $s = false){
         $_COOKIE[$var] = $value;
@@ -214,37 +149,5 @@ EEE;
      */
     protected function assignPhp($key='', $val=''){
         $this->phparray[$key] = $val;
-    }
-    final public function __call($fun, $par=array()){
-        if(in_array(strtolower($fun), array('post','put','delete'))){
-            if(!obj('Secure')->checkCsrftoken( $this->classname , $this->viewOverTime))  $this->returnMsg(0, '页面已过期,请刷新!!') && exit ;
-            loop : if(!empty($par)){
-                $bool = call_user_func_array(array(obj('f'),$fun), $par);
-                if($bool === false ) {
-                    $msg = isset($par[2]) ? $par[2] : $par[0].' 不合法!';
-                    $this->returnMsg(0, $msg) && exit;
-                }else if($bool === null ) throw new \Main\Core\Exception('尝试获取'.$fun.'中的"'.$par[0].'"没有成功!');
-                else return $bool;
-            }else {
-                /**
-                 * 按数组接受POST参数 再封装$this->post($par);
-                 * 例:$_POST['name']='zhangsang',$_POST['age']=18  则 return array('name'=>'zhangsang','age'=>18)
-                 * 若存在'name'预定义验证规则(F->getFilterArr()中),则验证;要使用自定义验证,请用$this->post单独验证
-                 * @return array
-                 * @throws \Main\Core\Exception
-                 */
-                $arrayKey = array();
-                $array = obj('f')->$fun;
-                if($array === null)  throw new \Main\Core\Exception('尝试获取'.$fun.'中的数据没有成功!');
-                foreach( $array as $k => $v ){
-                    if(array_key_exists($k, obj('F')->getFilterArr()) && !is_array($k)){
-                        $arrayKey[ $k ] = $this->{$fun}($k, $k);
-                    }else $arrayKey[ $k ] = obj('F')->{$fun}($k);
-                }
-                return $arrayKey;
-            }
-        }else if(in_array(strtolower($fun), array('get','session','cookie'))){
-            goto loop;
-        }elseif(DEBUG) throw new \Main\Core\Exception('未定义的方法:'.$fun.'!');
     }
 }

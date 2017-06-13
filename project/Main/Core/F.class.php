@@ -35,7 +35,7 @@ class F{
         'name'  => '/^[_\w\d\x{4e00}-\x{9fa5}]{2,8}$/iu'
     );
 
-    final public function __construct($par){
+    final public function __construct($par = []){
         $this->getContentType($par);
     }
     private function getContentType($par){

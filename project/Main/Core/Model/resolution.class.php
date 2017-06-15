@@ -1,6 +1,5 @@
 <?php
 namespace Main\Core\Model;
-use \Main\Core;
 /**
  * 由 \Main\Core\Model->field 分析返回相关字段信息
  */

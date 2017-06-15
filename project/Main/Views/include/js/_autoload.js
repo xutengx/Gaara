@@ -1,8 +1,8 @@
-;String.prototype.temp = function(obj){return this.replace(/\$\w+\$/gi,function(matchs){var returns = obj[matchs.replace(/\$/g, "")];return (returns + "") == "undefined"? "": returns;});};
+;String.prototype.temp = function(obj){return this.replace(/\$\w+\$/gi,function(matchs){var returns = obj[matchs.replace(/\$/g, "")];return (returns + "") === "undefined"? "": returns;});};
 jQuery.extend({
     urls : [],
     getScriptWithCache:function(url,callback){
-        if($.urls.indexOf(url) == -1){
+        if($.urls.indexOf(url) === -1){
             $.urls.push(url);
             $.ajax({
                 url: url,
@@ -20,6 +20,23 @@ jQuery.extend({
         $.getScriptWithCache($.jsorminjs+"submitData.js", function(){
             $.getinfo_base();
         });
+    },
+    set_language:function(key){
+        $.getScriptWithCache($.jsorminjs+"language.js", function(){
+            $.language = key;
+        });
+    },
+    lw:function(key){
+        $.getScriptWithCache($.jsorminjs+"language.js", function(){
+            document.write($.language_base(key));
+        });
+    },
+    lr:function(key){
+        var temp;
+        $.getScriptWithCache($.jsorminjs+"language.js", function(){
+            temp = $.language_base(key);
+        });
+        return temp;
     }
 });
 $.fn.extend({

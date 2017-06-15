@@ -73,7 +73,7 @@ return array(
     ),
 
     'debug'=>true,
-    'minjs'=>true,
+    'minjs'=>false,
     'tablepre'=>'',
     /**
      * @return string 多配置关键字

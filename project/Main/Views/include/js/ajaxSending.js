@@ -5,7 +5,7 @@ $(document).ready(function(){
     $("#PHP_fullMask").css({
         "display":"block",
         "top":$(document).scrollTop(),
-        "lift":$(document).scrollLeft(),
+        "lift":$(document).scrollLeft()
     });
     $("body").data("style", {
         'oldheight': $("body").css('height'),

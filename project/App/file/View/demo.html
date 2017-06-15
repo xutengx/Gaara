@@ -4,19 +4,48 @@
         <title>TODO supply a title</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script>
+            // 设置语言
+            $.set_language(1);
+            // 设置语言
+            $.extend({
+                language_json: {
+                    "文件服务地址": [
+                        "文件服务地址",
+                        "File System Service Address"
+                    ],
+                    "今日流水": [
+                        "今日流水",
+                        "Daily"
+                    ],
+                    "本周流水": [
+                        "本周流水",
+                        "Weekly"
+                    ],
+                    "本月流水": [
+                        "本月流水",
+                        "Monthly"
+                    ],
+                    "中文": [
+                        "中文",
+                        "ENGLISH"
+                    ]
+                }
+            });
+        </script>
     </head>
     <body>
-        <div>文件服务地址 <script>document.write(url);</script></div>
+        <div><script>$.lw('文件服务地址');</script> : <script>$.lw(url);</script></div>
         <form action="action">
             <input type="file" name="tt" />
             <input type="file" name="rr" />
             <input type="file" name="yy" />
             <input id="submit" type="button" value="ok!">
         </form>
+        <script>
+            $('#submit').submitData(__url__('demo', 'upload_demo'), function (re) {
+                console.log(re);
+            });
+        </script>
     </body>
-    <script>
-        $('#submit').submitData(__url__('demo','upload_demo'),function(re){
-            console.log(re);
-        });
-    </script>
 </html>

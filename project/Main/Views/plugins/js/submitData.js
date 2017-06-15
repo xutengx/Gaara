@@ -34,9 +34,9 @@
 $.fn.extend({
     submitData_base:function(method,callback) {
         method = arguments[0] || 'submitData';
-        var url = ( method.indexOf('/') == -1) ? __url__(method) :  method ;
+        var url = ( method.indexOf('/') === -1) ? __url__(method) :  method ;
         callback = arguments[1] || function (re) {
-                if(re.state == 0 ) alert(re.msg);
+                if(re.state === 0 ) alert(re.msg);
                 else if(re.state) alert('ok!');
                 else console.log(re);
             };
@@ -85,7 +85,7 @@ $.fn.extend({
                         else if( !inputRadioVal.hasOwnProperty(this.name) ) inputRadioVal[this.name]='';
                         break;
                     case 'file':
-                        if(typeof($(this)[0].files[0]) != 'undefined')
+                        if(typeof($(this)[0].files[0]) !== 'undefined')
                             fd.append(this.name, $(this)[0].files[0]);
                         break;
                     case 'checkbox':
@@ -100,7 +100,7 @@ $.fn.extend({
                 // text与checkbox有相同的name
                 if(inputTextVal.hasOwnProperty(i) ){
                     // 此checkbox的val == 'other'
-                    if(inputCheckboxVal[i].indexOf('other') != -1 ) {
+                    if(inputCheckboxVal[i].indexOf('other') !== -1 ) {
                         // 校验
                         if(!check(inputObj.filter('[type=text][name='+i+']'))) return false;
                         // 将text中的val用来替换 checkbox原值other
@@ -109,7 +109,7 @@ $.fn.extend({
                     // 删除 text中的val
                     delete inputTextVal[i];
                 }
-                if(inputCheckboxVal[i] == ''){
+                if(inputCheckboxVal[i] === ''){
                     alert('多选项'+i+'不能留空哦!');
                     return false;
                 }
@@ -117,14 +117,14 @@ $.fn.extend({
             }
             for (var i in inputRadioVal){
                 if (inputTextVal.hasOwnProperty(i)) {
-                    if (inputRadioVal[i] == 'other'){
+                    if (inputRadioVal[i] === 'other'){
                         // 校验
                         if(!check(inputObj.filter('[type=text][name='+i+']'))) return false;
                         inputRadioVal[i] = 'other:'+inputTextVal[i];
                     }
                     delete inputTextVal[i];
                 }
-                if (inputRadioVal[i] == '') {
+                if (inputRadioVal[i] === '') {
                     alert('单选项' + i + '不能留空哦!');
                     return false;
                 }
@@ -140,7 +140,7 @@ $.fn.extend({
 
                 fd.append(this.name, this.value);
             });
-            if(state == false) return false;
+            if(state === false) return false;
             var select = form.find('select');
             select.each(function(i){
                 fd.append(this.name, this.value);
@@ -155,7 +155,7 @@ $.fn.extend({
                 success:function(re){
                     callback(re);
                 }
-            })
+            });
         });
     }
 });

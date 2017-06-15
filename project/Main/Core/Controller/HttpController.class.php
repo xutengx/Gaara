@@ -65,7 +65,7 @@ abstract class HttpController extends \Main\Core\Controller{
      */
     protected function returnData($re=''){
         if ($re !== false && $re !== null && $re !== 0 && $re !== -1) {
-            echo json_encode(array('state' => 1, 'data' => $re),JSON_UNESCAPED_UNICODE);
+            echo json_encode(array('state' => 1, 'data' => $re), JSON_UNESCAPED_UNICODE);
         } else $this->returnMsg(0);
         return true;
     }
@@ -77,19 +77,29 @@ abstract class HttpController extends \Main\Core\Controller{
         include ROOT.'App/'.$this->app.'/View/template/'.$file.'.html';
         echo '<script>'.$this->cache.'</script>';
     }
-    // 写入script路由方法,js赋值,并引入html文件
-    final protected function display($file=false){
-        $file = $file ? $file : $this->classname;
+    
+    // 渲染页面赋值准备
+    final protected function getReady(){
         $debug = debug_backtrace();
         // 方法名,为调用此方法的最近级别函数
         $method = $debug[1]['function'];
-
-        $DATA = $this->phparray;
         $this->assign('path',PATH);
         $this->assign('in_sys',IN_SYS);
         $this->assign('view', VIEW);
         $this->assign('contr', $this->classname );
         $this->assign('method', $method);
+    }    
+
+    // javascript 设置
+    final protected function script($word){
+        $this->cache .= $word.';';
+    }
+
+    // 写入script路由方法,js赋值,并引入html文件
+    final protected function display($filename = false){
+        $file = $filename ? $filename : $this->classname;
+        $this->getReady();
+        $DATA = $this->phparray;
         // 防scrf的ajax(基于jquery), 接受post提交数据前.先验证http头中的 csrftoken
         $ajax = obj('Secure')->csrfAjax($this->classname);
         // js 路由方法

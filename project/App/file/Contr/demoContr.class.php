@@ -7,6 +7,7 @@ defined('IN_SYS') || exit('ACC Denied');
 /*
  * 文件服务, 测试类, 可做调用方法参考
  */
+
 class demoContr extends Controller\HttpController {
 
     private $upload_url = 'http://192.168.43.128/git/php_/project/index.php?path=file/index/upload';
@@ -14,9 +15,31 @@ class demoContr extends Controller\HttpController {
     public function construct() {
         $this->upload_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'] . '?path=file/index/upload';
         $language = $this->get('language');
-        if($language === 'en'){
-//            $this->script('$.set_language(1);');
+        if ($language === 'en') {
+            $this->language = 1;
         }
+        $this->language_array = [
+            "文件服务地址" => [
+                "文件服务地址1",
+                "File System Service Address1"
+            ],
+            "今日流水" => [
+                "今日流水",
+                "Daily"
+            ],
+            "本周流水" => [
+                "本周流水",
+                "Weekly"
+            ],
+            "本月流水" => [
+                "本月流水",
+                "Monthly"
+            ],
+            "中文" => [
+                "中文",
+                "ENGLISH"
+            ]
+        ];
     }
 
     public function indexDo() {

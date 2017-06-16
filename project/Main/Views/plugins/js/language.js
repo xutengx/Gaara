@@ -1,10 +1,10 @@
 ;jQuery.extend({
-    language:0,     // 默认键一 (中文)
     language_base:function(key){
+        language = (typeof($.language) === "undefined") ? 0 : $.language;       // 默认键一 (中文)
         language_json = (typeof($.language_json) === "undefined") ? {} : $.language_json;
         if(typeof(key) === "object"){
             try{
-                return key[$.language];
+                return key[language];
             }catch(e){
                 try{
                     return key[0];
@@ -15,7 +15,7 @@
         }
         // 检查 language 是否存在
         try{
-            return this.language_json[key][$.language];
+            return this.language_json[key][language];
         }catch(e){
             try{
                 return this.language_json[key][0];

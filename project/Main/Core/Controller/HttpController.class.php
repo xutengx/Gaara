@@ -15,6 +15,10 @@ abstract class HttpController extends \Main\Core\Controller{
 
     // 页面过期时间  0 : 不过期
     protected $viewOverTime = 0;
+    // 页面渲染语言种类
+    protected $language = 0;
+    // 页面渲染语言array
+    protected $language_array = null;
     // 缓存js赋值
     protected $cache = ';';
     // 缓存php赋值
@@ -70,8 +74,8 @@ abstract class HttpController extends \Main\Core\Controller{
         return true;
     }
     // 以组件方式引入html
-    final protected function template($file=false){
-        $file = $file ? $file : $this->classname;
+    final protected function template($filename=false){
+        $file = $filename ? $filename : $this->classname;
         $this->assignPhp('T_VIEW','App/'.$this->app.'/View/');
         $DATA = $this->phparray;
         include ROOT.'App/'.$this->app.'/View/template/'.$file.'.html';
@@ -88,6 +92,10 @@ abstract class HttpController extends \Main\Core\Controller{
         $this->assign('view', VIEW);
         $this->assign('contr', $this->classname );
         $this->assign('method', $method);
+        $this->script('$.extend({language:'.$this->language.'});');
+        if(!is_null($this->language_array)) {
+            $this->script('$.extend({language_json:'.json_encode($this->language_array, JSON_UNESCAPED_UNICODE).'});');
+        }
     }    
 
     // javascript 设置

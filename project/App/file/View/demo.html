@@ -6,30 +6,30 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script>
             // 设置语言
-//            $.extend({
-//                language_json: {
-//                    "文件服务地址": [
-//                        "文件服务地址",
-//                        "File System Service Address"
-//                    ],
-//                    "今日流水": [
-//                        "今日流水",
-//                        "Daily"
-//                    ],
-//                    "本周流水": [
-//                        "本周流水",
-//                        "Weekly"
-//                    ],
-//                    "本月流水": [
-//                        "本月流水",
-//                        "Monthly"
-//                    ],
-//                    "中文": [
-//                        "中文",
-//                        "ENGLISH"
-//                    ]
-//                }
-//            });
+            $.extend({
+                language_json: {
+                    "文件服务地址": [
+                        "文件服务地址22",
+                        "File System Service Address22"
+                    ],
+                    "今日流水": [
+                        "今日流水",
+                        "Daily"
+                    ],
+                    "本周流水": [
+                        "本周流水",
+                        "Weekly"
+                    ],
+                    "本月流水": [
+                        "本月流水",
+                        "Monthly"
+                    ],
+                    "中文": [
+                        "中文",
+                        "ENGLISH"
+                    ]
+                }
+            });
         </script>
     </head>
     <body>
@@ -44,6 +44,16 @@
             $('#submit').submitData(__url__('demo', 'upload_demo'), function (re) {
                 console.log(re);
             });
+            
+            $.set_language_json({
+                'test':['test cn','test en']
+            });
+            
+//            $.extend({
+//                language_json: { 'test':['test cn','test en']}
+//            });
+            console.log($.lr('test'));
+            console.log($.language_json);
         </script>
     </body>
 </html>

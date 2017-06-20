@@ -26,6 +26,10 @@ jQuery.extend({
             $.language = key;
         });
     },
+    set_language_json:function(obj){
+        $.language_json = Object.assign(obj, $.language_json);
+        return true;
+    },
     lw:function(key){
         $.getScriptWithCache($.jsorminjs+"language.js", function(){
             document.write($.language_base(key));

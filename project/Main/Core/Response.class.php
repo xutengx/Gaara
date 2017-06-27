@@ -1,81 +1,54 @@
 <?php
 
-namespace Main\Core\Controller;
+namespace Main\Core;
 
 defined('IN_SYS') || exit('ACC Denied');
 
 /**
- * RESTful API 控制器类
+ * 处理系统全部响应( 输出 )
  */
-abstract class RestController extends \Main\Core\Controller {
+class Response {
 
     // 当前请求类型
-    protected $_method = '';
+    private $requestMethod = '';
     // 当前请求的资源类型
-    protected $_type = '';
+    private $acceptType = '';
     // REST允许的请求类型列表
-    protected $allowMethod = array('get', 'post', 'put', 'delete');
-    // REST允许请求的资源类型列表
-    protected $allowType = array('html', 'xml', 'json', 'php');
+    private $allowMethod = array('post', 'delete', 'get', 'put', 'patch');
     // 默认的资源类型
-    protected $defaultType = 'html';
+    private $defaultType = 'html';
     // REST允许输出的资源类型列表
-    protected $allowOutputType = array('xml' => 'application/xml', 'json' => 'application/json', 'html' => 'text/html',);
+    private $allowOutputType = array('xml' => 'application/xml', 'json' => 'application/json', 'html' => 'text/html',);
 
-    /**
-     * 架构函数
-     * @access public
-     */
     public function __construct() {
-        // url上的请求类型 检测
-        if (!empty($_SERVER['PATH_INFO']))
-            $this->_type = strtolower(pathinfo($_SERVER['PATH_INFO'], 4));
-        // header上的请求类型 检测
-        else
-            $this->_type = $this->getAcceptType();
-        if (!in_array($this->_type, $this->allowType))
-        // 资源类型非法 则用默认资源类型访问
-            $this->_type = $this->defaultType;
-        // 请求方式检测
-        $method = strtolower($_SERVER['REQUEST_METHOD']);
-        if (!in_array($method, $this->allowMethod))
-            $this->returnData('error', 'json', 405);
-        $this->_method = $method;
-        $this->construct();
-        $this->{$method}(obj('f')->{$method});
+        $this->init();
     }
 
-    public function indexDo() {
-        
+    public function init() {
+        ob_start();
+        $this->getInfo();
     }
-
-    protected function construct() {
-        
-    }
-
-    abstract public function get($data);
-
-    abstract public function put($data);
-
-    abstract public function post($data);
-
-    abstract public function delete($data);
-
-    /**
-     * 获取当前请求的Accept头信息
-     * @return string
+    /*
+     * 分析请求头中的信息
      */
-    protected function getAcceptType() {
-        $type = array('html' => 'text/html,application/xhtml+xml,*/*', 'xml' => 'application/xml,text/xml,application/x-xml', 'json' => 'application/json,text/x-json,application/jsonrequest,text/json', 'js' => 'text/javascript,application/javascript,application/x-javascript', 'css' => 'text/css', 'rss' => 'application/rss+xml', 'yaml' => 'application/x-yaml,text/yaml', 'atom' => 'application/atom+xml', 'pdf' => 'application/pdf', 'text' => 'text/plain', 'png' => 'image/png', 'jpg' => 'image/jpg,image/jpeg,image/pjpeg', 'gif' => 'image/gif', 'csv' => 'text/csv');
-        foreach ($type as $key => $val) {
-            $array = explode(',', $val);
-            foreach ($array as $k => $v) {
-                if (stristr($_SERVER['HTTP_ACCEPT'], $v)) {
-                    return $key;
-                }
-            }
-        }
-        return false;
+
+    private function getInfo() {
+        $this->acceptType = $this->getAcceptType();
+        $this->requestMethod = $this->getRequestMethod();
+    }
+    
+    /**
+     * 返回成功
+     */
+    public function returnSuccess(){
+        
+    }
+    
+    /**
+     * 返回失败
+     */
+    public function returnFail(){
+        
     }
 
     /**
@@ -88,15 +61,16 @@ abstract class RestController extends \Main\Core\Controller {
      *
      * @return void
      */
-    protected function returnData($data, $type = false, $code = 200) {
-        $type = $type ? strtolower($type) : $this->_type;
+    public function returnData($data = '', $type = false, $code = 200) {
+        $type = $type ? strtolower($type) : $this->acceptType;
         $this->sendHttpHeader($code, $type);
         exit($this->encodeData($data, $type));
     }
 
     // 发送Http状态信息
-    protected function sendHttpHeader($code = 200, $type = false) {
-        static $_status = array(// Informational 1xx
+    private function sendHttpHeader($code = 200, $type = false) {
+        static $_status = array(
+            // Informational 1xx
             100 => 'Continue', 101 => 'Switching Protocols', // Success 2xx
             200 => 'OK', 201 => 'Created', 202 => 'Accepted', 203 => 'Non-Authoritative Information', 204 => 'No Content', 205 => 'Reset Content', 206 => 'Partial Content', // Redirection 3xx
             300 => 'Multiple Choices', 301 => 'Moved Permanently', 302 => 'Moved Temporarily ', // 1.1
@@ -122,18 +96,59 @@ abstract class RestController extends \Main\Core\Controller {
      *
      * @return string
      */
-    protected function encodeData($data = '', $type = 'json') {
+    private function encodeData($data = '', $type = 'json') {
         switch ($type) {
             case 'json':
-                return json_encode($data);
+                return json_encode($data, JSON_UNESCAPED_UNICODE);
             case 'xml':
                 return obj('tool')->xml_encode($data);
             case 'php':
                 return serialize($data);
             case 'html':
-                return is_array($data) ? json_encode($data) : $data;
+                return is_array($data) ? json_encode($data, JSON_UNESCAPED_UNICODE) : $data;
             default:
                 return var_export($data);
         }
+    }
+
+    /**
+     * 获取当前请求的Accept头信息
+     * @return string
+     */
+    private function getAcceptType() {
+        if (!empty($_SERVER['PATH_INFO']))
+            return \strtolower(\pathinfo($_SERVER['PATH_INFO'], 4));
+        $type = [
+            'html'  => ['text/html', 'application/xhtml+xml', '*/*'],
+            'xml'   => ['application/xml', 'text/xml', 'application/x-xml'],
+            'json'  => ['application/json', 'text/x-json', 'application/jsonrequest', 'text/json'],
+            'js'    => ['text/javascript', 'application/javascript', 'application/x-javascript'],
+            'css'   => ['text/css'],
+            'rss'   => ['application/rss+xml'],
+            'yaml'  => ['application/x-yaml,text/yaml'],
+            'atom'  => ['application/atom+xml'],
+            'pdf'   => ['application/pdf'],
+            'text'  => ['text/plain'],
+            'png'   => ['image/png'],
+            'jpg'   => ['image/jpg,image/jpeg,image/pjpeg'],
+            'gif'   => ['image/gif'],
+            'csv'   => ['text/csv']
+        ];
+        foreach ($type as $key => $val) {
+            foreach ($val as $v) {
+                if (stristr($_SERVER['HTTP_ACCEPT'], $v)) {
+                    return $key;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 获取当前请求的请求方法信息
+     * @return string
+     */
+    private function getRequestMethod() {
+        return \strtolower($_SERVER['REQUEST_METHOD']);
     }
 }

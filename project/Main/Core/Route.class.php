@@ -66,7 +66,10 @@ class Route {
             $func = self::$urlArr['method'];
             $obj = obj($obj, true, $func);
             self::statistic();
-            $obj->$func($request);
+            
+            obj('\Main\Core\Response');
+            $return = $obj->$func($request);
+            obj('\Main\Core\Response')->returnData($return);
         } else
             header('Location:' . IN_SYS);
     }

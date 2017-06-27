@@ -7,9 +7,9 @@ defined('IN_SYS') || exit('ACC Denied');
     
 class indexContr extends Controller\HttpController {
     public function indexDo() {
-        var_dump(func_get_args());exit;
-        var_dump($request);
-        exit('ww');
+        echo "<pre>";
+        var_dump(['123',432,'www']);
+//        $this->returnData('eee');
     }
     
     public function test($request){
@@ -23,6 +23,6 @@ class indexContr extends Controller\HttpController {
 
 
     public function __destruct() {
-        \statistic();
+//        \statistic();
     }
 }

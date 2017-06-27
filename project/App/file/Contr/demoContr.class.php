@@ -14,7 +14,7 @@ class demoContr extends Controller\HttpController {
 
     public function construct() {
         $this->upload_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'] . '?path=file/index/upload';
-        $language = $this->get('language');
+        $language = obj('f')->get('language');
         if ($language === 'en') {
             $this->language = 1;
         }

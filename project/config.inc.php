@@ -8,7 +8,7 @@ return array(
     'sessionLife'=>3600*24*7,                  // session 时效性  // 全局SESSIONLIFE常量
     'sessionHostOnly'=>true,                    // session js不获取cookie
     'sessionAutoStart'=>true,                  // session 自动开启
-
+    'char' => 'UTF-8',
     'cacheDriver'=>'redis',                     // 缓存存储方式  redis|file                  
     'redis_host'=>'127.0.0.1',      // 缓存存储方式  redis|file
     

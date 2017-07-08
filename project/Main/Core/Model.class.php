@@ -164,7 +164,7 @@ class Model {
                 $this->options['data']['__string'][] = $str;
             }
         }
-        // 填充 update
+        // 填充 create
         elseif($this->options_type == 'INSERT'){
             // 自动维护时间
             if($this->autoTIme && !is_null($this->created_time) && !is_null($this->created_time_type)){

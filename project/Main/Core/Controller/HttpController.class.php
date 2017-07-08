@@ -61,19 +61,21 @@ abstract class HttpController extends \Main\Core\Controller {
     }
 
     /**
-     * @param int    $re   状态标记
+     * @param int    $code   状态标记
      * @param string $msg  状态描述
      *
      * @return bool
      */
     protected function returnMsg($code = '', $msg = 'fail !') {
         $data = ['code' => $code , 'msg' => $msg ];
-        return obj('\Main\Core\Response')->returnData($data, $type, $code);
+        return obj('\Main\Core\Response')->returnData($data, false, $code);
     }
 
     /**
-     * @param string $re
-     *
+     * @param  $content 响应内容
+     * @param  $type_p  响应数据格式 json xml
+     * @param  $code_p  响应 http 状态码
+     * 
      * @return bool
      */
     protected function returnData($content = '', $type_p = false, $code_p = false) {

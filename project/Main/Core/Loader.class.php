@@ -6,20 +6,7 @@ class Loader{
     private static $obj_ins = array();
     // 预存的class引用路径
     private static $obj_map = array(
-//        'Main\Base'=>'Main/Core/Base.class.php',
-//        'Main\Secure'=>'Main/Core/Secure.class.php',
-//        'Main\Cache'=>'Main/Core/Cache.class.php',
-//        'Main\conf'=>'Main/Core/conf.class.php',
-//        'Main\Core\Controller'=>'Main/Core/Controller.class.php',
-//        'Main\F'=>'Main/Core/F.class.php',
-//        'Main\log'=>'Main/Core/log.class.php',
-        'Main\Core\Module'=>'Main/Core/Module.class.php',
-//        'Main\route'=>'Main/Core/route.class.php',
-//        'Main\session'=>'Main/Core/session.class.php',
-//        'Main\sql'=>'Main/Core/sql.class.php',
-//        'Main\template'=>'Main/Core/template.class.php',
-//        'Main\Exception'=>'Main/Core/Exception.class.php',
-//        'Main\Object'=>'Main/Core/Object.class.php',
+//        'Main\Core\Module'=>'Main/Core/Module.class.php',
         'HTMLPurifier'=>'Main/Support/Secure/htmlpurifier-4.7.0/library/HTMLPurifier.includes.php',
         'QRcode'    =>'Main/Support/Image/QRcode.class.php',
     );

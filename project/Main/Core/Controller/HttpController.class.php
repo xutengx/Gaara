@@ -135,8 +135,8 @@ abstract class HttpController extends \Main\Core\Controller {
 <html lang="zh-CN" xml:lang='zh-CN' xmlns='http://www.w3.org/1999/xhtml'>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 EEE;
-        // 公用view
-        obj('cache')->call(obj('Template'), 'includeFiles', 1, MINJS);
+        // 公用view DEBUG下不缓存
+        DEBUG ? obj('Template')->includeFiles() : obj('cache')->call(obj('Template'), 'includeFiles',1);
         // 页面各种赋值
         echo '<script>' . $ajax, $this->cache, $str . '</script>';
         // 重置

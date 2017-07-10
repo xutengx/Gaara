@@ -49,7 +49,6 @@ class Conf{
         define('APPID', $this->data['appid']);
         define('APPSECRET', $this->data['appsecret']);
         define('DEBUG', $this->data['debug']);
-        define('MINJS', $this->data['minjs']);
     }
     private function set(){
         date_default_timezone_set($this->data['timezone']);

@@ -17,12 +17,12 @@ jQuery.extend({
         }else callback();
     },
     getinfo: function () {
-        $.getScriptWithCache($.jsorminjs+"submitData.js", function(){
+        $.getScriptWithCache($.inpath+"submitData.js", function(){
             $.getinfo_base();
         });
     },
     set_language:function(key){
-        $.getScriptWithCache($.jsorminjs+"language.js", function(){
+        $.getScriptWithCache($.inpath+"language.js", function(){
             $.language = key;
         });
     },
@@ -31,13 +31,13 @@ jQuery.extend({
         return true;
     },
     lw:function(key){
-        $.getScriptWithCache($.jsorminjs+"language.js", function(){
+        $.getScriptWithCache($.inpath+"language.js", function(){
             document.write($.language_base(key));
         });
     },
     lr:function(key){
         var temp;
-        $.getScriptWithCache($.jsorminjs+"language.js", function(){
+        $.getScriptWithCache($.inpath+"language.js", function(){
             temp = $.language_base(key);
         });
         return temp;
@@ -46,13 +46,13 @@ jQuery.extend({
 $.fn.extend({
     submitData:function(method,callback) {
         var $this = $(this);
-        $.getScriptWithCache($.jsorminjs+"submitData.js", function(){
+        $.getScriptWithCache($.inpath+"submitData.js", function(){
             $this.submitData_base(method,callback);
         });
     },
     copy: function (obj, callback) {
         var $this = $(this);
-        $.getScriptWithCache($.jsorminjs+"ZeroClipboard.min.js", function(){
+        $.getScriptWithCache($.inpath+"ZeroClipboard.min.js", function(){
             $this.copy_base(obj,callback);
         });
     }

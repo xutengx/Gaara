@@ -74,12 +74,13 @@ class Template {
     }
 
     /**
-     * 压缩js
+     * 压缩js , 比较2种模式
      * @param string $content   压缩前js内容
      * @return string           压缩后js
      */
     private function AutomaticPacking($content) {
-        $packer = new \Main\Core\JavaScriptPacker($content, 'None', true, false);
-        return $packer->pack();
+        $packerNormal = (new \Main\Core\JavaScriptPacker($content, 'Normal', false, false))->pack();
+        $packerNone = (new \Main\Core\JavaScriptPacker($content, 'None', false, false))->pack();
+        return strlen($packerNormal) > strlen($packerNone) ? $packerNone : $packerNormal;
     }
 }

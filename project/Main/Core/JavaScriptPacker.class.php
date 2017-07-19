@@ -41,11 +41,27 @@
  * $encoding:     level of encoding, int or string :
  *                0,10,62,95 or 'None', 'Numeric', 'Normal', 'High ASCII'.
  *                default: 62.
+ * None:简单压缩，移除空格和注释，编码特殊字符
+ * Numeric：所有的字符都被编码成数字
+ * Normal ：所有的字符都被编码成字母与数字符号构成的值。这是推荐的方式。
+ * High ASCII：这种方式的压缩率较高。不推荐，会有兼容性
+ * 
  * $fastDecode:   include the fast decoder in the packed result, boolean.
  *                default : true.
+ * Fast Decode（快速还原）：该选项被选中的话，将插入一小段代码（120 bytes），以使代码能够更快的还原（decode）
+ * 
  * $specialChars: if you are flagged your private and local variables
  *                in the script, boolean.
  *                default: false.
+ * Special Characters（特殊字符）：为了让压缩能区分全局变量和局部变量，压缩工具会将变量转换成下面的格式，
+ * 
+ * 由于 Javascript 并不存在确切意义上的全局变量和局部变量，我们可以用下面的方式定义：
+ * 局部变量 Local ($)
+ * 变量只在当前范围内有效，参数和函数内部的变量就是一个典型例子，将局部变量用 $ 标识，压缩时会截取他们的第一个字符，附加的 $ 将使截取的字符加长，数字将会被保留。
+ * 全局变量 Private (_)
+ * 全局变量可以在整个代码中使用，用 “ _ ” （下划线）来标识，有下划线标识的全局变量将会被转换成下划线加上一个数字：
+ *   
+ * 参考 : http://lzw.me/pages/jspacker/index.php
  * 
  * The pack() method return the compressed JavasScript, as a string.
  * 
@@ -64,7 +80,7 @@
  * 
  * # Be careful with the 'High ASCII' Level encoding if you use
  *   UTF-8 in your files... 
- */
+*/
 namespace Main\Core;
 class JavaScriptPacker {
 
@@ -83,7 +99,7 @@ class JavaScriptPacker {
         'High ASCII' => 95
     );
 
-    public function __construct($_script, $_encoding = 62, $_fastDecode = true, $_specialChars = false) {
+    public function __construct($_script, $_encoding = 62, $_fastDecode = false, $_specialChars = false) {
         $this->_script = $_script . "\n";
         if (array_key_exists($_encoding, $this->LITERAL_ENCODING))
             $_encoding = $this->LITERAL_ENCODING[$_encoding];

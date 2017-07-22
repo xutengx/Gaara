@@ -222,6 +222,9 @@ RRR;
         exit('test');
         
     }
+    public function tt(){
+        echo 'qweqwe';
+    }
 
 
     public function __destruct() {

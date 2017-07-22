@@ -12,10 +12,10 @@ defined('IN_SYS') || exit('ACC Denied');
 abstract class HttpController extends \Main\Core\Controller {
 
     // 可以使用 $this->post('id', '/^1[3|4|5|7|8][0-9]\d{8}$/', 'id不合法!'); 过滤参数
-    use Traits\requestTrait;
+    use Traits\RequestTrait;
 
     // 可以使用 $this->getInfoOnWechatProfessional(); 一键授权(对数据库字段有一定要求)
-    // use Traits\wechatTrait;
+    // use Traits\WechatTrait;
     // 页面过期时间  0 : 不过期
     protected $viewOverTime = 0;
     // 页面渲染语言种类

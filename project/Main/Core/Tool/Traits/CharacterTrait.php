@@ -7,7 +7,7 @@ defined('IN_SYS') || exit('ACC Denied');
 /**
  * 字符操作
  */
-trait characterTrait {
+trait CharacterTrait {
 
     /**
      * 人性化相对时间

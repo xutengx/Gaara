@@ -4,7 +4,7 @@ namespace App\index\Contr;
 use \Main\Core\Controller;
 defined('IN_SYS') || exit('ACC Denied');
 
-class demoContr extends Controller\HttpController {
+class DemoContr extends Controller\HttpController {
 
     private $upload_url = 'http://192.168.43.128/git/php_/project/index.php?path=file/index/upload';
 

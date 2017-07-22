@@ -49,9 +49,9 @@ class Model {
      */
     final public function __construct($DbConnection = null) {
         $this->db = is_null($DbConnection) ? obj('\Main\Core\DbConnection', true, obj('conf')->db) : $DbConnection;
-        $this->collect = new \Main\Core\Model\collect($this->options);
-        $this->analysis = new \Main\Core\Model\analysis();
-        $this->resolution = new \Main\Core\Model\resolution();
+        $this->collect = new \Main\Core\Model\Collect($this->options);
+        $this->analysis = new \Main\Core\Model\Analysis();
+        $this->resolution = new \Main\Core\Model\Resolution();
         $this->get_thisTable();
         $this->construct();
     }

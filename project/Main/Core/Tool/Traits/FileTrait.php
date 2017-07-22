@@ -7,7 +7,7 @@ defined('IN_SYS') || exit('ACC Denied');
 /**
  * 文件操作
  */
-trait fileTrait {
+trait FileTrait {
 
     /**
      * 路径 转 绝对路径

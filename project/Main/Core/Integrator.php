@@ -1,14 +1,18 @@
 <?php
 namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
-class Loader{
+/**
+ * 原 Loader
+ * 享元模式实现,所有对象单例
+ */
+class Integrator{
     // 缓存对象,实现单元素模式
     private static $obj_ins = array();
     // 预存的class引用路径
     private static $obj_map = array(
 //        'Main\Core\Module'=>'Main/Core/Module.class.php',
         'HTMLPurifier'=>'Main/Support/Secure/htmlpurifier-4.7.0/library/HTMLPurifier.includes.php',
-        'QRcode'    =>'Main/Support/Image/QRcode.class.php',
+        'QRcode'    =>'Main/Support/Image/QRcode.php',
     );
     // class简称
     private static $obj_call = array(
@@ -44,7 +48,7 @@ class Loader{
     }
     // 自动引入
     public static function requireClass($class){
-        $path = ROOT.str_replace('\\','/',$class).'.class.php';
+        $path = ROOT.str_replace('\\','/',$class).'.php';
         // 根据预存的class引用路径
         if(isset(self::$obj_map[$class])) self::includeWithException(ROOT.self::$obj_map[$class]);
         else if (strtolower(substr($class, -5)) == 'model')  self::autoMakeModel($path, $class);
@@ -135,4 +139,4 @@ class Loader{
         self::$obj_map[$class] = $dir;
     }
 }
-spl_autoload_register(array('Main\Core\loader', 'requireClass'));
+spl_autoload_register(array('Main\Core\Integrator', 'requireClass'));

@@ -10,13 +10,13 @@ defined('IN_SYS') || exit('ACC Denied');
 class Tool {
     
     // 请求相关
-    use Traits\requestTrait;
+    use Traits\RequestTrait;
     
     // 文件操作
-    use Traits\fileTrait;
+    use Traits\FileTrait;
 
     // 字符处理
-    use Traits\characterTrait;
+    use Traits\CharacterTrait;
     
     
 }

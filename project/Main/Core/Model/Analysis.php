@@ -7,7 +7,7 @@ use \Main\Core;
 /**
  * 解析 \Main\Core\Model 中的链式调用数据
  */
-final class analysis {
+final class Analysis {
 
     // 数据收集
     private $options = [];

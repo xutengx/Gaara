@@ -4,7 +4,7 @@ namespace App\index\Contr;
 use \Main\Core\Controller;
 defined('IN_SYS') || exit('ACC Denied');
 
-class indexContr extends Controller\HttpController {
+class IndexContr extends Controller\HttpController {
     private $save_url = 'data/upload/';
 
     public function construct() {

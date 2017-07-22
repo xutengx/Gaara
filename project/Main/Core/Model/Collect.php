@@ -3,7 +3,7 @@ namespace Main\Core\Model;
 /**
  * 收集 \Main\Core\Model 中的链式调用数据
  */
-class collect{
+class Collect{
     // 数据收集
     private $options = [];
 

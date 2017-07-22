@@ -7,7 +7,7 @@ defined('IN_SYS') || exit('ACC Denied');
 /**
  * 请求过滤
  */
-trait requestTrait {
+trait RequestTrait {
     // 令牌校验
     protected function checkCsrfToken() {
         if (!obj('Secure')->checkCsrftoken($this->classname, $this->viewOverTime))

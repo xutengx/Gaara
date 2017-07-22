@@ -7,7 +7,7 @@ defined('IN_SYS') || exit('ACC Denied');
 /**
  * 发送请求
  */
-trait requestTrait {
+trait RequestTrait {
 
     /**
      * 异步执行

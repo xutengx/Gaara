@@ -3,7 +3,7 @@ namespace Main\Core\Model;
 /**
  * 由 \Main\Core\Model->field 分析返回相关字段信息
  */
-final class resolution{
+final class Resolution{
     // 自动新增时间, 尝试值
     private $created_time_array = [
         'created_time',

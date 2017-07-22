@@ -7,7 +7,7 @@ defined('IN_SYS') || exit('ACC Denied');
 /**
  * 微信授权
  */
-trait wechatTrait {
+trait WechatTrait {
     // 缓存微信授权返回值
     protected $wechatinfo = array();
     

@@ -37,6 +37,13 @@ abstract class HttpController extends \Main\Core\Controller {
             $this->app = $app[1];
             $this->classname = str_replace('Contr', '', $app[3]);
         }
+
+        defined('APP') || define('APP', $this->app);
+        $script_name = str_replace(IN_SYS, '', $_SERVER['SCRIPT_NAME']);
+        $host = isset($_SERVER['HTTP_HTTPS']) ? $_SERVER['HTTP_HTTPS'] : $_SERVER['REQUEST_SCHEME'];  // nginx 自定配置 proxy_set_header https https;
+        defined('HOST') || define('HOST', $host . '://' . $_SERVER['HTTP_HOST'] . $script_name);
+        defined('VIEW') || define('VIEW', HOST . 'App/' . $this->app . '/View/');
+        
         $this->construct();
     }
 

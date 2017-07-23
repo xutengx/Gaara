@@ -12,8 +12,14 @@ class IndexContr extends Controller\HttpController {
 //        echo '<a href="http://'.$_SERVER['HTTP_HOST'].'/git/lights_app/index.php">检测lights项目</a>';
     }
 
-    public function indexDo() {
-        headerTo('development/index/indexDo/');
+    public function indexDo($a = null ,$b = null ,$c = null ,$d = null ) {
+        var_dump($a);
+        var_dump($b);
+        var_dump($c);
+        var_dump($d);
+        var_dump(func_get_args());exit;
+        
+//        headerTo('development/index/indexDo/');
 //        obj('development/indexContr')->upload();
 //        headerTo('development/index/indexDo/'); // 开发开始
     }

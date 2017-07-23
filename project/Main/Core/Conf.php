@@ -35,7 +35,6 @@ class Conf{
         }
     }
     private function makeDefine(){
-        define('CLI', (php_sapi_name() !== 'cli') ? false : true);
 //        define('PATH', $this->data['path']);
 
         define('SESSIONPATH', ROOT.$this->data['sessionPath']);

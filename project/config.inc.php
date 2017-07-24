@@ -13,6 +13,9 @@ return array(
     // 通用前缀
     'tablepre'=>'',
     
+    // 隐式路由 关键字
+    'path'=>'path',
+    
     'session'   => require (CONFIG.'session.php'),
     'wechat'    => require (CONFIG.'wechat.php'),
     'db'        => require (CONFIG.'db.php'),

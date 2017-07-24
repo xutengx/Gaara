@@ -26,4 +26,9 @@ return [
             
     '/index.php/test/user/{id?}' => 'App\index\Contr\IndexContr@indexDo',
     '/mysql' => 'App\mysql\Contr\indexContr@indexDo',
+    
+    // 支持隐式路由
+    '/'.IN_SYS => function(){
+        \Main\Core\RouteImplicit::Start();
+    },
 ];

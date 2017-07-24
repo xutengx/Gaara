@@ -25,7 +25,7 @@ class Response {
     }
 
     public function init() {
-        ob_start();
+//        ob_start();
         $this->getInfo();
     }
     /*

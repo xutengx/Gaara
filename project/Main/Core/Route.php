@@ -41,7 +41,7 @@ class Route {
      */
     private static function doMethod($contr, $request){
         self::statistic();
-        obj('\Main\Core\Response');
+//        obj('\Main\Core\Response');
         // 形如 'App\index\Contr\IndexContr@indexDo'
         if(is_string($contr)){
             $temp = explode('@', $contr);

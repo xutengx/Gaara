@@ -33,5 +33,9 @@ define('ROUTE', ROOT.'Route/');
 require (ROOT . 'Main/Core/Integrator.php');
 // 公用方法
 require (ROOT . 'Main/Core/Function.php');
+
+
+define('DEBUG', obj('conf')->debug);
+
 // 执行
 \Main\Core\Route::Start();

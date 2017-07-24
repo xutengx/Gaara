@@ -4,7 +4,7 @@ namespace Main\Core;
 
 defined('IN_SYS') || exit('ACC Denied');
 
-class Route {
+class RouteImplicit {
 
     private static $conf = null;
     private static $url;
@@ -30,6 +30,7 @@ class Route {
     }
 
     private static function getUrl() {
+        defined('PATH') || define('PATH', self::$conf->path);
         if ((!isset($_GET[PATH]) || empty($_GET[PATH])) && isset($_GET[MD5(IN_SYS)]) && !empty($_GET[MD5(IN_SYS)]))
             $_GET[PATH] = $_GET[MD5(IN_SYS)];
         if (isset($_GET[PATH]) && !empty($_GET[PATH])) {
@@ -56,19 +57,17 @@ class Route {
 
     private static function doMethod() {
         $obj = 'App\\' . self::$urlArr['application'] . '\Contr\\' . self::$urlArr['controller'];
-        if (file_exists(ROOT . 'App/' . self::$urlArr['application'] . '/Contr/' . self::$urlArr['controller'] . '.class.php')) {
+        if (file_exists(ROOT . 'App/' . self::$urlArr['application'] . '/Contr/' . self::$urlArr['controller'] . '.php')) {
             self::defineV(self::$urlArr['application']);
             self::$urlArr['pramers'] = array_merge(self::$urlArr['pramers'], self::$urlPars);
             $request = CLI ? null : self::filterPars();
-            //设置session
-            obj('session');
+            
 //            $func = method_exists($obj,self::$urlArr['method'] ) ? self::$urlArr['method'] : 'indexDo';
             $func = self::$urlArr['method'];
-            $obj = obj($obj, true, $func);
-            self::statistic();
-            
-            obj('\Main\Core\Response');
+            $obj = obj($obj, true, $func); 
+//            obj('\Main\Core\Response');
             $return = $obj->$func($request);
+            
             obj('\Main\Core\Response')->returnData($return);
         } else
             header('Location:' . IN_SYS);
@@ -108,11 +107,5 @@ class Route {
     // 参数过滤
     private static function filterPars() {
         return obj('F', true, self::$urlArr['pramers']);
-    }
-
-    // 运行统计
-    private static function statistic() {
-        $GLOBALS['statistic']['_initTime'] = microtime(true);
-        $GLOBALS['statistic']['_initMemory'] = memory_get_usage();
     }
 }

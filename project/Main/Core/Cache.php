@@ -1,20 +1,26 @@
 <?php
+
 namespace Main\Core;
-defined('IN_SYS')||exit('ACC Denied');
+
+use \Main\Core\Cache\Driver;
+defined('IN_SYS') || exit('ACC Denied');
+
 class Cache {
+
     // 缓存驱动池
     private $Drivers = [];
     // 默认缓存更新时间秒数
-    public $cacheLimitTime   = 300;
+    public $cacheLimitTime = 300;
 
-    final public function __construct($time = 300){
-        $this->cacheLimitTime = (int)$time;
-        if (CACHEDRIVER === 'redis')
-            $this->Drivers['redis'] = new \Main\Core\Cache\Driver\Redis(
-                    ['host' =>REDISHOST]
-            );
-        else
-            $this->Drivers['file'] = new \Main\Core\Cache\Driver\File();
+    final public function __construct($time = 300) {
+        $this->cacheLimitTime = (int) $time;
+
+        $conf = obj('conf')->cache;
+
+        if ($conf['driver'] === 'redis')
+            $this->Drivers['redis'] = new Driver\Redis($conf[$conf['driver']]);
+        elseif ($conf['driver'] === 'file')
+            $this->Drivers['file'] = new Driver\File($conf[$conf['driver']]);
     }
 
     /**
@@ -26,82 +32,87 @@ class Cache {
      *
      * @return mixed
      */
-    public function call($obj, $func, $cacheTime=true){
-        $cacheTime = is_numeric($cacheTime) ? (int)$cacheTime : $this->cacheLimitTime;
+    public function call($obj, $func, $cacheTime = true) {
+        $cacheTime = is_numeric($cacheTime) ? (int) $cacheTime : $this->cacheLimitTime;
         $pars = func_get_args();
         unset($pars[0]);
         unset($pars[1]);
         unset($pars[2]);
         $par = array_values($pars);
         $key = $this->makeCacheDir($obj, $func, $par);
-        foreach($this->Drivers as $v){
+        foreach ($this->Drivers as $v) {
             $re = $v->callget($key, $cacheTime);
-            if($re['code'] === 200)
+            if ($re['code'] === 200)
                 return $re['data'];
         }
         ob_start();
         $return = $this->runFunc($obj, $func, $par);
         $echo = ob_get_contents();
         ob_end_flush();
-        foreach($this->Drivers as $v){
-            $re = $v->callset($key,$echo, $return, $cacheTime);
-            if($re['code'] === 200)
+        foreach ($this->Drivers as $v) {
+            $re = $v->callset($key, $echo, $return, $cacheTime);
+            if ($re['code'] === 200)
                 return $re['data'];
         }
         return $return;
     }
-    public function clear($obj, $func){
+
+    public function clear($obj, $func) {
         $pars = func_get_args();
         unset($pars[0]);
         unset($pars[1]);
         $par = array_values($pars);
         $key = $this->makeCacheDir($obj, $func, $par);
         $key = str_replace('/#d/', '', $key);
-        foreach($this->Drivers as $v){
+        foreach ($this->Drivers as $v) {
             $v->clear($key);
         }
         return true;
     }
-    public function set($key=true, $velue, $cacheTime=false){
-        $cacheTime = is_numeric($cacheTime) ? (int)$cacheTime : $this->cacheLimitTime;
-        $key        = ($key === true) ? $this->autoKey() : $key;
-        foreach($this->Drivers as $v){
+
+    public function set($key = true, $velue, $cacheTime = false) {
+        $cacheTime = is_numeric($cacheTime) ? (int) $cacheTime : $this->cacheLimitTime;
+        $key = ($key === true) ? $this->autoKey() : $key;
+        foreach ($this->Drivers as $v) {
             $re = $v->set($key, $velue, $cacheTime);
-            if($re)
+            if ($re)
                 return true;
         }
         return false;
     }
-    public function get($key=true, $callback=false, $cacheTime=false){
-        $cacheTime = is_numeric($cacheTime) ? (int)$cacheTime : $this->cacheLimitTime;
-        $key        = ($key === true) ? $this->autoKey() : $key;
-        foreach($this->Drivers as $v){
+
+    public function get($key = true, $callback = false, $cacheTime = false) {
+        $cacheTime = is_numeric($cacheTime) ? (int) $cacheTime : $this->cacheLimitTime;
+        $key = ($key === true) ? $this->autoKey() : $key;
+        foreach ($this->Drivers as $v) {
             $re = $v->get($key);
-            if($re['code'] === 200)
+            if ($re['code'] === 200)
                 return $re['data'];
         }
-        if($callback !== false){
-            if(is_string($callback) || is_numeric($callback) || is_array($callback))
+        if ($callback !== false) {
+            if (is_string($callback) || is_numeric($callback) || is_array($callback))
                 $re = $callback;
-            else $re = call_user_func($callback);
-            if($this->set($key, $re, $cacheTime))
+            else
+                $re = call_user_func($callback);
+            if ($this->set($key, $re, $cacheTime))
                 return $re;
         }
         return false;
     }
 
-    public function rm($key){
+    public function rm($key) {
         $key = ($key === true) ? $this->autoKey() : $key;
-        foreach($this->Drivers as $v){
+        foreach ($this->Drivers as $v) {
             $re = $v->rm($key);
-            if($re)
+            if ($re)
                 return true;
         }
         return false;
     }
+
     // 在"同一调用方法"中,不应使用多于一个的自动命名
     // 由执行缓存方法的环境,生成缓存 key = 调用类\-\调用方法
-    private function autoKey(){
+    private function autoKey() {
         $class = '';                // 缓存调用类
         $func = '';                 // 缓存调用方法
         $debug = debug_backtrace();
@@ -109,17 +120,18 @@ class Cache {
 //        if($debug[1]['args'][0] === true){
 //            // 数据来源是闭包函数
 //            if($debug[1]['args'][1] instanceof \Closure){
-                foreach($debug as $v){
-                    if(!($v['object'] instanceof \Main\Core\Cache)){
-                        $class = get_class($v['object']);
-                        $func = $v['function'];
-                        break;
-                    }
+        foreach ($debug as $v) {
+            if (!($v['object'] instanceof \Main\Core\Cache)) {
+                $class = get_class($v['object']);
+                $func = $v['function'];
+                break;
+            }
 //                }
 //            }
         }
-        return $class.'\-\\'.$func;
+        return $class . '\-\\' . $func;
     }
+
     /**
      * @param object $obj 执行对象
      * @param string $func 执行方法
@@ -127,46 +139,55 @@ class Cache {
      *
      * @return string 缓存文件地址
      */
-    private function makeCacheDir($obj, $func=false, array $keyArray = array()){
-        $funDir = $func ? get_class($obj).'/'.$func.'/' : get_class($obj);
-        $dir = str_replace('\\','/',$funDir);
+    private function makeCacheDir($obj, $func = false, array $keyArray = array()) {
+        $funDir = $func ? get_class($obj) . '/' . $func . '/' : get_class($obj);
+        $dir = str_replace('\\', '/', $funDir);
         $key = '';
-        if(!empty($keyArray) ){
-            foreach($keyArray as $k=>$v){
-                if($v === true) $key .= '_bool-t';
-                elseif($v === false) $key .= '_bool-f';
-                else $key .= '_'.gettype($v).'-'.(is_array($v)?serialize($v):$v);
+        if (!empty($keyArray)) {
+            foreach ($keyArray as $k => $v) {
+                if ($v === true)
+                    $key .= '_bool-t';
+                elseif ($v === false)
+                    $key .= '_bool-f';
+                else
+                    $key .= '_' . gettype($v) . '-' . (is_array($v) ? serialize($v) : $v);
             }
-            $key =md5($key);
-        }
-        else $key .= '#d'; // default
-        return  $func ? $dir.$key.'/' : $dir.'/' ;
+            $key = md5($key);
+        } else
+            $key .= '#d'; // default
+        return $func ? $dir . $key . '/' : $dir . '/';
     }
+
     // 执行方法
-    private function runFunc($obj, $func, $args){
-        if (method_exists($obj, 'runProtectedFunction')) return $obj->runProtectedFunction($func, $args);
-        else return call_user_func_array(array($obj, $func), $args);
+    private function runFunc($obj, $func, $args) {
+        if (method_exists($obj, 'runProtectedFunction'))
+            return $obj->runProtectedFunction($func, $args);
+        else
+            return call_user_func_array(array($obj, $func), $args);
     }
-    public function __get($par){
-        if(isset($this->Drivers[strtolower($par)]))
+
+    public function __get($par) {
+        if (isset($this->Drivers[strtolower($par)]))
             return $this->Drivers[strtolower($par)];
-        else throw new Exception('需要的缓存驱动不存在!');
+        else
+            throw new Exception('需要的缓存驱动不存在!');
     }
+
     // 使用Driver中额外支持的方法(多层__call调用)
-    public function __call($fun, $par=array()){
+    public function __call($fun, $par = array()) {
         $parstr = '';
-        if($par !== NULL){
+        if ($par !== NULL) {
             $par = array_values($par);
-            for( $i = 0 ; $i < count($par) ; $i++ )
-                $parstr .= ',$par['.$i.']';
+            for ($i = 0; $i < count($par); $i++)
+                $parstr .= ',$par[' . $i . ']';
             $parstr = ltrim($parstr, ',');
         }
         foreach ($this->Drivers as $v) {
-            $eval = '$v->$fun('.$parstr.');';
-            $re = eval('return '.$eval);
-            if($re['code'] === 200)
+            $eval = '$v->$fun(' . $parstr . ');';
+            $re = eval('return ' . $eval);
+            if ($re['code'] === 200)
                 return $re['data'];
         }
-        throw new Exception('缓存驱动无法执行"'.$fun.'"方法 or 方法返回不正常');
+        throw new Exception('缓存驱动无法执行"' . $fun . '"方法 or 方法返回不正常');
     }
 }

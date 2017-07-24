@@ -1,6 +1,11 @@
 <?php
+
 namespace Main\Core\Cache;
-interface DriverInterface{
+
+defined('IN_SYS') || exit('ACC Denied');
+
+interface DriverInterface {
+
     /**
      * 读取缓存
      * @param string $key 键
@@ -39,7 +44,7 @@ interface DriverInterface{
      * @echo string
      * @return array ['code'=> 200,'data'=>$content] or ['code'=>0]
      */
-    public function callget($key,$cacheTime);
+    public function callget($key, $cacheTime);
 
     /**
      * 设置缓存
@@ -49,5 +54,5 @@ interface DriverInterface{
      * @param int|false $cacheTime 缓存过期时间
      * @return array ['code'=> 200,'data'=>$content] or ['code'=>0]
      */
-    public function callset($cachedir, $echo,$return,$cacheTime);
+    public function callset($cachedir, $echo, $return, $cacheTime);
 }

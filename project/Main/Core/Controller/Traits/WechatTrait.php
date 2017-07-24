@@ -15,6 +15,8 @@ trait WechatTrait {
     // 配合 getInfoOnWechat.php 入口文件使用, 防止路由参数导致的手机不兼容
     // return 用户信息 $this->wechatinfo
     public function getInfoOnWechatProfessional($is = false){
+        $appid = obj('conf')->wechat['appid'];
+        $appsecret = obj('conf')->wechat['appsecret'];
         $user_agent = $_SERVER['HTTP_USER_AGENT'];
         if (strpos($user_agent, 'MicroMessenger') === false){
             header("Content-type: text/html; charset=utf-8");
@@ -23,7 +25,7 @@ trait WechatTrait {
         }else{
             $code = obj('F')->get('code');
             //获取授权
-            $auth = obj('\Main\Expand\Wechat',true, APPID, APPSECRET);
+            $auth = obj('\Main\Expand\Wechat',true, $appid, $appsecret);
             if($code === null){
                 $redirect_uri = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME'];
                 $redirect_uri = str_replace(IN_SYS, 'getInfoOnWechat.php', $redirect_uri);

@@ -21,10 +21,17 @@ class Route {
         self::$routeType = self::getRouteType();
         // 引入route规则
         self::$routeRule = self::getRouteRule();
+        // 设置session
+        self::startSession();
         // 分析路由, 并执行
         self::routeAnalysis();
     }
-    
+    /**
+     * 开启session
+     */
+    private static function startSession(){
+        obj('session');
+    }
     
     /**
      * 方法执行,支持闭包函数
@@ -53,20 +60,19 @@ class Route {
      * @param array $argument   实参数组列表(一维数组)
      * @return array|obj 可调用的参数数组(一维链表)|
      */
-    private static function paramAnalysis($parameter , $argument){
+    private static function paramAnalysis($parameter, $argument) {
         $arr = [];
-        if(empty($parameter)){
+        if (empty($parameter)) {
             $arr[] = obj('F');
-        }else{
-            foreach($parameter as $k => $v){
-                $arr[$v] = $argument[$k + 1];
+        } else {
+            foreach ($parameter as $k => $v) {
+                $arr[$v] = ($argument[$k + 1] === '') ? null : $argument[$k + 1];
             }
             obj('F', true, $arr);
         }
         return $arr;
     }
-    
-    
+
     /**
      * 路由分析
      */
@@ -75,7 +81,7 @@ class Route {
             $parameter = [];
             $pathInfoPreg = self::ruleToPreg($rule, $parameter);
             // 确定路由匹配
-            if(preg_match($pathInfoPreg, self::$pathInfo, $argument)){               
+            if(preg_match($pathInfoPreg, self::$pathInfo, $argument)){     
                 // 确认参数
                 $request = self::paramAnalysis($parameter , $argument);
                 // 执行方法
@@ -91,7 +97,7 @@ class Route {
      * @return type
      */
     private static function getRouteRule(){
-        return require(ROOT.'Route/'.self::getRouteType().'.php');
+        return require(ROUTE.self::getRouteType().'.php');
     }
 
     /**
@@ -107,12 +113,9 @@ class Route {
      * @return string
      */
     private static function getPathInfo() {
-        $temp = \str_replace(\str_replace(\IN_SYS, '', $_SERVER['DOCUMENT_URI']), '', $_SERVER['REQUEST_URI']);
-        if($key = strpos($temp, '?')){
-            return '/' . substr($temp, 0, $key );
-        }else 
-            return '/' . $temp;
+        return '/' . \str_replace('?' . $_SERVER['QUERY_STRING'], '', \str_replace(\str_replace(\IN_SYS, '', $_SERVER['DOCUMENT_URI']), '', $_SERVER['REQUEST_URI']));
     }
+
     /**
      * 将路由规则翻译为正则表达式
      * @param string    $rule       url规则
@@ -123,9 +126,16 @@ class Route {
     private static function ruleToPreg($rule = '', &$param = []){
         $temp = explode('/', $rule); 
         foreach($temp as $k => $v){
+            $key = false;
+            $temp[$k] = \preg_replace_callback("/{.*\?}/is", function($matches) use (&$param, &$key){
+                $param[] = trim(trim($matches[0], '}'), '{');
+                $key = true;
+                return '?([^/]*)';
+            }, $v);
+            if($key)                continue;
             $temp[$k] = \preg_replace_callback("/{.*}/is", function($matches) use (&$param){
                 $param[] = trim(trim($matches[0], '}'), '{');
-                return '([^/]*)';
+                return '([^/]+)';
             }, $v);
         }
         return '#^'.implode('/', $temp).'[/]?$#';

@@ -6,10 +6,9 @@
  * Date: 2016/2/4 0004
  * Time: 10:54
  */
-
 /**
  * 实例化对象,包含自动加载
- * 依赖 loader.class.php 指向 obj::get()
+ * 依赖 Integrator.class.php 指向 obj::get()
  * @param $class
  * @param bool|true $app 当$class为Contr或Module时,代表所指向的APP,默认当前APP;
  *                        当$class为其他引用类时,其他参数生效,$app默认为true,代表单例模式实例化;
@@ -32,7 +31,7 @@ function delobj() {
 }
 
 /**
- * 依赖 template.class.php 指向 template::show()
+ * 依赖 template.php 指向 template::show()
  * @param string $template 引入模板名
  */
 function template($template = '') {

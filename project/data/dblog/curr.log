@@ -45,3 +45,35 @@ You have an error in your SQL syntax; check the manual that corresponds to your 
 UPDATE `balloon_admin` SET `last_login_time`=:last_login_time,`last_login_ip`=:last_login_ip WHERE `id`="1" 
 Data truncated for column 'last_login_ip' at row 1
 
+2017-06-08 14:09:47
+SELECT `id`,`name`,`phone` FROM `visitor_info` WHERE `scene`&:scene_1 GROUP BY `phone` 
+
+
+2017-06-08 16:57:22
+UPDATE `visitor_info` SET `name`="autoUpdate",`visitor_info`.`updated_at`="2017-06-08 16;57;22"  WHERE `scene`&:scene_1 LIMIT 0,1
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '1' at line 1
+
+2017-06-08 17:07:41
+UPDATE `visitor_info` SET `name`="autoUpdate",`visitor_info`.`updated_at`="2017-06-08 17;07;41" WHERE `scene`&:scene_1 LIMIT 0,1
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '1' at line 1
+
+2017-06-08 17:08:18
+UPDATE `visitor_info` SET `name`="autoUpdate",`visitor_info`.`updated_at`="2017-06-08 17;08;18" WHERE `scene`&:scene_1 LIMIT 0,2
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '2' at line 1
+
+2017-06-08 17:17:07
+INSERT INTO `visitor_info` SET `name`="autoUpdate",`visitor_info`.`updated_at`="2017-06-08 17;17;07"  WHERE `scene`&:scene_1 LIMIT 1
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'WHERE `scene`&? LIMIT 1' at line 1
+
+2017-06-08 17:19:05
+INSERT INTO `visitor_info` SET `name`=:autoUpdate,`visitor_info`.`updated_at`="2017-06-08 17;19;05"  LIMIT 1
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'LIMIT 1' at line 1
+
+2017-06-08 17:19:14
+INSERT INTO `visitor_info` SET `name`=:autoUpdate,`visitor_info`.`updated_at`="2017-06-08 17;19;14"  
+Field 'TEst' doesn't have a default value
+
+2017-06-08 17:20:07
+INSERT INTO `visitor_info` SET `name`=:autoUpdate,`visitor_info`.`created_at`="2017-06-08 17;20;07"  
+Field 'TEst' doesn't have a default value
+

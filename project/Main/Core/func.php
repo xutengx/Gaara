@@ -6,10 +6,9 @@
  * Date: 2016/2/4 0004
  * Time: 10:54
  */
-
 /**
  * 实例化对象,包含自动加载
- * 依赖 loader.class.php 指向 obj::get()
+ * 依赖 Integrator.class.php 指向 obj::get()
  * @param $class
  * @param bool|true $app 当$class为Contr或Module时,代表所指向的APP,默认当前APP;
  *                        当$class为其他引用类时,其他参数生效,$app默认为true,代表单例模式实例化;
@@ -20,7 +19,7 @@ function obj($obj, $app = true) {
     $arr = func_get_args();
     unset($arr[0]);
     unset($arr[1]);
-    return \Main\Core\loader::get($obj, $app, $arr);
+    return \Main\Core\Integrator::get($obj, $app, $arr);
 }
 
 /**
@@ -28,11 +27,11 @@ function obj($obj, $app = true) {
  * @return bool
  */
 function delobj() {
-    return \Main\Core\loader::unsetAllObj();
+    return \Main\Core\Integrator::unsetAllObj();
 }
 
 /**
- * 依赖 template.class.php 指向 template::show()
+ * 依赖 template.php 指向 template::show()
  * @param string $template 引入模板名
  */
 function template($template = '') {
@@ -43,6 +42,7 @@ function template($template = '') {
 }
 
 /**
+ * 目前不兼容新路由
  * 重定向到指定路由
  * @param string        $where 指定路由,如:index/index/indexDo/
  * @param string|false  $msg   跳转中间页显示信息|不使用中间页

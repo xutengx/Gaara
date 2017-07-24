@@ -16,6 +16,6 @@ define('CLI', (php_sapi_name() !== 'cli') ? false : true);
 // 自动加载类
 require (ROOT . 'Main/Core/Integrator.php');
 // 公用方法
-require (ROOT . 'Main/Core/Func.php');
+require (ROOT . 'Main/Core/Function.php');
 // 执行
 \Main\Core\Route::Start();

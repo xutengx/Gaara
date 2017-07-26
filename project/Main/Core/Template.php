@@ -38,25 +38,30 @@ class Template {
         exit;
     }
 
-    // 自动加载静态文件 , 目前仅在控制器父类 HttpController->display() 中调用并缓存
+    /**
+     * 自动加载静态文件 , 目前仅在控制器父类 HttpController->display() 中调用并缓存
+     * @return string JS引入语句 (直接echo即可使用)
+     */
     public function includeFiles() {
-        $this->createMin(self::jqueryDir, self::dataDir, true);
-        echo '<script>jQuery.extend({inpath:"' . self::dataDir . '"});</script>';
-        $this->createMin(self::jsDir, self::dataDir, true);
-        $this->createMin(self::pluginsDir, self::dataDir);
+        $str = '';
+        $str .= $this->createMin(self::jqueryDir);
+        $str .=  '<script>jQuery.extend({inpath:"' . self::dataDir . '"});</script>';
+        $str .= $this->createMin(self::jsDir);
+        $this->createMin(self::pluginsDir);
+        return $str;
     }
 
     /**
      * 生成压缩文件
      * @param string $originaDir    需要压缩的js所在目录
      * @param string $newDir        压缩后的js存放目录
-     * @param bool $echo default(false)     是否直接echo
      * 
-     * @return array 由缩后的js文件名(目录+文件名)组成的一维数组
+     * @return string JS引入语句 (直接echo即可使用)
      */
-    private function createMin($originaDir, $newDir, $echo = false) {
+    private function createMin($originaDir, $newDir = null) {
+        $newDir = is_null($newDir) ? self::dataDir : $newDir;
         $files = obj('Tool')->getFiles($originaDir);
-        $arr = [];
+        $str = '';
         foreach ($files as $v) {
             $ext = strrchr($v, '.');
             if ($ext !== '.js')
@@ -66,11 +71,9 @@ class Template {
                 $content = $this->AutomaticPacking(file_get_contents($v));
                 obj('Tool')->printInFile($jsname, $content);
             }
-            if ($echo)
-                echo '<script src="' . HOST . $jsname . '"></script>';
-            $arr[] = $jsname;
+            $str .= '<script src="' . HOST . $jsname . '"></script>';
         }
-        return $arr;
+        return $str;
     }
 
     /**

@@ -10,7 +10,7 @@ class File implements DriverInterface {
     // 缓存目录
     private $cacheRoot;
     // 缓存扩展名
-    private $cacheFileExt = "html";
+    private $cacheFileExt = "php";
 
     final public function __construct($options = array()) {
         $this->cacheRoot = isset($options['dir']) ? ROOT . $options['dir'] : ROOT . 'data/Cache/';
@@ -58,14 +58,11 @@ class File implements DriverInterface {
     }
 
     public function callget($cachedir, $cacheTime) {
-        $echo = $this->cacheRoot . $cachedir . 'echo.' . $this->cacheFileExt;
-        $return = $this->cacheRoot . $cachedir . 'return.' . $this->cacheFileExt;
-        if (file_exists($echo) || file_exists($return)) {
-            $cTime = ($t = $this->getFileCreateTime($echo)) ? $t : $this->getFileCreateTime($return);
+        $return = $this->cacheRoot . $cachedir . '.' . $this->cacheFileExt;
+        if ( file_exists($return)) {
+            $cTime = $this->getFileCreateTime($return);
             if (($cTime + $cacheTime) > time()) {
                 $data = NULL;
-                if (file_exists($echo))
-                    echo file_get_contents($echo);
                 if (file_exists($return))
                     $data = unserialize(file_get_contents($return));
                 return array(
@@ -77,9 +74,8 @@ class File implements DriverInterface {
         return false;
     }
 
-    public function callset($cachedir, $echo = '', $return, $cacheTime) {
-        $this->saveFile($this->cacheRoot . $cachedir . 'echo.' . $this->cacheFileExt, $echo);
-        $this->saveFile($this->cacheRoot . $cachedir . 'return.' . $this->cacheFileExt, serialize($return));
+    public function callset($cachedir, $return, $cacheTime) {
+        $this->saveFile($this->cacheRoot . $cachedir . '.' . $this->cacheFileExt, serialize($return));
         clearstatcache();
         return array(
             'code' => 200,
@@ -88,7 +84,8 @@ class File implements DriverInterface {
     }
 
     private function makeFilename($key) {
-        return $this->cacheRoot . 'serialize/' . md5($key) . '.php';
+//        return $this->cacheRoot . 'serialize/' . md5($key) . '.'. $this->cacheFileExt;
+        return $this->cacheRoot  . $key . '.'. $this->cacheFileExt;
     }
 
     // 递归删除 目录(绝对路径)下的所有文件,包括自身

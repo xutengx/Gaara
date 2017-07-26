@@ -60,12 +60,6 @@ class Redis implements DriverInterface {
         return true;
     }
 
-//    public function clear($key){
-//        $arr = $this->handler->keys($this->prefix.$key.'*');
-//        foreach($arr as $v){
-//            $this->handler->delete($v);
-//        }
-//    }
     // 以scan替代keys, 解决大数据时redis堵塞的问题, 但是存在数据不准确(清除数据不完整)的情况
     public function clear($key) {
         $it = \NULL; /* Initialize our iterator to NULL */
@@ -77,13 +71,8 @@ class Redis implements DriverInterface {
     }
 
     public function callget($key, $cacheTime) {
-        $echo = ($key . 'e');
-        $return = ($key . 'r');
-
-        $echo_content = $this->get($echo);
-        $return_content = $this->get($return);
-        if ($echo_content['code'] === 200 && $return_content['code'] === 200) {
-            echo $echo_content['data'];
+        $return_content = $this->get($key);
+        if ($return_content['code'] === 200) {
             return array(
                 'code' => 200,
                 'data' => $return_content['data']
@@ -92,13 +81,8 @@ class Redis implements DriverInterface {
         return false;
     }
 
-    public function callset($cachedir, $echo = '', $return, $cacheTime) {
-        $echo_key = ($cachedir . 'e');
-        $return_key = ($cachedir . 'r');
-
-        $a = $this->set($echo_key, $echo, $cacheTime);
-        $b = $this->set($return_key, $return, $cacheTime);
-        if ($a && $b) {
+    public function callset($cachedir, $return, $cacheTime) {
+        if ( $this->set($cachedir, $return, $cacheTime) ) {
             return array(
                 'code' => 200,
                 'data' => $return

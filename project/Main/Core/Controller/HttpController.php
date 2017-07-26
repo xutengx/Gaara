@@ -143,7 +143,7 @@ abstract class HttpController extends \Main\Core\Controller {
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 EEE;
         // 公用view DEBUG下不缓存
-        DEBUG ? obj('Template')->includeFiles() : obj('cache')->call(obj('Template'), 'includeFiles',1);
+        echo DEBUG ? obj('Template')->includeFiles() : obj('cache')->call(obj('Template'), 'includeFiles',1);
         // 页面各种赋值
         echo '<script>' . $ajax, $this->cache, $str . '</script>';
         // 重置

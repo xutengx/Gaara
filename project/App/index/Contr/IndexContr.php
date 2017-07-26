@@ -13,6 +13,7 @@ class IndexContr extends Controller\HttpController {
     }
 
     public function indexDo($a = null ,$b = null ,$c = null ,$d = null ) {
+    
         var_dump($a);
         var_dump($b);
         var_dump($c);
@@ -24,6 +25,12 @@ class IndexContr extends Controller\HttpController {
 //        headerTo('development/index/indexDo/'); // 开发开始
     }
     
+    protected function test(int $a = 3){
+        echo 'nono';
+        return $a + 1;
+    }
+
+
 //    public function __destruct() {
 //        \statistic();
 //    }

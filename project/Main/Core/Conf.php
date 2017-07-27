@@ -7,7 +7,7 @@ defined('IN_SYS') || exit('ACC Denied');
 class Conf {
 
     // 配置存放数组
-    protected $data = array();
+    private static $data = array();
     // 多配置选取关键字
     protected $key = '_test';
 
@@ -15,11 +15,18 @@ class Conf {
         $this->getConfig();
         $this->set();
     }
-
-    public function __get($key) {
-        if (array_key_exists($key, $this->data))
-            return $this->data[$key];
-        else
+    /**
+     * 惰性读取配置文件
+     * @param type $key
+     * @return type
+     */
+    public function __get($configName) {
+        if (array_key_exists($configName, self::$data))
+            return self::$data[$configName];
+        elseif (file_exists(CONFIG . $configName . '.php')) {
+            $config = require(CONFIG . $configName . '.php');
+            return self::$data[$configName] = isset($config[$this->key]) ? $config[$this->key] : $config;
+        } else
             return null;
     }
 
@@ -36,16 +43,16 @@ class Conf {
         $this->key = $data['chooseConfig']();
         foreach ($data as $k => $v) {
             if (strpos($k, $this->key)) {
-                $this->data[str_ireplace($this->key, '', $k)] = $data[$k];
+                self::$data[str_ireplace($this->key, '', $k)] = $data[$k];
             } else if (!isset($this->data[$k])) {
-                $this->data[$k] = $data[$k];
+                self::$data[$k] = $data[$k];
             }
         }
     }
 
     private function set() {
-        date_default_timezone_set($this->data['timezone']);
-        if ($this->data['debug'] === true) {
+        date_default_timezone_set(self::$data['timezone']);
+        if (self::$data['debug'] === true) {
             ini_set('display_errors', 1);
             error_reporting(E_ALL);
         } else

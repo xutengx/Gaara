@@ -61,11 +61,8 @@ class RouteImplicit {
             self::defineV(self::$urlArr['application']);
             self::$urlArr['pramers'] = array_merge(self::$urlArr['pramers'], self::$urlPars);
             $request = CLI ? null : self::filterPars();
-            
-//            $func = method_exists($obj,self::$urlArr['method'] ) ? self::$urlArr['method'] : 'indexDo';
             $func = self::$urlArr['method'];
             $obj = obj($obj, true, $func); 
-//            obj('\Main\Core\Response');
             $return = $obj->$func($request);
             
             obj('\Main\Core\Response')->returnData($return);

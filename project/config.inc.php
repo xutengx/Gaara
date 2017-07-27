@@ -14,14 +14,7 @@ return array(
     'tablepre'=>'',
     
     // 隐式路由 关键字
-    'path'=>'path',
-    
-    'session'   => require (CONFIG.'session.php'),
-    'wechat'    => require (CONFIG.'wechat.php'),
-    'db'        => require (CONFIG.'db.php'),
-    'cache'     => require (CONFIG.'cache.php'),
-    'datatables'=> require (CONFIG.'datatables.php'),
-    
+    'path'=>'path',    
     
     /**
      * @return string 多配置关键字

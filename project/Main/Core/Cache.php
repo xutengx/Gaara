@@ -141,7 +141,7 @@ class Cache {
      * 
      */
     private function makeKey($classname = '', $funcname = '', $params = []) {
-        $key = '';
+        $key = '';                   // default
         if (!empty($params)) {
             foreach ($params as $v) {
                 if ($v === true)
@@ -152,8 +152,7 @@ class Cache {
                     $key .= '_' . gettype($v) . '-' . (is_array($v) ? serialize($v) : $v);
             }
             $key = '/' . md5($key);
-        } else
-            $key .= ''; // default
+        } 
         $str = $classname . '/' . $funcname . $key;
         $str = is_null($this->key) ? $str : '@' . $this->key . '/' . $str;
         return str_replace('\\', '/', $str);

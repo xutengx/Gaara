@@ -10,7 +10,6 @@ class Integrator{
     private static $obj_ins = array();
     // 预存的class引用路径
     private static $obj_map = array(
-//        'Main\Core\Module'=>'Main/Core/Module.class.php',
         'HTMLPurifier'=>'Main/Support/Secure/htmlpurifier-4.7.0/library/HTMLPurifier.includes.php',
         'QRcode'    =>'Main/Support/Image/QRcode.php',
     );
@@ -34,7 +33,6 @@ class Integrator{
      * @param array     $pars       new一个对象所需要的参数; 注:单例模式下,显然只有第一次实例化时,参数才会被使用!
      *
      * @return mixed
-     * @throws Exception
      */
     public static function get($class = '', $singleton = true, array $pars = array()){
         $class = str_replace('/','\\',$class);
@@ -50,11 +48,10 @@ class Integrator{
     public static function requireClass($class){
         $path = ROOT.str_replace('\\','/',$class).'.php';
         // 根据预存的class引用路径
-        if(isset(self::$obj_map[$class])) self::includeWithException(ROOT.self::$obj_map[$class]);
+        if(isset(self::$obj_map[$class])) self::includeFile(ROOT.self::$obj_map[$class]);
         else if (strtolower(substr($class, -5)) == 'model')  self::autoMakeModel($path, $class);
         else if (strtolower(substr($class, -3)) == 'obj')  self::autoMakeObject($path, $class);
-        else self::includeWithException($path);
-//        else self::includeWithException(ROOT . 'Include/' . $class . '.class.php');
+        else self::includeFile($path);
     }
     // 自动生成 Model
     private static function autoMakeModel($path, $classname){
@@ -65,15 +62,14 @@ class Integrator{
         if(file_exists($path) || obj('\Main\Core\Code')->makeObject($path, $classname) ) require $path;
     }
     // 异常处理
-    private static function includeWithException($where){
+    private static function includeFile($where){
         if(file_exists($where)) {
             require $where;
             return true;
         }
-//        throw new Exception('引入文件 '.$where.' 不存在! ',99);
     }
     /**
-     * 处理应用类 Contr Module Object or 自定义
+     * 处理应用类 Contr Model Object or 自定义
      * @param string $class
      *
      * @return string $class
@@ -97,22 +93,12 @@ class Integrator{
      * @return mixed
      * @throws Exception
      */
-    private static function getins($class, $singleton = true, $par = NULL){
+    private static function getins($class, $singleton = true, $par = []){
         if(!class_exists($class))
             throw new Exception('实例化类 : '.$class.' 不存在!',99);
-        $parstr = '';
-        if($par !== NULL){
-            $par = array_values($par);
-            for( $i = 0 ; $i < count($par) ; $i++ )
-                $parstr .= ',$par['.$i.']';
-            $parstr = ltrim($parstr, ',');
-        }
-        $str = 'new $class('.$parstr.');';
         if($singleton === true){
-            if(!isset(self::$obj_ins[ $class ]))
-                eval('self::$obj_ins[$class] = '.$str);
-            return self::$obj_ins[ $class ];
-        }else return eval('return '.$str);
+            return self::$obj_ins[$class] = new $class(...$par);
+        }else return new $class(...$par);
     }
     // 查看预存的class引用路径
     public static function showMap(){

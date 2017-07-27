@@ -13,11 +13,11 @@ class IndexContr extends Controller\HttpController {
     }
 
     public function indexDo($a = null ,$b = null ,$c = null ,$d = null ) {
-    
-        var_dump($a);
-        var_dump($b);
-        var_dump($c);
-        var_dump($d);
+    $a1 = obj('App\test\Systemmodel' );
+        var_dump($a1);
+//        var_dump($b);
+//        var_dump($c);
+//        var_dump($d);
         var_dump(func_get_args());exit;
         
 //        headerTo('development/index/indexDo/');

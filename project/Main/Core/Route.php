@@ -14,6 +14,10 @@ class Route {
     
     private static $routeRule = null;
     
+    // 路由别名, 默认为路由正则string
+    private static $alias = null;
+
+
     public static function Start() {
         // 得到 $pathInfo
         self::$pathInfo = self::getPathInfo();
@@ -35,20 +39,19 @@ class Route {
     
     /**
      * 方法执行,支持闭包函数
-     * @param string|function $contr 将要执行的方法
+     * @param string|callback|array $contr 将要执行的方法
      * @param array|object $request 请求参数
      * @return void
      */
     private static function doMethod($contr, $request){
         self::statistic();
-//        obj('\Main\Core\Response');
         // 形如 'App\index\Contr\IndexContr@indexDo'
         if(is_string($contr)){
             $temp = explode('@', $contr);
             $return = call_user_func_array(array(obj($temp[0]), $temp[1]), $request);  
         }
         // 形如 function($param_1, $param_2 ) {return 'this is a function !';}
-        else{
+        elseif($contr instanceof \Closure){
             $return = call_user_func_array($contr, $request);
         }
         obj('\Main\Core\Response')->returnData($return);
@@ -77,27 +80,43 @@ class Route {
      * 路由分析
      */
     private static function routeAnalysis(){
-        foreach (self::$routeRule as $rule => $contr){
+        foreach (self::$routeRule as $rule => $info){
             $parameter = [];
             $pathInfoPreg = self::ruleToPreg($rule, $parameter);
             // 确定路由匹配
             if(preg_match($pathInfoPreg, self::$pathInfo, $argument)){     
                 // 确认参数
                 $request = self::paramAnalysis($parameter , $argument);
-                // 执行方法
-                return self::doMethod($contr, $request);
+                // 执行分析
+                return self::infoAnalysis($rule, $info, $request);
             }
         }
         obj('\Main\Core\Response')->returnData('', false, 404);
     }
     
+    /**
+     * 执行分析 : 路由别名, 执行闭包
+     * @param string $rule          路由匹配段
+     * @param string|array $info    路由执行段 (可能是形如 'App\index\Contr\IndexContr@indexDo' 或者 闭包, 或者 数组包含以上2钟)
+     * @param array $request
+     */
+    private static function infoAnalysis($rule, $info, $request){
+        if(is_array($info)){
+            self::$alias = isset($info['as']) ? $info['as'] : $rule;
+            $contr = $info['uses'];
+        }else{
+            self::$alias = $rule;
+            $contr = $info;
+        }
+        return self::doMethod($contr, $request);
+    }
     
     /**
      * 得到当前应该使用的route配置
      * @return type
      */
     private static function getRouteRule(){
-        return require(ROUTE.self::getRouteType().'.php');
+        return require(ROUTE.self::$routeType.'.php');
     }
 
     /**
@@ -132,7 +151,7 @@ class Route {
                 $key = true;
                 return '?([^/]*)';
             }, $v);
-            if($key)                continue;
+            if($key) continue;
             $temp[$k] = \preg_replace_callback("/{.*}/is", function($matches) use (&$param){
                 $param[] = trim(trim($matches[0], '}'), '{');
                 return '([^/]+)';
@@ -146,5 +165,12 @@ class Route {
         $GLOBALS['statistic']['_initTime'] = microtime(true);
         $GLOBALS['statistic']['_initMemory'] = memory_get_usage();
     }
-   
+    
+    /**
+     * 返回当前的路由别名
+     * @return string
+     */
+    public static function getAlias() {
+        return self::$alias;
+    }
 }

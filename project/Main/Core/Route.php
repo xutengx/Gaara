@@ -158,6 +158,10 @@ class Route {
                     self::$domainParam = array_merge(self::$domainParam, $domain);
                 }else return false;
             }
+            // http方法分析
+            if(!in_array(strtolower($_SERVER['REQUEST_METHOD']), $info['method']))
+                return false;
+            
             $contr = $info['uses'];
         }else{
             self::$alias = $rule;
@@ -192,7 +196,7 @@ class Route {
     /**
      * 将域名规则翻译为正则表达式
      * @param string    $rule       域名规则    eg: {admin}.gitxt.com
-     * @return array 
+     * @return array|false
      */
     private static function domainToPreg($rule = ''){
         $param = [];
@@ -207,13 +211,9 @@ class Route {
             array_shift($param);
             return 'true';
         }, $_SERVER['HTTP_HOST']);
-        // 若匹配失败 则填充 null
-//        var_dump($rule);
-//        var_dump($preg);
-//        var_dump($key);
+        // 若匹配失败 则返回false
         if($key !== 'true'){
             return false;
-//            $param[] = \null;
         }
         return $param;
     } 
@@ -247,21 +247,43 @@ class Route {
     public static function getUrlParam() {
         return self::$urlParam;
     }
-/*****************************************************************************************************/    
-    public static function post(){
+/**************************************************** 分组以及静态方法申明路由 *********************************************/     
+    // 可用的 http 动作
+    private static $allowMethod = [
+        'get','post','put','delete','head','patch'
+    ];
+    
+    // 分组时的信息
+    private static $group = [
+        'domain' => [],
+        'prefix' => [],
+        'namespace' => [],
+        'as' => [],
+        'middleware' => [],
+    ];
         
+    public static function post($url, $action){
+        return self::match(['post'], $url, $action);
     }
     
-    public static function get(){
-        
+    public static function get($url, $action){
+        return self::match(['get'], $url, $action); 
     }
     
-    public static function put(){
-        
+    public static function put($url, $action){
+        return self::match(['put'], $url, $action);
     }
     
-    public static function delete(){
-        
+    public static function delete($url, $action){
+        return self::match(['delete'], $url, $action);  
+    }
+    
+    public static function head($url, $action){
+        return self::match(['head'], $url, $action);  
+    }
+    
+    public static function patch($url, $action){
+        return self::match(['patch'], $url, $action);
     }
     /**
      * 
@@ -273,67 +295,16 @@ class Route {
         return self::match(self::$allowMethod, $url, $action);
     }
     
-    // 分组时的信息
-    private static $group = [
-        'domain' => [],
-        'prefix' => [],
-        'namespace' => [],
-        'as' => [],
-        'middleware' => [],
-    ];
     /**
-     * 格式化 action 参数
+     * 处理分析每个路由以及所在组环境, 并加入 self::$routeRule
+     * @param type $method
+     * @param string $url
      * @param type $action
      */
-    private static function formatAction($action){
-        $actionInfo = [];
-        if(is_array($action)){
-            if($action['uses'] instanceof \Closure){
-                $actionInfo['middleware'] = isset($action['middleware']) ? $action['middleware'] : [];
-                $actionInfo['namespace'] =  '';
-                $actionInfo['prefix'] =  '';
-                $actionInfo['as'] = isset($action['as']) ? $action['as'] : '';
-                $actionInfo['domain'] = isset($action['domain']) ? $action['domain'] : '';
-                $actionInfo['uses'] = $action['uses'];
-            }elseif(is_string($action['uses'])){
-                $actionInfo['middleware'] = isset($action['middleware']) ? $action['middleware'] : [];
-                $actionInfo['namespace'] = isset($action['namespace']) ? $action['namespace'] : '';
-                $actionInfo['prefix'] = isset($action['prefix']) ? $action['prefix'] : '';
-                $actionInfo['as'] = isset($action['as']) ? $action['as'] : '';
-                $actionInfo['domain'] = isset($action['domain']) ? $action['domain'] : '';
-                $actionInfo['uses'] = trim(str_replace('/', '\\', $action['uses']), '\\');
-            }
-        }elseif($action instanceof \Closure){
-            $actionInfo['middleware'] =  [];
-            $actionInfo['namespace'] = '';
-            $actionInfo['prefix'] =  '';
-            $actionInfo['as'] =  '';
-            $actionInfo['domain'] =  '';
-            $actionInfo['uses'] = $action;
-        }elseif(is_string($action)){
-            $actionInfo['middleware'] =  [];
-            $actionInfo['namespace'] = '';
-            $actionInfo['prefix'] =  '';
-            $actionInfo['as'] =  '';
-            $actionInfo['domain'] =  '';
-            $actionInfo['uses'] = trim(str_replace('/', '\\', $action), '\\');
-        }
-        return $actionInfo;
-    }
-    
     public static function match($method, $url, $action){
-        // todo $method;
-        
         // 格式化action
         $actionInfo = self::formatAction($action);
-        
-//        var_dump($actionInfo);
-//        echo '<hr>';
-//        var_dump($method);
-//        var_dump($url);
-//        var_dump($action);
-//        var_dump(self::$group);exit;
-        
+     
         // 处理得到 url
         {
             if(!empty(self::$group['prefix'])){
@@ -403,6 +374,7 @@ class Route {
        
         self::$routeRule[] = [
             $url => [
+                'method' => $method,
                 'middleware' => $middleware,
                 'domain' => $domain,
                 'as' => $as,
@@ -410,11 +382,7 @@ class Route {
             ]
         ];
     }
- 
-    // 
-    private static $allowMethod = [
-        'get','post','put','delete','head','patch'
-    ];
+
     /**
      * 路由分组, 支持无线级嵌套
      * @param type $rule
@@ -436,4 +404,45 @@ class Route {
             array_pop(self::$group[$k]);
         } 
     }
+    
+    /**
+     * 格式化 action 参数
+     * @param type $action
+     */
+    private static function formatAction($action){
+        $actionInfo = [];
+        if(is_array($action)){
+            if($action['uses'] instanceof \Closure){
+                $actionInfo['middleware'] = isset($action['middleware']) ? $action['middleware'] : [];
+                $actionInfo['namespace'] =  '';
+                $actionInfo['prefix'] =  '';
+                $actionInfo['as'] = isset($action['as']) ? $action['as'] : '';
+                $actionInfo['domain'] = isset($action['domain']) ? $action['domain'] : '';
+                $actionInfo['uses'] = $action['uses'];
+            }elseif(is_string($action['uses'])){
+                $actionInfo['middleware'] = isset($action['middleware']) ? $action['middleware'] : [];
+                $actionInfo['namespace'] = isset($action['namespace']) ? $action['namespace'] : '';
+                $actionInfo['prefix'] = isset($action['prefix']) ? $action['prefix'] : '';
+                $actionInfo['as'] = isset($action['as']) ? $action['as'] : '';
+                $actionInfo['domain'] = isset($action['domain']) ? $action['domain'] : '';
+                $actionInfo['uses'] = trim(str_replace('/', '\\', $action['uses']), '\\');
+            }
+        }elseif($action instanceof \Closure){
+            $actionInfo['middleware'] =  [];
+            $actionInfo['namespace'] = '';
+            $actionInfo['prefix'] =  '';
+            $actionInfo['as'] =  '';
+            $actionInfo['domain'] =  '';
+            $actionInfo['uses'] = $action;
+        }elseif(is_string($action)){
+            $actionInfo['middleware'] =  [];
+            $actionInfo['namespace'] = '';
+            $actionInfo['prefix'] =  '';
+            $actionInfo['as'] =  '';
+            $actionInfo['domain'] =  '';
+            $actionInfo['uses'] = trim(str_replace('/', '\\', $action), '\\');
+        }
+        return $actionInfo;
+    }
+    
 }

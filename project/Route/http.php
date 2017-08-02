@@ -28,11 +28,11 @@ return [
     Route::group(['prefix'=>'/test','middleware'=>['web1'],'domain'=> '192.168.43.128','as'=> 'ass','namespace'=> 'App\index\Contr' ], function(){
         Route::group(['prefix'=>'/test2','as'=> 'test2','namespace'=> 'App\test\tes'], function(){
             Route::any('/hello',['as' => 'hello','middleware'=>['web3'], 'uses' =>  'Contr\IndexContr@indexDo']);
-            Route::any('/hello33',['as' => 'hello','domain'=> '192.168.43.128', 'uses' => function (){
+            Route::post('/hello33',['as' => 'hello','domain'=> '192.168.43.128', 'uses' => function (){
                 return 'hello 多层路由分组嵌套';
             }]);
             
-            Route::any('/hello2',function (){
+            Route::any('/hello',function (){
                 return 'hello2 多层路由分组嵌套';
             });
             Route::any('/hello3', 'IndexContr@indexDo');

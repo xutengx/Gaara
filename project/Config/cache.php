@@ -2,7 +2,7 @@
 
 defined('IN_SYS')||exit('ACC Denied');
 return [
-    'driver' => 'redis',
+    'driver' => 'file',
     
     'redis' => [
         'host'  => '127.0.0.1',

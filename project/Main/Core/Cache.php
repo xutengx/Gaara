@@ -43,13 +43,39 @@ class Cache {
         unset($pars[1]);
         unset($pars[2]);
         $par = array_values($pars);
-//        $key = $this->makeCacheDir($obj, $func, $par);
         $key = $this->autoKey($obj, $func, $par);
         foreach ($this->Drivers as $v) {
             $re = $v->callget($key, $cacheTime);
             if ($re['code'] === 200)
                 return $re['data'];
         }
+        $return = $this->runFunc($obj, $func, $par);
+        foreach ($this->Drivers as $v) {
+            $re = $v->callset($key, $return, $cacheTime);
+            if ($re['code'] === 200)
+                return $re['data'];
+        }
+        return $return;
+    }
+
+    /**
+     * 不缓存的缓存方法, 方便调试
+     * @param object  $obj 执行对象
+     * @param string  $func 执行方法
+     * @param bool|true $cacheTime 缓存过期时间
+     * @param $par 非限定参数 
+     *
+     * @return mixed
+     */
+    public function dcall($obj, $func, $cacheTime = true) {
+        $cacheTime = is_numeric($cacheTime) ? (int) $cacheTime : $this->cacheLimitTime;
+        $pars = func_get_args();
+        unset($pars[0]);
+        unset($pars[1]);
+        unset($pars[2]);
+        $par = array_values($pars);
+        $key = $this->autoKey($obj, $func, $par);
+        
         $return = $this->runFunc($obj, $func, $par);
         foreach ($this->Drivers as $v) {
             $re = $v->callset($key, $return, $cacheTime);
@@ -86,9 +112,9 @@ class Cache {
 
     public function get($key = true, $callback = false, $cacheTime = false) {
         if ($key instanceof \Closure) {
-            $key = true;
             $cacheTime = $callback;
             $callback = $key;
+            $key = true;
         }
         $cacheTime = is_numeric($cacheTime) ? (int) $cacheTime : $this->cacheLimitTime;
         $key = ($key === true) ? $this->autoKey() : $key;
@@ -98,6 +124,30 @@ class Cache {
             if ($re['code'] === 200)
                 return $re['data'];
         }
+        if ($callback instanceof \Closure) {
+            $data = call_user_func($callback);
+        } else {
+            $data = $callback;
+        }
+        if ($this->set($key, $data, $cacheTime))
+            return $data;
+        return false;
+    }
+    /**
+     * 不缓存的缓存方法, 方便调试
+     * @param type $key
+     * @param type $callback
+     * @param type $cacheTime
+     * @return boolean|\Closure
+     */
+    public function dget($key = true, $callback = false, $cacheTime = false) {
+        if ($key instanceof \Closure) {
+            $cacheTime = $callback;
+            $callback = $key;
+            $key = true;
+        }
+        $cacheTime = is_numeric($cacheTime) ? (int) $cacheTime : $this->cacheLimitTime;
+        $key = ($key === true) ? $this->autoKey() : $key;
         if ($callback instanceof \Closure) {
             $data = call_user_func($callback);
         } else {

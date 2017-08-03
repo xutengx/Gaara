@@ -29,11 +29,10 @@ define('CONFIG', ROOT.'Config/');
  */
 define('ROUTE', ROOT.'Route/');
 
-// 自动加载类
+// 自动加载类容器
 require (ROOT . 'Main/Core/Integrator.php');
 // 公用方法
 require (ROOT . 'Main/Core/Function.php');
-
 
 define('DEBUG', obj('conf')->debug);
 

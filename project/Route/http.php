@@ -25,7 +25,7 @@ return [
 //        return 'byebye';
 //    }]),
 //    '/index.php/test/user/{id?}' => 'App\index\Contr\IndexContr@indexDo',
-    Route::group(['prefix'=>'/test','middleware'=>['web1'],'domain'=> '192.168.43.128','as'=> 'ass','namespace'=> 'App\index\Contr' ], function(){
+    Route::group(['prefix'=>'/test','middleware'=>['web'],'domain'=> '192.168.43.128','namespace'=> 'App\index\Contr' ], function(){
         Route::group(['prefix'=>'/test2','as'=> 'test2','namespace'=> 'App\test\tes'], function(){
             Route::any('/hello',['as' => 'hello','middleware'=>['web3'], 'uses' =>  'Contr\IndexContr@indexDo']);
             Route::post('/hello33',['as' => 'hello','domain'=> '192.168.43.128', 'uses' => function (){
@@ -38,7 +38,7 @@ return [
             Route::any('/hello3', 'IndexContr@indexDo');
 
         });
-        Route::any('/hello',['as' => 'tt1', 'uses' => function (){
+        Route::any('/hello',['middleware'=>['test'],'uses' => function (){
             return 'hello';
         }]);
         Route::any('/byebye',['as' => 'tt2', 'uses' => function (){

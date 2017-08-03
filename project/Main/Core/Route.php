@@ -131,27 +131,27 @@ class Route {
     private static function paramAnalysis($parameter, $argument) {
         $arr = [];
         if (empty($parameter)) {
-            $arr[] = obj('F');
+            $arr[] = obj('Request');
         } else {
             foreach ($parameter as $k => $v) {
                 // 当实参不全时, 填充为 null
                 $argument[$k + 1] = !isset($argument[$k + 1]) ? '' : $argument[$k + 1];
                 $arr[$v] = ($argument[$k + 1] === '') ? \null : ltrim($argument[$k + 1], '/');
             }
-            obj('F', true, $arr);
+            obj('Request', true, $arr);
         }
         return $arr;
     }
     
     /**
-     * 执行分析 : 路由别名, 执行闭包
+     * 执行分析 : 路由别名, 域名分析, 中间件注册, 执行闭包
      * @param string $rule          路由匹配段
      * @param string|array $info    路由执行段 (可能是形如 'App\index\Contr\IndexContr@indexDo' 或者 闭包, 或者 数组包含以上2钟)
      * @param array $request
      */
     private static function infoAnalysis($rule, $info){
         if(is_array($info)){
-            self::$alias = isset($info['as']) ? $info['as'] : $rule;
+            self::$alias = ( isset($info['as']) && !empty($info['as']) ) ? $info['as'] : $rule;
             // 域名分析
             if(isset($info['domain'])){
                 if(is_array($domain = self::domainToPreg($info['domain']))){
@@ -161,7 +161,9 @@ class Route {
             // http方法分析
             if(!in_array(strtolower($_SERVER['REQUEST_METHOD']), $info['method']))
                 return false;
-            
+            // 中间件注册
+            self::doMiddleware($info['middleware']);
+            // 执行
             $contr = $info['uses'];
         }else{
             self::$alias = $rule;
@@ -172,7 +174,31 @@ class Route {
         
         return self::doMethod($contr, $request);
     }
-    
+    /**
+     * 中间件注册, 执行
+     * @param array $middlewareGroups
+     */
+    private static function doMiddleware($middlewareGroups){
+        $Kernel = obj('\App/Kernel');
+        $Request = obj('Request');
+        // 全局中间件
+        foreach($Kernel->middlewareGlobel as $middleware){
+            // 是否路由别名排除
+            if(in_array(self::$alias, obj($middleware)->getExcept(), true))
+                continue;
+            obj($middleware)($Request);
+        }
+        // 路由中间件
+        foreach($middlewareGroups as $middlewareGroup){
+            foreach ($Kernel->middlewareGroups[$middlewareGroup] as $middleware) {
+                // 是否路由别名排除
+                if(in_array(self::$alias, obj($middleware)->getExcept(), true))
+                    continue;
+                obj($middleware)($Request);
+            }
+        }
+    }
+
     /**
      * 方法执行,支持闭包函数
      * @param string|callback|array $contr 将要执行的方法

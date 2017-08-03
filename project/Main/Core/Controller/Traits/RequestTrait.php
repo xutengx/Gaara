@@ -18,7 +18,7 @@ trait RequestTrait {
     protected function requestFun($key = null, $rule = null, $msg = null, $fun = 'get'){
         $par = func_get_args();
         if (!is_null($key)) {
-            $bool = call_user_func_array(array(obj('f'), $fun), $par);
+            $bool = call_user_func_array(array(obj('Request'), $fun), $par);
             if ($bool === false) {
                 $msg = isset($par[2]) ? $par[2] : $par[0] . ' 不合法!';
                 $this->returnMsg(0, $msg) && exit;
@@ -28,14 +28,14 @@ trait RequestTrait {
                 return $bool;
         }else{
             $arrayKey = array();
-            $array = obj('f')->$fun;
+            $array = obj('Request')->$fun;
             if ($array === null)
                 throw new \Main\Core\Exception('尝试获取' . $fun . '中的数据没有成功!');
             foreach ($array as $k => $v) {
-                if (array_key_exists($k, obj('F')->getFilterArr()) && !is_array($k)) {
+                if (array_key_exists($k, obj('Request')->getFilterArr()) && !is_array($k)) {
                     $arrayKey[$k] = $this->{$fun}($k, $k);
                 } else
-                    $arrayKey[$k] = obj('F')->{$fun}($k);
+                    $arrayKey[$k] = obj('Request')->{$fun}($k);
             }
             return $arrayKey;
         }

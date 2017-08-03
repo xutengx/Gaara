@@ -15,7 +15,8 @@ class Integrator{
     );
     // class简称
     private static $obj_call = array(
-        'f'=>'\Main\Core\F',
+        'f'=>'\Main\Core\Request',
+        'request'=>'\Main\Core\Request',
         'm'=>'\Main\Core\Model',
         'mysql'=>'\Main\Core\Mysql',
         'conf'=>'\Main\Core\Conf',
@@ -39,7 +40,7 @@ class Integrator{
         // 别名修正
         if(isset(self::$obj_call[ strtolower($class) ]))
             $class = self::$obj_call[ strtolower($class) ];
-        $class = trim($class,'\\');
+//        $class = trim($class,'\\');
         // 属于应用类,则进行添加 namespace 操作
         $class = self::checkClass($class);
         return self::getins($class, $singleton, $pars);
@@ -75,7 +76,7 @@ class Integrator{
      * @return string $class
      */
     private static function checkClass($class=''){
-        if( preg_match('#[A-Z]{1}[0-9a-z_]+$#', $class, $type) ){
+        if( preg_match('#^[^\\/]+.*[A-Z]{1}[0-9a-z_]+$#', $class, $type) ){
             $array = explode('\\',$class);
             if(strrpos($class, '\\') !== false){
                 if(count($array) == 2 )

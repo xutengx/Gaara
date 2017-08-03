@@ -8,7 +8,7 @@
 namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 // 原filter类, 数据来源过滤
-class F{
+class Request{
     private $post = array();
     private $get = array();
     private $put = array();
@@ -142,6 +142,10 @@ class F{
     public function __get($property_name){
         if(in_array(strtolower($property_name),array('post','get','put','delete','cookie')))
             return $this->$property_name;
-        else throw new Exception('不存在的属性:'.$property_name.'!');
+        else {
+            $key = strtoupper($property_name);
+            return isset($_SERVER[$key]) ? $_SERVER[$key] : (isset($_SERVER['HTTP_'.$key]) ? $_SERVER['HTTP_'.$key] : null);
+        }
+//        throw new Exception('不存在的属性:'.$property_name.'!');
     }
 }

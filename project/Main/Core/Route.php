@@ -335,15 +335,15 @@ class Route {
         
         // 处理得到 完整 as 别名
         {
+            $prefix = '';
             if(!empty(self::$group['as'])){
-                $prefix = '';
                 foreach(self::$group['as'] as $v){
                     if(empty($v))
                         continue;
                     $prefix .= $v;
                 }
-                $as = $prefix.$actionInfo['as'];
             }
+            $as = $prefix.$actionInfo['as'];
         }
         
         // 处理得到 最终 domain 

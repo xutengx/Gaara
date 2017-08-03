@@ -45,6 +45,9 @@ return [
             return 'byebye';
         }]);
     }),
+    Route::any('/hello',['as' => 'tt1', 'uses' => function (){
+        return 'hello12312';
+    }]),
 //    sleep(1);
 //    '/test/{id?}/ww/{ww?}' => [
 //        'domain' => '{username}.gitxt.com',

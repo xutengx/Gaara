@@ -15,17 +15,17 @@ class Integrator{
     );
     // class简称
     private static $obj_call = array(
-        'f'=>'\Main\Core\Request',
-        'request'=>'\Main\Core\Request',
-        'm'=>'\Main\Core\Model',
-        'mysql'=>'\Main\Core\Mysql',
-        'conf'=>'\Main\Core\Conf',
-        'secure'=>'\Main\Core\Secure',
-        'template'=>'\Main\Core\Template',
-        'log'=>'\Main\Core\Log',
-        'tool'=>'\Main\Core\Tool',
-        'cache'=>'\Main\Core\Cache',
-        'session'=>'\Main\Core\Session',
+        'f'=> \Main\Core\Request::class,
+        'request'=>\Main\Core\Request::class,
+        'm'=>\Main\Core\Model::class,
+        'mysql'=>\Main\Core\Mysql::class,
+        'conf'=>\Main\Core\Conf::class,
+        'secure'=>\Main\Core\Secure::class,
+        'template'=>\Main\Core\Template::class,
+        'log'=>\Main\Core\Log::class,
+        'tool'=>\Main\Core\Tool::class,
+        'cache'=>\Main\Core\Cache::class,
+        'session'=>\Main\Core\Session::class
     );
     /**
      * 通过全局obj()调用
@@ -35,15 +35,12 @@ class Integrator{
      *
      * @return mixed
      */
-    public static function get($class = '', $singleton = true, array $pars = array()){
+    public static function get($class = '', array $pars = array()){
         $class = str_replace('/','\\',$class);
         // 别名修正
         if(isset(self::$obj_call[ strtolower($class) ]))
             $class = self::$obj_call[ strtolower($class) ];
-//        $class = trim($class,'\\');
-        // 属于应用类,则进行添加 namespace 操作
-        $class = self::checkClass($class);
-        return self::getins($class, $singleton, $pars);
+        return self::getins($class, $pars);
     }
     // 自动引入
     public static function requireClass($class){
@@ -56,34 +53,18 @@ class Integrator{
     }
     // 自动生成 Model
     private static function autoMakeModel($path, $classname){
-        if(file_exists($path) || obj('\Main\Core\Code')->makeModule($path, $classname) ) require $path;
+        if(file_exists($path) || obj(Code::class)->makeModule($path, $classname) ) require $path;
     }
     // 自动生成 Object
     private static function autoMakeObject($path, $classname){
-        if(file_exists($path) || obj('\Main\Core\Code')->makeObject($path, $classname) ) require $path;
+        if(file_exists($path) || obj(Code::class)->makeObject($path, $classname) ) require $path;
     }
     // 异常处理
     private static function includeFile($where){
         if(file_exists($where)) {
             require $where;
-            return true;
         }
-    }
-    /**
-     * 处理应用类 Contr Model Object or 自定义
-     * @param string $class
-     *
-     * @return string $class
-     */
-    private static function checkClass($class=''){
-        if( preg_match('#^[^\\/]+.*[A-Z]{1}[0-9a-z_]+$#', $class, $type) ){
-            $array = explode('\\',$class);
-            if(strrpos($class, '\\') !== false){
-                if(count($array) == 2 )
-                    return 'App\\'.$array[0].'\\'.$type[0].'\\'.$array[1];
-            }else return 'App\\'.APP.'\\'.$type[0].'\\'.$class;
-        }
-        return $class;
+        return true;
     }
     /**
      * 缓存 class 的单例并返回实例
@@ -94,14 +75,17 @@ class Integrator{
      * @return mixed
      * @throws Exception
      */
-    private static function getins($class, $singleton = true, $par = []){
+    private static function getins($class, $par = []){
         if(!class_exists($class))
             throw new Exception('实例化类 : '.$class.' 不存在!',99);
-        if($singleton === true){
-            return self::$obj_ins[$class] = new $class(...$par);
-        }else return new $class(...$par);
+        return isset(self::$obj_ins[$class]) ? self::$obj_ins[$class] : self::$obj_ins[$class] = self::getCopy($class, $par);
     }
-    // 查看预存的class引用路径
+    
+    private static function getCopy($class, $par){
+        return new $class(...$par);
+    }
+
+        // 查看预存的class引用路径
     public static function showMap(){
         var_export(self::$obj_map);
     }
@@ -126,4 +110,4 @@ class Integrator{
         self::$obj_map[$class] = $dir;
     }
 }
-spl_autoload_register(array('Main\Core\Integrator', 'requireClass'));
+spl_autoload_register(array(Integrator::class, 'requireClass'));

@@ -17,7 +17,7 @@ class RouteImplicit {
     private static $urlPars = array();
 
     public static function Start() {
-        self::$conf = obj('conf');
+        self::$conf = obj(Conf::class);
         //获取路由路径
         self::getUrl();
         //获取不包含路由路径的url中的get参数

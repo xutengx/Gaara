@@ -19,7 +19,7 @@ class Cache {
         $this->cacheLimitTime = (int) $time;
         $this->key = $key;
 
-        $conf = obj('conf')->cache;
+        $conf = obj(Conf::class)->cache;
 
         if ($conf['driver'] === 'redis')
             $this->Drivers['redis'] = new Driver\Redis($conf[$conf['driver']]);

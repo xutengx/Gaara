@@ -21,5 +21,5 @@ CREATE TABLE `visitor_info` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COMMENT='访客登记表';
 SQL;
-
+    
 }

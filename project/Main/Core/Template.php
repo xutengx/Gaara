@@ -60,7 +60,7 @@ class Template {
      */
     private function createMin($originaDir, $newDir = null) {
         $newDir = is_null($newDir) ? self::dataDir : $newDir;
-        $files = obj('Tool')->getFiles($originaDir);
+        $files = obj(Tool::class)->getFiles($originaDir);
         $str = '';
         foreach ($files as $v) {
             $ext = strrchr($v, '.');

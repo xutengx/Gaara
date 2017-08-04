@@ -32,13 +32,11 @@ class indexContr extends HttpController {
         }
     }
 
-    private function test_1() {
+    private function test_1() {        
+        obj(\Main\Core\Code::class)->makeCopy(\App\mysql\Contr\test::class, Model\visitorInfoModel::class);
+        $obj = obj(\App\mysql\Contr\test::class);
+//        $obj = obj(Model\visitorInfoModel::class);
         
-//        define(Model\visitorInfoModel, '123');
-        var_dump(new Model\visitorInfoModel);exit;
-        $obj = $this->w(Model\visitorInfoModel);exit;
-        $obj = obj('visitorInfoModel');
-      
         $sql = $obj->select(['id', 'name', 'phone'])
             ->where([ 'id' => [ '>', '101' ]])
             ->where(['id' => ['<', '104']])
@@ -55,7 +53,7 @@ class indexContr extends HttpController {
         var_dump($e);
     }
     private function test_2() {
-        $obj = obj('visitorInfoModel');
+        $obj = obj(Model\visitorInfoModel::class);
       
         $sql = $obj->select(['id', 'name', 'phone'])
             ->where([ 'scene' => [ '&', ':scene_1' ]])
@@ -68,7 +66,7 @@ class indexContr extends HttpController {
         var_dump($res);
     }
     private function test_3() {
-        $obj = obj('visitorInfoModel');
+        $obj = obj(Model\visitorInfoModel::class);
       
         $sql = $obj->select(['id', 'name', 'phone','count(id)','sum(id)'])
             ->where([ 'scene' => [ '&', '1' ]])
@@ -85,7 +83,7 @@ class indexContr extends HttpController {
         var_dump($res);
     }
     private function test_4() {
-        $obj = obj('visitorInfoModel');
+        $obj = obj(Model\visitorInfoModel::class);
       
         $sql = $obj
             ->data(['name' => 'autoUpdate'])
@@ -102,7 +100,7 @@ class indexContr extends HttpController {
         var_dump($res);
     }
     private function test_5() {
-        $obj = obj('visitorInfoModel');
+        $obj = obj(Model\visitorInfoModel::class);
       
         $sql = $obj
             ->data(['name' => ':autoUpdate'])

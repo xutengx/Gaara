@@ -48,7 +48,7 @@ class Model {
      * @param object $DbConnection db连接对象 如 obj('Mysql',false);
      */
     final public function __construct($DbConnection = null) {
-        $this->db = is_null($DbConnection) ? obj('\Main\Core\DbConnection', true, obj('conf')->db) : $DbConnection;
+        $this->db = is_null($DbConnection) ? obj(DbConnection::class, obj(Conf::class)->db) : $DbConnection;
         $this->collect = new \Main\Core\Model\Collect($this->options);
         $this->analysis = new \Main\Core\Model\Analysis();
         $this->resolution = new \Main\Core\Model\Resolution();
@@ -57,7 +57,7 @@ class Model {
     }
 
     final protected function get_thisTable() {
-        $conf = obj('conf');
+        $conf = obj(Conf::class);
         $this->tablepre = $conf->tablepre;
         $classname = get_class($this);
         $classname = substr($classname, strrpos($classname, '\\') + 1);
@@ -69,12 +69,16 @@ class Model {
     }
 
     public function tbname() {
+        return $this->getTable();
+    }
+
+    public function getTable() {
         return $this->table;
     }
 
     // 获取表信息, 自动信息填充
     protected function getTableInfo() {
-        $this->field = obj('cache')->get(true, function() {
+        $this->field = obj(Cache::class)->get(function() {
             return $this->db->getAll('SHOW COLUMNS FROM `' . $this->table . '`');
         }, 3600);
         list($this->key, $this->created_time, $this->created_time_type, $this->updated_time, $this->updated_time_type) = $this->resolution->getKey($this->field);

@@ -6,20 +6,31 @@
  * Date: 2016/2/4 0004
  * Time: 10:54
  */
+
 /**
- * 实例化对象,包含自动加载
+ * 单例 实例化对象
  * 依赖 Integrator.class.php 指向 obj::get()
  * @param $class
- * @param bool|true $app 当$class为Contr或Module时,代表所指向的APP,默认当前APP;
- *                        当$class为其他引用类时,其他参数生效,$app默认为true,代表单例模式实例化;
- * @param 其他参数, 在new非Contr或Module对象时的参数, 注:单例模式下,显然只有第一次实例化时,参数才会被使用!
+ * @param 其他参数, 注:单例模式下,显然只有第一次实例化时,参数才会被使用!
  * @return mixed 对象
  */
-function obj($obj, $app = true) {
+function obj($obj) {
     $arr = func_get_args();
     unset($arr[0]);
-    unset($arr[1]);
-    return \Main\Core\Integrator::get($obj, $app, $arr);
+    return \Main\Core\Integrator::get($obj, $arr);
+}
+
+/**
+ * 普通 实例化对象
+ * 依赖 Integrator.class.php 指向 obj::get()
+ * @param $class
+ * @param 其他参数
+ * @return mixed 对象
+ */
+function dobj($obj) {
+    $arr = func_get_args();
+    unset($arr[0]);
+    return new $obj(...$arr);
 }
 
 /**

@@ -85,7 +85,7 @@ class Route {
                     continue;
             }
         }
-        obj('\Main\Core\Response')->returnData('', false, 404);
+        obj(Response::class)->returnData('', false, 404);
     }
  
     /**
@@ -166,7 +166,7 @@ class Route {
             $contr = $info;
         }
         // 合并 域名参数 与 路由参数
-        $request = array_merge([obj('Request', true, $urlParam, $domainParam)], $domainParam, $urlParam);
+        $request = array_merge([obj(Request::class, $urlParam, $domainParam)], $domainParam, $urlParam);
         self::$domainParam = $domainParam;
         self::$urlParam = $urlParam;
         self::$alias = $alias;
@@ -195,7 +195,7 @@ class Route {
                 }
             }
         } catch (Exception $exc) {
-            obj('\Main\Core\Response')->doException($exc);
+            obj(Response::class)->doException($exc);
         } finally {
             
         }
@@ -221,9 +221,9 @@ class Route {
             elseif($contr instanceof \Closure){
                 $return = call_user_func_array($contr, $request);
             }
-            obj('\Main\Core\Response')->returnData($return);
+            obj(Response::class)->returnData($return);
         } catch (Exception $exc) {
-            obj('\Main\Core\Response')->doException($exc);
+            obj(Response::class)->doException($exc);
         } finally {
             
         } 

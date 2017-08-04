@@ -11,7 +11,9 @@ defined('IN_SYS') || exit('ACC Denied');
  */
 class StartSession extends Middleware {
 
-    public function __invoke(Request $request) {
+    protected $except = []; 
+    
+    public function handle(Request $request) {
         obj('session');
     }
 }

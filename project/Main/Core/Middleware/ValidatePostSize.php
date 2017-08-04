@@ -4,6 +4,7 @@ namespace Main\Core\Middleware;
 
 use Main\Core\Middleware;
 use Main\Core\Request;
+use Main\Core\Exception;
 
 defined('IN_SYS') || exit('ACC Denied');
 
@@ -12,7 +13,7 @@ defined('IN_SYS') || exit('ACC Denied');
  */
 class ValidatePostSize extends Middleware {
 
-    public function __invoke(Request $request) {
+    public function handle(Request $request) {
         if ($request->CONTENT_LENGTH > $this->getPostMaxSize()) {
             throw new Exception('too large post');
         }

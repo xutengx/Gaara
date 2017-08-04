@@ -54,7 +54,7 @@ abstract class HttpController extends \Main\Core\Controller {
     // cookie即时生效
     protected function setcookie($var, $value = '', $time = 0, $path = '', $domain = '', $s = false) {
         $_COOKIE[$var] = $value;
-        obj('F')->set_cookie($var, $value);
+        obj('Request')->set_cookie($var, $value);
         if (is_array($value)) {
             foreach ($value as $k => $v) {
                 setcookie($var . '[' . $k . ']', $v, $time, $path, $domain, $s);
@@ -109,7 +109,7 @@ abstract class HttpController extends \Main\Core\Controller {
 
     // 渲染页面赋值准备
     final protected function getReady() {
-        $debug = debug_backtrace();
+        $debug = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4);
         // 方法名,为调用此方法的最近级别函数
         $method = $debug[1]['function'];
         $this->assign('path', PATH);

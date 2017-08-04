@@ -11,7 +11,7 @@ defined('IN_SYS') || exit('ACC Denied');
  */
 class Jurisdiction extends Middleware {
 
-    public function __invoke(Request $request) {
+    public function handle(Request $request) {
 //        var_dump($request);
     }
 }

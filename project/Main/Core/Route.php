@@ -31,8 +31,6 @@ class Route {
         self::$routeType = self::getRouteType();
         // 引入route规则
         self::$routeRule = self::getRouteRule();
-        // 设置session
-//        self::startSession();
         // 分析路由, 并执行
         self::routeAnalysis();
     }
@@ -62,13 +60,6 @@ class Route {
         $fileRule =  require(ROUTE . self::$routeType . '.php');
         return is_array($fileRule) ? array_merge(self::$routeRule, $fileRule) : self::$routeRule;
     }
-    
-    /**
-     * 开启session
-     */
-    private static function startSession(){
-        obj('session');
-    }
 
     /**
      * 路由分析
@@ -85,10 +76,10 @@ class Route {
             $pathInfoPreg = self::ruleToPreg($rule, $parameter);
             // 确定路由匹配
             if(preg_match($pathInfoPreg, self::$pathInfo, $argument)){
-                // 确认参数
-                self::$urlParam = array_merge(self::$urlParam, self::paramAnalysis($parameter , $argument));
+                // 确认 url 参数
+                $urlParam = self::paramAnalysis($parameter , $argument);
                 // 执行分析
-                $check = self::infoAnalysis($rule, $info);
+                $check = self::infoAnalysis($rule, $info, $urlParam);
                 // 域名不匹配, 则继续 foreach
                 if($check === false)
                     continue;
@@ -123,54 +114,65 @@ class Route {
     }
  
     /**
-     * 参数分析
+     * url 参数分析
      * @param array $parameter  形参数组列表(一维数组)
      * @param array $argument   实参数组列表(一维数组)
-     * @return array|obj 可调用的参数数组(一维链表)|
+     * @return array 可调用的参数数组(一维链表)
      */
     private static function paramAnalysis($parameter, $argument) {
         $arr = [];
-        if (empty($parameter)) {
-            $arr[] = obj('Request');
-        } else {
+        if (!empty($parameter)) {
             foreach ($parameter as $k => $v) {
                 // 当实参不全时, 填充为 null
                 $argument[$k + 1] = !isset($argument[$k + 1]) ? '' : $argument[$k + 1];
                 $arr[$v] = ($argument[$k + 1] === '') ? \null : ltrim($argument[$k + 1], '/');
             }
-            obj('Request', true, $arr);
         }
         return $arr;
     }
     
     /**
      * 执行分析 : 路由别名, 域名分析, 中间件注册, 执行闭包
+     * 申明 obj('request');
+     * 申明 self::$domainParam
+     * 申明 self::$alias
+     * 申明 self::$urlParam
      * @param string $rule          路由匹配段
      * @param string|array $info    路由执行段 (可能是形如 'App\index\Contr\IndexContr@indexDo' 或者 闭包, 或者 数组包含以上2钟)
+     * @param array $urlParam       url参数数组
      * @param array $request
      */
-    private static function infoAnalysis($rule, $info){
+    private static function infoAnalysis($rule, $info, $urlParam){
+        $middleware = [];
         if(is_array($info)){
-            self::$alias = ( isset($info['as']) && !empty($info['as']) ) ? $info['as'] : $rule;
+            $alias = ( isset($info['as']) && !empty($info['as']) ) ? $info['as'] : $rule;
             // 域名分析
             if(isset($info['domain'])){
-                if(is_array($domain = self::domainToPreg($info['domain']))){
-                    self::$domainParam = array_merge(self::$domainParam, $domain);
-                }else return false;
+                if(!is_array($domainParam = self::domainToPreg($info['domain']))){
+                    return false;
+                }
             }
             // http方法分析
             if(!in_array(strtolower($_SERVER['REQUEST_METHOD']), $info['method']))
                 return false;
-            // 中间件注册
-            self::doMiddleware($info['middleware']);
+            
+            // 中间件
+            $middleware = $info['middleware'];
+            
             // 执行
             $contr = $info['uses'];
         }else{
-            self::$alias = $rule;
+            $alias = $rule;
             $contr = $info;
         }
         // 合并 域名参数 与 路由参数
-        $request = array_merge(self::$domainParam, self::$urlParam);
+        $request = array_merge([obj('Request', true, $urlParam, $domainParam)], $domainParam, $urlParam);
+        self::$domainParam = $domainParam;
+        self::$urlParam = $urlParam;
+        self::$alias = $alias;
+        
+        // 中间件注册
+        self::doMiddleware($middleware);
         
         return self::doMethod($contr, $request);
     }
@@ -181,21 +183,21 @@ class Route {
     private static function doMiddleware($middlewareGroups){
         $Kernel = obj('\App/Kernel');
         $Request = obj('Request');
-        // 全局中间件
-        foreach($Kernel->middlewareGlobel as $middleware){
-            // 是否路由别名排除
-            if(in_array(self::$alias, obj($middleware)->getExcept(), true))
-                continue;
-            obj($middleware)($Request);
-        }
-        // 路由中间件
-        foreach($middlewareGroups as $middlewareGroup){
-            foreach ($Kernel->middlewareGroups[$middlewareGroup] as $middleware) {
-                // 是否路由别名排除
-                if(in_array(self::$alias, obj($middleware)->getExcept(), true))
-                    continue;
+        try {
+            // 全局中间件
+            foreach($Kernel->middlewareGlobel as $middleware){
                 obj($middleware)($Request);
             }
+            // 路由中间件
+            foreach($middlewareGroups as $middlewareGroup){
+                foreach ($Kernel->middlewareGroups[$middlewareGroup] as $middleware) {
+                    obj($middleware)($Request);
+                }
+            }
+        } catch (Exception $exc) {
+            obj('\Main\Core\Response')->doException($exc);
+        } finally {
+            
         }
     }
 
@@ -207,16 +209,22 @@ class Route {
      */
     private static function doMethod($contr, $request){
         self::statistic();
-        // 形如 'App\index\Contr\IndexContr@indexDo'
-        if(is_string($contr)){
-            $temp = explode('@', $contr);
-            $return = call_user_func_array(array(obj($temp[0]), $temp[1]), $request);  
-        }
-        // 形如 function($param_1, $param_2 ) {return 'this is a function !';}
-        elseif($contr instanceof \Closure){
-            $return = call_user_func_array($contr, $request);
-        }
-        obj('\Main\Core\Response')->returnData($return);
+        try {
+            // 形如 'App\index\Contr\IndexContr@indexDo'
+            if(is_string($contr)){
+                $temp = explode('@', $contr);
+                $return = call_user_func_array(array(obj($temp[0]), $temp[1]), $request);  
+            }
+            // 形如 function($param_1, $param_2 ) {return 'this is a function !';}
+            elseif($contr instanceof \Closure){
+                $return = call_user_func_array($contr, $request);
+            }
+            obj('\Main\Core\Response')->returnData($return);
+        } catch (Exception $exc) {
+            obj('\Main\Core\Response')->doException($exc);
+        } finally {
+            
+        } 
     }
     
     /**

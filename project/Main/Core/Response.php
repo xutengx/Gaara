@@ -151,4 +151,22 @@ class Response {
     private function getRequestMethod() {
         return \strtolower($_SERVER['REQUEST_METHOD']);
     }
+    
+/************************************************************************/
+    
+    public function doException(Exception $exception){
+        $data['msg'] = $exception->getMessage();
+        if(DEBUG) 
+            $data['exception'] = $exception->getTraceAsString();
+        
+        $this->sendHttpHeader(500);
+        
+        echo '<pre>';
+        foreach($data as $v){
+            echo $v;
+            echo '<br>';
+            echo '<br>';
+        }
+        exit('die');
+    }
 }

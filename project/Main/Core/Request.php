@@ -9,6 +9,7 @@ namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
 // 原filter类, 数据来源过滤
 class Request{
+    private $domain = array();
     private $post = array();
     private $get = array();
     private $put = array();
@@ -35,11 +36,12 @@ class Request{
         'name'  => '/^[_\w\d\x{4e00}-\x{9fa5}]{2,8}$/iu'
     );
 
-    final public function __construct($par = []){
-        $this->getContentType($par);
+    final public function __construct($urlPar = [], $domainPar = []){
+        $this->getContentType($urlPar, $domainPar);
     }
-    private function getContentType($par){
-        $this->get = $this->_addslashes($this->_htmlspecialchars($par));
+    private function getContentType($urlPar, $domainPar){
+        $this->domain = $this->_addslashes($this->_htmlspecialchars($domainPar));
+        $this->get = $this->_addslashes($this->_htmlspecialchars($urlPar));
         $this->cookie = $this->_addslashes($this->_htmlspecialchars($_COOKIE));
         if( ($argc = strtolower($_SERVER['REQUEST_METHOD'])) != 'get'){
             $this->{$argc} = file_get_contents('php://input');
@@ -146,6 +148,5 @@ class Request{
             $key = strtoupper($property_name);
             return isset($_SERVER[$key]) ? $_SERVER[$key] : (isset($_SERVER['HTTP_'.$key]) ? $_SERVER['HTTP_'.$key] : null);
         }
-//        throw new Exception('不存在的属性:'.$property_name.'!');
     }
 }

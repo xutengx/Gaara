@@ -213,6 +213,8 @@ class Route {
             // 形如 'App\index\Contr\IndexContr@indexDo'
             if(is_string($contr)){
                 $temp = explode('@', $contr);
+                if(!method_exists(obj($temp[0]), $temp[1]))
+                    throw new Exception('error route, Not found method in the object');
                 $return = call_user_func_array(array(obj($temp[0]), $temp[1]), $request);  
             }
             // 形如 function($param_1, $param_2 ) {return 'this is a function !';}
@@ -354,19 +356,20 @@ class Route {
         
         // 处理得到 完整uses
         {
-            if($actionInfo['uses'] instanceof \Closure){
+            if ($actionInfo['uses'] instanceof \Closure) {
                 $uses = $actionInfo['uses'];
-            }elseif(!empty(self::$group['namespace'])){
+            } elseif (!empty(self::$group['namespace'])) {
                 $namespace = '';
-                foreach(self::$group['namespace'] as $v){
-                    if(empty($v))
+                foreach (self::$group['namespace'] as $v) {
+                    if (empty($v))
                         continue;
-                    $namespace .= trim(str_replace('/', '\\', $v), '\\').'\\';
+                    $namespace .= trim(str_replace('/', '\\', $v), '\\') . '\\';
                 }
-                $uses = $namespace.$actionInfo['uses'];
-            }
+                $uses = $namespace . $actionInfo['uses'];
+            } else
+                $uses = $actionInfo['uses'];
         }
-        
+
         // 处理得到 完整 as 别名
         {
             $prefix = '';

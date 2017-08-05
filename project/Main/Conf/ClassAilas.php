@@ -7,6 +7,7 @@ namespace {
     final class DbConnection extends \Main\Core\Container {}
     final class Request extends \Main\Core\Container {}
     final class Response extends \Main\Core\Container {}
+    final class Route extends \Main\Core\Container {}
     final class Secure extends \Main\Core\Container {}
     final class Session extends \Main\Core\Container {}
     final class Template extends \Main\Core\Container {}

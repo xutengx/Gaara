@@ -92,5 +92,3 @@ function statistic() {
     $report .= "总体消耗内存峰值 : {$totleMemory} K<br />";
     echo $report;
 }
-
-class Route extends \Main\Core\Route {}

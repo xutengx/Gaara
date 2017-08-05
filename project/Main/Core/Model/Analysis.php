@@ -123,7 +123,7 @@ final class Analysis {
                     }
                 }
         }
-        $this->options_sql['where'] = 'WHERE ' . trim($str . $temp, 'AND ') . ' ';
+        $this->options_sql['where'] = 'WHERE ( ' . trim($str . $temp, 'AND ') . ' ) ';
     }
 
     /**

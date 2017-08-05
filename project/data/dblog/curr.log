@@ -77,3 +77,23 @@ Field 'TEst' doesn't have a default value
 INSERT INTO `visitor_info` SET `name`=:autoUpdate,`visitor_info`.`created_at`="2017-06-08 17;20;07"  
 Field 'TEst' doesn't have a default value
 
+2017-08-05 21:22:43
+SELECT `id`,`name`,`phone` FROM `visitor_info` WHERE ``&:scene_1 LIMIT 0,1
+Unknown column '' in 'where clause'
+
+2017-08-05 21:24:46
+SELECT `id`,`name`,`phone` FROM `visitor_info` WHERE `scene`&:scene_1 AND `scene`=:scene_1 LIMIT 0,1
+
+
+2017-08-05 23:57:24
+SELECT `id`,`name`,`phone` FROM `visitor_info` WHERE `scene`&:scene_1 AND `0`="id" AND `1` in ("100","101","102","103") 
+Unknown column '0' in 'where clause'
+
+2017-08-05 23:59:08
+SELECT `id`,`name`,`phone` FROM `visitor_info` WHERE `scene`&:scene_1 AND `0`="id" AND `1`100"101" 
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '100"101"' at line 1
+
+2017-08-06 00:00:35
+SELECT `id`,`name`,`phone` FROM `visitor_info` WHERE `scene`&:scene_1 AND `0`="id" AND `1`="in" AND `2`100"101" 
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '100"101"' at line 1
+

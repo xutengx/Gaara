@@ -1,9 +1,9 @@
 <?php
 namespace Main\Core\Model;
 /**
- * 收集 \Main\Core\Model 中的链式调用数据
+ * 链式操作
  */
-class Collect{
+class QueryBuiler{
     // 数据收集
     private $options = [];
 

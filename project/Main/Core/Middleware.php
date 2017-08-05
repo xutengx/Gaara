@@ -21,11 +21,4 @@ abstract class Middleware {
     }
     abstract public function handle(Request $request);
     
-    /**
-     * 返回 被排除的路由别名 (未主动设置的路由别名将默认为pathinfo)
-     * @return array
-     */
-    final public function getExcept(){
-        return $this->except;
-    } 
 }

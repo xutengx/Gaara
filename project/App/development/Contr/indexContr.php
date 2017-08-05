@@ -17,39 +17,15 @@ class indexContr extends HttpController {
 //        var_dump($request);
 //        var_dump(Request::$get);
 //        exit;
-//        $obj = obj(Model\visitorInfoModel::class);
-//        
-//        $sql = $obj->select(['id', 'name', 'phone'])
-//            ->where([ 'id' => [ '>', '101' ]])
-//            ->where(['id' => ['<', '104']])
-//            ->getAll(false);
-//        var_dump($sql);
-//        exit;
-        Cache::set('rrr', '123123');
-        var_dump(Cache::get('rrr'));
+        $obj = obj(Model\visitorInfoModel::class);
+        
+        $sql = $obj->select(['id', 'name', 'phone'])
+            ->where([ 'id' => [ '>', '101' ]])
+            ->where(['id' => ['<', '104']])
+            ->getAll(false);
+        var_dump($sql);
         exit;
-        $a = obj(Cache::class);
-        $b = obj('cache');
-        var_dump($a === $b);
-        var_dump($a );
-        var_dump($b);
-        exit;
-        
-        $b = obj('cache')->get('ttt');
-        
-        var_dump($b);
-        exit;
-        
-        (new test)->test();
-        (new test)->testStatic();
-         test::test();
-         test::testStatic();
-         
-        (new asyncDev)->test();
-        (new asyncDev)->testStatic();
-         asyncDev::test();
-         asyncDev::testStatic();
-        
+
         
         echo 'qewq';
 //        $this->display();

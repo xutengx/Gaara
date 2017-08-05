@@ -5,6 +5,9 @@ namespace App\mysql\Model;
 defined('IN_SYS') || exit('ACC Denied');
 
 class visitorInfoModel extends \Main\Core\Model {
+    
+    public function construct() {
+    }
 
     protected $table = 'visitor_info';
     

@@ -2,9 +2,13 @@
 
 namespace Main\Core;
 
+use Main\Core\Model\Traits;
+
 defined('IN_SYS') || exit('ACC Denied');
 
 class Model {
+    
+    use Traits\DebugTrait;
 
     protected $db;
     // 表名,不包含表前缀
@@ -28,7 +32,7 @@ class Model {
     // 链式操作集合
     protected $options = array();
     // 链式操作 sql
-//    protected $options_sql = array();
+    protected $lastSql = null;
     // 链式操作 类型 select update delete insert
     protected $options_type = null;
     // PDOStatement
@@ -68,12 +72,12 @@ class Model {
         $this->getTableInfo();
     }
 
-    public function tbname() {
-        return $this->getTable();
-    }
+//    public function tbname() {
+//        return $this->getTable();
+//    }
 
-    public function getTable() {
-        return $this->table;
+    public static function getTable() {
+        return \obj(static::class)->table;
     }
 
     // 获取表信息, 自动信息填充
@@ -107,6 +111,14 @@ class Model {
         }
     }
 
+    final public static function __callStatic($func, $pars = array()) {
+        $thisObj = \obj(static::class);
+        if (method_exists($thisObj->collect, $func)) {
+            call_user_func_array(array($thisObj->collect, $func), $pars);
+            return $thisObj;
+        }
+    }
+
 //---------------------------------------------------------- 链式操作 -----------------------------------------------------//
     /**
      * 准备sql, 统一执行方法
@@ -114,7 +126,7 @@ class Model {
      *
      * @return $this
      */
-    public function prepare($onlyOnce = false) {
+    public function prepare($onlyOnce = false, $pars = array() ) {
         // 系统填充用户调用时未填充的先关信息
         $this->get_ready();
         
@@ -124,6 +136,9 @@ class Model {
         // 重置当前model
         $this->reset();
         
+        // 记录sql
+        $this->rememberSql($sql, $pars);
+        
         // return
         if ($onlyOnce)
             return $sql;
@@ -132,6 +147,19 @@ class Model {
             return $this;
         }
     }
+    /**
+     * 记录最近次的sql, 完成参数绑定的填充
+     * 重载此方法可用作sql日志
+     */
+    protected function rememberSql($sql, $pars){
+        $pars = is_array($pars) ? $pars : [];
+        foreach($pars as $k => $v){
+            $pars[$k] = '\''.$v.'\'';
+        }
+        $this->lastSql = strtr( $sql, $pars);
+    }
+
+
     /**
      * 填充当前操作表, 填充查询字段, 填充更新时间, , 填充新增时间
      */
@@ -214,24 +242,14 @@ class Model {
 
     public function getRow($pars = array()) {
         $this->options_type = 'SELECT';
-//        if(!isset($this->options['limit']))
-//            $this->limit(1);
         $this->collect->limit(1);
-        $sql = $this->prepare(true);
-        if ($pars === false)
-            return $sql;
-        elseif ($pars === true)
-            exit($sql);
+        $sql = $this->prepare(true, $pars);
         return $this->db->getRow($sql, $pars);
     }
 
     public function getAll($pars = array()) {
         $this->options_type = 'SELECT';
-        $sql = $this->prepare(true);
-        if ($pars === false)
-            return $sql;
-        elseif ($pars === true)
-            exit($sql);
+        $sql = $this->prepare(true, $pars);
         return $this->db->getAll($sql, $pars);
     }
 
@@ -239,11 +257,7 @@ class Model {
         $this->options_type = 'UPDATE';
         if (!isset($this->options['data']))
             throw new Exception('要执行UPDATE操作, 需要使用data方法设置更新的值');
-        $sql = $this->prepare(true);
-        if ($pars === false)
-            return $sql;
-        elseif ($pars === true)
-            exit($sql);
+        $sql = $this->prepare(true, $pars);
         return $this->db->update($sql, $pars);
     }
 
@@ -251,11 +265,7 @@ class Model {
         $this->options_type = 'INSERT';
         if (!isset($this->options['data']))
             throw new Exception('要执行INSERT操作, 需要使用data方法设置新增的值');
-        $sql = $this->prepare(true);
-        if ($pars === false)
-            return $sql;
-        elseif ($pars === true)
-            exit($sql);
+        $sql = $this->prepare(true, $pars);
         return $this->db->insert($sql, $pars);
     }
 
@@ -263,11 +273,7 @@ class Model {
         $this->options_type = 'DELETE';
         if (!isset($this->options['where']))
             throw new Exception('执行 DELETE 操作并没有相应的 where 约束, 请确保操作正确, 使用where(1)将强制执行.');
-        $sql = $this->prepare(true);
-        if ($pars === false)
-            return $sql;
-        elseif ($pars === true)
-            exit($sql);
+        $sql = $this->prepare(true, $pars);
         return $this->db->update($sql, $pars);
     }
 
@@ -275,11 +281,7 @@ class Model {
         $this->options_type = 'REPLACE';
         if (!isset($this->options['data']))
             throw new Exception('要执行REPLACE操作, 需要使用data方法设置新增or修改的值');
-        $sql = $this->prepare(true);
-        if ($pars === false)
-            return $sql;
-        elseif ($pars === true)
-            exit($sql);
+        $sql = $this->prepare(true, $pars);
         return $this->db->update($sql, $pars);
     }
 

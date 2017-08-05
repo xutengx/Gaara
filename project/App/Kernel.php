@@ -2,7 +2,7 @@
 
 namespace App;
 
-use Main\Core\Kernel as HttpKernel;;
+use Main\Core\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel {
     /**

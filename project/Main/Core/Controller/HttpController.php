@@ -63,9 +63,6 @@ abstract class HttpController extends \Main\Core\Controller {
             setcookie($var, $value, $time, $path, $domain, $s);
     }
 
-    public function indexDo() {
-        $this->display();
-    }
 
     /**
      * @param int    $code   状态标记

@@ -11,7 +11,5 @@ class testContr extends Controller\HttpController {
         echo 'this is route';
     }
     
-    public function __destruct() {
-        \statistic();
-    }
+    
 }

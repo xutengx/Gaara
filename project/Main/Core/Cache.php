@@ -3,7 +3,6 @@
 namespace Main\Core;
 
 use \Main\Core\Cache\Driver;
-
 defined('IN_SYS') || exit('ACC Denied');
 
 class Cache {
@@ -75,7 +74,7 @@ class Cache {
         unset($pars[2]);
         $par = array_values($pars);
         $key = $this->autoKey($obj, $func, $par);
-        
+
         $return = $this->runFunc($obj, $func, $par);
         foreach ($this->Drivers as $v) {
             $re = $v->callset($key, $return, $cacheTime);
@@ -90,9 +89,7 @@ class Cache {
         unset($pars[0]);
         unset($pars[1]);
         $par = array_values($pars);
-//        $key = $this->makeCacheDir($obj, $func, $par);
         $key = $this->autoKey($obj, $func, $par);
-//        $key = str_replace('/#d/', '', $key);
         foreach ($this->Drivers as $v) {
             $v->clear($key);
         }
@@ -124,15 +121,19 @@ class Cache {
             if ($re['code'] === 200)
                 return $re['data'];
         }
-        if ($callback instanceof \Closure) {
-            $data = call_user_func($callback);
-        } else {
-            $data = $callback;
+
+        if ($callback !== false) {
+            if ($callback instanceof \Closure) {
+                $data = call_user_func($callback);
+            } else {
+                $data = $callback;
+            }
+            if ($this->set($key, $data, $cacheTime))
+                return $data;
         }
-        if ($this->set($key, $data, $cacheTime))
-            return $data;
-        return false;
+        return null;
     }
+
     /**
      * 不缓存的缓存方法, 方便调试
      * @param type $key
@@ -148,14 +149,16 @@ class Cache {
         }
         $cacheTime = is_numeric($cacheTime) ? (int) $cacheTime : $this->cacheLimitTime;
         $key = ($key === true) ? $this->autoKey() : $key;
-        if ($callback instanceof \Closure) {
-            $data = call_user_func($callback);
-        } else {
-            $data = $callback;
+        if ($callback !== false) {
+            if ($callback instanceof \Closure) {
+                $data = call_user_func($callback);
+            } else {
+                $data = $callback;
+            }
+            if ($this->set($key, $data, $cacheTime))
+                return $data;
         }
-        if ($this->set($key, $data, $cacheTime))
-            return $data;
-        return false;
+        return null;
     }
 
     public function rm($key = true) {
@@ -202,7 +205,7 @@ class Cache {
                     $key .= '_' . gettype($v) . '-' . (is_array($v) ? serialize($v) : $v);
             }
             $key = '/' . md5($key);
-        } 
+        }
         $str = $classname . '/' . $funcname . $key;
         $str = is_null($this->key) ? $str : '@' . $this->key . '/' . $str;
         return str_replace('\\', '/', $str);

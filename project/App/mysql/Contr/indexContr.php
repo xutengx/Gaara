@@ -31,11 +31,9 @@ class indexContr extends HttpController {
             $i++;
         }
     }
-
-    private function test_1() {        
-        obj(\Main\Core\Code::class)->makeCopy(\App\mysql\Contr\test::class, Model\visitorInfoModel::class);
-        $obj = obj(\App\mysql\Contr\test::class);
-//        $obj = obj(Model\visitorInfoModel::class);
+    
+    private function test_1() {
+        $obj = obj(Model\visitorInfoModel::class);
         
         $sql = $obj->select(['id', 'name', 'phone'])
             ->where([ 'id' => [ '>', '101' ]])

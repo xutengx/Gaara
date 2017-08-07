@@ -9,7 +9,7 @@ defined('IN_SYS') || exit('ACC Denied');
 class Redis implements DriverInterface {
 
     // 键名前缀
-    public $prefix = 'RF1:';
+    public $prefix = '';
     private $handler = null;
 
     public function __construct($options = array()) {
@@ -92,6 +92,8 @@ class Redis implements DriverInterface {
 
     public function __call($func, $pars) {
         if (method_exists($this->handler, $func)) {
+            if(isset($pars[0]))
+                $pars[0] = $this->prefix.$pars[0];
             $res = call_user_func_array(array($this->handler, $func), $pars);
             return array(
                 'code' => 200,

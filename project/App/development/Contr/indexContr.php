@@ -17,12 +17,11 @@ class indexContr extends HttpController {
 //        var_dump($request);
 //        var_dump(Request::$get);
 //        exit;
-        $obj = obj(Model\visitorInfoModel::class);
         
-        $sql = $obj->select(['id', 'name', 'phone'])
+        $sql = Model\visitorInfoModel::select(['id', 'name', 'phone'])
             ->where([ 'id' => [ '>', '101' ]])
             ->where(['id' => ['<', '104']])
-            ->getAll(false);
+            ->getAll();
         var_dump($sql);
         exit;
 

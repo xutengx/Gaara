@@ -82,6 +82,7 @@ class Model {
 
     // 获取表信息, 自动信息填充
     protected function getTableInfo() {
+        // todo
         $this->field = obj(Cache::class)->get(function() {
             return $this->db->getAll('SHOW COLUMNS FROM `' . $this->table . '`');
         }, 3600);

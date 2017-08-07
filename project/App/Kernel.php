@@ -36,8 +36,11 @@ class Kernel extends HttpKernel {
 //            \Illuminate\Routing\Middleware\SubstituteBindings::class,
 //            \App\Http\Middleware\Language::class, // Alex Globel Language Settings 2017-06-20 copy
         ],
-        'test' => [
+        'jurisdiction' => [
             \App\Middleware\Jurisdiction::class,
+        ],
+        'api' => [
+            \Main\Core\Middleware\ThrottleRequests::class,
         ],
     ];
 

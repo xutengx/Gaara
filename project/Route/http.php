@@ -5,7 +5,7 @@ return [
         // 数据库测试
         Route::get('/mysql','mysql\Contr\indexContr@indexDo');
         // 新共能开发
-        Route::get('/new','development\Contr\indexContr@indexDo');
+        Route::get('/new',['uses' => 'development\Contr\indexContr@indexDo','middleware'=>['api']]);
 
         Route::any('/route1',['as' => 'tt1', 'uses' => 'development\Contr\indexContr@indexDo']);
     }),

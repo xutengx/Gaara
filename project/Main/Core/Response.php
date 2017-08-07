@@ -87,6 +87,18 @@ class Response {
                 header('Content-Type: ' . $this->allowOutputType[$type] . '; charset=' . $charset);
         }
     }
+    
+    // 设置Http头信息
+    public function setHeaders(array $headers):void{
+        foreach($headers as $k => $v)
+            $this->setHeader($k.':'.$v);
+    }
+    
+    // 设置Http头信息
+    public function setHeader(string $header):void{
+        
+    }
+    
 
     /**
      * 编码数据

@@ -6,9 +6,14 @@
  * Time: 17:14
  */
 namespace Main\Core;
+use \Main\Core\Request\Traits;
 defined('IN_SYS')||exit('ACC Denied');
 // 原filter类, 数据来源过滤
 class Request{
+    
+    use Traits\ClientInfo;
+    use Traits\RequestInfo;
+    
     private $domain = array();
     private $post = array();
     private $get = array();
@@ -144,6 +149,10 @@ class Request{
     public function __get($property_name){
         if(in_array(strtolower($property_name),array('post','get','put','delete','cookie')))
             return $this->$property_name;
+        elseif(method_exists($this, $method = 'get'.ucfirst($property_name))){
+//            return call_user_func($method);
+            return $this->$method();
+        }
         else {
             $key = strtoupper($property_name);
             return isset($_SERVER[$key]) ? $_SERVER[$key] : (isset($_SERVER['HTTP_'.$key]) ? $_SERVER['HTTP_'.$key] : null);

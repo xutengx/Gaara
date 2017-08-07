@@ -22,6 +22,9 @@ class Route {
     
     // 路由参数
     private static $urlParam = [];
+    
+    // 当前路由可用http方法
+    private static $methods = [];
 
 
     public static function Start() {
@@ -170,6 +173,7 @@ class Route {
         self::$domainParam = $domainParam;
         self::$urlParam = $urlParam;
         self::$alias = $alias;
+        self::$methods = $info['method'];
         
         // 中间件注册
         self::doMiddleware($middleware);
@@ -282,6 +286,14 @@ class Route {
      */
     public static function getUrlParam() {
         return self::$urlParam;
+    }
+    
+    /**
+     * 返回 路由参数
+     * @return array
+     */
+    public static function getMethods() {
+        return self::$methods;
     }
 /**************************************************** 分组以及静态方法申明路由 *********************************************/     
     // 可用的 http 动作

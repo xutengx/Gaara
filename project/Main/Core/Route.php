@@ -103,7 +103,7 @@ class Route {
         foreach($temp as $k => $v){
             $key = false;
             $temp[$k] = \preg_replace_callback("/{.*\?}/is", function($matches) use (&$param, &$key){
-                $param[] = trim(trim($matches[0], '}'), '{');
+                $param[] = trim(trim($matches[0], '?}'), '{');
                 $key = true;
                 return '?(/[^/]*)?';
             }, $v);
@@ -169,7 +169,13 @@ class Route {
             $contr = $info;
         }
         // 合并 域名参数 与 路由参数
-        $request = array_merge([obj(Request::class, $urlParam, $domainParam)], $domainParam, $urlParam);
+//        var_dump($domainParam);
+//        var_dump($urlParam);
+//        exit;
+        $request = array_merge($domainParam, $urlParam);
+        
+        // 初始化 Request
+        \obj(Request::class, $urlParam, $domainParam);
         self::$domainParam = $domainParam;
         self::$urlParam = $urlParam;
         self::$alias = $alias;
@@ -195,13 +201,11 @@ class Route {
         try {
             // 全局中间件
             foreach ($Kernel->middlewareGlobel as $middleware) {
-//                obj($middleware)($Request);
                 $runMiddleware($middleware);
             }
             // 路由中间件
             foreach ($middlewareGroups as $middlewareGroup) {
                 foreach ($Kernel->middlewareGroups[$middlewareGroup] as $middleware) {
-//                    obj($middleware)($Request);
                     $runMiddleware($middleware);
                 }
             }
@@ -213,24 +217,58 @@ class Route {
     }
 
     /**
-     * 方法执行,支持闭包函数
+     * 方法依赖注入,执行,支持闭包函数
      * @param string|callback|array $contr 将要执行的方法
-     * @param array|object $request 请求参数
+     * @param array $request 请求参数
      * @return void
      */
     private static function doMethod($contr, $request){
+        /**
+         * 方法依赖注入
+         * @param array $parameters 由反射类获取的方法依赖参数链表
+         * @return array 参数数组
+         */
+        $injection = function($parameters) use ($request){
+            // 定义实参数组
+            $argument = [];
+            // 遍历所有形参
+            foreach ($parameters as $param) {
+                // 判断参数类型 是类
+                if ($paramClass = $param->getClass()) {
+                    // 获得参数类型名称
+                    $paramClassName = $paramClass->getName();
+                    // 加入对象到参数列表
+                    $argument[] = Integrator::getWithoutAlias($paramClassName);
+                }else{
+                    if(isset($request[$param->name])){
+                        // 加入实参到参数列表
+                        $argument[] = $request[$param->name];
+                    }else{
+                        $argument[] = \null;
+                    }
+                }
+            }
+            return $argument;
+        };
         self::statistic();
         try {
             // 形如 'App\index\Contr\IndexContr@indexDo'
             if(is_string($contr)){
                 $temp = explode('@', $contr);
-                if(!method_exists(obj($temp[0]), $temp[1]))
-                    throw new Exception('error route, Not found method in the object');
-                $return = call_user_func_array(array(obj($temp[0]), $temp[1]), $request);  
+                $reflectionClass = new \ReflectionClass($temp[0]);
+                $methodClass = $reflectionClass->getMethod($temp[1]);
+                $parameters = $methodClass->getParameters();
+                
+                $argument = $injection($parameters);
+                $return = call_user_func_array(array(Integrator::getWithoutAlias($temp[0]), $temp[1]), $argument);  
             }
             // 形如 function($param_1, $param_2 ) {return 'this is a function !';}
             elseif($contr instanceof \Closure){
-                $return = call_user_func_array($contr, $request);
+                $reflectionFunction = new \ReflectionFunction($contr);
+                $parameters = $reflectionFunction->getParameters();
+                
+                $argument = $injection($parameters);    
+                $return = call_user_func_array($contr, $argument);
             }
             obj(Response::class)->returnData($return);
         } catch (Exception $exc) {
@@ -241,21 +279,22 @@ class Route {
     }
     
     /**
-     * 将域名规则翻译为正则表达式
-     * @param string    $rule       域名规则    eg: {admin}.gitxt.com
+     * 将域名规则翻译为正则表达式 (不支持问号参数)
+     * @param string    $rule       域名规则    eg: {admin}.{gitxt}.com
      * @return array|false
      */
     private static function domainToPreg($rule = ''){
         $param = [];
-        $preg = \preg_replace_callback("/{.*}/is", function(){
-            return '([^/]+)';
+        $preg = \preg_replace_callback("/{[^\.]*}/is", function($matches) use (&$param){
+            $param[trim(trim($matches[0], '}'), '{')] = null;
+            return '([^\.]+)';
         }, $rule);
         $preg = '#^'.$preg.'$#';
         $key = \preg_replace_callback($preg, function($matches) use (&$param){
-            foreach($matches as $v){
-                $param[] = $v;
+            $i = 1;
+            foreach($param as $k => $v){
+                $param[$k] = $matches[$i++];
             }
-            array_shift($param);
             return 'true';
         }, $_SERVER['HTTP_HOST']);
         // 若匹配失败 则返回false

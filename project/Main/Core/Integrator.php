@@ -34,6 +34,19 @@ class Integrator {
     }
 
     /**
+     * Route中实现自动依赖注入, 避免别名干扰
+     * @param string    $class      类名(支持别名)
+     * @param array     $pars       new一个对象所需要的参数; 注:单例模式下,显然只有第一次实例化时,参数才会被使用!
+     *
+     * @return objtect
+     */
+    public static function getWithoutAlias($class = '', array $pars = array()) {
+        $class = str_replace('/', '\\', $class);
+        // 返回对象
+        return self::getins($class, $pars);
+    }
+
+    /**
      * 根命名空间的类别名, 使用别名的类均继承 \Main\Core\Container::class
      * @param string $className
      * @return string

@@ -40,7 +40,7 @@ class Kernel extends HttpKernel {
         ],
         'api' => [
             // 访问频率控制
-            \Main\Core\Middleware\ThrottleRequests::class,
+            \Main\Core\Middleware\ThrottleRequests::class.'@60@60',
         ],
     ];
 

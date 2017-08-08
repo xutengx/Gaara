@@ -14,9 +14,10 @@ abstract class Middleware {
         ;
     }
     
-    final public function __invoke(Request $request){
-        if(!in_array(Route::getAlias(), $this->except)){
-            $this->handle($request);
+    final public function __invoke(){
+        $param = \func_get_args();
+        if(!\in_array(Route::getAlias(), $this->except)){
+            $this->handle(...$param); 
         }
     }
     abstract public function handle(Request $request);

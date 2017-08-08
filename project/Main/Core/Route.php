@@ -184,18 +184,25 @@ class Route {
      * 中间件注册, 执行
      * @param array $middlewareGroups
      */
-    private static function doMiddleware($middlewareGroups){
+    private static function doMiddleware($middlewareGroups) {
         $Kernel = obj('\App/Kernel');
         $Request = obj('Request');
+        $runMiddleware = function($middlewareString) use($Request) {
+            $arr = explode('@', $middlewareString);
+            $middlewareObj = array_shift($arr);
+            \obj($middlewareObj)($Request, ...$arr);
+        };
         try {
             // 全局中间件
-            foreach($Kernel->middlewareGlobel as $middleware){
-                obj($middleware)($Request);
+            foreach ($Kernel->middlewareGlobel as $middleware) {
+//                obj($middleware)($Request);
+                $runMiddleware($middleware);
             }
             // 路由中间件
-            foreach($middlewareGroups as $middlewareGroup){
+            foreach ($middlewareGroups as $middlewareGroup) {
                 foreach ($Kernel->middlewareGroups[$middlewareGroup] as $middleware) {
-                    obj($middleware)($Request);
+//                    obj($middleware)($Request);
+                    $runMiddleware($middleware);
                 }
             }
         } catch (Exception $exc) {

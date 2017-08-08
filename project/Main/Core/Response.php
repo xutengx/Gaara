@@ -96,7 +96,7 @@ class Response {
     
     // 设置Http头信息
     public function setHeader(string $header):void{
-        
+        header($header);
     }
     
 

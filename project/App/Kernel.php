@@ -13,10 +13,8 @@ class Kernel extends HttpKernel {
      * @var array
      */
     protected $middlewareGlobel = [
-//        \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
+        // post请求体大小检测
         \Main\Core\Middleware\ValidatePostSize::class,
-//        \App\Http\Middleware\TrimStrings::class,
-//        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
     ];
 
     /**
@@ -26,6 +24,7 @@ class Kernel extends HttpKernel {
      */
     protected $middlewareGroups = [
         'web' => [
+            // 开启session
             \Main\Core\Middleware\StartSession::class,
 //            \App\Http\Middleware\EncryptCookies::class,
 //            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
@@ -40,6 +39,7 @@ class Kernel extends HttpKernel {
             \App\Middleware\Jurisdiction::class,
         ],
         'api' => [
+            // 访问频率控制
             \Main\Core\Middleware\ThrottleRequests::class,
         ],
     ];

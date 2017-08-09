@@ -31,7 +31,7 @@ class ThrottleRequests extends Middleware {
      * @param type $decaySecond     单位时间 (秒)
      * @return void
      */
-    public function handle(Request $request, $maxAttempts = 60, $decaySecond = 60): void {
+    public function handle(Request $request, $maxAttempts = 100, $decaySecond = 60): void {
         // 当前请求指纹
         $this->key = $this->resolveRequestSignature($request);
         $this->maxAttempts = $maxAttempts;

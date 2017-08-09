@@ -39,8 +39,8 @@ class Kernel extends HttpKernel {
             \App\Middleware\Jurisdiction::class,
         ],
         'api' => [
-            // 访问频率控制
-            \Main\Core\Middleware\ThrottleRequests::class.'@60@60',
+            // 访问频率控制  100次 / 60s
+            \Main\Core\Middleware\ThrottleRequests::class.'@100@60',
         ],
     ];
 

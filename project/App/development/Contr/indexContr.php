@@ -13,14 +13,18 @@ use Request;
 defined('IN_SYS') || exit('ACC Denied');
 class indexContr extends HttpController {
 
-    public function indexDo(\Main\Core\Request $request, $user, \Main\Core\Cache $c) {
-        var_dump(func_get_args());exit;
-//        var_dump($request);
-//        var_dump(Request::$get);
-//        exit;
-        Cache::set('www','www1',4);
-        $e = $c->get('www');
-        var_dump($e);
+    public function indexDo(\Main\Core\Request $request, $test, \Main\Core\Cache $c) {
+//        var_dump(func_get_args());exit;
+////        var_dump($request);
+////        var_dump(Request::$get);
+////        exit;
+//        Cache::set('www','www1',4);
+//        $e = $c->get('www');
+//        var_dump($e);
+        
+        
+        exit;
+        
         $sql = Model\visitorInfoModel::select(['id', 'name', 'phone'])
             ->where([ 'id' => [ '>', '101' ]])
             ->where(['id' => ['<', '104']])
@@ -33,7 +37,7 @@ class indexContr extends HttpController {
 //        $this->display();
     }
 
-    public function test($request) {
+    private function test($request) {
         // 'account' => '/^[a-zA-Z][a-zA-Z0-9_]{4,15}$/',
         var_dump($request->get);
         var_dump($this->get());

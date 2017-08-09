@@ -197,6 +197,8 @@ class Cache {
         $key = '';                   // default
         if (!empty($params)) {
             foreach ($params as $v) {
+                if(is_object($v))
+                    throw new Exception ('以此种缓存方法, 不支持以对象作为参数, 因为没有一致的方法判断对象是相等的. ');
                 if ($v === true)
                     $key .= '_bool-t';
                 elseif ($v === false)
@@ -211,12 +213,12 @@ class Cache {
         return str_replace('\\', '/', $str);
     }
 
-    // 执行方法
+    // 反射执行非公开方法方法
     private function runFunc($obj, $func, $args) {
-        if (method_exists($obj, 'runProtectedFunction'))
-            return $obj->runProtectedFunction($func, $args);
-        else
-            return call_user_func_array(array($obj, $func), $args);
+        $reflectionClass = new \ReflectionClass($obj);
+        $method = $reflectionClass->getMethod($func);
+        $closure = $method->getClosure($obj);
+        return $closure(...$args);
     }
 
     public function __get($par) {

@@ -5,7 +5,7 @@ return [
         // 数据库测试
         Route::get('/mysql','mysql\Contr\indexContr@indexDo');
         // 新共能开发
-        Route::get('/new/{test?}',['uses' => 'development\Contr\indexContr@indexDo','domain'=> '{user}.{domain}.com','middleware'=>['api']]);
+        Route::get('/new/{test?}',['uses' => 'development\Contr\indexContr@indexDo','domain'=> '192.168.43.128','middleware'=>['api']]);
 
         Route::any('/route1',['as' => 'tt1', 'uses' => 'development\Contr\indexContr@indexDo']);
     }),

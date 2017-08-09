@@ -54,8 +54,8 @@ class Model {
     final public function __construct($DbConnection = null) {
         $this->db = is_null($DbConnection) ? obj(DbConnection::class, obj(Conf::class)->db) : $DbConnection;
         $this->collect = new \Main\Core\Model\Collect($this->options);
-        $this->analysis = new \Main\Core\Model\Analysis();
-        $this->resolution = new \Main\Core\Model\Resolution();
+        $this->analysis = obj(\Main\Core\Model\Analysis::class);
+        $this->resolution = obj(\Main\Core\Model\Resolution::class);
         $this->get_thisTable();
         $this->construct();
     }
@@ -98,11 +98,6 @@ class Model {
     // 所有手动初始化建议在此执行
     protected function construct() {
         
-    }
-
-    // 在外执行
-    final public function runProtectedFunction($func = '', array $agrs = array()) {
-        return call_user_func_array(array($this, $func), $agrs);
     }
 
     final public function __call($func, $pars = array()) {

@@ -12,4 +12,5 @@ namespace {
     final class Session extends \Main\Core\Container {}
     final class Template extends \Main\Core\Container {}
     final class Tool extends \Main\Core\Container {}
+    final class Mail extends \Main\Core\Container {}
 }

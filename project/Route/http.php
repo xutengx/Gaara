@@ -4,6 +4,9 @@ return [
     Route::group(['middleware'=>['web'], 'namespace'=> 'App' ], function(){
         // 数据库测试
         Route::get('/mysql','mysql\Contr\indexContr@indexDo');
+        // 邮件测试 给 emailAddr 发一份邮件
+        Route::get('/mail/{emailAddr}','mail\index@send');
+        
         // 新共能开发
         Route::get('/new/{test?}',['uses' => 'development\Contr\indexContr@indexDo','domain'=> '192.168.43.128','middleware'=>['api']]);
 

@@ -209,4 +209,7 @@ spl_autoload_register(array(Integrator::class, 'requireClass'));
 // 引入别名类
 if (file_exists(ROOT . 'Main/Conf/ClassAilas.php'))
     require (ROOT . 'Main/Conf/ClassAilas.php');
+// 引入composer加载
+if (file_exists(ROOT . 'vendor/autoload.php'))
+    require (ROOT . 'vendor/autoload.php');
 

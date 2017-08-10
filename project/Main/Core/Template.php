@@ -69,7 +69,7 @@ class Template {
             $jsname = $newDir . str_replace($originaDir, '', $v);
             if (!file_exists($jsname) || filemtime($v) > filectime($jsname)) {
                 $content = $this->AutomaticPacking(file_get_contents($v));
-                obj('Tool')->printInFile($jsname, $content);
+                obj(Tool::class)->printInFile($jsname, $content);
             }
             $str .= '<script src="' . HOST . $jsname . '"></script>';
         }

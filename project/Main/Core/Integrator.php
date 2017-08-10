@@ -5,8 +5,8 @@ namespace Main\Core;
 defined('IN_SYS') || exit('ACC Denied');
 
 /**
- * 原 Loader
- * 享元模式实现,所有对象单例
+ * 享元模式,所有对象单例
+ * 依赖注入
  */
 class Integrator {
 

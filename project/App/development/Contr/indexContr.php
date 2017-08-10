@@ -13,14 +13,18 @@ use Request;
 defined('IN_SYS') || exit('ACC Denied');
 class indexContr extends HttpController {
 
-    public function indexDo(\Main\Core\Request $request, $test, \Main\Core\Cache $c) {
+    public function indexDo(Request $request, $test, \Main\Core\Cache $c , \HTMLPurifier $htmlpurifier) {
+
 //        var_dump(func_get_args());exit;
 ////        var_dump($request);
-////        var_dump(Request::$get);
-////        exit;
+        var_dump($request->get('test'));
+        var_dump(htmlspecialchars($_GET['test']));
+        exit;
 //        Cache::set('www','www1',4);
 //        $e = $c->get('www');
-//        var_dump($e);
+        
+//        var_dump($request);exit;
+        var_dump($purifier->purify($dirty_html));
         
         
         exit;

@@ -12,11 +12,6 @@ class Integrator {
 
     // 缓存对象,实现单元素模式
     private static $obj_ins = array();
-    // 预存的class引用路径
-    private static $obj_map = array(
-        'HTMLPurifier' => 'Main/Support/Secure/htmlpurifier-4.7.0/library/HTMLPurifier.includes.php',
-        'QRcode' => 'Main/Support/Image/QRcode.php',
-    );
 
     /**
      * 通过全局obj()调用
@@ -59,19 +54,6 @@ class Integrator {
         } else
             return $className;
     }
-
-    // 自动引入
-    public static function requireClass($class) {
-        // 根据预存的class引用路径
-        if(isset(self::$obj_map[$class])){
-            $path = ROOT . self::$obj_map[$class];
-        }else
-            $path = ROOT . str_replace('\\', '/', $class) . '.php';
-        if (file_exists($path)) {
-            require $path;
-        }
-    }
-
 
     /**
      * 返回缓存的单例
@@ -203,13 +185,4 @@ class Integrator {
         self::$obj_map[$class] = $dir;
     }
 }
-
-// 注册加载
-spl_autoload_register(array(Integrator::class, 'requireClass'));
-// 引入别名类
-if (file_exists(ROOT . 'Main/Conf/ClassAilas.php'))
-    require (ROOT . 'Main/Conf/ClassAilas.php');
-// 引入composer加载
-if (file_exists(ROOT . 'vendor/autoload.php'))
-    require (ROOT . 'vendor/autoload.php');
 

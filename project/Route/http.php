@@ -30,10 +30,6 @@ return [
             return 'test';
     }],
     
-    // 支持隐式路由(兼容式) 
-    '/'.IN_SYS => function(){
-        \Main\Core\RouteImplicit::Start();
-    },
     // 支持隐式路由
     Route::any('/{app}/{contr}/{action}', function ($app, $contr, $action) {
         return obj('\App/'.$app.'/Contr/'.$contr.'Contr')->$action(obj('Request'));

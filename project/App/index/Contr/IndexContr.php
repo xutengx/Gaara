@@ -13,6 +13,9 @@ class IndexContr extends Controller\HttpController {
     }
 
     public function indexDo($a = null ,$b = null ,$c = null ,$d = null ) {
+//        $a = obj(\Request::class);
+        $a = $this->get('test');
+        var_dump($a);exit;
         var_dump(func_get_args());exit;
     }
     

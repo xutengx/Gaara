@@ -64,6 +64,8 @@ class Request {
                     $this->{$argc} = $_POST ? $_POST : $this->{$argc};
                     break;
             }
+        }else{
+            $this->get = array_merge($this->get, $this->_addslashes($this->_htmlspecialchars($_GET)));
         }
     }
 
@@ -120,14 +122,8 @@ class Request {
      * @return mixed or false
      */
     private function filterMatch($str, $filter) {
-        if (strtolower($filter === 'xssf')) {
-            return obj('secure')->xssCheck($str, 'filter');
-        } else if (strtolower($filter === 'xss')) {
-            return obj('secure')->xssCheck($str, 'check'); // 返回过滤后的$str
-        } else {
-            $filter = array_key_exists($filter, $this->filterArr) ? $this->filterArr[$filter] : $filter;
-            return preg_match($filter, $str) ? $str : false;
-        }
+        $filter = array_key_exists($filter, $this->filterArr) ? $this->filterArr[$filter] : $filter;
+        return preg_match($filter, $str) ? $str : false;
     }
 
     private function _addslashes($arr) {

@@ -5,7 +5,22 @@
             "url": "https://packagist.phpcomposer.com"
         }
     },
+    "autoload": {
+        "psr-4": {
+            "App\\": "App/",
+            "Main\\": "Main/"
+        },
+        "classmap":[
+        ],
+         "files": [
+             "Main/Quick/Function.php",
+             "Main/Quick/ClassAilas.php"
+        ]
+    },
     "require": {
-        "phpmailer/phpmailer": "^5.2"
+        "php": ">=7.1.0",
+        "phpmailer/phpmailer": "^5.2",
+        "ezyang/htmlpurifier": "^4.9",
+        "workerman/workerman": "^3.4"
     }
 }

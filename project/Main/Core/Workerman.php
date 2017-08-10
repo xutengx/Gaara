@@ -17,14 +17,13 @@ use Workerman\Worker;
 
 // 运行worker
 
-require_once ROOT.'Main/Core/Workerman/Autoloader.php';
 class Workerman{
     const logDir = 'data/workerman/';
 
     protected $worker = null;
 
     final public function __construct($socket_name='http://0.0.0.0:2345', $count=1){
-        $this->worker = new Worker($socket_name);
+        $this->worker = new \Workerman\Worker($socket_name);
         // 启动$count个进程对外提供服务
         $this->worker->count = $count;
 

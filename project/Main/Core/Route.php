@@ -146,28 +146,25 @@ class Route {
      * @param array $request
      */
     private static function infoAnalysis($rule, $info, $urlParam){
-        $middleware = [];
-        if(is_array($info)){
-            $alias = ( isset($info['as']) && !empty($info['as']) ) ? $info['as'] : $rule;
-            // 域名分析
-            if(isset($info['domain'])){
-                if(!is_array($domainParam = self::domainToPreg($info['domain']))){
-                    return false;
-                }
-            }
-            // http方法分析
-            if(!in_array(strtolower($_SERVER['REQUEST_METHOD']), $info['method']))
+        // 一致化格式
+        $info = self::unifiedInfo($info);
+        // 别名分析
+        $alias = ( isset($info['as']) && !empty($info['as']) ) ? $info['as'] : $rule;
+        // 域名分析
+        if(isset($info['domain'])){
+            if(!is_array($domainParam = self::domainToPreg($info['domain']))){
                 return false;
-            
-            // 中间件
-            $middleware = $info['middleware'];
-            
-            // 执行
-            $contr = $info['uses'];
-        }else{
-            $alias = $rule;
-            $contr = $info;
+            }
         }
+        // http方法分析
+        if(!in_array(strtolower($_SERVER['REQUEST_METHOD']), $info['method']))
+            return false;
+
+        // 中间件
+        $middleware = $info['middleware'];
+
+        // 执行
+        $contr = $info['uses'];
         // 合并 域名参数 与 路由参数
 //        var_dump($domainParam);
 //        var_dump($urlParam);
@@ -179,7 +176,7 @@ class Route {
         self::$domainParam = $domainParam;
         self::$urlParam = $urlParam;
         self::$alias = $alias;
-        self::$methods = $info['method'];
+//        self::$methods = isset($info['method']) ? $info['method'] : self::$allowMethod ;
         
         // 中间件注册
         self::doMiddleware($middleware);
@@ -187,11 +184,37 @@ class Route {
         return self::doMethod($contr, $request);
     }
     /**
+     * info 一致化格式
+     * @param \Closure $info
+     */
+    private static function unifiedInfo($info){
+        $arr = [];
+        if(is_string($info) || $info instanceof \Closure) {
+            $arr = [
+                'method' => self::$allowMethod,
+                'middleware' => [],
+                'domain' => $_SERVER['HTTP_HOST'],
+                'as' => [],
+                'uses'=> $info
+            ];
+        }elseif(is_array($info)){
+            $arr = [
+                'method' => isset($info['method']) ? $info['method'] : self::$allowMethod,
+                'middleware' => isset($info['middleware']) ? $info['middleware'] : [],
+                'domain' => isset($info['domain']) ? $info['domain'] : $_SERVER['HTTP_HOST'],
+                'as' => isset($info['as']) ? $info['as'] : [],
+                'uses'=> $info['uses']
+            ];
+        }
+        return $arr;
+    }
+    
+    /**
      * 中间件注册, 执行
      * @param array $middlewareGroups
      */
     private static function doMiddleware($middlewareGroups) {
-        $Kernel = obj('\App/Kernel');
+        $Kernel = obj('App/Kernel');
         $Request = obj('Request');
         $runMiddleware = function($middlewareString) use($Request) {
             $arr = explode('@', $middlewareString);

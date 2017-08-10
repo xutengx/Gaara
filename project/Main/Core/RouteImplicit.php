@@ -103,6 +103,6 @@ class RouteImplicit {
 
     // 参数过滤
     private static function filterPars() {
-        return obj('F', true, self::$urlArr['pramers']);
+        return obj(Request::class, self::$urlArr['pramers']);
     }
 }

@@ -26,6 +26,9 @@ return [
             return $string;
         });
     }),
+    '/test' => ['as' => 'tt1', 'uses' => function(){
+            return 'test';
+    }],
     
     // 支持隐式路由(兼容式) 
     '/'.IN_SYS => function(){

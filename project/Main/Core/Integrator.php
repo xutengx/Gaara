@@ -96,7 +96,12 @@ class Integrator {
         }
         // 获取该方法所需要依赖注入的参数
         $paramArr = self::getMethodParams($className, $params, $methodName);
-        return $instance->{$methodName}(...$paramArr);
+          
+//        return $instance->{$methodName}(...$paramArr);
+        $reflectionClass = new \ReflectionClass($className);
+        $method = $reflectionClass->getMethod($methodName);
+        $closure = $method->getClosure($instance);
+        return $closure(...$paramArr);
     }
 
     /**

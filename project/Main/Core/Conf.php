@@ -58,7 +58,5 @@ class Conf {
         } else
             ini_set('display_errors', 0);
     }
-//    public function getCreateDb(){
-//        return require(ROOT.'db.inc.php'); 
-//    }
+    
 }

@@ -188,17 +188,20 @@ class DbConnection{
                 $res->execute($pars);
             }
         }catch(\PDOException $e){
-            if($e->errorInfo[0] === '42S02' && $e->errorInfo[1] === 1146){
-                if($i ++ === 1) exit('自动化建表语句有误,请核对');
-                $this->creatDB();
-                goto loop;
-            }else {
-                $er = 'query error 已经记录 :</br>'.$sql."</br>".$e->errorInfo[2]."</br>";
-                obj('\Main\Core\Log')->write($sql."\r\n".$e->errorInfo[2]);
-                if(DEBUG)
-                    echo $er;
-            }
-            exit;
+//            var_dump($e->errorInfo);
+             new Exception\Pdo($e);
+             exit('www');
+//            if($e->errorInfo[0] === '42S02' && $e->errorInfo[1] === 1146){
+//                if($i ++ === 1) exit('自动化建表语句有误,请核对');
+//                $this->creatDB();
+//                goto loop;
+//            }else {
+//                $er = 'query error 已经记录 :</br>'.$sql."</br>".$e->errorInfo[2]."</br>";
+//                obj('\Main\Core\Log')->write($sql."\r\n".$e->errorInfo[2]);
+//                if(DEBUG)
+//                    echo $er;
+//            }
+//            exit;
         }
         if($this->type === 'INSERT')
             return $PDO;

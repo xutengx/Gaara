@@ -1,10 +1,10 @@
 <?php
 
-namespace App\mysql\Contr;
+namespace App\Dev\mysql\Contr;
 
 use \Main\Core\Controller\HttpController;
 
-use \App\mysql\Model;
+use \App\Dev\mysql\Model;
 
 defined('IN_SYS') || exit('ACC Denied');
 /*

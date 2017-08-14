@@ -1,6 +1,6 @@
 <?php
 
-namespace App\file\Upload;
+namespace App\Dev\file\Upload;
 
 defined('IN_SYS') || exit('ACC Denied');
 /*

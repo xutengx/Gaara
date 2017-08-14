@@ -41,13 +41,20 @@ jQuery.extend({
             temp = $.language_base(key);
         });
         return temp;
+    },
+    url:function(pathinfo, param){
+        var temp;
+        $.getScriptWithCache($.inpath+"url.js", function(){
+            temp = $.url_base(pathinfo, param);
+        });
+        return temp;
     }
 });
 $.fn.extend({
-    submitData:function(method,callback) {
+    submitData:function(method, callback, httpmethod) {
         var $this = $(this);
         $.getScriptWithCache($.inpath+"submitData.js", function(){
-            $this.submitData_base(method,callback);
+            $this.submitData_base(method, callback, httpmethod);
         });
     },
     copy: function (obj, callback) {

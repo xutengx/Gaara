@@ -10,6 +10,9 @@ defined('IN_SYS') || define('IN_SYS', substr(str_replace('\\','/',__FILE__),strr
 // 入口文件目录在服务器的绝对路径 eg:/mnt/hgfs/www/git/php_/project/ 
 define('ROOT', str_replace('\\','/',dirname(__FILE__)).'/');
 
+// 网路根地址 eg:http://192.168.43.128/git/php_/project/
+define('HOST', isset($_SERVER['HTTP_HTTPS']) ? $_SERVER['HTTP_HTTPS'] : $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . str_replace(IN_SYS, '', $_SERVER['SCRIPT_NAME']));
+
 /**
  * 是否命令模式 eg:true 
  * 已知使用者: \Main\Core\Route::getRouteType()
@@ -33,6 +36,7 @@ define('ROUTE', ROOT.'Route/');
 require (ROOT . 'vendor/autoload.php');
 
 define('DEBUG', obj(Conf::class)->debug);
+
 
 // 执行
 \Main\Core\Route::Start();

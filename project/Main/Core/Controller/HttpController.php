@@ -18,6 +18,8 @@ abstract class HttpController extends \Main\Core\Controller {
     // use Traits\WechatTrait;
     // 页面过期时间  0 : 不过期
     protected $viewOverTime = 0;
+    // 页面加载地址
+    protected $view = '';
     // 页面渲染语言种类
     protected $language = 0;
     // 页面渲染语言array
@@ -33,16 +35,11 @@ abstract class HttpController extends \Main\Core\Controller {
 
     public function __construct() {
         $app = explode('\\', get_class($this));
-        if ($app[0] == 'App') {
-            $this->app = $app[1];
-            $this->classname = str_replace('Contr', '', $app[3]);
-        }
+        $this->classname = str_replace('Contr', '', end($app));
+        
 
         defined('APP') || define('APP', $this->app);
-        $script_name = str_replace(IN_SYS, '', $_SERVER['SCRIPT_NAME']);
-        $host = isset($_SERVER['HTTP_HTTPS']) ? $_SERVER['HTTP_HTTPS'] : $_SERVER['REQUEST_SCHEME'];  // nginx 自定配置 proxy_set_header https https;
-        defined('HOST') || define('HOST', $host . '://' . $_SERVER['HTTP_HOST'] . $script_name);
-        defined('VIEW') || define('VIEW', HOST . 'App/' . $this->app . '/View/');
+        
         
         $this->construct();
     }
@@ -108,10 +105,8 @@ abstract class HttpController extends \Main\Core\Controller {
     final protected function getReady() {
         $debug = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4);
         // 方法名,为调用此方法的最近级别函数
-        $method = $debug[1]['function'];
-        $this->assign('path', PATH);
-        $this->assign('in_sys', IN_SYS);
-        $this->assign('view', VIEW);
+        $method = $debug[2]['function'];
+        $this->assign('HOST', HOST);
         $this->assign('contr', $this->classname);
         $this->assign('method', $method);
         $this->script('$.extend({language:' . $this->language . '});');
@@ -132,8 +127,6 @@ abstract class HttpController extends \Main\Core\Controller {
         $DATA = $this->phparray;
         // 防scrf的ajax(基于jquery), 接受post提交数据前.先验证http头中的 csrftoken
         $ajax = obj('Secure')->csrfAjax($this->classname);
-        // js 路由方法
-        $str = 'function __url__(Application, Controller, method){if(arguments.length==1){method=Application;Controller="' . $this->classname . '";Application="' . $this->app . '";}else if(arguments.length==2) {method=Controller;Controller=Application;Application="' . $this->app . '";} var url=window.location.protocol+"//"+window.location.host+window.location.pathname+"?' . PATH . '="+Application+"/"+Controller+"/"+method+"/"; return url;}';
         echo <<<EEE
 <!DOCTYPE html>
 <html lang="zh-CN" xml:lang='zh-CN' xmlns='http://www.w3.org/1999/xhtml'>
@@ -142,13 +135,13 @@ EEE;
         // 公用view DEBUG下不缓存
         echo DEBUG ? obj('Template')->includeFiles() : obj('cache')->call(obj('Template'), 'includeFiles',1);
         // 页面各种赋值
-        echo '<script>' . $ajax, $this->cache, $str . '</script>';
+        echo '<script>' . $ajax, $this->cache . '</script>';
         // 重置
         $this->cache = ';';
-        if (file_exists(ROOT . 'App/' . $this->app . '/View/' . $file . '.html'))
-            include ROOT . 'App/' . $this->app . '/View/' . $file . '.html';
+        if (file_exists(ROOT . $this->view . $file . '.html'))
+            include ROOT . $this->view . $file . '.html';
         else
-            throw new \Main\Core\Exception(ROOT . 'App/' . $this->app . '/View/' . $file . '.html' . '不存在!');
+            throw new \Main\Core\Exception(ROOT . $this->view . $file . '.html' . '不存在!');
         echo <<<EEE
 </html>
 EEE;

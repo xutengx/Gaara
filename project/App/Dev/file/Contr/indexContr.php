@@ -1,6 +1,6 @@
 <?php
 
-namespace App\file\Contr;
+namespace App\Dev\file\Contr;
 
 use \Main\Core\Controller;
 defined('IN_SYS') || exit('ACC Denied');

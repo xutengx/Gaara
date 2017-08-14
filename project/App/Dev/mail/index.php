@@ -1,5 +1,5 @@
 <?php
-namespace App\mail;
+namespace App\Dev\mail;
 
 class index{
     public function send(\Mail $mail, $emailAddr){

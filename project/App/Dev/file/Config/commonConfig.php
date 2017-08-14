@@ -1,5 +1,5 @@
 <?php
-namespace App\file\Config;
+namespace App\Dev\file\Config;
 defined('IN_SYS') || exit('ACC Denied');
 
 final class commonConfig {

@@ -43,7 +43,7 @@ class Route {
      * @return string
      */
     private static function getPathInfo() {
-        return '/' . \str_replace('?' . $_SERVER['QUERY_STRING'], '', \str_replace(\str_replace(\IN_SYS, '', $_SERVER['DOCUMENT_URI']), '', $_SERVER['REQUEST_URI']));
+        return '/' . \str_replace('?' . $_SERVER['QUERY_STRING'], '', \str_replace(\str_replace(\IN_SYS, '', $_SERVER['SCRIPT_NAME']), '', $_SERVER['REQUEST_URI']));
     }
 
     /**

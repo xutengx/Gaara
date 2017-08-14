@@ -1,6 +1,6 @@
 <?php
 
-namespace App\file\Contr;
+namespace App\Dev\file\Contr;
 
 use \Main\Core\Controller;
 defined('IN_SYS') || exit('ACC Denied');
@@ -14,7 +14,7 @@ class demoContr extends Controller\HttpController {
 
     public function construct() {
         $this->upload_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'] . '?path=file/index/upload';
-        $language = obj('f')->get('language');
+        $language = \Request::get('language');
         if ($language === 'en') {
             $this->language = 1;
         }

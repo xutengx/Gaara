@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="<?php echo url('App/Dev/view/view/js/test.js'); ?>"></script>
+        <script>
+            // 设置语言
+            $.extend({
+                language_json: {
+                    "文件服务地址": [
+                        "文件服务地址22",
+                        "File System Service Address22"
+                    ],
+                    "今日流水": [
+                        "今日流水",
+                        "Daily"
+                    ],
+                    "本周流水": [
+                        "本周流水",
+                        "Weekly"
+                    ],
+                    "本月流水": [
+                        "本月流水",
+                        "Monthly"
+                    ],
+                    "中文": [
+                        "中文",
+                        "ENGLISH"
+                    ]
+                }
+            });
+        </script>
+    </head>
+    <body>
+        <div><script>$.lw(['测试','test']);</script><?php echo '控制器赋值到页面php : '.$DATA['test']; ?></div>
+        <form action="action">
+            <input type="text" name="tt" />
+            <input type="file" name="rr" />
+            <input type="file" name="yy" />
+            <input id="submit" type="button" value="ok!">
+        </form>
+        <script>
+            
+            $('#submit').submitData('view/ajax',function(re){
+                console.log(re);
+            },'put');
+            
+            console.log('控制器赋值到页面js : '+ test);
+            $.set_language_json({
+                'test':['test cn','test en']
+            });
+            console.log($.url('test',{'name':'xt','age':12}));
+            console.log($.url('test',{}));
+
+        </script>
+    </body>
+</html>

@@ -82,14 +82,18 @@ class Integrator {
     
     /**
      * 方法依赖注入, 执行
-     * @param string    $className  类名
+     * @param string|object    $className  类名|对象
      * @param string    $methodName 方法名
      * @param array     $par        实参数组
      * @return mix
      */
-    public static function run(string $className, string $methodName, array $params = []) {
-        // 获取类的实例, 如你所见没有传入构造的自定参数, 也就是说在 $className 第一次实例化,且依赖一个没有默认值的参数时,将会出错, 不过这种情况不常见
-        $instance = self::getins($className, []);
+    public static function run($className, string $methodName, array $params = []) {
+        if(is_string($className)){
+            // 获取类的实例, 如你所见没有传入构造的自定参数, 也就是说在 $className 第一次实例化,且依赖一个没有默认值的参数时,将会出错, 不过这种情况不常见
+            $instance = self::getins($className, []);
+        }elseif(is_object($className)){
+            $instance = $className;
+        }
         // 获取该方法所需要依赖注入的参数
         $paramArr = self::getMethodParams($className, $params, $methodName);
         return $instance->{$methodName}(...$paramArr);
@@ -97,12 +101,12 @@ class Integrator {
 
     /**
      * 获得类的方法参数，只获得有类型的参数
-     * @param  string   $className      类
+     * @param  string|object   $className      类名|对象
      * @param  array    $pars           调用者传入的参数,组成的数组
      * @param  string   $methodsName    调用的方法名
      * @return array    实参数组
      */
-    private static function getMethodParams(string $className, array $pars = [], string $methodsName = '__construct'):array {
+    private static function getMethodParams($className, array $pars = [], string $methodsName = '__construct'):array {
         // 通过反射获得该类
         $class = new \ReflectionClass($className);
         $paramArr = []; // 记录参数，和参数类型

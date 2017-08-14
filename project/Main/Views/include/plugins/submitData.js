@@ -32,14 +32,15 @@
     }
 });
 $.fn.extend({
-    submitData_base:function(method,callback) {
+    submitData_base:function(method,callback,httpmethod) {
         method = arguments[0] || 'submitData';
-        var url = ( method.indexOf('/') === -1) ? __url__(method) :  method ;
+        var url = $.url(method);
         callback = arguments[1] || function (re) {
                 if(re.state === 0 ) alert(re.msg);
                 else if(re.state) alert('ok!');
                 else console.log(re);
             };
+        httpmethod = arguments[2] || 'post';
         // 正则校验
         var check = function(obj){
             var rule = obj.attr('rule');
@@ -150,7 +151,7 @@ $.fn.extend({
                 data:fd,
                 processData: false,
                 contentType: false,
-                type:'post',
+                type:httpmethod,
                 dataType:'json',
                 success:function(re){
                     callback(re);

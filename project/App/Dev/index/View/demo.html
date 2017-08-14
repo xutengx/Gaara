@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>TODO write content</div>
+        <form action="action">
+            <input type="file" name="tt" />
+            <input type="file" name="rr" />
+            <input type="file" name="yy" />
+            <input id="submit" type="button" value="ok!">
+        </form>
+    </body>
+    <script>
+        $('#submit').submitData(__url__('demo','upload'),function(re){
+            console.log(re);
+        });
+    </script>
+</html>

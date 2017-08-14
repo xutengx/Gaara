@@ -1,28 +1,33 @@
 <?php
 
 /**
- * 柯里化,多态
- * User: Administrator
- * Date: 2016/2/4 0004
- * Time: 10:54
- */
-
-/**
  * 单例 实例化对象
  * 依赖 Integrator.class.php 指向 obj::get()
  * @param $class
  * @param 其他参数, 注:单例模式下,显然只有第一次实例化时,参数才会被使用!
  * @return mixed 对象
  */
-function obj($obj) {
+function obj(string $obj) {
     $arr = func_get_args();
     unset($arr[0]);
     return \Main\Core\Integrator::get($obj, $arr);
 }
 
 /**
+ * 依赖执行方法
+ * @param string|object $obj 类|对象
+ * @param string $methodName
+ * @return type
+ */
+function run($obj, string $methodName){
+    $param = func_get_args();
+    unset($param[0]);
+    unset($param[1]);
+    return \Main\Core\Integrator::run($obj, $methodName, $param);
+}
+
+/**
  * 普通 实例化对象
- * 依赖 Integrator.class.php 指向 obj::get()
  * @param $class
  * @param 其他参数
  * @return mixed 对象
@@ -31,6 +36,14 @@ function dobj($obj) {
     $arr = func_get_args();
     unset($arr[0]);
     return new $obj(...$arr);
+}
+
+function url(string $string = '', array $param = []): string{
+    $url = HOST.ltrim($string, '/');
+    if(!empty($param)){
+        $url .= '?'.http_build_query($param);
+    }
+    return $url;
 }
 
 /**

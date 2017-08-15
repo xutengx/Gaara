@@ -1,7 +1,7 @@
 <?php
 
 // 开发, 测试, demo 功能3合1
-namespace App\development\Contr;
+namespace App\Dev\development\Contr;
 
 use \Main\Core\Controller\HttpController;
 use App\development\Dev\test;
@@ -15,10 +15,15 @@ class indexContr extends HttpController {
 
     public function indexDo(Request $request, $test, \Main\Core\Cache $c , \HTMLPurifier $htmlpurifier) {
 
-//        var_dump(func_get_args());exit;
-////        var_dump($request);
-        var_dump($request->get('test'));
-        var_dump(htmlspecialchars($_GET['test']));
+        $passwd = password_hash('123123',PASSWORD_DEFAULT);
+        var_dump($passwd);
+        $passwd2 = password_hash('123123',PASSWORD_BCRYPT);
+        var_dump($passwd2);
+        $passwd3 = password_hash('123123',PASSWORD_BCRYPT);
+        var_dump($passwd3);
+        
+        var_dump(password_verify(1231231, $passwd) );
+        
         exit;
 //        Cache::set('www','www1',4);
 //        $e = $c->get('www');

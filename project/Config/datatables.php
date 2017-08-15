@@ -4,14 +4,14 @@ return  <<<EEE
 set names utf8;
 SET FOREIGN_KEY_CHECKS=0;
 
-DROP TABLE IF EXISTS `user_main`;
-CREATE TABLE `user_main` (
+DROP TABLE IF EXISTS `main_user`;
+CREATE TABLE `main_user` (
   `id` int(1) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户ID',
   `username` varchar(100) NOT NULL DEFAULT '' COMMENT '用户登入名',
   `email` varchar(100) NOT NULL DEFAULT '' COMMENT '用户邮箱',
-  `passwd` varchar(100) NOT NULL DEFAULT '' COMMENT '登入密码',
-  `last_login_ip` int(1) NOT NULL DEFAULT '0' COMMENT '最后登录IP, INET_ATON',
+  `passwd` varchar(255) NOT NULL DEFAULT '' COMMENT '登入密码',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '1.启用 2.禁用',
+  `last_login_ip` int(1) NOT NULL DEFAULT '0' COMMENT '最后登录IP, INET_ATON',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '新增时间',
   `last_login_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后在线时间',
   PRIMARY KEY (`id`),
@@ -19,7 +19,7 @@ CREATE TABLE `user_main` (
   UNIQUE KEY `email` (`username`)
 ) ENGINE=innodb AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COMMENT='用户表';
 
-INSERT INTO `balloon_admin` VALUES ('1', 'admin', 'qq@qq.com', '111', '3232235814', '1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `main_user` VALUES ('1', 'admin', 'qq@qq.com', '$2y$10$1T62akHp47oLeIKuv6DzU.ZLnjXycsUlvAjF.m6dBi0XgPYhICF8q', '1', '3232235814', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 DROP TABLE IF EXISTS `balloon_category`;
 CREATE TABLE `balloon_category` (

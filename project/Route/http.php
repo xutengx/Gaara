@@ -9,9 +9,9 @@ return [
         // 视图相关
         Route::get('/view','view\index@index');
         Route::put('/view/ajax','view\index@getAjax');
-        
+        // 
         // 新共能开发
-        Route::get('/new/{test?}',['uses' => 'development\Contr\indexContr@indexDo','domain'=> '192.168.43.128','middleware'=>['api']]);
+        Route::get('/new',['uses' => 'development\Contr\indexContr@indexDo','middleware'=>['api']]);
 
         Route::any('/route1',['as' => 'tt1', 'uses' => 'development\Contr\indexContr@indexDo']);
     }),

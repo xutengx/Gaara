@@ -6,13 +6,16 @@ return [
         // 用户相关
         Route::group(['prefix'=>'/user','namespace' => 'user'],function(){
             // 邮箱检测
-            Route::get('/email','reg@email');
+            Route::get('/email','Reg@email');
             // 注册
-            Route::post('/reg','reg@index');
+            Route::post('/reg','Reg@index');
+            // 设置密码
+            Route::post('/setpasswd','Reg@setPasswd');
             // 登入
-            Route::post('/login','login@index');
+            Route::post('/login','Login@index');
+            
             // 用户资料
-            Route::restful('/info','info');
+            Route::restful('/info','Info');
             
         });
     }),

@@ -378,7 +378,14 @@ class Route {
         'as' => [],
         'middleware' => [],
     ];
-        
+    
+    public static function restful($url, string $action){
+        self::post($url, $action.'@create');
+        self::delete($url, $action.'@destroy');
+        self::get($url, $action.'@select');
+        self::put($url, $action.'@update');
+    }
+
     public static function post($url, $action){
         return self::match(['post'], $url, $action);
     }

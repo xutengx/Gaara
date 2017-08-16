@@ -1,8 +1,20 @@
 <?php
 
 return [
-    Route::group(['middleware'=>['web'], 'namespace'=> 'App\yh' ], function(){
-        Route::post('/check/user','s\reg@checkUser');
+    // yh
+    Route::group(['middleware'=>['web'], 'namespace'=> 'App\yh\c' ], function(){
+        // 用户相关
+        Route::group(['prefix'=>'/user','namespace' => 'user'],function(){
+            // 邮箱检测
+            Route::get('/email','reg@email');
+            // 注册
+            Route::post('/reg','reg@index');
+            // 登入
+            Route::post('/login','login@index');
+            // 用户资料
+            Route::restful('/info','info');
+            
+        });
     }),
     
     Route::group(['middleware'=>['web'], 'namespace'=> 'App\Dev' ], function(){

@@ -80,7 +80,7 @@ abstract class HttpController extends \Main\Core\Controller {
      * @return bool
      */
     protected function returnData($content = '', $type_p = false, $code_p = false) {
-        if($content === false && $content === null && $content === 0 && $content === -1) return $this->returnMsg(0);
+        if($content === false || $content === null || $content === 0 || $content === -1) return $this->returnMsg(0);
         if (is_int($type_p)) {
             $type = $code_p ? $code_p : false;
             $code = $type_p;

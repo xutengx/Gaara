@@ -82,10 +82,10 @@ class Response {
             header('HTTP/1.1 ' . $code . ' ' . $_status[$code]);
             // 确保FastCGI模式下正常
             header('Status:' . $code . ' ' . $_status[$code]);
-            $charset = !empty($charset) ? $charset : obj('conf')->char;
-            if (isset($this->allowOutputType[strtolower($type)]))
-                header('Content-Type: ' . $this->allowOutputType[$type] . '; charset=' . $charset);
         }
+        $charset = !empty($charset) ? $charset : obj('conf')->char;
+        if (isset($this->allowOutputType[strtolower($type)]))
+            header('Content-Type: ' . $this->allowOutputType[$type] . '; charset=' . $charset);
     }
     
     // 设置Http头信息

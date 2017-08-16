@@ -7,9 +7,7 @@ class Exception extends \Exception{
         99 => 'loader'
     );
     public function __construct($message='', $code=0, $previous =null){
-//        parent::__construct($message, $code, $previous);
-        $this->message .= $message ;
-        $this->code = $code;
+        parent::__construct($message, $code, $previous);
         $this->makeMessage();
     }
     protected function makeMessage(){

@@ -30,6 +30,7 @@ class Pdo extends \Exception{
         $this->db = $db;
         $this->pdo_type = $this->getProp($db, 'type');
         parent::__construct($this->message, $this->code, $previous);
+
         $this->dealException();
     }
     /**
@@ -50,8 +51,9 @@ class Pdo extends \Exception{
             $this->{$this->code_map[$this->code]}();
             // 还原数据库链接的 链接类型
             $this->setProp($this->db, 'type', $this->pdo_type);
-        }else
+        }else{
             throw new \Exception($this);
+        }
     }
     
     // 动态调用

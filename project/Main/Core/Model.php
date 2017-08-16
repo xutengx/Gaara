@@ -61,6 +61,8 @@ class Model {
     }
 
     final protected function get_thisTable() {
+        // 驼峰转下划线
+        $uncamelize = function ($camelCaps,$separator='_') { return strtolower(preg_replace('/([a-z])([A-Z])/', "$1" . $separator . "$2", $camelCaps)); };
         $conf = obj(Conf::class);
         $this->tablepre = $conf->tablepre;
         $classname = get_class($this);
@@ -68,7 +70,7 @@ class Model {
         if ($this->tablename === '')
             $this->tablename = strtr($classname, array('Model' => ''));
         if ($this->table === '')
-            $this->table = $conf->tablepre . $this->tablename;
+            $this->table = $conf->tablepre . $uncamelize($this->tablename);
         $this->getTableInfo();
     }
 

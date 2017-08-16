@@ -12,7 +12,7 @@ return [
                 'user' => 'root',
                 'pwd' => 'root',
                 'char' => 'UTF8',
-                'db' => 'test'
+                'db' => 'yh'
             ]
         ],
         'read' => [
@@ -24,7 +24,7 @@ return [
                 'user' => 'root',
                 'pwd' => 'root',
                 'char' => 'UTF8',
-                'db' => 'test'
+                'db' => 'yh'
             ],
             [
                 'weight' => 2,
@@ -34,7 +34,7 @@ return [
                 'user' => 'root',
                 'pwd' => 'root',
                 'char' => 'UTF8',
-                'db' => 'test'
+                'db' => 'yh'
             ]
         ]
     ]

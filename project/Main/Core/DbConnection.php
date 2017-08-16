@@ -160,15 +160,15 @@ class DbConnection{
     /**
      * 自动建表
      */
-    private function creatDB(){
-        $arr = explode(';', trim(obj('conf')->getCreateDb()));
-        if($arr[count($arr) - 1] == '') unset($arr[count($arr) - 1]);
-        $PDO = $this->PDO();
-        foreach ($arr as $k=>$v) {
-            $PDO->query($v);
-        }
-        return true;
-    }
+//    private function creatDB(){
+//        $arr = explode(';', trim(obj('conf')->getCreateDb()));
+//        if($arr[count($arr) - 1] == '') unset($arr[count($arr) - 1]);
+//        $PDO = $this->PDO();
+//        foreach ($arr as $k=>$v) {
+//            $PDO->query($v);
+//        }
+//        return true;
+//    }
     /**
      * 内部执行, 返回原始数据对象
      * @param string $sql
@@ -181,24 +181,16 @@ class DbConnection{
         $i = 0;
         try{
             loop :
-            if(empty($pars))
+            if(empty($pars)){
                 $res = $PDO->query($sql);
-            else{
+            }else{
                 $res = $PDO->prepare($sql);
                 $res->execute($pars);
             }
         }catch(\PDOException $e){
-            if($e->errorInfo[0] === '42S02' && $e->errorInfo[1] === 1146){
-                if($i ++ === 1) exit('自动化建表语句有误,请核对');
-                new Exception\Pdo($e, $this);
-                goto loop;
-            }else {
-                $er = 'query error 已经记录 :</br>'.$sql."</br>".$e->errorInfo[2]."</br>";
-                obj('\Main\Core\Log')->write($sql."\r\n".$e->errorInfo[2]);
-                if(DEBUG)
-                    echo $er;
-            }
-            exit;
+            if($i ++ === 1) throw new Exception\Pdo($e, $this);
+            new Exception\Pdo($e, $this);
+            goto loop;
         }
         if($this->type === 'INSERT')
             return $PDO;

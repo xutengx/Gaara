@@ -1,6 +1,10 @@
 <?php
 
 return [
+    Route::group(['middleware'=>['web'], 'namespace'=> 'App\yh' ], function(){
+        Route::post('/check/user','s\reg@checkUser');
+    }),
+    
     Route::group(['middleware'=>['web'], 'namespace'=> 'App\Dev' ], function(){
         // 数据库测试
         Route::get('/mysql','mysql\Contr\indexContr@indexDo');

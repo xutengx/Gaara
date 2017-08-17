@@ -34,9 +34,7 @@ class MainUser extends \Main\Core\Model {
     public function getEmail(string $email) : array{
         return $this->where('email', $email)->getRow();
     }
-    
-    
-    
+
     /**
      * 登入, 并更新用户登入状态
      * @param int $id

@@ -6,7 +6,7 @@ defined('IN_SYS') || exit('ACC Denied');
 use App\yh\m;
 use Main\Core\Controller\HttpController;
 
-class info extends HttpController {
+class Info extends HttpController {
 
     public function select() {
         echo 'this is select';

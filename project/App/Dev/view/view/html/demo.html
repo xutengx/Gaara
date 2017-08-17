@@ -36,12 +36,22 @@
     <body>
         <div><script>$.lw(['测试','test']);</script><?php echo '控制器赋值到页面php : '.$DATA['test']; ?></div>
         <form action="action">
-            <input type="text" name="tt" />
+            <input type="text" id='date' name="tt" />
             <input type="file" name="rr" />
             <input type="file" name="yy" />
             <input id="submit" type="button" value="ok!">
         </form>
         <script>
+            $('#date').date({
+                locale: {
+                    format: 'YYYY-MM-DD'
+                },
+//                startDate: $.moment().subtract(44, 'days'),
+//                maxDate: $.moment().subtract(1, 'days'),
+//                minDate:'2015-01-01',
+//                singleDatePicker: true,
+//                showDropdowns: true
+            });
             
             $('#submit').submitData('view/ajax',function(re){
                 console.log(re);

@@ -2,6 +2,7 @@
 jQuery.extend({
     urls : [],
     getScriptWithCache:function(url,callback){
+        url = $.inpath + url;
         if($.urls.indexOf(url) === -1){
             $.urls.push(url);
             $.ajax({
@@ -16,13 +17,22 @@ jQuery.extend({
             });
         }else callback();
     },
+    getCssWithCache: function (css) {
+        $("head").append("<link>");
+        var dom = $("head").children(":last");
+        dom.attr({
+            rel: "stylesheet",
+            type: "text/css",
+            href: $.inpath + css
+        });
+    },
     getinfo: function () {
-        $.getScriptWithCache($.inpath+"submitData.js", function(){
+        $.getScriptWithCache("submitData.js", function(){
             $.getinfo_base();
         });
     },
     set_language:function(key){
-        $.getScriptWithCache($.inpath+"language.js", function(){
+        $.getScriptWithCache("language.js", function(){
             $.language = key;
         });
     },
@@ -31,36 +41,50 @@ jQuery.extend({
         return true;
     },
     lw:function(key){
-        $.getScriptWithCache($.inpath+"language.js", function(){
+        $.getScriptWithCache("language.js", function(){
             document.write($.language_base(key));
         });
     },
     lr:function(key){
         var temp;
-        $.getScriptWithCache($.inpath+"language.js", function(){
+        $.getScriptWithCache("language.js", function(){
             temp = $.language_base(key);
         });
         return temp;
     },
     url:function(pathinfo, param){
         var temp;
-        $.getScriptWithCache($.inpath+"url.js", function(){
+        $.getScriptWithCache("url.js", function(){
             temp = $.url_base(pathinfo, param);
         });
         return temp;
-    }
+    },
+//    moment:function(){
+//        var temp;
+//        $.getScriptWithCache("daterangepicker.js", function(){
+//            temp = moment();
+//        });
+//        return temp;
+//    }
 });
 $.fn.extend({
     submitData:function(method, callback, httpmethod) {
         var $this = $(this);
-        $.getScriptWithCache($.inpath+"submitData.js", function(){
+        $.getScriptWithCache("submitData.js", function(){
             $this.submitData_base(method, callback, httpmethod);
         });
     },
     copy: function (obj, callback) {
         var $this = $(this);
-        $.getScriptWithCache($.inpath+"ZeroClipboard.min.js", function(){
-            $this.copy_base(obj,callback);
+        $.getScriptWithCache("ZeroClipboard.min.js", function(){
+            $this.copy_base(obj, callback);
         });
-    }
+    },
+//    date: function (obj, callback) {
+//        var $this = $(this);
+//        $.getScriptWithCache("daterangepicker.js", function(){
+//            $.getCssWithCache("daterangepicker.css");
+//            $this.daterangepicker(obj, callback);
+//        });
+//    }
 });

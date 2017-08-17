@@ -2,17 +2,18 @@
 
 return [
     // yh
-    Route::group(['middleware'=>['web'], 'namespace'=> 'App\yh\c' ], function(){
+    Route::group(['middleware'=>['api'], 'namespace'=> 'App\yh\c' ], function(){
         // 用户相关
         Route::group(['prefix'=>'/user','namespace' => 'user'],function(){
             // 邮箱检测
             Route::get('/email','Reg@email');
-            // 注册
-            Route::post('/reg','Reg@index');
+            // 注册( 邮件发送 )
+            Route::post('/reg',['middleware'=>['sendMail'], 'uses'=>'Reg@index']);
             // 设置密码
             Route::post('/setpasswd','Reg@setPasswd');
             // 登入
             Route::post('/login','Login@index');
+            
             
             // 用户资料
             Route::restful('/info','Info');
@@ -24,7 +25,7 @@ return [
         // 数据库测试
         Route::get('/mysql','mysql\Contr\indexContr@indexDo');
         // 邮件测试 给 emailAddr 发一份邮件
-        Route::get('/mail/{emailAddr}','mail\index@send');
+        Route::get('/mail/{emailAddr}',['middleware'=>['sendMail'], 'uses'=>'mail\index@send']);
         // 视图相关
         Route::get('/view','view\index@index');
         Route::put('/view/ajax','view\index@getAjax');

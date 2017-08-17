@@ -20,8 +20,10 @@ class Template {
     const jsDir = 'Main/Views/include/js/';
     // js_plugins 引入
     const pluginsDir = 'Main/Views/include/plugins/';
+    // js_plugins 所需的css 引入
+    const pluginsCssDir = 'Main/Views/include/css/';
     // 自动压缩后js 存放的目录
-    const dataDir = 'data/minJS/';
+    const dataDir = 'data/minStatic/';
 
     public function show($file) {
         include ROOT . 'App/' . APP . '/View/template/' . $file . '.html';
@@ -48,9 +50,10 @@ class Template {
         $str .=  '<script>jQuery.extend({inpath:"' . self::dataDir . '"});</script>';
         $str .= $this->createMin(self::jsDir);
         $this->createMin(self::pluginsDir);
+        $this->createMin(self::pluginsCssDir);
         return $str;
     }
-
+    
     /**
      * 生成压缩文件
      * @param string $originaDir    需要压缩的js所在目录
@@ -64,14 +67,21 @@ class Template {
         $str = '';
         foreach ($files as $v) {
             $ext = strrchr($v, '.');
-            if ($ext !== '.js')
-                continue;
-            $jsname = $newDir . str_replace($originaDir, '', $v);
-            if (!file_exists($jsname) || filemtime($v) > filectime($jsname)) {
-                $content = $this->AutomaticPacking(file_get_contents($v));
-                obj(Tool::class)->printInFile($jsname, $content);
+            if ($ext === '.js'){
+                $jsname = $newDir . str_replace($originaDir, '', $v);
+                if (!file_exists($jsname) || filemtime($v) > filectime($jsname)) {
+                    $content = $this->AutomaticPacking(file_get_contents($v));
+                    obj(Tool::class)->printInFile($jsname, $content);
+                }
+                $str .= '<script src="' . HOST . $jsname . '"></script>';
+            }elseif ($ext === '.css'){
+                $jsname = $newDir . str_replace($originaDir, '', $v);
+                if (!file_exists($jsname) || filemtime($v) > filectime($jsname)) {
+                    $content = $this->compressCss(file_get_contents($v));
+                    obj(Tool::class)->printInFile($jsname, $content);
+                }
+                $str .= '<link rel="stylesheet" type="text/css" href="'. HOST . $jsname . '" />';
             }
-            $str .= '<script src="' . HOST . $jsname . '"></script>';
         }
         return $str;
     }
@@ -85,5 +95,19 @@ class Template {
         $packerNormal = (new \Main\Core\JavaScriptPacker($content, 'Normal', false, false))->pack();
         $packerNone = (new \Main\Core\JavaScriptPacker($content, 'None', false, false))->pack();
         return strlen($packerNormal) > strlen($packerNone) ? $packerNone : $packerNormal;
+    }
+    
+    /**
+     * 压缩 css
+     * @param string $content   压缩前 css 内容
+     * @return string           压缩后 css
+     */
+    private function compressCss($content) {
+        /* remove comments */
+        $content = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $content);
+        /* remove tabs, spaces, newlines, etc. */
+        $content = str_replace(array("
+", "\r", "\n", "\t", '  ', '    ', '    '), '', $content);
+        return $content;
     }
 }

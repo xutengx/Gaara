@@ -20,8 +20,12 @@ class Kernel extends HttpKernel {
             \App\Middleware\Jurisdiction::class,
         ],
         'api' => [
-            // 访问频率控制  100次 / 60s
-            \Main\Core\Middleware\ThrottleRequests::class.'@100@60',
+            // 访问频率控制  30次 / 60s
+            \Main\Core\Middleware\ThrottleRequests::class.'@30@60',
+        ],
+        'sendMail' => [
+            // 访问频率控制  1次 / 30s
+            \Main\Core\Middleware\ThrottleRequests::class.'@1@30',
         ],
     ];
     

@@ -36,6 +36,7 @@ class Reg extends HttpController {
         // 发送邮件
         return $this->returnData($this->sendMail($email, $urlLink, $mail));
     }
+    
     /**
      * 新增用户, 设置密码
      * @param Secure $secure
@@ -87,7 +88,7 @@ class Reg extends HttpController {
      * 检测邮箱是否已经被注册
      */
     private function checkEmail(string $email, MainUser $user): bool {
-        $has = $user->where('email',$email)->getRow();
+        $has = $user->getEmail($email);
         return $has ? false : true;
     }
 

@@ -3,7 +3,7 @@
 return [
     // yh
     Route::group(['middleware'=>['api'], 'namespace'=> 'App\yh\c' ], function(){
-        // 用户相关
+        // 不检测sessionID
         Route::group(['prefix'=>'/user','namespace' => 'user'],function(){
             // 邮箱检测
             Route::get('/email','Reg@email');
@@ -13,10 +13,11 @@ return [
             Route::post('/setpasswd','Reg@setPasswd');
             // 登入
             Route::post('/login','Login@index');
-            
-            
+        });
+        // 检测sessionID
+        Route::group(['prefix'=>'/user','middleware'=>['checkSessionID'],'namespace' => 'user'],function(){
             // 用户资料
-            Route::restful('/info','Info');
+            Route::restful('/user/info','Info');
             
         });
     }),

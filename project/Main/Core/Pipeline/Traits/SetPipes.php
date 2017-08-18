@@ -44,4 +44,23 @@ trait SetPipes {
     public function pipesUnshift(string $step): int {
         return array_unshift($this->pipes, $step);
     }
+    
+    /**
+     * 设置管道方法
+     * @param string $func  方法名
+     * @return bool
+     */
+    public function setFunc(string $func) : bool{
+        $this->func = $func;
+        return true;
+    }
+    
+    /**
+     * 返回管道方法
+     * @param string $func  方法名
+     * @return string
+     */
+    public function getFunc() : string{
+        return $this->func;
+    }
 }

@@ -18,9 +18,6 @@ class Kernel extends HttpKernel {
             // 开启session
             \Main\Core\Middleware\StartSession::class,
         ],
-        'jurisdiction' => [
-            \App\Middleware\Jurisdiction::class,
-        ],
         'api' => [
             // 访问频率控制  30次 / 60s
             \Main\Core\Middleware\ThrottleRequests::class.'@30@60',
@@ -33,6 +30,9 @@ class Kernel extends HttpKernel {
             \Main\Core\Middleware\ThrottleRequests::class.'@30@60',
             \App\Middleware\test1::class,
             \App\Middleware\test2::class,
+        ],
+        'checkSessionID' =>[
+            \App\yh\Middleware\SesssionIDCheck::class
         ]
     ];
     

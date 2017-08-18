@@ -19,7 +19,9 @@ class Pipeline {
     
     // 默认闭包
     private $defaultClosure = null;
-
+    
+    // 管道执行的方法
+    private $func = 'implement';
     
     // 设置匿名回调函数
     public function setDefaultClosure(\Closure $callback){
@@ -42,7 +44,7 @@ class Pipeline {
     private function getSlice() {
         return function ($stack, $pipe) {
             return function () use ($stack, $pipe) {
-                return $this->getObj($pipe)->implement($stack);
+                return $this->getObj($pipe)->{$this->func}($stack);
             };
         };
     }

@@ -83,9 +83,12 @@ class Route {
                 $urlParam = self::paramAnalysis($parameter , $argument);
                 // 执行分析
                 $check = self::infoAnalysis($rule, $info, $urlParam);
+
                 // 域名不匹配, 则继续 foreach
                 if($check === false)
                     continue;
+                else
+                    exit();
             }
         }
         obj(Response::class)->returnData('', false, 404);
@@ -176,13 +179,16 @@ class Route {
         self::$domainParam = $domainParam;
         self::$urlParam = $urlParam;
         self::$alias = $alias;
-//        self::$methods = isset($info['method']) ? $info['method'] : self::$allowMethod ;
         
+        // 核心执行,管道模式中间件,以及控制器
+        return self::doKernel($middleware, $contr, $request);
+//        exit('stop');
         // 中间件注册
-        self::doMiddleware($middleware);
+//        self::doMiddleware($middleware);
         
-        return self::doMethod($contr, $request);
+//        return self::doMethod($contr, $request);
     }
+    
     /**
      * info 一致化格式
      * @param \Closure $info
@@ -209,35 +215,39 @@ class Route {
         return $arr;
     }
     
+    private static function doKernel($middleware, $contr, $request){
+        return obj(\App\Kernel::class)->run($middleware, $contr, $request);
+    }
+    
     /**
      * 中间件注册, 执行
      * @param array $middlewareGroups
      */
-    private static function doMiddleware($middlewareGroups) {
-        $Kernel = obj('App/Kernel');
-        $Request = obj('Request');
-        $runMiddleware = function($middlewareString) use($Request) {
-            $arr = explode('@', $middlewareString);
-            $middlewareObj = array_shift($arr);
-            \obj($middlewareObj)($Request, ...$arr);
-        };
-        try {
-            // 全局中间件
-            foreach ($Kernel->middlewareGlobel as $middleware) {
-                $runMiddleware($middleware);
-            }
-            // 路由中间件
-            foreach ($middlewareGroups as $middlewareGroup) {
-                foreach ($Kernel->middlewareGroups[$middlewareGroup] as $middleware) {
-                    $runMiddleware($middleware);
-                }
-            }
-        } catch (Exception $exc) {
-            obj(Response::class)->doException($exc);
-        } finally {
-            
-        }
-    }
+//    private static function doMiddleware($middlewareGroups) {
+//        $Kernel = obj('App/Kernel');
+//        $Request = obj('Request');
+//        $runMiddleware = function($middlewareString) use($Request) {
+//            $arr = explode('@', $middlewareString);
+//            $middlewareObj = array_shift($arr);
+//            \obj($middlewareObj)($Request, ...$arr);
+//        };
+//        try {
+//            // 全局中间件
+//            foreach ($Kernel->middlewareGlobel as $middleware) {
+//                $runMiddleware($middleware);
+//            }
+//            // 路由中间件
+//            foreach ($middlewareGroups as $middlewareGroup) {
+//                foreach ($Kernel->middlewareGroups[$middlewareGroup] as $middleware) {
+//                    $runMiddleware($middleware);
+//                }
+//            }
+//        } catch (Exception $exc) {
+//            obj(Response::class)->doException($exc);
+//        } finally {
+//            
+//        }
+//    }
 
     /**
      * 方法依赖注入,执行,支持闭包函数
@@ -245,61 +255,61 @@ class Route {
      * @param array $request 请求参数
      * @return void
      */
-    private static function doMethod($contr, $request){
-        /**
-         * 方法依赖注入
-         * @param array $parameters 由反射类获取的方法依赖参数链表
-         * @return array 参数数组
-         */
-        $injection = function($parameters) use ($request){
-            // 定义实参数组
-            $argument = [];
-            // 遍历所有形参
-            foreach ($parameters as $param) {
-                // 判断参数类型 是类
-                if ($paramClass = $param->getClass()) {
-                    // 获得参数类型名称
-                    $paramClassName = $paramClass->getName();
-                    // 加入对象到参数列表
-                    $argument[] = Integrator::getWithoutAlias($paramClassName);
-                }else{
-                    if(isset($request[$param->name])){
-                        // 加入实参到参数列表
-                        $argument[] = $request[$param->name];
-                    }else{
-                        $argument[] = \null;
-                    }
-                }
-            }
-            return $argument;
-        };
-        self::statistic();
-        try {
-            // 形如 'App\index\Contr\IndexContr@indexDo'
-            if(is_string($contr)){
-                $temp = explode('@', $contr);
-                $reflectionClass = new \ReflectionClass($temp[0]);
-                $methodClass = $reflectionClass->getMethod($temp[1]);
-                $parameters = $methodClass->getParameters();
-                
-                $argument = $injection($parameters);
-                $return = call_user_func_array(array(Integrator::getWithoutAlias($temp[0]), $temp[1]), $argument);  
-            }
-            // 形如 function($param_1, $param_2 ) {return 'this is a function !';}
-            elseif($contr instanceof \Closure){
-                $reflectionFunction = new \ReflectionFunction($contr);
-                $parameters = $reflectionFunction->getParameters();
-                
-                $argument = $injection($parameters);    
-                $return = call_user_func_array($contr, $argument);
-            }
-            obj(Response::class)->returnData($return);
-        } catch (Exception $exc) {
-            obj(Response::class)->doException($exc);
-        } finally {
-            
-        } 
-    }
+//    private static function doMethod($contr, $request){
+//        /**
+//         * 方法依赖注入
+//         * @param array $parameters 由反射类获取的方法依赖参数链表
+//         * @return array 参数数组
+//         */
+//        $injection = function($parameters) use ($request){
+//            // 定义实参数组
+//            $argument = [];
+//            // 遍历所有形参
+//            foreach ($parameters as $param) {
+//                // 判断参数类型 是类
+//                if ($paramClass = $param->getClass()) {
+//                    // 获得参数类型名称
+//                    $paramClassName = $paramClass->getName();
+//                    // 加入对象到参数列表
+//                    $argument[] = Integrator::getWithoutAlias($paramClassName);
+//                }else{
+//                    if(isset($request[$param->name])){
+//                        // 加入实参到参数列表
+//                        $argument[] = $request[$param->name];
+//                    }else{
+//                        $argument[] = \null;
+//                    }
+//                }
+//            }
+//            return $argument;
+//        };
+//        self::statistic();
+//        try {
+//            // 形如 'App\index\Contr\IndexContr@indexDo'
+//            if(is_string($contr)){
+//                $temp = explode('@', $contr);
+//                $reflectionClass = new \ReflectionClass($temp[0]);
+//                $methodClass = $reflectionClass->getMethod($temp[1]);
+//                $parameters = $methodClass->getParameters();
+//                
+//                $argument = $injection($parameters);
+//                $return = call_user_func_array(array(Integrator::getWithoutAlias($temp[0]), $temp[1]), $argument);  
+//            }
+//            // 形如 function($param_1, $param_2 ) {return 'this is a function !';}
+//            elseif($contr instanceof \Closure){
+//                $reflectionFunction = new \ReflectionFunction($contr);
+//                $parameters = $reflectionFunction->getParameters();
+//                
+//                $argument = $injection($parameters);    
+//                $return = call_user_func_array($contr, $argument);
+//            }
+//            obj(Response::class)->returnData($return);
+//        } catch (Exception $exc) {
+//            obj(Response::class)->doException($exc);
+//        } finally {
+//            
+//        } 
+//    }
     
     /**
      * 将域名规则翻译为正则表达式 (不支持问号参数)
@@ -428,7 +438,7 @@ class Route {
     public static function match($method, $url, $action){
         // 格式化action
         $actionInfo = self::formatAction($action);
-     
+        
         // 处理得到 url
         {
             if(!empty(self::$group['prefix'])){
@@ -454,8 +464,10 @@ class Route {
                     $namespace .= trim(str_replace('/', '\\', $v), '\\') . '\\';
                 }
                 $uses = $namespace . $actionInfo['uses'];
-            } else
-                $uses = $actionInfo['uses'];
+            } else{
+                $namespace = trim(str_replace('/', '\\', $actionInfo['namespace']), '\\') . '\\';
+                $uses = $namespace.$actionInfo['uses'];
+            }
         }
 
         // 处理得到 完整 as 别名
@@ -493,10 +505,9 @@ class Route {
                         continue;
                     $middleware = array_merge($middleware, $v);
                 }
-                $middleware = array_merge($middleware, $actionInfo['middleware']);
             }
+            $middleware = array_merge($middleware, $actionInfo['middleware']);
         }
-       
         self::$routeRule[] = [
             $url => [
                 'method' => $method,

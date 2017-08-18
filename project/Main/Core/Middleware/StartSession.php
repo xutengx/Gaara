@@ -13,7 +13,7 @@ class StartSession extends Middleware {
 
     protected $except = []; 
     
-    public function handle(Request $request) {
+    public function handle() {
         obj('session');
     }
 }

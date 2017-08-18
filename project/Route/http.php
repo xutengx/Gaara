@@ -21,7 +21,7 @@ return [
         });
     }),
     
-    Route::group(['middleware'=>['web'], 'namespace'=> 'App\Dev' ], function(){
+    Route::group(['middleware'=>['web','api'], 'namespace'=> 'App\Dev' ], function(){
         // 数据库测试
         Route::get('/mysql','mysql\Contr\indexContr@indexDo');
         // 邮件测试 给 emailAddr 发一份邮件
@@ -29,14 +29,18 @@ return [
         // 视图相关
         Route::get('/view','view\index@index');
         Route::put('/view/ajax','view\index@getAjax');
-        // 
+        
         // 新共能开发
         Route::get('/new',['uses' => 'development\Contr\indexContr@indexDo','middleware'=>['api']]);
 
         Route::any('/route1',['as' => 'tt1', 'uses' => 'development\Contr\indexContr@indexDo']);
     }),
+            
+    // 管道模式
+    Route::get('/p',['middleware'=>['web','testMiddleware'],'namespace'=> 'App\Dev', 'uses'=>'Pipeline\index@index']),
+    
     '/test' => ['as' => 'tt1', 'uses' => function(){
-            return url('qwe111');
+            return 'test';
     }],
     
     // 支持隐式路由

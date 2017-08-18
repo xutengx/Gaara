@@ -1,11 +1,10 @@
 <?php
 
 namespace Main\Core;
-
-use \Main\Core\Request\Traits;
 defined('IN_SYS') || exit('ACC Denied');
 
-// 原filter类, 数据来源过滤
+use \Main\Core\Request\Traits;
+
 class Request {
 
     use Traits\ClientInfo;
@@ -66,7 +65,7 @@ class Request {
                     $this->{$argc} = $_POST ? $_POST : $this->{$argc};
                     break;
             }
-        }else{
+        } else {
             $this->get = array_merge($this->get, $this->_addslashes($this->_htmlspecialchars($_GET)));
         }
     }

@@ -31,8 +31,8 @@ class Kernel extends HttpKernel {
             \App\Middleware\test1::class,
             \App\Middleware\test2::class,
         ],
-        'checkSessionID' =>[
-            \App\yh\Middleware\SesssionIDCheck::class
+        'login' =>[
+            \App\yh\Middleware\TokenCheck::class
         ]
     ];
     

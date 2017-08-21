@@ -31,7 +31,7 @@ class Reg extends HttpController {
         }
         
         // 生成激活链接
-        $urlLink = $this->makeTakon($email, $url, $secure);
+        $urlLink = $this->makeToken($email, $url, $secure);
         
         // 发送邮件
         return $this->returnData($this->sendMail($email, $urlLink, $mail));
@@ -99,7 +99,7 @@ class Reg extends HttpController {
      * @param Secure $secure    存在加密算法的对象
      * @return string           可以校验的takon
      */
-    private function makeTakon(string $email, string $address, Secure $secure) : string{
+    private function makeToken(string $email, string $address, Secure $secure) : string{
         $str = $email.'|'.time();
         $token = $secure->encrypt($str, self::key);
         return $address.$token;

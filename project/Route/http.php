@@ -15,7 +15,7 @@ return [
             Route::post('/login','Login@index');
         });
         // 检测sessionID
-        Route::group(['prefix'=>'/user','middleware'=>['checkSessionID'],'namespace' => 'user'],function(){
+        Route::group(['prefix'=>'/user','middleware'=>['login'],'namespace' => 'user'],function(){
             // 用户资料
             Route::restful('/user/info','Info');
             

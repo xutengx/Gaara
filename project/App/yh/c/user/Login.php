@@ -8,10 +8,9 @@ use App\yh\m\MainUser;
 use Main\Core\Secure;
 use Main\Core\Controller\HttpController;
 use Main\Core\Request;
+use App\yh\s\Token;
 
 class Login extends HttpController {
-
-    const key = 'yh';
 
     /**
      * 用户登录
@@ -25,9 +24,10 @@ class Login extends HttpController {
         if ($info = $user->getEmail($email)) {
             if (password_verify($passwd, $info['passwd'])) {
                 if ($info['status'] === 1) {
-                    // 数据库更新用户登入状态
+                    // 数据库更新用户登入状态, 缓存用户状态, 用于登入时校验
                     $newInfo = $this->userLogin($info['id'], $user, $request);
-                    return $this->returnData($this->makeSessionId($newInfo, $secure));
+                    
+                    return $this->returnData($this->makeToken($newInfo, $secure));
                 } else
                     return $this->returnMsg(0, '用户已被禁用');
             } else
@@ -37,7 +37,7 @@ class Login extends HttpController {
     }
 
     /**
-     * 更新登入状态
+     * 更新登入状态(数据库 , 缓存)
      * @param int $id           用户主键
      * @param MainUser $user    userModel
      * @param Request $request  当前请求
@@ -51,12 +51,11 @@ class Login extends HttpController {
     }
 
     /**
-     * 由用户信息生成sessionID
+     * 由用户信息生成 token
      * @param array $info
      * @return string
      */
-    private function makeSessionId(array $info, Secure $secure): string {
-        $str = http_build_query($info);
-        return $secure->encrypt($str, self::key);
+    private function makeToken(array $info): string {
+        return Token::encryptToken($info);
     }
 }

@@ -22,7 +22,8 @@ class indexContr extends HttpController {
         '静态调用model, where参数数量为2, 3, where的in条件, 参数绑定, getLastSql()获取上次执行的sql(不一定是数据库执行的最后条,比如getLastInsertId之类的不会记录)' => 'test_6',
         '静态调用model, where的between条件, 参数绑定,' => 'test_7',
         '静态调用model, where的and or嵌套条件, 参数绑定,' => 'test_8',
-        '呼叫一个不存在的表,' => 'test_9',
+        'where的闭包解析,' => 'test_9',
+        '呼叫一个不存在的表,' => 'test_10',
     ];
 
     public function indexDo() {
@@ -144,6 +145,18 @@ class indexContr extends HttpController {
         var_dump($res);
     }
     private function test_9(){
+        $res = Model\visitorInfoModel::select(['id', 'name', 'phone'])
+            ->where(['id' => ['between','100','103' ] ])
+            ->where(function($query){
+                $query->whereIn('age', [1,2,3]);
+            })
+            ->getAll();
+        $sql = Model\visitorInfoModel::getLastSql();
+        
+        var_dump($sql);
+        var_dump($res);
+    }
+    private function test_10(){
         $res = Model\Non::select(['id', 'name', 'phone'])->getAll();
         var_dump($res);
     }

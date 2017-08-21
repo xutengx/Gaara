@@ -17,19 +17,39 @@ class Conf {
     }
     /**
      * 惰性读取配置文件
-     * @param type $key
-     * @return type
+     * @param string $configName
+     * @return mix
      */
-    public function __get($configName) {
-        if (array_key_exists($configName, self::$data))
-            return self::$data[$configName];
+    public function __get(string $configName) {
+        if (array_key_exists($configName, self::$data)){
+            return isset(self::$data[$configName][$this->key]) ? self::$data[$configName][$this->key] : self::$data[$configName];
+        }
         elseif (file_exists(CONFIG . $configName . '.php')) {
             $config = require(CONFIG . $configName . '.php');
-            return self::$data[$configName] = isset($config[$this->key]) ? $config[$this->key] : $config;
+            self::$data[$configName] = $config;
+            return isset($config[$this->key]) ? $config[$this->key] : $config;
         } else
             return null;
     }
 
+    /**
+     * 返回指定的配置文件  eg Conf::db('_dev');     将返回以 _dev为键的配置数组
+     * @param string $name
+     * @param string $arguments
+     * @return mix
+     */
+    public function __call(string $name, array $arguments) {
+        // 存在对应配置文件
+        if(isset(self::$data[$name])){
+            return self::$data[$name][reset($arguments)];
+        }elseif(file_exists(CONFIG . $name . '.php')) {
+            $config = require(CONFIG . $name . '.php');
+            self::$data[$name] = $config;
+            return $config[reset($arguments)];
+        }else{
+            throw new Exception('配置文件不存在' .$name.' '.$arguments);
+        }
+    }
     public function __set($key, $value) {
         $this->data[$key] = $value;
     }

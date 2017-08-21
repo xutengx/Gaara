@@ -47,12 +47,16 @@ class Model {
     protected $from = false;
     // 是否自动维护时间
     protected $autoTIme = true;
+ 
+    // 主动指定配置文件
+    protected $connection = null;
 
     /**
      * @param object $DbConnection db连接对象 如 obj('Mysql',false);
      */
     final public function __construct($DbConnection = null) {
-        $this->db = is_null($DbConnection) ? obj(DbConnection::class, obj(Conf::class)->db) : $DbConnection;
+        $config = is_null($this->connection) ? obj(Conf::class)->db : obj(Conf::class)->db($this->connection);
+        $this->db = is_null($DbConnection) ? obj(DbConnection::class, $config) : $DbConnection;
         $this->collect = new \Main\Core\Model\Collect($this->options);
         $this->analysis = obj(\Main\Core\Model\Analysis::class);
         $this->resolution = obj(\Main\Core\Model\Resolution::class);

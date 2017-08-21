@@ -7,14 +7,22 @@ class QueryBuiler{
     // 数据收集
     private $options = [];
 
-    public function __construct(&$options) {
-        $this->options = &$options;
+    public function __construct() {
+        throw new \Main\Core\Exception('not support yet ...');
     }
     /**
      * sql条件
      * @param String|array 数组 $p
      */
     public function where($p, $symbol = '=', $value = null){
+        
+    }
+    /**
+     * sql条件
+     * @param String|array 数组 $p
+     */
+    public function whereIn($p, $symbol = '=', $value = null){
+        
     }
     /**
      * where语句中同时出现条件的“与”或者“或的时候”，要将多个OR用小括号括起来再和AND进行“与”，或者将多个AND用小括号括起来再与OR进行“或”。

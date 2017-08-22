@@ -32,7 +32,7 @@ class Kernel extends HttpKernel {
             \App\Middleware\test2::class,
         ],
         'login' =>[
-            \App\yh\Middleware\TokenCheck::class
+            \App\yh\Middleware\SignCheck::class
         ]
     ];
     

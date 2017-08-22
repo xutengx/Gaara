@@ -1,6 +1,8 @@
 <?php
 namespace App\Dev\view;
 
+use App\yh\s\Sign;
+
 class index extends \Main\Core\Controller\HttpController{
     
     protected $view = 'App/Dev/view//view/html/';
@@ -16,8 +18,13 @@ class index extends \Main\Core\Controller\HttpController{
         $this->display('demo');
     }
     
-    public function getAjax(){
-        return $this->returnData(1);
+    public function getAjax(\Main\Core\Request $request){
+        $param = $request->input;
+        $token = $request->input('token');
+        $timestamp = $request->input('timestamp');
+        $sign = $request->input('sign');
+        $re = Sign::checkSign($param, $token, $timestamp, $sign);
+        return $this->returnData($re);
     }
     
 

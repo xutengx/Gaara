@@ -16,6 +16,7 @@ class Request {
     private $put = array();
     private $delete = array();
     private $cookie = array();
+    private $input = array();
     private $filterArr = array(
         'email' => '/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/',
         'email2' => '/^[0-9a-z][_.0-9a-z-]{0,31}@([0-9a-z][0-9a-z-]{0,30}[0-9a-z]\.){1,4}[a-z]{2,4}$/i',
@@ -47,27 +48,24 @@ class Request {
         $this->domain = $this->_addslashes($this->_htmlspecialchars($domainPar));
         $this->get = $this->_addslashes($this->_htmlspecialchars($urlPar));
         $this->cookie = $this->_addslashes($this->_htmlspecialchars($_COOKIE));
+        $this->getMethod();
         if (($argc = strtolower($_SERVER['REQUEST_METHOD'])) != 'get') {
             $this->{$argc} = file_get_contents('php://input');
             $content_type = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '';
-            switch ($content_type) {
-                case 'application/x-www-form-urlencoded':
-                    parse_str($this->{$argc}, $this->{$argc});
-                    $this->{$argc} = $this->_addslashes($this->_htmlspecialchars($this->{$argc}));
-                    break;
-                case 'application/json':
-                    $this->{$argc} = json_decode($this->{$argc}, true);
-                    break;
-                case 'application/xml':
-                    $this->{$argc} = obj('tool')->xml_decode($this->{$argc});
-                    break;
-                default:
-                    $this->{$argc} = $_POST ? $_POST : $this->{$argc};
-                    break;
+            if(stripos($content_type, 'application/x-www-form-urlencoded') !== false){
+                parse_str($this->{$argc}, $this->{$argc});
+                $this->{$argc} = $this->_addslashes($this->_htmlspecialchars($this->{$argc}));
+            }elseif(stripos($content_type, 'application/json')!== false){
+                $this->{$argc} = json_decode($this->{$argc}, true);
+            }elseif(stripos($content_type, 'application/xml')!== false){
+                $this->{$argc} = obj(Tool::class)->xml_decode($this->{$argc});
+            }else{
+                $this->{$argc} = $_POST ? $_POST : $this->{$argc};
             }
         } else {
             $this->get = array_merge($this->get, $this->_addslashes($this->_htmlspecialchars($_GET)));
         }
+        $this->input = $this->{$argc};
     }
 
     public function get($key, $filter = false) {
@@ -108,6 +106,19 @@ class Request {
     public function session($key, $filter = false) {
         if (isset($_SESSION[$key]))
             return $filter ? $this->filterMatch($_SESSION[$key], $filter) : $_SESSION[$key];
+        else
+            return null;
+    }
+    /**
+     * 获取当前请求类型的参数
+     * @param string $key
+     * @param type $filter
+     * @return type
+     */
+    public function input(string $key, $filter = false){
+        $method = $this->method;
+        if (isset($this->{$method}[$key]))
+            return $filter ? $this->filterMatch($this->{$method}[$key], $filter) : $this->{$method}[$key];
         else
             return null;
     }
@@ -164,7 +175,7 @@ class Request {
      * @throws Exception
      */
     public function __get($property_name) {
-        if (in_array(strtolower($property_name), array('post', 'get', 'put', 'delete', 'cookie')))
+        if (in_array(strtolower($property_name), array('input','post', 'get', 'put', 'delete', 'cookie')))
             return $this->$property_name;
         elseif (method_exists($this, $method = 'get' . ucfirst($property_name))) {
 //            return call_user_func($method);
@@ -172,6 +183,20 @@ class Request {
         } else {
             $key = strtoupper($property_name);
             return isset($_SERVER[$key]) ? $_SERVER[$key] : (isset($_SERVER['HTTP_' . $key]) ? $_SERVER['HTTP_' . $key] : null);
+        }
+    }
+    
+    /**
+     * 后期添加对应属性
+     * @param string $property_name
+     * @param type $value
+     */
+    public function __set(string $property_name, $value) {
+        if (in_array(strtolower($property_name), array('input','post', 'get', 'put', 'delete', 'cookie'))){
+            throw new Exception($property_name.' 不应该被修改');
+        }else{
+            $this->{$property_name} = $value;
+            return true;
         }
     }
 }

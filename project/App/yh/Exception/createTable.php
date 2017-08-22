@@ -1,10 +1,10 @@
 <?php
 
 namespace App\yh\Exception;
+defined('IN_SYS') || exit('ACC Denied');
 
 use Main\Core\DbConnection;
 use Main\Core\Conf;
-defined('IN_SYS') || exit('ACC Denied');
 
 class createTable {
 

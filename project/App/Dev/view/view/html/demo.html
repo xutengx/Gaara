@@ -5,6 +5,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="<?php echo url('App/Dev/view/view/js/test.js'); ?>"></script>
+        <script src="http://cdn.bootcss.com/blueimp-md5/1.1.0/js/md5.min.js"></script>
         <script>
             // 设置语言
             $.extend({
@@ -42,15 +43,41 @@
             <input id="submit" type="button" value="ok!">
         </form>
         <script>
-            $('#date').date({
-                locale: {
-                    format: 'YYYY-MM-DD'
-                },
-//                startDate: $.moment().subtract(44, 'days'),
-//                maxDate: $.moment().subtract(1, 'days'),
-//                minDate:'2015-01-01',
-//                singleDatePicker: true,
-//                showDropdowns: true
+            // 用string替代int
+            var data = {
+                    'name':'xuteng',
+                    'age':'22',
+                    'email':'123123@qq.com'
+                };
+            var makeSign = function (data){
+                // api接口获取,并有时效性,
+                var token = 'token';    
+                // 双方约定
+                var key = 'yh';         
+                //排序的函数
+                var objKeySort = function (obj) {
+                    var newkey = Object.keys(obj).sort();
+                    var newObj = {};
+                    for (var i = 0; i < newkey.length; i++) {
+                        newObj[newkey[i]] = obj[newkey[i]];
+                    }
+                    return newObj;
+                };
+                data = objKeySort(data);
+                data.timestamp = Date.parse(new Date())/1000; 
+                data.token = token;
+                var str = JSON.stringify(data);
+                data.sign = md5(md5(str) + key);
+                return data;
+
+            };
+            $.ajax({
+                url:$.url('view/ajax'),
+                type:'put',
+                data:makeSign(data),
+                success:function(re){
+                    
+                }
             });
             
             $('#submit').submitData('view/ajax',function(re){

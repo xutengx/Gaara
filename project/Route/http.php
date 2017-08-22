@@ -3,7 +3,7 @@
 return [
     // yh
     Route::group(['middleware'=>['api'], 'namespace'=> 'App\yh\c' ], function(){
-        // 不检测sessionID
+        // 不检测 token
         Route::group(['prefix'=>'/user','namespace' => 'user'],function(){
             // 邮箱检测
             Route::get('/email','Reg@email');
@@ -14,8 +14,10 @@ return [
             // 登入
             Route::post('/login','Login@index');
         });
-        // 检测sessionID
+        // 检测 token
         Route::group(['prefix'=>'/user','middleware'=>['login'],'namespace' => 'user'],function(){
+            // 令牌以旧换新( 重置有效期 )
+            Route::post('/token','Login@changeToken');
             // 用户资料
             Route::restful('/user/info','Info');
             

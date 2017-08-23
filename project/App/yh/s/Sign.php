@@ -34,13 +34,6 @@ class Sign {
         $param['timestamp'] = $timestamp;
         $param['token'] = $token;
         $str = \json_encode($param, JSON_UNESCAPED_UNICODE);
-//        $str = \urldecode($str);
-        var_dump('{"age":"22","email":"123123@qq.com","name":"xutengh回回千位","timestamp":1503468631,"token":"QhpYXENcCQRUTRQDVFdcWxtfGwhSUwIBBlUFAFdwEkQXW15VQ0oaRAUSRRFdFA8VHVdAHVRUF1VnEQ5pEgggdmB3ZX5TE19/NTJlMEwDWQFzVFRSMlJ3BwwSW0oXUS15SAFIZE4PfA0IBnsFWBQZFUoRWE0QFxELBEoUVQRDF2pVV1ZRDzlRREZbBVQKBAcDD1ALAElGX1BGEmlVClcKW2ZZRRpbRAoEVVYbVgEbBwQZVAsDVFMJAwJEGhsGQgZUTV1VZwASGg5GUwZXDhsFDxRXChlUVQkCAlwGDEccQUBJXFBMBAJnVRBDDEQLBgQAFFUBFFdXEwAEXAMBXwBVFxUaRVcKA1ZrFxVXFE1pQV5UABsDVFEDAgFQBwFRBx4="}');
-        var_dump($str);
-        var_dump(trim($str));
-        var_dump(md5($str));
-        var_dump(md5($str) . self::key);
-        var_dump(md5(md5($str) . self::key));
         return ($sign === md5(md5($str) . self::key));
     }
 }

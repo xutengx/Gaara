@@ -63,7 +63,7 @@
                 };
             var makeSign = function (data){
                 // api接口获取,并有时效性,
-                var token = 'QhpYXENcCQRUTRQDVFdcWxtfGwhSUwIBBlUFAFdwEkQXW15VQ0oaRAUSRRFdFA8VHVdAHVRUF1VnEQ5pEgggdmB3ZX5TE19_NTJlMEwDWQFzVFRSMlJ3BwwSW0oXUS15SAFIZE4PfA0IBnsFWBQZFUoRWE0QFxELBEoUVQRDF2pVV1ZRDzlRREZbBVQKBAcDD1ALAElGX1BGEmlVClcKW2ZZRRpbRAoEVVYbVgEbBwQZVA0DV1AJAwVEGhsGQgZUTV1VZwASGg5GUwZXDhsFDxRXChlUVQkCAlwGDEccQUBJXFBMBAJnVRBDDEQLBgQAFFUBFFdXEwABXAcAXwVRFxUaRVcKA1ZrFxVXFE1pQV5UABsDVFEDAgFQDw1TAB4';    
+var token = 'QhpYXENcCQRUTRQDVFdcWxtfGwhSUwIBBlUFAFdwEkQXW15VQ0oaRAUSRRFdFA8VHVdAHVRUF1VnEQ5pEgggdmB3ZX5TE19_NTJlMEwDWQFzVFRSMlJ3BwwSW0oXUS15SAFIZE4PfA0IBnsFWBQZFUoRWE0QFxELBEoUVQRDF2pVV1ZRDzlRREZbBVQKBAcDD1ALAElGX1BGEmlVClcKW2ZZRRpbRAoEVVYbVgEbBwQZVAwDUVQJAQVEGhsGQgZUTV1VZwASGg5GUwZXDhsFDxRXChlUVQkCAlwGDEccQUBJXFBMBAJnVRBDDEQLBgQAFFUBFFdXEwAAXAUOXwFTFxUaRVcKA1ZrFxVXFE1pQV5UABsDVFEDAgFRAglVAB4';    
                 // 双方约定
                 var key = 'yh';         
                 //排序的函数
@@ -89,7 +89,8 @@
 
             };
             $.ajax({
-                url:$.url('user/token'),
+//                url:$.url('user/token'),
+                url:'http://git.gitxT.com/git/php_/project/user/token',
                 type:'post',
                 data:makeSign(data),
                 success:function(re){

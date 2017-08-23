@@ -19,18 +19,20 @@ class Kernel extends HttpKernel {
             \Main\Core\Middleware\StartSession::class,
         ],
         'api' => [
+            // 允许跨域
+            \Main\Core\Middleware\CrossDomainAccess::class,
             // 访问频率控制  30次 / 60s
             \Main\Core\Middleware\ThrottleRequests::class.'@30@60',
         ],
-        'sendMail' => [
-            // 访问频率控制  1次 / 30s
-            \Main\Core\Middleware\ThrottleRequests::class.'@1@30',
-        ],
-        'testMiddleware' =>[
-            \Main\Core\Middleware\ThrottleRequests::class.'@30@60',
-            \App\Middleware\test1::class,
-            \App\Middleware\test2::class,
-        ],
+//        'sendMail' => [
+//            // 访问频率控制  1次 / 30s
+//            \Main\Core\Middleware\ThrottleRequests::class.'@1@30',
+//        ],
+//        'testMiddleware' =>[
+//            \Main\Core\Middleware\ThrottleRequests::class.'@30@60',
+//            \App\Middleware\test1::class,
+//            \App\Middleware\test2::class,
+//        ],
         'login' =>[
             \App\yh\Middleware\SignCheck::class
         ]

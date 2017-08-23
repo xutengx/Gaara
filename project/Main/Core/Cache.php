@@ -114,7 +114,7 @@ class Cache {
             $key = true;
         }
         $cacheTime = is_numeric($cacheTime) ? (int) $cacheTime : $this->cacheLimitTime;
-        $key = ($key === true) ? $this->autoKey() : $key;
+        $key = ($key === true) ? $this->autoKey($callback) : $key;
 
         foreach ($this->Drivers as $v) {
             $re = $v->get($key);
@@ -148,7 +148,7 @@ class Cache {
             $key = true;
         }
         $cacheTime = is_numeric($cacheTime) ? (int) $cacheTime : $this->cacheLimitTime;
-        $key = ($key === true) ? $this->autoKey() : $key;
+        $key = ($key === true) ? $this->autoKey($callback) : $key;
         if ($callback !== false) {
             if ($callback instanceof \Closure) {
                 $data = call_user_func($callback);
@@ -177,10 +177,21 @@ class Cache {
         if ($class === false) {
             $debug = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4);
             foreach ($debug as $v) {
-                if ($v['class'] === 'Main\Core\Cache' && $v['function'] === 'get') {
+                if ($v['class'] === 'Main\Core\Cache' && ( $v['function'] === 'get'||$v['function'] === 'dget')) {
                     $func = 'Closure_' . $v['line'];
                 } elseif ($v['class'] !== 'Main\Core\Cache') {
                     $class = $v['class'];
+                    break;
+                }
+            }
+        }elseif ($class instanceof \Closure) {
+            $class = $this->analysisClosure($class);
+            $debug = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4);
+            foreach ($debug as $v) {
+                if ($v['class'] === 'Main\Core\Cache' && ( $v['function'] === 'get'||$v['function'] === 'dget')) {
+                    $func = 'Closure_' . $v['line'];
+                } elseif ($v['class'] !== 'Main\Core\Cache') {
+                    $class .= '/parent/'. $v['class'];
                     break;
                 }
             }
@@ -219,6 +230,24 @@ class Cache {
         $method = $reflectionClass->getMethod($func);
         $closure = $method->getClosure($obj);
         return $closure(...$args);
+    }
+    
+    /**
+     * 返回闭包函数的this指向的类名
+     * @param \Closure $closure
+     * @return string
+     */
+    private function analysisClosure(\Closure $closure): string{
+        ob_start();
+        var_dump($closure);
+        $info = ob_get_contents();
+        ob_end_clean();
+        $info = str_replace([" ","　","\t","\n","\r"], '', $info);
+        $class = '';
+        \preg_replace_callback("/{\[\"this\"\]=>object\((.*?)\)\#/is", function($matches) use (&$class){
+            $class = $matches[1];
+        }, $info);
+        return $class;
     }
 
     public function __get($par) {

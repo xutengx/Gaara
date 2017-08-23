@@ -24,7 +24,7 @@ class Login extends HttpController {
             if (password_verify($passwd, $info['passwd'])) {
                 if ($info['status'] === 1) {
                     // 数据库更新用户登入状态, 缓存用户状态, 用于登入时校验
-                    $newInfo = $this->userLogin($info['id'], $user, $request);
+                    $newInfo = $this->userLogin($info['id'], $user, $request, $info);
                     
                     return $this->returnData($this->makeToken($newInfo));
                 } else
@@ -49,7 +49,7 @@ class Login extends HttpController {
                         if ($tokenInfo['last_login_ip'] === $userInfo['last_login_ip']) {
                             if ($tokenInfo['last_login_at'] === $userInfo['last_login_at']) {
                                 // 数据库更新用户登入状态, 缓存用户状态, 用于登入时校验
-                                $newInfo = $this->userLogin($tokenInfo['id'], $user, $request);
+                                $newInfo = $this->userLogin($tokenInfo['id'], $user, $request, $tokenInfo);
                                 return $this->returnData($this->makeToken($newInfo));
                             } else
                                 return $this->returnMsg(0, '用户已在另一处登入');
@@ -70,13 +70,14 @@ class Login extends HttpController {
      * @param int $id           用户主键
      * @param MainUser $user    userModel
      * @param Request $request  当前请求
+     * @param array $tokenInfo  用户信息
      * @return array
      */
-    private function userLogin(int $id, MainUser $user, Request $request): array {
-        $info['last_login_ip'] = \ip2long($request->ip);
-        $info['last_login_at'] = \date('Y-m-d H:i:s');
-        $user->login($id, $info['last_login_ip'], $info['last_login_at']);
-        return $info;
+    private function userLogin(int $id, MainUser $user, Request $request, array $tokenInfo): array {
+        $tokenInfo['last_login_ip'] = \ip2long($request->ip);
+        $tokenInfo['last_login_at'] = \date('Y-m-d H:i:s');
+        $user->login($id, $tokenInfo['last_login_ip'], $tokenInfo['last_login_at']);
+        return $tokenInfo;
     }
 
     /**

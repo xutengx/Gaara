@@ -44,7 +44,7 @@ class Reg extends HttpController {
      */
     public function setPasswd(Secure $secure, MainUser $user) {
         $email = $this->post('email', 'email');
-        $token = $this->post('token', 'string');
+        $token = $this->post('token');
         $passwd = $this->post('passwd', 'passwd');
         // 验证链接
         $this->checkToken($token, $email, $secure);

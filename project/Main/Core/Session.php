@@ -13,7 +13,7 @@ class Session {
     private $Manual = false;
 
     final public function __construct($Manual = false){
-        $conf = obj('conf')->session;
+        $conf = obj(Conf::class)->session;
 
         $driver = ( isset($conf['driver']) && !is_null($conf['driver']) ) ? $conf['driver'] : 'file';
         $httponly = ( isset($conf['httponly']) && !is_null($conf['httponly']) ) ? $conf['httponly'] : true;

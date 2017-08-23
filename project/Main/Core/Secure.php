@@ -6,7 +6,6 @@
  * Date: 2016/2/22 0022
  * Time: 11:05
  */
-
 namespace Main\Core;
 
 class Secure {
@@ -53,8 +52,13 @@ class Secure {
         return str_replace($risk, '', $string);
     }
 
-    //加密
-    public function encrypt($string, $key = '') {
+    /**
+     * 加密
+     * @param string $string
+     * @param string $key
+     * @return string
+     */
+    public function encrypt(string $string, string $key = ''): string {
         $key = $key ? md5($key) : md5($this->key);
         $j = 0;
         $buffer = $data = '';
@@ -69,13 +73,18 @@ class Secure {
         for ($i = 0; $i < $length; $i++) {
             $data .= $string[$i] ^ $buffer[$i];
         }
-        return base64_encode($data);
+        return $this->base64_encode($data);
     }
 
-    //解密
-    public function decrypt($string, $key = '') {
+    /**
+     * 解密
+     * @param string $string
+     * @param string $key
+     * @return string
+     */
+    public function decrypt(string $string, string $key = ''): string {
         $key = $key ? md5($key) : md5($this->key);
-        $string = base64_decode($string);
+        $string = $this->base64_decode($string);
         $j = 0;
         $buffer = $data = '';
         $length = strlen($string);
@@ -105,6 +114,30 @@ class Secure {
             return $risk;
         }
         return obj('HTMLPurifier')->purify($string);
+    }
+    /**
+     * URL安全的字符串编码
+     * @param string $string
+     * @return string
+     */
+    public function base64_encode(string $string): string {
+        $data = base64_encode($string);
+        $data = str_replace(array('+', '/', '='), array('-', '_', ''), $data);
+        return $data;
+    }
+    
+    /**
+     * URL安全的字符串编码的解码
+     * @param string $string
+     * @return string
+     */
+    public function base64_decode(string $string): string {
+        $data = str_replace(array('-', '_'), array('+', '/'), $string);
+        $mod4 = strlen($data) % 4;
+        if ($mod4) {
+            $data .= substr('====', $mod4);
+        }
+        return base64_decode($data);
     }
 
     //判断是否异步请求

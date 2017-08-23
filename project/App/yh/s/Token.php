@@ -17,6 +17,8 @@ class Token {
     const key = 'yh';
     // token 有效时间
     const expired = 10800;
+    // 用户存储状态的前缀
+    const prefix = 'yhuid';
 
     /**
      * 由用户信息生成token
@@ -27,7 +29,7 @@ class Token {
         $info['token_start_time'] = time();
         $str = \json_encode($info);
         $token = Secure::encrypt($str, self::key);
-        Cache::set($info['id'], $token);
+        Cache::set(self::makeId($info['id']), $token, self::expired);
         return $token;
     }
 
@@ -51,13 +53,21 @@ class Token {
     public static function checkToken(string $token): bool {
         $str = Secure::decrypt($token, self::key);
         $info = \json_decode($str, true);
-
-        $tokenInCache = Cache::get($info['id']);
-
+        $tokenInCache = Cache::get(self::makeId($info['id']));
+        
         if (($tokenInCache === $token) && (isset($info['token_start_time']) ? $info['token_start_time'] : 0) + self::expired > time()) {
             return true;
         } else {
             return false;
         }
+    }
+
+    /**
+     * 生成用与用户登入状态保持的key
+     * @param int $id
+     * @return string
+     */
+    private static function makeId(int $id): string {
+        return self::prefix . $id;
     }
 }

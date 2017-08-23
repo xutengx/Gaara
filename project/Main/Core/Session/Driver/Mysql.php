@@ -18,7 +18,7 @@ class Mysql {
         ini_set('session.save_handler', 'user');
          
         $conf = obj('conf');
-        $this->db = obj('\Main\Core\DbConnection',true, $conf->db);
+        $this->db = obj('\Main\Core\DbConnection', $conf->db);
         $this->sessionTable = $conf->tablepre.'session';
         if($conf->debug)
             $this->checkSessionDb();

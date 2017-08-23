@@ -43,15 +43,27 @@
             <input id="submit" type="button" value="ok!">
         </form>
         <script>
+            String.prototype.gblen = function() { 
+  var len = 0; 
+  for (var i=0; i<this.length; i++) { 
+    if (this.charCodeAt(i)>127 || this.charCodeAt(i)==94) { 
+       len += 2; 
+     } else { 
+       len ++; 
+     } 
+   } 
+  return len; 
+}
+            
             // 用string替代int
             var data = {
-                    'name':'xuteng',
+                    'name':'xutengh回回千位',
                     'age':'22',
                     'email':'123123@qq.com'
                 };
             var makeSign = function (data){
                 // api接口获取,并有时效性,
-                var token = 'token';    
+                var token = 'QhpYXENcCQRUTRQDVFdcWxtfGwhSUwIBBlUFAFdwEkQXW15VQ0oaRAUSRRFdFA8VHVdAHVRUF1VnEQ5pEgggdmB3ZX5TE19_NTJlMEwDWQFzVFRSMlJ3BwwSW0oXUS15SAFIZE4PfA0IBnsFWBQZFUoRWE0QFxELBEoUVQRDF2pVV1ZRDzlRREZbBVQKBAcDD1ALAElGX1BGEmlVClcKW2ZZRRpbRAoEVVYbVgEbBwQZVA0DV1AJAwVEGhsGQgZUTV1VZwASGg5GUwZXDhsFDxRXChlUVQkCAlwGDEccQUBJXFBMBAJnVRBDDEQLBgQAFFUBFFdXEwABXAcAXwVRFxUaRVcKA1ZrFxVXFE1pQV5UABsDVFEDAgFQDw1TAB4';    
                 // 双方约定
                 var key = 'yh';         
                 //排序的函数
@@ -67,13 +79,18 @@
                 data.timestamp = Date.parse(new Date())/1000; 
                 data.token = token;
                 var str = JSON.stringify(data);
+                console.log(str);
+                console.log(str.gblen());
+                console.log(md5(str));
+                console.log((md5(str) + key));
+                console.log(md5(md5(str) + key));
                 data.sign = md5(md5(str) + key);
                 return data;
 
             };
             $.ajax({
-                url:$.url('view/ajax'),
-                type:'put',
+                url:$.url('user/token'),
+                type:'post',
                 data:makeSign(data),
                 success:function(re){
                     

@@ -8,7 +8,7 @@ return [
             // 邮箱检测
             Route::get('/email','Reg@email');
             // 注册( 邮件发送 )
-            Route::post('/reg',['middleware'=>['sendMail'], 'uses'=>'Reg@index']);
+            Route::post('/reg',['uses'=>'Reg@index']);
             // 设置密码
             Route::post('/setpasswd','Reg@setPasswd');
             // 登入

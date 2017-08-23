@@ -22,7 +22,7 @@ class SignCheck extends Middleware {
             if ($this->checkToken($this->token)) {
                 // 赋值 $request 
                 $request->userinfo = $this->analysisToken($this->token);
-                if ($this->getSign()) {
+                if ($this->getSign($request)) {
                     if ($this->checkSign($request)) {
                         return true;
                     } else
@@ -81,7 +81,7 @@ class SignCheck extends Middleware {
         $token = $this->token;
         $timestamp = $request->input('timestamp');
         $sign = $this->sign;
-        return Sign::checkSign($param, $token, $timestamp, $sign);
+        return Sign::checkSign($param, $token, (int)$timestamp, $sign);
     }
     
     /**
@@ -98,7 +98,8 @@ class SignCheck extends Middleware {
      * @param string $msg
      * @param int $code
      */
-    private function error(string $msg, int $code = 403){
-        \Response::returnData($msg, 'json', $code);
+    private function error(string $msg, int $code = 0){
+        $data = ['code'=> $code, 'msg' => $msg];
+        \Response::returnData($data, 'json', 403);
     }
 }

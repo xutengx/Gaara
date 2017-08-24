@@ -31,6 +31,31 @@ class MainUser extends \Main\Core\Model {
         }
     }
     /**
+     * 加密保存, 并发下处理
+     * @param string $email
+     * @param string $passwd
+     * @return boolean
+     */
+    public function resetPasswdByEmail(string $email, string $passwd) {
+        $hashPasswd = password_hash($passwd, self::encryption);
+        try{
+            return $this->where([
+                'email' => ':email'
+            ])->data([
+                'passwd' => ':passwd'
+            ])
+            ->update([
+                ':email' => $email,
+                ':passwd' => $hashPasswd
+            ]);
+        }catch (\Exception $e){
+            return false;
+        }
+    }
+    
+    
+    
+    /**
      * 查询用户名
      * @param string $email
      * @return array

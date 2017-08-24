@@ -9,17 +9,21 @@ return [
             Route::get('/email','Reg@email');
             // 注册( 邮件发送 )
             Route::post('/reg',['uses'=>'Reg@index']);
-            // 设置密码
+            // 注册 设置密码
             Route::post('/setpasswd','Reg@setPasswd');
             // 登入
             Route::post('/login','Login@index');
+            // 忘记密码( 邮件发送 )
+            Route::post('/forget','ForgetPasswd@index');
+            // 忘记密码 设置密码
+            Route::post('/resetpasswd','ForgetPasswd@setPasswd');
         });
         // 检测 token
         Route::group(['prefix'=>'/user','middleware'=>['login'],'namespace' => 'user'],function(){
             // 令牌以旧换新( 重置有效期 )
             Route::post('/token','Login@changeToken');
             // 用户资料
-            Route::restful('/user/info','Info');
+            Route::restful('/info','Info');
             
         });
     }),

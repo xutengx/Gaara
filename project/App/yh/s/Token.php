@@ -54,12 +54,21 @@ class Token {
         $str = Secure::decrypt($token, self::key);
         $info = \json_decode($str, true);
         $tokenInCache = Cache::get(self::makeId($info['id']));
-        
+
         if (($tokenInCache === $token) && (isset($info['token_start_time']) ? $info['token_start_time'] : 0) + self::expired > time()) {
             return true;
         } else {
             return false;
         }
+    }
+
+    /**
+     * 移除token
+     * @param int $uid
+     * @return bool
+     */
+    public static function removeToken(int $uid): bool {
+        return Cache::rm(self::makeId($uid));
     }
 
     /**

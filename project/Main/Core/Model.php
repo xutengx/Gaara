@@ -9,6 +9,7 @@ defined('IN_SYS') || exit('ACC Denied');
 class Model {
     
     use Traits\DebugTrait;
+    use Traits\ObjectRelationalMappingTrait;
 
     protected $db;
     // 表名,不包含表前缀
@@ -47,7 +48,6 @@ class Model {
     protected $from = false;
     // 是否自动维护时间
     protected $autoTIme = true;
- 
     // 主动指定配置文件
     protected $connection = null;
 

@@ -19,11 +19,12 @@ return [
             Route::post('/resetpasswd','ForgetPasswd@setPasswd');
         });
         // 检测 token
-        Route::group(['prefix'=>'/user','middleware'=>['login'],'namespace' => 'user'],function(){
+        Route::group(['middleware'=>['login']],function(){
             // 令牌以旧换新( 重置有效期 )
-            Route::post('/token','Login@changeToken');
-            // 用户资料
-            Route::restful('/info','Info');
+            Route::post('/user/token','user\Login@changeToken');
+
+            // 商户资料
+            Route::restful('/merchant','merchant\Info');
             
         });
     }),
@@ -35,7 +36,7 @@ return [
         Route::get('/mail/{emailAddr}',['middleware'=>['sendMail'], 'uses'=>'mail\index@send']);
         // 视图相关
         Route::get('/view','view\index@index');
-        Route::put('/view/ajax','view\index@getAjax');
+        Route::any('/view/ajax','view\index@getAjax');
         
         // 新共能开发
         Route::get('/new',['uses' => 'development\Contr\indexContr@indexDo','middleware'=>['api']]);

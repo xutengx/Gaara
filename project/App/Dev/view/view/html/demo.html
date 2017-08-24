@@ -98,9 +98,9 @@ var token = 'QhpYXENcCQRUTRQDVFdcWxtfGwhSUwIBBlUFAFdwEkQXW15VQ0oaRAUSRRFdFA8VHVd
                 }
             });
             
-            $('#submit').submitData('view/ajax',function(re){
+            $('#submit').submitData('view/ajax?testp=1',function(re){
                 console.log(re);
-            },'put');
+            },'post');
             
             console.log('控制器赋值到页面js : '+ test);
             $.set_language_json({

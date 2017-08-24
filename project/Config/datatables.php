@@ -20,5 +20,12 @@ CREATE TABLE `main_user` (
 
 INSERT INTO `main_user` VALUES ('1', 'admin@163.com', '$2y$10$1T62akHp47oLeIKuv6DzU.ZLnjXycsUlvAjF.m6dBi0XgPYhICF8q', '1', '3232235814', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
+DROP TABLE IF EXISTS `user_merchant`;
+CREATE TABLE `user_merchant` (
+  `id` int(1) unsigned NOT NULL COMMENT '商户ID, 既是用户ID',
+  PRIMARY KEY (`id`),
+) ENGINE=innodb DEFAULT CHARSET=utf8 COMMENT='用户表';
+
+
 
 EEE;

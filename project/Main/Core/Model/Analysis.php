@@ -1,6 +1,7 @@
 <?php
 
 namespace Main\Core\Model;
+defined('IN_SYS') || exit('ACC Denied');
 
 use \Main\Core;
 

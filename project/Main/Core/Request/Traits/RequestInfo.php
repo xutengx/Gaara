@@ -22,6 +22,7 @@ trait RequestInfo {
         }
         return $this->method = $method;
     }
+    
     /**
      * 获取当前完整url请就方法
      * @return string

@@ -96,6 +96,10 @@ function statistic() {
     $usedMemory = ( memory_get_peak_usage() - $statistic['_beginMemory'] ) / 1024;
     // 总体消耗内存峰值
     $totleMemory = ( memory_get_peak_usage() ) / 1024;
+    // 当前总体消耗内存
+    $nowMemory = ( memory_get_usage() ) / 1024;
+    // 当前程序消耗内存
+    $now2Memory = ( memory_get_usage() - $statistic['_beginMemory']) / 1024;
     
     $report = '<br /><br />';
     $report .= "框架初始化消耗时间 : {$initTime} 毫秒<br />";
@@ -103,5 +107,7 @@ function statistic() {
     $report .= "框架初始化消耗内存 : {$initMemory} K<br />";
     $report .= "程序消耗内存峰值 : {$usedMemory} K<br />";
     $report .= "总体消耗内存峰值 : {$totleMemory} K<br />";
+    $report .= "当前总体消耗内存 : {$nowMemory} K<br />";
+    $report .= "当前程序消耗内存 : {$now2Memory} K<br />";
     echo $report;
 }

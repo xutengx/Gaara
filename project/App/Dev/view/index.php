@@ -20,7 +20,13 @@ class index extends \Main\Core\Controller\HttpController {
     }
 
     public function getAjax(Request $request) {
-        var_dump($request->file['rr']->content());
+        
+        exit;
+        
+        foreach($request->file as $k => $v){
+            var_dump($k);
+            var_dump($v);
+        }
         exit;
         var_dump($request->get);
         var_dump($_PUT = $this->parse_http_input_raw());
@@ -39,6 +45,10 @@ class index extends \Main\Core\Controller\HttpController {
         return $this->returnData($re);
     }
 
+    public function __destruct() {
+        \statistic();
+    }
+    
     function parse_http_input_raw() {
         $a_data = array();
 

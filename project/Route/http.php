@@ -38,6 +38,12 @@ return [
         Route::get('/view','view\index@index');
         Route::any('/view/ajax','view\index@getAjax');
         
+        // cookie
+        Route::get('/cookie','cookie\cookie@index');
+        Route::get('/cookie/cookie/cookie','cookie\cookie@index');
+        
+        
+        
         // 新共能开发
         Route::get('/new',['uses' => 'development\Contr\indexContr@indexDo','middleware'=>['api']]);
 

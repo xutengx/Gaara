@@ -180,6 +180,9 @@ class Route {
         self::$alias = $alias;
         self::$methods = $info['method'];
         
+        //
+        self::statistic();
+        
         // 核心执行,管道模式中间件,以及控制器
         return self::doKernel($middleware, $contr, $request);
     }

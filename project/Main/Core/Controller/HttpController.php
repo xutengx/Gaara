@@ -36,11 +36,9 @@ abstract class HttpController extends \Main\Core\Controller {
     public function __construct() {
         $app = explode('\\', get_class($this));
         $this->classname = str_replace('Contr', '', end($app));
-        
 
         defined('APP') || define('APP', $this->app);
-        
-        
+
         $this->construct();
     }
 
@@ -48,23 +46,9 @@ abstract class HttpController extends \Main\Core\Controller {
         
     }
 
-    // cookie即时生效
-    protected function setcookie($var, $value = '', $time = 0, $path = '', $domain = '', $s = false) {
-        $_COOKIE[$var] = $value;
-        obj('Request')->set_cookie($var, $value);
-        if (is_array($value)) {
-            foreach ($value as $k => $v) {
-                setcookie($var . '[' . $k . ']', $v, $time, $path, $domain, $s);
-            }
-        } else
-            setcookie($var, $value, $time, $path, $domain, $s);
-    }
-
-
     /**
      * @param int    $code   状态标记
      * @param string $msg  状态描述
-     *
      * @return bool
      */
     protected function returnMsg($code = '', $msg = 'fail !') {
@@ -76,7 +60,6 @@ abstract class HttpController extends \Main\Core\Controller {
      * @param  $content 响应内容
      * @param  $type_p  响应数据格式 json xml
      * @param  $code_p  响应 http 状态码
-     * 
      * @return bool
      */
     protected function returnData($content = '', $type_p = false, $code_p = false) {

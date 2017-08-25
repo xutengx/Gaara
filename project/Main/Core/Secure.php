@@ -7,30 +7,40 @@
  * Time: 11:05
  */
 namespace Main\Core;
+defined('IN_SYS') || exit('ACC Denied');
 
 class Secure {
 
-    // 加解密关键字
-    private $key = 'key';
+    // 盐
+    const key = 'key';
 
-    //延伸的md5方法
-    public function md5($string) {
+    /**
+     * md5
+     * @param string $string
+     * @return string
+     */
+    public function md5(string $string): string {
         return md5($string . md5($string));
     }
 
-    // 返回带有header的ajax方法,依赖同用版本的jquery
-    // 应用于Controller->display();
-    // return string
-    public function csrfAjax($classname) {
+    /**
+     * 返回带有header的ajax方法,依赖jquery, 应用于Controller->display();
+     * @param string $classname
+     * @return string
+     */
+    public function csrfAjax(string $classname): string {
         $time = $_SERVER['REQUEST_TIME'];
         $csrftoken = $this->encrypt($classname . '|' . $time);
         return '(function($){var _ajax=$.ajax;$.ajax=function(opt){ var fn = {beforeSend: function(request) {}};if(opt.beforeSend) fn.beforeSend=opt.beforeSend; var _opt = $.extend(opt,{beforeSend: function(request) {request.setRequestHeader("SCRFTOKEN", "' . $csrftoken . '");fn.beforeSend(request); }});_ajax(_opt);};})(jQuery);';
     }
 
-    // 核对http头部的csrftaoken
-    // 应用于Controller->post();
-    // return bool
-    public function checkCsrftoken($classname, $overTime) {
+    /**
+     * 核对http头部的csrftaoken, 应用于Controller->post();等
+     * @param string $classname
+     * @param int $overTime
+     * @return bool
+     */
+    public function checkCsrftoken(string $classname, int $overTime): bool {
         if ($overTime === 0)
             return true;
         if (isset($_SERVER['HTTP_SCRFTOKEN']) && $csrftoken = $_SERVER['HTTP_SCRFTOKEN']) {
@@ -44,8 +54,13 @@ class Secure {
         return false;
     }
 
-    //特殊字符过滤
-    public function symbol($string, $is_strict = false) {
+    /**
+     * 过滤特殊(删除)字符
+     * @param string $string
+     * @param bool $is_strict   严格模式下, 将过滤更多
+     * @return string
+     */
+    public function symbol(string $string, bool $is_strict = false): string {
         $risk = '~^<>`\'"\\';
         $is_strict and $risk .= '@!#$%&?+-*/={}[]()|,.:;';
         $risk = str_split($risk, 1);
@@ -59,7 +74,7 @@ class Secure {
      * @return string
      */
     public function encrypt(string $string, string $key = ''): string {
-        $key = $key ? md5($key) : md5($this->key);
+        $key = $key ? md5($key) : md5(self::key);
         $j = 0;
         $buffer = $data = '';
         $length = strlen($string);
@@ -83,7 +98,7 @@ class Secure {
      * @return string
      */
     public function decrypt(string $string, string $key = ''): string {
-        $key = $key ? md5($key) : md5($this->key);
+        $key = $key ? md5($key) : md5(self::key);
         $string = $this->base64_decode($string);
         $j = 0;
         $buffer = $data = '';
@@ -101,20 +116,15 @@ class Secure {
         return $data;
     }
 
-    //xss检测（check）、过滤（filter）
-    public function xssCheck($string, $mode = 'check') {
-        $regexp_list = include_once(ROOT . 'Main/Conf/Secure/Xss.conf.php');
-        if ($mode === 'check') {
-            $risk = 0;
-            foreach ($regexp_list as $regexp) {
-                if (preg_match($regexp, $string)) {
-                    $risk++;
-                }
-            }
-            return $risk;
-        }
+    /**
+     * 过滤script
+     * @param string $string
+     * @return string
+     */
+    public function xssCheck(string $string): string {
         return obj('HTMLPurifier')->purify($string);
     }
+
     /**
      * URL安全的字符串编码
      * @param string $string
@@ -125,7 +135,7 @@ class Secure {
         $data = str_replace(array('+', '/', '='), array('-', '_', ''), $data);
         return $data;
     }
-    
+
     /**
      * URL安全的字符串编码的解码
      * @param string $string
@@ -138,12 +148,5 @@ class Secure {
             $data .= substr('====', $mod4);
         }
         return base64_decode($data);
-    }
-
-    //判断是否异步请求
-    public function is_ajax() {
-        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && (strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'))
-            return true;
-        return false;
     }
 }

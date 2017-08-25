@@ -1,7 +1,6 @@
 <?php
 
 namespace Main\Core\Tool\Traits;
-
 defined('IN_SYS') || exit('ACC Denied');
 
 /**
@@ -11,19 +10,19 @@ trait RequestTrait {
 
     /**
      * 异步执行
-     * @param string    $where  指定路由,如:index/index/indexDo/
+     * @param string    $where  指定路由,如:index/index/indexDo
      * @param array     $pars   参数数组
      * @param string    $scheme http/https
      * @param string    $host   异步执行的服务器ip
      * @return true
      */
-    function asynExe($where = '', array $pars = array(), $scheme = 'http', $host = '127.0.0.1') {
-        $where = trim($where, '/') . '/';
-        foreach ($pars as $k => $v) {
-            $where .= $k . '/' . $v . '/';
+    function asynExe(string $where = '', array $pars = array(), $scheme = 'http', $host = '127.0.0.1') {
+        $where = str_replace('\\','/',$where);
+        $host =  $scheme . '://' . $host . str_replace(IN_SYS, '', $_SERVER['SCRIPT_NAME']);
+        $url = $host.ltrim($where, '/');
+        if(!empty($pars)){
+            $url .= '?'.http_build_query($pars);
         }
-        $url = $scheme . '://' . $host . $_SERVER['SCRIPT_NAME'] . '?' . PATH . '=' . $where;
-
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_NOSIGNAL, 1);      // 解决centos无法执行1000ms以下的超时问题

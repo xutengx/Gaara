@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Dev\view;
+defined('IN_SYS') || exit('ACC Denied');
 
 use App\yh\s\Sign;
 use Main\Core\Request;
@@ -20,7 +21,8 @@ class index extends \Main\Core\Controller\HttpController {
     }
 
     public function getAjax(Request $request) {
-        
+       $a = \Tool::asynExe('\test\fun');
+        var_dump($a);
         exit;
         
         foreach($request->file as $k => $v){

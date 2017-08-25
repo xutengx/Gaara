@@ -202,6 +202,8 @@ class Request {
             return $this->$property_name;
         elseif (method_exists($this, $method = 'get' . ucfirst($property_name))) {
             return $this->$method();
+        }elseif (method_exists($this, $property_name)) {
+            return $this->$property_name();
         }
     }
 

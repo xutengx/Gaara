@@ -3,11 +3,10 @@
 namespace Main\Core;
 
 use Main\Core\Model\Traits;
-
 defined('IN_SYS') || exit('ACC Denied');
 
 class Model {
-    
+
     use Traits\DebugTrait;
     use Traits\ObjectRelationalMappingTrait;
 
@@ -66,7 +65,9 @@ class Model {
 
     final protected function get_thisTable() {
         // 驼峰转下划线
-        $uncamelize = function ($camelCaps,$separator='_') { return strtolower(preg_replace('/([a-z])([A-Z])/', "$1" . $separator . "$2", $camelCaps)); };
+        $uncamelize = function ($camelCaps, $separator = '_') {
+            return strtolower(preg_replace('/([a-z])([A-Z])/', "$1" . $separator . "$2", $camelCaps));
+        };
         $conf = obj(Conf::class);
         $this->tablepre = $conf->tablepre;
         $classname = get_class($this);
@@ -100,7 +101,7 @@ class Model {
             }
         }
     }
-    
+
     // 所有手动初始化建议在此执行
     protected function construct() {
         
@@ -128,19 +129,19 @@ class Model {
      *
      * @return $this
      */
-    public function prepare($onlyOnce = false, $pars = array() ) {
+    public function prepare($onlyOnce = false, $pars = array()) {
         // 系统填充用户调用时未填充的先关信息
         $this->get_ready();
-        
+
         // 调用解释器
         $sql = $this->analysis->todo_analysis($this->options, $this->options_type);
-        
+
         // 重置当前model
         $this->reset();
-        
+
         // 记录sql
         $this->rememberSql($sql, $pars);
-        
+
         // return
         if ($onlyOnce)
             return $sql;
@@ -149,23 +150,23 @@ class Model {
             return $this;
         }
     }
+
     /**
      * 记录最近次的sql, 完成参数绑定的填充
      * 重载此方法可用作sql日志
      */
-    protected function rememberSql($sql, $pars){
+    protected function rememberSql($sql, $pars) {
         $pars = is_array($pars) ? $pars : [];
-        foreach($pars as $k => $v){
-            $pars[$k] = '\''.$v.'\'';
+        foreach ($pars as $k => $v) {
+            $pars[$k] = '\'' . $v . '\'';
         }
-        $this->lastSql = strtr( $sql, $pars);
+        $this->lastSql = strtr($sql, $pars);
     }
-
 
     /**
      * 填充当前操作表, 填充查询字段, 填充更新时间, , 填充新增时间
      */
-    protected function get_ready(){
+    protected function get_ready() {
         $timestamp = $_SERVER['REQUEST_TIME'];
         // 填充当前操作表
         if (!$this->from)
@@ -179,9 +180,9 @@ class Model {
             $this->options['select']['__string'][] = trim($str, ',') . ' ';
         }
         // 填充 update
-        elseif($this->options_type == 'UPDATE'){
+        elseif ($this->options_type == 'UPDATE') {
             // 自动维护时间
-            if($this->autoTIme && !is_null($this->updated_time) && !is_null($this->updated_time_type)){
+            if ($this->autoTIme && !is_null($this->updated_time) && !is_null($this->updated_time_type)) {
                 switch ($this->updated_time_type) {
                     case 'timestamp':
                     case 'datetime':
@@ -194,14 +195,14 @@ class Model {
                     default:
                         break;
                 }
-                $str = '`' . $this->table . '`.`' . $this->updated_time . '`="'.$time.'"';
+                $str = '`' . $this->table . '`.`' . $this->updated_time . '`="' . $time . '"';
                 $this->options['data']['__string'][] = $str;
             }
         }
         // 填充 create
-        elseif($this->options_type == 'INSERT'){
+        elseif ($this->options_type == 'INSERT') {
             // 自动维护时间
-            if($this->autoTIme && !is_null($this->created_time) && !is_null($this->created_time_type)){
+            if ($this->autoTIme && !is_null($this->created_time) && !is_null($this->created_time_type)) {
                 $str = '';
                 switch ($this->created_time_type) {
                     case 'timestamp':
@@ -215,7 +216,7 @@ class Model {
                     default:
                         break;
                 }
-                $str .= '`' . $this->table . '`.`' . $this->created_time . '`="'.$time.'"';
+                $str .= '`' . $this->table . '`.`' . $this->created_time . '`="' . $time . '"';
                 $this->options['data']['__string'][] = trim($str, ',') . ' ';
             }
         }

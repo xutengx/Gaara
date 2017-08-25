@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Main\Core\Request;
 defined('IN_SYS') || exit('ACC Denied');
 
-use Main\Core\Request\Tool\Component;
+use Main\Core\Request\Component\File;
 use Iterator;
 /**
  * \Main\Core\Request->file

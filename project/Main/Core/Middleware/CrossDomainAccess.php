@@ -16,7 +16,8 @@ class CrossDomainAccess extends Middleware {
 
     public function handle(Request $request, Response $response): void {
         $headers['Access-Control-Allow-Origin'] = '*';
-        $headers['Access-Control-Allow-Headers'] = 'X-Requested-With,scrftoken';
+//        $headers['Access-Control-Allow-Headers'] = 'X-Requested-With,scrftoken';
+        $headers['Access-Control-Allow-Headers'] = '*';
         $headers['Access-Control-Allow-Methods'] = $this->allowMothods();
         $response->setHeaders($headers);
         if ($request->method === 'options') {

@@ -12,7 +12,7 @@ trait ObjectRelationalMappingTrait {
      * orm属性集合
      * @var array 
      */
-    protected $orm = [];
+    public $orm = [];
     
     /**
      * orm属性设置

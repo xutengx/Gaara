@@ -1,9 +1,9 @@
 <?php
 
 namespace Main\Core;
+defined('IN_SYS') || exit('ACC Denied');
 
 use \Main\Core\Cache\Driver;
-defined('IN_SYS') || exit('ACC Denied');
 
 class Cache {
 
@@ -177,21 +177,21 @@ class Cache {
         if ($class === false) {
             $debug = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4);
             foreach ($debug as $v) {
-                if ($v['class'] === 'Main\Core\Cache' && ( $v['function'] === 'get'||$v['function'] === 'dget')) {
+                if ($v['class'] === 'Main\Core\Cache' && ( $v['function'] === 'get' || $v['function'] === 'dget')) {
                     $func = 'Closure_' . $v['line'];
                 } elseif ($v['class'] !== 'Main\Core\Cache') {
                     $class = $v['class'];
                     break;
                 }
             }
-        }elseif ($class instanceof \Closure) {
+        } elseif ($class instanceof \Closure) {
             $class = $this->analysisClosure($class);
             $debug = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4);
             foreach ($debug as $v) {
-                if ($v['class'] === 'Main\Core\Cache' && ( $v['function'] === 'get'||$v['function'] === 'dget')) {
+                if ($v['class'] === 'Main\Core\Cache' && ( $v['function'] === 'get' || $v['function'] === 'dget')) {
                     $func = 'Closure_' . $v['line'];
                 } elseif ($v['class'] !== 'Main\Core\Cache') {
-                    $class .= '/parent/'. $v['class'];
+                    $class .= '/parent/' . $v['class'];
                     break;
                 }
             }
@@ -208,8 +208,8 @@ class Cache {
         $key = '';                   // default
         if (!empty($params)) {
             foreach ($params as $v) {
-                if(is_object($v))
-                    throw new Exception ('以此种缓存方法, 不支持以对象作为参数, 因为没有一致的方法判断对象是相等的. ');
+                if (is_object($v))
+                    throw new Exception('以此种缓存方法, 不支持以对象作为参数, 因为没有一致的方法判断对象是相等的. ');
                 if ($v === true)
                     $key .= '_bool-t';
                 elseif ($v === false)
@@ -231,20 +231,20 @@ class Cache {
         $closure = $method->getClosure($obj);
         return $closure(...$args);
     }
-    
+
     /**
      * 返回闭包函数的this指向的类名
      * @param \Closure $closure
      * @return string
      */
-    private function analysisClosure(\Closure $closure): string{
+    private function analysisClosure(\Closure $closure): string {
         ob_start();
         var_dump($closure);
         $info = ob_get_contents();
         ob_end_clean();
-        $info = str_replace([" ","　","\t","\n","\r"], '', $info);
+        $info = str_replace([" ", "　", "\t", "\n", "\r"], '', $info);
         $class = '';
-        \preg_replace_callback("/{\[\"this\"\]=>object\((.*?)\)\#/is", function($matches) use (&$class){
+        \preg_replace_callback("/{\[\"this\"\]=>object\((.*?)\)\#/is", function($matches) use (&$class) {
             $class = $matches[1];
         }, $info);
         return $class;

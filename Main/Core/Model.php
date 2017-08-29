@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types = 1);
 namespace Main\Core;
+defined('IN_SYS') || exit('ACC Denied');
 
 use Main\Core\Model\Traits;
-defined('IN_SYS') || exit('ACC Denied');
 
 class Model {
 
     use Traits\DebugTrait;
     use Traits\ObjectRelationalMappingTrait;
+    use Traits\Transaction;
 
     protected $db;
     // 表名,不包含表前缀
@@ -61,15 +63,15 @@ class Model {
         $this->get_thisTable();
         $this->construct();
     }
-    
+
     /**
      * 获取当前应应用的配置
      * @param $connections
      * @return type
      */
-    protected function getConf( $connections ){
+    protected function getConf($connections) {
         $dbConf = obj(Conf::class)->db;
-        $default = is_null($connections) ? $dbConf['default'] : $connections ;
+        $default = is_null($connections) ? $dbConf['default'] : $connections;
         return $dbConf['connections'][$default];
     }
 
@@ -88,10 +90,6 @@ class Model {
             $this->table = $conf->tablepre . $uncamelize($this->tablename);
         $this->getTableInfo();
     }
-
-//    public function tbname() {
-//        return $this->getTable();
-//    }
 
     public static function getTable() {
         return \obj(static::class)->table;
@@ -296,18 +294,6 @@ class Model {
             throw new Exception('要执行REPLACE操作, 需要使用data方法设置新增or修改的值');
         $sql = $this->prepare(true, $pars);
         return $this->db->update($sql, $pars);
-    }
-
-    public function begin() {
-        return $this->db->begin();
-    }
-
-    public function commit() {
-        return $this->db->commit();
-    }
-
-    public function rollBack() {
-        return $this->db->rollBack();
     }
 
     public function __get($attr) {

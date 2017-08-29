@@ -21,6 +21,7 @@ class Route {
     private static $methods = [];
 
     public static function Start() {
+        self::getConf();
         // 得到 $pathInfo
         self::$pathInfo = self::getPathInfo();
         // 得到当前模式 cli ?
@@ -29,6 +30,19 @@ class Route {
         self::$routeRule = self::getRouteRule();
         // 分析路由, 并执行
         self::routeAnalysis();
+    }
+    
+    /**
+     * 读取配置 ( 全局设置 )
+     */
+    private static function getConf() {
+        $conf = obj(Conf::class)->app;
+        date_default_timezone_set($conf['timezone']);
+        if ($conf['debug'] === true) {
+            ini_set('display_errors', '1');
+            error_reporting(E_ALL);
+        } else
+            ini_set('display_errors', '0');
     }
 
     /**

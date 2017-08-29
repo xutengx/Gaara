@@ -1,33 +1,65 @@
 <?php
 
+declare(strict_types = 1);
 namespace Main\Core;
-
 defined('IN_SYS') || exit('ACC Denied');
+
+use Closure;
 
 class Conf {
 
-    // 配置存放数组
-    private static $data = array();
-    // 多配置选取关键字
+    // 配置信息
+    private static $data = [];
+    // 环境变量
+    private static $env = [];
+    // 环境变量选取关键字
     protected $key = '_test';
 
     final public function __construct() {
-        $this->getConfig();
-        $this->set();
+        $this->setEnv();
     }
+
+    /**
+     * 读取环境变量 env.php 并赋值给 self::$env
+     * 包含多配置的选择
+     * @return void
+     */
+    private function setEnv(): void {
+        $data = require(ROOT . 'env.php');
+        if (isset($data['selection'])) {
+            $this->key = $data['selection'] instanceof Closure ? $data['selection']() : $data['selection'];
+        }
+        foreach ($data as $k => $v) {
+            if (strpos($k, $this->key)) {
+                self::$env[str_ireplace($this->key, '', $k)] = $v;
+            } else if (!isset(self::$env[$k])) {
+                self::$env[$k] = $v;
+            }
+        }
+    }
+
+    /**
+     * 获取环境变量, function env 指向此
+     * @param string $name
+     * @param type $default     当此变量不存在时的默认值
+     * @return type
+     */
+    public function getEnv(string $name, $default = null) {
+        return self::$env[$name] ?? $default;
+    }
+
     /**
      * 惰性读取配置文件
      * @param string $configName
      * @return mix
      */
     public function __get(string $configName) {
-        if (array_key_exists($configName, self::$data)){
-            return isset(self::$data[$configName][$this->key]) ? self::$data[$configName][$this->key] : self::$data[$configName];
-        }
-        elseif (file_exists(CONFIG . $configName . '.php')) {
+        if (array_key_exists($configName, self::$data)) {
+            return self::$data[$configName];
+        } elseif (file_exists(CONFIG . $configName . '.php')) {
             $config = require(CONFIG . $configName . '.php');
             self::$data[$configName] = $config;
-            return isset($config[$this->key]) ? $config[$this->key] : $config;
+            return $config;
         } else
             return null;
     }
@@ -40,43 +72,18 @@ class Conf {
      */
     public function __call(string $name, array $arguments) {
         // 存在对应配置文件
-        if(isset(self::$data[$name])){
+        if (isset(self::$data[$name])) {
             return self::$data[$name][reset($arguments)];
-        }elseif(file_exists(CONFIG . $name . '.php')) {
+        } elseif (file_exists(CONFIG . $name . '.php')) {
             $config = require(CONFIG . $name . '.php');
             self::$data[$name] = $config;
             return $config[reset($arguments)];
-        }else{
-            throw new Exception('配置文件不存在' .$name.' '.$arguments);
+        } else {
+            throw new Exception('配置文件不存在' . $name);
         }
     }
+
     public function __set($key, $value) {
         $this->data[$key] = $value;
     }
-
-    /**
-     * 多配置共存时,选择拥由后缀的项优先级最高;
-     * 设定当前应用的配置
-     */
-    private function getConfig() {
-        $data = require(ROOT . 'config.inc.php'); //配置文件信息,读过来,赋给data属性
-        $this->key = $data['chooseConfig']();
-        foreach ($data as $k => $v) {
-            if (strpos($k, $this->key)) {
-                self::$data[str_ireplace($this->key, '', $k)] = $data[$k];
-            } else if (!isset($this->data[$k])) {
-                self::$data[$k] = $data[$k];
-            }
-        }
-    }
-
-    private function set() {
-        date_default_timezone_set(self::$data['timezone']);
-        if (self::$data['debug'] === true) {
-            ini_set('display_errors', 1);
-            error_reporting(E_ALL);
-        } else
-            ini_set('display_errors', 0);
-    }
-    
 }

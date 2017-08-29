@@ -32,11 +32,17 @@ define('CONFIG', ROOT.'Config/');
  */
 define('ROUTE', ROOT.'Route/');
 
-// 自动加载
+/**
+ * 自动加载
+ */
 require (ROOT . 'vendor/autoload.php');
 
+/**
+ * 申明debug ( 读取配置 )
+ */
 define('DEBUG', obj(Conf::class)->debug);
 
-
-// 执行
+/**
+ * 执行
+ */
 \Main\Core\Route::Start();

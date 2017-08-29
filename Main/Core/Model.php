@@ -54,13 +54,23 @@ class Model {
      * @param object $DbConnection db连接对象 如 obj('Mysql',false);
      */
     final public function __construct($DbConnection = null) {
-        $config = is_null($this->connection) ? obj(Conf::class)->db : obj(Conf::class)->db($this->connection);
-        $this->db = is_null($DbConnection) ? obj(DbConnection::class, $config) : $DbConnection;
+        $this->db = is_null($DbConnection) ? obj(DbConnection::class, $this->getConf($this->connection)) : $DbConnection;
         $this->collect = new \Main\Core\Model\Collect($this->options);
         $this->analysis = obj(\Main\Core\Model\Analysis::class);
         $this->resolution = obj(\Main\Core\Model\Resolution::class);
         $this->get_thisTable();
         $this->construct();
+    }
+    
+    /**
+     * 获取当前应应用的配置
+     * @param string $connections
+     * @return type
+     */
+    protected function getConf(string $connections ){
+        $dbConf = obj(Conf::class)->db;
+        $default = is_null($connections) ? $dbConf['default'] : $connections ;
+        return $dbConf['connections'][$default];
     }
 
     final protected function get_thisTable() {

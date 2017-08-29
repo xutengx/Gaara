@@ -22,5 +22,10 @@
         "phpmailer/phpmailer": "^5.2",
         "ezyang/htmlpurifier": "^4.9",
         "workerman/workerman": "^3.4"
+    },
+    "scripts": {
+        "post-root-package-install": [
+            "php -r \"file_exists('env.php') || copy('env.example.php', 'env.php');\""
+        ]
     }
 }

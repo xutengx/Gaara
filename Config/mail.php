@@ -15,10 +15,8 @@ return [
     | connection. You may also set the "password" value below this one.
     |
     */
-//    'Username' => '1771033392@qq.com',
-//    'Password' => 'qwe123123',
-    'Username' => 'mailserver@shinehua.cn',
-    'Password' => 'Yh150906',
+    'Username' => env('mail_Username'),
+    'Password' => env('mail_Password'),
 
     /*
     |--------------------------------------------------------------------------
@@ -29,8 +27,7 @@ return [
     |
     */
     'FromName' => '测试邮箱~',
-//    'From' => '1771033392@qq.com',  
-    'From' => 'mailserver@shinehua.cn',   
+    'From' => env('mail_From'),
     
     /*
     |--------------------------------------------------------------------------
@@ -57,8 +54,7 @@ return [
     | the Mailgun mail service which will provide reliable deliveries.
     |
     */
-//    'Host' => 'smtp.qq.com',
-    'Host' => 'smtp.mxhichina.com',
+    'Host' => env('mail_Host'),
 
     /*
     |--------------------------------------------------------------------------

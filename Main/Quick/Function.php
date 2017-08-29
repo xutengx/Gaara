@@ -83,6 +83,16 @@ function headerTo($where = '', $msg = false, array $pars = array()) {
         throw new \Exception;
 }
 
+/**
+ * 读取环境变量
+ * @param string $envname
+ * @param type $default
+ * @return type
+ */
+function env(string $envname, $default = null){
+    return obj(Conf::class)->getEnv($envname, $default);
+}
+
 // 运行状态统计
 function statistic() {
     global $statistic;

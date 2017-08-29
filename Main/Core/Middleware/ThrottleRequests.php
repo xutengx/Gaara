@@ -1,14 +1,13 @@
 <?php
 
 declare(strict_types = 1);
-
 namespace Main\Core\Middleware;
+defined('IN_SYS') || exit('ACC Denied');
 
 use Main\Core\Middleware;
 use Main\Core\Request;
 use Cache;
 use Route;
-defined('IN_SYS') || exit('ACC Denied');
 
 /**
  * 访问频率限制
@@ -28,7 +27,7 @@ class ThrottleRequests extends Middleware {
         $this->maxAttempts = $maxAttempts;
         $this->decaySecond = $decaySecond;
     }
-    
+
     /**
      * 
      * @param Request $request      当前请求对象

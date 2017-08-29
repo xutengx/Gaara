@@ -24,7 +24,7 @@
         "workerman/workerman": "^3.4"
     },
     "scripts": {
-        "post-root-package-install": [
+        "post-install-cmd": [
             "php -r \"file_exists('env.php') || copy('env.example.php', 'env.php');\""
         ]
     }

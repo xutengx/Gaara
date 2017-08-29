@@ -64,10 +64,10 @@ class Model {
     
     /**
      * 获取当前应应用的配置
-     * @param string $connections
+     * @param $connections
      * @return type
      */
-    protected function getConf(string $connections ){
+    protected function getConf( $connections ){
         $dbConf = obj(Conf::class)->db;
         $default = is_null($connections) ? $dbConf['default'] : $connections ;
         return $dbConf['connections'][$default];

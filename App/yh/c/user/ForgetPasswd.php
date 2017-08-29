@@ -124,6 +124,7 @@ class ForgetPasswd extends HttpController {
     private function sendMail(string $email, string $url, Mail $mail): bool {
         $mail->Subject = '恒盈通用户忘记密码';
         $mail->Body = '点击链接, 重置密码<br><a>' . $url . '</a>';
+        $mail->FromName = '恒盈通';
         $mail->AddAddress($email);
         return $mail->send();
     }

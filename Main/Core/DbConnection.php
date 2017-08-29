@@ -1,6 +1,9 @@
 <?php
 namespace Main\Core;
 defined('IN_SYS')||exit('ACC Denied');
+
+use PDOException;
+use Main\Core\Exception\Pdo;
 /**
  * 数据库连接类，依赖 PDO_MYSQL 扩展
  */
@@ -18,7 +21,7 @@ class DbConnection{
     // 当前操作类型 SELECT UPDATE DELETE INSERT
     private $type = 'SELECT';
     // 是否事务过程中 不进行数据库更换
-//    private $transaction = false;
+    private $transaction = false;
     // ---------------------------- 单进程 ----------------------------- //
     // 单进程不进行数据库更换
     private $single = true;
@@ -104,11 +107,14 @@ class DbConnection{
      * @return object PDO
      */
     private function &PDO(){
+        // http请求都属于此
         if($this->single){
-            if($this->type === 'SELECT'){
+            // 查询操作且不属于事务,使用读连接
+            if($this->type === 'SELECT' && !$this->transaction){
                 if(is_object(self::$dbReadSingle) || (self::$dbReadSingle = &$this->connect()))
                     return self::$dbReadSingle;
             }
+            // 写连接
             elseif(is_object(self::$dbWriteSingle) || (self::$dbWriteSingle = &$this->connect()))
                 return self::$dbWriteSingle;
         }else return $this->connect();
@@ -120,7 +126,8 @@ class DbConnection{
      * @return object PDO
      */
     private function &connect(){
-        if($this->type === 'SELECT' && self::$Master_slave){
+        // 查询操作且不属于事务,使用读连接
+        if($this->type === 'SELECT'  && !$this->transaction && self::$Master_slave){
             $tmp = array_keys(self::$dbReadWeight);
             $weight = rand(1,end($tmp));
             foreach(self::$dbReadWeight as $k=>$v){
@@ -158,25 +165,13 @@ class DbConnection{
     }
 
     /**
-     * 自动建表
-     */
-//    private function creatDB(){
-//        $arr = explode(';', trim(obj('conf')->getCreateDb()));
-//        if($arr[count($arr) - 1] == '') unset($arr[count($arr) - 1]);
-//        $PDO = $this->PDO();
-//        foreach ($arr as $k=>$v) {
-//            $PDO->query($v);
-//        }
-//        return true;
-//    }
-    /**
      * 内部执行, 返回原始数据对象
      * @param string $sql
      * @param array  $pars
      *
      * @return mixed
      */
-    private function query_prepare_execute($sql='',array $pars=array()){
+    private function query_prepare_execute(string $sql='', array $pars=array()){
         $PDO = $this->PDO();
         $i = 0;
         try{
@@ -187,9 +182,9 @@ class DbConnection{
                 $res = $PDO->prepare($sql);
                 $res->execute($pars);
             }
-        }catch(\PDOException $e){
-            if($i ++ === 1) throw new Exception\Pdo($e, $this);
-            new Exception\Pdo($e, $this);
+        }catch(\PDOException $pdo){
+            if($i ++ >= 1) throw $pdo;  // 抛出异常
+            new Pdo($pdo, $this);       // 尝试解决
             goto loop;
         }
         if($this->type === 'INSERT')
@@ -233,30 +228,36 @@ class DbConnection{
         return $this->PDO()->query($sql)->fetchColumn();
     }
 
-    public function prepare($sql='', $type='UPTATE'){
+    public function prepare(string $sql='', string $type='UPTATE') {
         $this->type = $type;
         return $this->PDO()->prepare($sql);
     }
-    public function begin(){
+    public function begin() : bool{
         if($this->single !== true)
             throw new \Exception('非常不建议在单进程,多数据库切换模式下开启事务!');
+        $this->transaction = true;
         $PDO = $this->PDO();
-        $PDO->beginTransaction();
+        return $PDO->beginTransaction();
     }
-    public function commit(){
+    public function commit() : bool{
+        $this->transaction = false;
         $PDO = $this->PDO();
-        $PDO->commit();
+        return $PDO->commit();
     }
-    public function rollBack(){
+    public function inTransaction() : bool{
+        return $this->transaction;
+    }
+    public function rollBack() : bool{
+        $this->transaction = false;
         $PDO = $this->PDO();
-        $PDO->rollBack();
+        return $PDO->rollBack();
     }
 
     /**
      * 关闭连接
      */
-//    public function closeConnection(){
-//        $this->pdo = NULL;
-//    }
+    public function close(){
+        $this->pdo = NULL;
+    }
 
 }

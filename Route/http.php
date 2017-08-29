@@ -32,6 +32,8 @@ return [
     Route::group(['middleware'=>['web','api'], 'namespace'=> 'App\Dev' ], function(){
         // 数据库测试
         Route::get('/mysql','mysql\Contr\indexContr@indexDo');
+        // 数据库测试
+        Route::get('/mysql/test','mysql\Contr\indexContr@test');
         // 邮件测试 给 emailAddr 发一份邮件
         Route::get('/mail/{emailAddr}',['middleware'=>['sendMail'], 'uses'=>'mail\index@send']);
         // 视图相关

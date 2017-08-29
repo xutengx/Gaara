@@ -5,6 +5,8 @@ namespace Main\Core\Exception;
 use \Main\Core\Conf;
 use \App\Kernel;
 use \ReflectionClass;
+use \Main\Core\DbConnection;
+use \Throwable;
 
 class Pdo extends \Exception{
     // pdo 错误码
@@ -22,11 +24,11 @@ class Pdo extends \Exception{
     private $code_map = array(
         1146 => 'table_not_exist'
     );
-    public function __construct(\Throwable $previous = null, \Main\Core\DbConnection $db){
+    public function __construct(Throwable $previous = null, DbConnection $db){
         $errorInfo = $previous->errorInfo;
         $this->pdocode = $errorInfo[0];
         $this->code = $errorInfo[1];
-        $this->message = $errorInfo[2];
+        $this->message = $errorInfo[2] ?? '';
         $this->db = $db;
         $this->pdo_type = $this->getProp($db, 'type');
         parent::__construct($this->message, $this->code, $previous);
@@ -52,7 +54,9 @@ class Pdo extends \Exception{
             // 还原数据库链接的 链接类型
             $this->setProp($this->db, 'type', $this->pdo_type);
         }else{
-            throw new \Exception($this);
+//            throw new \Exception($this);
+//            throw $this;
+            throw $this->getPrevious();
         }
     }
     

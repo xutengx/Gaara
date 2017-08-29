@@ -5,21 +5,26 @@ namespace Main\Core\Model\Traits;
 defined('IN_SYS') || exit('ACC Denied');
 
 use Closure;
+use PDOException;
 
 /**
  * 数据库事务
  */
 trait Transaction {
 
-    public function begin() {
+    public function begin() : bool {
         return $this->db->begin();
     }
 
-    public function commit() {
+    public function commit() : bool {
         return $this->db->commit();
     }
 
-    public function rollBack() {
+    public function inTransaction() : bool {
+        return $this->db->inTransaction();
+    }
+
+    public function rollBack() : bool {
         return $this->db->rollBack();
     }
 
@@ -28,21 +33,20 @@ trait Transaction {
      * @param Closure $callback
      * @param type $attempts
      */
-    protected function transaction(Closure $callback, $attempts = 1) {
+    public function transaction(Closure $callback,int $attempts = 1, bool $throwException = false) {
         for ($currentAttempt = 1; $currentAttempt <= $attempts; $currentAttempt++) {
             $this->begin();
-
             try {
-
-                return $this->tap($callback($this), function ($result) {
-                            $this->commit();
-                        });
-            } catch (Exception $e) {
-                if($currentAttempt >= $attempts)
-                    throw $e;
-            } catch (Throwable $e) {
+                $callback($this);
+                return $this->commit();
+            } catch (PDOException $e) {
                 $this->rollBack();
-                throw $e;
+                if($currentAttempt >= $attempts){
+                    if($throwException)
+                        throw $e;
+                    else 
+                        return false;
+                }
             }
         }
     }

@@ -54,7 +54,7 @@ return [
     Route::get('/p',['middleware'=>['web','testMiddleware'],'namespace'=> 'App\Dev', 'uses'=>'Pipeline\index@index']),
     
     '/test' => ['as' => 'tt1', 'uses' => function(){
-            var_dump( obj(Conf::class)->db );
+            var_dump( obj(Conf::class)->db   );
     }],
     
     // 支持隐式路由

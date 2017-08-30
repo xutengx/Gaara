@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types = 1);
 namespace Main\Core;
 defined('IN_SYS') || exit('ACC Denied');
 
@@ -13,9 +14,9 @@ class Tool {
     // 请求相关
     use Traits\RequestTrait;
 
-// 文件操作
+    // 文件操作
     use Traits\FileTrait;
 
-// 字符处理
+    // 字符处理
     use Traits\CharacterTrait;
 }

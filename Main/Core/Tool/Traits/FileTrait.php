@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types = 1);
 namespace Main\Core\Tool\Traits;
-
 defined('IN_SYS') || exit('ACC Denied');
 
+use Main\Core\Exception;
 /**
  * 文件操作
  */
@@ -13,7 +14,7 @@ trait FileTrait {
      * 路径 转 绝对路径
      * @param string $dir
      */
-    public function absoluteDir(&$dir = '') {
+    public function absoluteDir(string &$dir = '') {
         $system = php_uname('s');
         $dir = str_replace('\\', '/', trim($dir));
         if (substr($system, 0, 5) === 'Linux') {
@@ -29,7 +30,7 @@ trait FileTrait {
     }
 
     // 分割下载 // test
-    public function download2($path, $name, $showname) {
+    public function download2(string $path,string $name,string $showname) {
         $this->absoluteDir($path);
         $filename = $path . $name;
         $file = $filename;
@@ -51,7 +52,7 @@ trait FileTrait {
 
     // 推送下载文件
     // param  路径  文件名
-    public function download($path, $name) {
+    public function download(string $path, string $name) {
         $this->absoluteDir($path);
         $filename = $path . $name;
         $file = fopen($filename, "r");
@@ -70,7 +71,7 @@ trait FileTrait {
      *
      * @return void
      */
-    public function delDirAndFile($dirName = '') {
+    public function delDirAndFile(string $dirName = '') {
         $this->absoluteDir($dirName);
         if (is_dir($dirName) && $dir_arr = scandir($dirName)) {
             foreach ($dir_arr as $k => $v) {
@@ -94,7 +95,7 @@ trait FileTrait {
      *
      * @return bool
      */
-    public function printInFile($fileName = '', $text = '') {
+    public function printInFile(string $fileName = '', string $text = '') {
         //if( ! $fileName || ! $text ) return false;
         $this->absoluteDir($fileName);
         if (strripos($fileName, '/') === (strlen($fileName) - 1))
@@ -122,7 +123,7 @@ trait FileTrait {
      * @return array 返回文件夹下的所有文件 组成的一维数组
      * @throws Exception
      */
-    public function getFiles($dirName = '') {
+    public function getFiles(string $dirName = '') {
         $dirName = rtrim($dirName, '/');
         $arr = array();
         if (is_dir($dirName) && $dir_arr = scandir($dirName)) {
@@ -150,7 +151,7 @@ trait FileTrait {
      *
      * @return string
      */
-    final public function makeFilename($dir = '', $ext = '', $id = 123) {
+    final public function makeFilename(string $dir = '', string $ext = '', $id = 123) {
         $ext = trim($ext, '.');
         $dir = $dir ? rtrim($dir, '/') . '/' : './';
         if (!is_dir($dir))
@@ -167,7 +168,7 @@ trait FileTrait {
      *
      * @return bool
      */
-    final public function __mkdir($dir = '', $mode = 0777) {
+    final public function __mkdir(string $dir = '', $mode = 0777) {
         $this->absoluteDir($dir);
         if (is_dir(dirname($dir)) || $this->__mkdir(dirname($dir)))
             return mkdir($dir, $mode);

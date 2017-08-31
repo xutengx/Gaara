@@ -11,16 +11,6 @@ abstract class Middleware {
     // 路由别名排除
     protected $except = []; 
     
-
-
-//    
-//    final public function __invoke(){
-//        $param = \func_get_args();
-//        if(!\in_array(Route::getAlias(), $this->except)){
-//            $this->handle(...$param); 
-//        }
-//    }
-    
     final public function implement(Closure $next){
         // 前置中间件
         $this->doHandle();

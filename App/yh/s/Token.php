@@ -63,7 +63,7 @@ class Token {
     }
 
     /**
-     * 移除token
+     * 移除token, 当用户重要信息发生修改时应主动调用此方法
      * @param int $uid
      * @return bool
      */

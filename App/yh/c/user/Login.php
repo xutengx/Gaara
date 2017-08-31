@@ -19,7 +19,7 @@ class Login extends HttpController {
     public function index(MainUser $user, Request $request) {
         $email = $this->post('email', 'email');
         $passwd = $this->post('passwd', 'passwd');
-
+        // 查询用户信息
         if ($info = $user->getEmail($email)) {
             if (password_verify($passwd, $info['passwd'])) {
                 if ($info['status'] === 1) {

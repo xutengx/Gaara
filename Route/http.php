@@ -25,8 +25,14 @@ return [
 
             // 商户资料
             Route::restful('/merchant','merchant\Info');
-            
+          
         });
+        
+        // 支付api
+        Route::group(['middleware'=>['payment']],function(){
+                
+        });
+           
     }),
     
     Route::group(['middleware'=>['web','api'], 'namespace'=> 'App\Dev' ], function(){
@@ -44,8 +50,7 @@ return [
         Route::get('/cookie','cookie\cookie@index');
         Route::get('/cookie/cookie/cookie','cookie\cookie@index');
         
-        
-        
+
         // 新共能开发
         Route::get('/new',['uses' => 'development\Contr\indexContr@indexDo','middleware'=>['api']]);
 

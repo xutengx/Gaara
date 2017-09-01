@@ -18,7 +18,7 @@ return [
             // 忘记密码 设置密码
             Route::post('/resetpasswd','ForgetPasswd@setPasswd');
         });
-        // 检测 token
+        // 检测 web登入令牌
         Route::group(['middleware'=>['login']],function(){
             // 令牌以旧换新( 重置有效期 )
             Route::post('/user/token','user\Login@changeToken');
@@ -28,7 +28,7 @@ return [
           
         });
         
-        // 支付api
+        // 检测 api调用令牌
         Route::group(['middleware'=>['payment']],function(){
                 
         });

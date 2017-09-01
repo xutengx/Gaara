@@ -10,6 +10,7 @@ CREATE TABLE `main_user` (
   `id` int(1) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户ID',
   `email` varchar(100) NOT NULL DEFAULT '' COMMENT '用户邮箱',
   `passwd` varchar(255) NOT NULL DEFAULT '' COMMENT '登入密码',
+  `secret` varchar(255) NOT NULL DEFAULT '' COMMENT '调用支付api时生成sign所用的盐',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '1.启用 2.禁用',
   `payment` tinyint(1) unsigned NOT NULL DEFAULT '2' COMMENT '是否可调用支付,1.启用 2.禁用',
   `last_login_ip` int(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '最后登录IP, INET_ATON',
@@ -20,7 +21,7 @@ CREATE TABLE `main_user` (
   UNIQUE KEY `email` (`email`)
 ) ENGINE=innodb AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COMMENT='用户表';
 
-INSERT INTO `main_user` VALUES ('1', 'admin@163.com', '$2y$10$1T62akHp47oLeIKuv6DzU.ZLnjXycsUlvAjF.m6dBi0XgPYhICF8q', '1', '2', '3232235814', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `main_user` VALUES ('1', 'admin@163.com', '$2y$10$1T62akHp47oLeIKuv6DzU.ZLnjXycsUlvAjF.m6dBi0XgPYhICF8q', '','1', '2', '3232235814', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 DROP TABLE IF EXISTS `main_admin`;
 CREATE TABLE `main_admin` (
@@ -73,5 +74,11 @@ CREATE TABLE `user_merchant` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `merchant_name` (`merchant_name`)
 ) ENGINE=innodb DEFAULT CHARSET=utf8 COMMENT='商户信息表';
+
+DROP TABLE IF EXISTS `merchant_secret`;
+CREATE TABLE `merchant_secret` (
+  `id` int(1) unsigned NOT NULL COMMENT '商户ID, 既是用户ID, main_user.id',
+  PRIMARY KEY (`id`)
+) ENGINE=innodb DEFAULT CHARSET=utf8 COMMENT='商户密钥表';
 
 EEE;

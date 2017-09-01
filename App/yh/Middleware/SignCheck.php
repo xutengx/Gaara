@@ -81,7 +81,7 @@ class SignCheck extends Middleware {
         $token = $this->token;
         $timestamp = $request->input('timestamp');
         $sign = $this->sign;
-        return Sign::checkSign($param, $token, (int)$timestamp, $sign);
+        return Sign::checkLoginSign($param, $token, (int)$timestamp, $sign);
     }
     
     /**

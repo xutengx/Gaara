@@ -27,5 +27,8 @@
         "post-install-cmd": [
             "php -r \"file_exists('env.php') || copy('env.example.php', 'env.php');\""
         ]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.3"
     }
 }

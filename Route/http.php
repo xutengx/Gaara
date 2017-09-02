@@ -61,8 +61,21 @@ return [
     Route::get('/p',['middleware'=>['web','testMiddleware'],'namespace'=> 'App\Dev', 'uses'=>'Pipeline\index@index']),
     
     '/test' => ['as' => 'tt1', 'uses' => function(){
-            var_dump( obj(Conf::class)->db   );
-    }],
+            (new class extends PHPUnit\Framework\TestCase{
+                public function testPushAndPop()
+                {
+                $stack = [];
+                $this->assertEquals(0, count($stack));
+
+                array_push($stack, 'foo');
+                $this->assertEquals('foo', $stack[count($stack)-1]);
+                $this->assertEquals(1, count($stack));
+
+                $this->assertEquals('foo', array_pop($stack));
+                $this->assertEquals(0, count($stack));
+                }
+            })->testPushAndPop();
+        }],
     
     // 支持隐式路由
     Route::any('/{app}/{contr}/{action}', function ($app, $contr, $action) {

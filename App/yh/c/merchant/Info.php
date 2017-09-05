@@ -25,12 +25,37 @@ class Info extends HttpController {
     }
 
     /**
+     * 新增商户信息
+     * @param Request $request
+     * @param UserMerchant $merchant
+     */
+    public function create(Request $request, UserMerchant $merchant) {
+        $userinfo = $request->userinfo;
+        $merchantInfo = $request->input;
+        
+        $merchant->orm = $merchantInfo;
+        $merchant->orm['id'] = $userinfo['id'];
+        
+        return $this->returnData(
+            $merchant->create()
+        );
+    }
+
+    /**
      * 更新商户信息
      * @param Request $request
      * @param UserMerchant $merchant
      */
     public function update(Request $request, UserMerchant $merchant) {
-        echo 'this is update';
+        $userid = $request->userinfo['id'];
+        $merchantInfo = $request->input;
+        
+        $merchant->orm = $merchantInfo;
+        $merchant->orm['modify_at'] = date('Y-m-d H:i:s');
+        
+        return $this->returnData(
+            $merchant->save($userid)
+        );
     }
 
     /**
@@ -40,21 +65,4 @@ class Info extends HttpController {
     public function destroy() {
         return $this->returnMsg(0, '不可以删除');
     }
-
-    /**
-     * 新增商户信息
-     * @param Request $request
-     * @param UserMerchant $merchant
-     */
-    public function create(Request $request, UserMerchant $merchant) {
-        $userinfo = $request->userinfo;
-        
-        
-        $merchant->orm = $userinfo;
-        return $this->returnData(
-            $merchant->create()
-        );
-    }
-    
-    
 }

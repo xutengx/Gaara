@@ -216,8 +216,13 @@ class DbConnection{
     public function execute($sql='', array $pars=array()){
         return $this->update($sql, $pars);
     }
-
-    public function insert($sql='', array $pars=array()){
+    /**
+     * 
+     * @param string $sql
+     * @param array $pars
+     * @return type         int 0 表示失败, string 0 是主键没自增属性时的成功返回
+     */
+    public function insert(string $sql='', array $pars=array()){
         $this->type = 'INSERT';
         $res = $this->query_prepare_execute($sql, $pars);
         if($res)

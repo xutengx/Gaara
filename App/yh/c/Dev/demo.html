@@ -8,7 +8,9 @@
         <script src="http://cdn.bootcss.com/blueimp-md5/1.1.0/js/md5.min.js"></script>
         <style>
             label{color: #008200}
+            span{margin-right: 20px;}
             input[type=text]{width:520px;}
+            input[type=button]{margin-top: 10px;}
         </style>
         <script>
             // api接口获取,并有时效性,
@@ -18,6 +20,7 @@
             var setData = function(obj){
                 var form = $(obj).parents('form')[0];
                 var fd = new FormData(form);
+                // FormData 转 普通对象
                 var convert_FormData_to_json = function (formData) {
                     var objData = {};
                     for (var entry of formData.entries()){
@@ -25,31 +28,37 @@
                     }
                     return (objData);
                 };
-                return convert_FormData_to_json(fd);
-            };
-            String.prototype.gblen = function () {
-                var len = 0;
-                for (var i = 0; i < this.length; i++) {
-                    if (this.charCodeAt(i) > 127 || this.charCodeAt(i) === 94) {
-                        len += 2;
-                    } else {
-                        len++;
+                //排序的函数, 并排除file类
+                var objKeySort = function (obj) {
+                    var newkey = Object.keys(obj).sort();
+                    var newObj = {};
+                    for (var i = 0; i < newkey.length; i++) {
+                        if(obj[newkey[i]] instanceof File)
+                            continue;
+                        newObj[newkey[i]] = obj[newkey[i]];
                     }
-                }
-                return len;
+                    return newObj;
+                };
+                var timestamp = Date.parse(new Date()) / 1000;
+                var data = objKeySort(convert_FormData_to_json(fd));
+                data.timestamp = timestamp
+                data.token = token;
+                var str = JSON.stringify(data); 
+                
+                fd.append('timestamp', timestamp);
+                fd.append('token', token);
+                fd.append('sign', md5(md5(str) + key));
+                return fd;
             };
-            // 用string替代int
-            var data = {
-                'name': 'xutengh回回千位',
-                'age': '22',
-                'email': '123123@qq.com'
-            };
+            
             var makeSign = function (data) {
                 //排序的函数
                 var objKeySort = function (obj) {
                     var newkey = Object.keys(obj).sort();
                     var newObj = {};
                     for (var i = 0; i < newkey.length; i++) {
+                        if(obj[newkey[i]] instanceof File)
+                            continue;
                         newObj[newkey[i]] = obj[newkey[i]];
                     }
                     return newObj;
@@ -59,7 +68,6 @@
                 data.token = token;
                 var str = JSON.stringify(data);
 //                console.log(str);
-//                console.log(str.gblen());
 //                console.log(md5(str));
 //                console.log((md5(str) + key));
 //                console.log(md5(md5(str) + key));
@@ -143,7 +151,7 @@
             <script>
                 $('#userlogin').submitData('/user/login', function (re) {
                     console.log(re);
-                    if(re.code === 200){
+                    if(re.code === 1){
                         token = re.data;
                         console.log('token设置为'+ re.data);
                     }
@@ -161,15 +169,126 @@
                     var data = setData(this);
                     $.ajax({
                         url:$.url('/user/token'),
-                        data:makeSign(data),
+                        data:data,
                         type:'post',
                         dataType:'json',
+                        processData: false,
+                        contentType: false,
                         success:function(re){
                             console.log(re);
-                            if(re.code === 200){
+                            if(re.code === 1){
                                 token = re.data;
                                 console.log('token重新设置为'+ re.data);
                             }
+                        }
+                    });
+                });
+            </script>
+        </form>
+        <hr>
+        <label>商户资料新增 /merchant post</label><br><br>
+        <form action="action">
+            <span>商户名称</span><input type="text" name="merchant_name"  value="深圳测试公司"/><br>
+            <span>商户网址</span><input type="text" name="merchant_website"  value="http://www.baidu.com/"/><br>
+            <span>网址备案号</span><input type="text" name="merchant_website_site_number"  value="京ICP证030173号-1"/><br>
+            <span>组织机构代码原件</span><input type="file" name="organization_file"/><br>
+            <span>营业执照原件</span><input type="file" name="license_file" /><br>
+            <span>营业执照编码</span><input type="text" name="license_code"  value="330521000062738"/><br>
+            <span>营业执照地址</span><input type="text" name="license_address"  value="深圳南山区某街道"/><br>
+            <span>营业执照营业范围</span><input type="text" name="license_range"  value="计算机软硬件开发销售，计算机、电子、生物、医药、汽车技术领域内的四技服务，生物工程及生物制品研制、开发、销售，整流器生产、开发，计算机网络工程 ，电脑网络软件开发"/><br>
+            <span>实际营业范围</span><input type="text" name="business_range"  value="计算机软硬件开发销售，计算机、电子、生物、医药、汽车技术领域内的四技服务"/><br>
+            <span>实际营业地址</span><input type="text" name="business_address"  value="深圳南山区某街道某写字楼18楼"/><br>
+            <span>法人姓名</span><input type="text" name="corporation_name"  value="法人" /><br>
+            <span>法人国籍</span><input type="text" name="corporation_country" value="中国" /><br>
+            <span>法人性别</span><select name="corporation_sex"><option value="1">男</option><option value="2">女</option></select><br>
+            <span>法人证件类型</span><select name="corporation_identification_type"><option value="1">身份证</option><option value="2">军官证</option></select><br>
+            <span>法人证件号码</span><input type="text" name="corporation_identification_number"  value="123411198212131468" /><br>
+            <span>法人证件有效期</span><input type="datetime-local" name="corporation_identification_validity" value="2028-11-11T00:00:00" /><br>
+            <span>法人联系方式</span><input type="text" name="corporation_phone"  value="15536487596"/><br>
+            <span>授权人姓名</span><input type="text" name="authorizer_name"  value="授权人" /><br>
+            <span>授权人国籍</span><input type="text" name="authorizer_country" value="意大利" /><br>
+            <span>授权人性别</span><select name="authorizer_sex"><option value="1">男</option><option value="2">女</option></select><br>
+            <span>授权人证件类型</span><select name="authorizer_identification_type"><option value="1">身份证</option><option value="2">军官证</option></select><br>
+            <span>授权人证件号码</span><input type="text" name="authorizer_identification_number"  value="333411198212135552" /><br>
+            <span>授权人证件有效期</span><input type="datetime-local" name="authorizer_identification_validity" value="2022-02-01T00:00:00" /><br>
+            <span>授权人联系方式</span><input type="text" name="authorizer_phone"  value="15536482222"/><br>
+            <input id="merchantpost" type="button" value="submit">
+            <script>
+                $('#merchantpost').on('click',function(){
+                    var data = setData(this);
+                    $.ajax({
+                        url:$.url('/merchant'),
+                        data:data,
+                        type:'post',
+                        dataType:'json',
+                        processData: false,
+                        contentType: false,
+                        success:function(re){
+                            console.log(re);
+                        }
+                    });
+                });
+            </script>
+        </form>
+        <hr>
+        <label>商户资料修改 /merchant put</label><br><br>
+        <form action="action">
+            <span>商户名称</span><input type="text" name="merchant_name"  value="深圳测试公司"/><br>
+            <span>商户网址</span><input type="text" name="merchant_website"  value="http://www.baidu.com/"/><br>
+            <span>网址备案号</span><input type="text" name="merchant_website_site_number"  value="京ICP证030173号-1"/><br>
+<!--            <span>组织机构代码原件</span><input type="file" name="organization_file"/><br>
+            <span>营业执照原件</span><input type="file" name="license_file" /><br>-->
+            <span>营业执照编码</span><input type="text" name="license_code"  value="330521000062738"/><br>
+            <span>营业执照地址</span><input type="text" name="license_address"  value="深圳南山区某街道"/><br>
+            <span>营业执照营业范围</span><input type="text" name="license_range"  value="计算机软硬件开发销售，计算机、电子、生物、医药、汽车技术领域内的四技服务，生物工程及生物制品研制、开发、销售，整流器生产、开发，计算机网络工程 ，电脑网络软件开发"/><br>
+            <span>实际营业范围</span><input type="text" name="business_range"  value="计算机软硬件开发销售，计算机、电子、生物、医药、汽车技术领域内的四技服务"/><br>
+            <span>实际营业地址</span><input type="text" name="business_address"  value="深圳南山区某街道某写字楼18楼"/><br>
+            <span>法人姓名</span><input type="text" name="corporation_name"  value="法人" /><br>
+            <span>法人国籍</span><input type="text" name="corporation_country" value="中国" /><br>
+            <span>法人性别</span><select name="corporation_sex"><option value="1">男</option><option value="2">女</option></select><br>
+            <span>法人证件类型</span><select name="corporation_identification_type"><option value="1">身份证</option><option value="2">军官证</option></select><br>
+            <span>法人证件号码</span><input type="text" name="corporation_identification_number"  value="123411198212131468" /><br>
+            <span>法人证件有效期</span><input type="datetime-local" name="corporation_identification_validity" value="2028-11-11T00:00:00" /><br>
+            <span>法人联系方式</span><input type="text" name="corporation_phone"  value="15536487596"/><br>
+            <span>授权人姓名</span><input type="text" name="authorizer_name"  value="授权人" /><br>
+            <span>授权人国籍</span><input type="text" name="authorizer_country" value="意大利" /><br>
+            <span>授权人性别</span><select name="authorizer_sex"><option value="1">男</option><option value="2">女</option></select><br>
+            <span>授权人证件类型</span><select name="authorizer_identification_type"><option value="1">身份证</option><option value="2">军官证</option></select><br>
+            <span>授权人证件号码</span><input type="text" name="authorizer_identification_number"  value="333411198212135552" /><br>
+            <span>授权人证件有效期</span><input type="datetime-local" name="authorizer_identification_validity" value="2022-02-01T00:00:00" /><br>
+            <span>授权人联系方式</span><input type="text" name="authorizer_phone"  value="15536482222"/><br>
+            <input id="merchantput" type="button" value="submit">
+            <script>
+                $('#merchantput').on('click',function(){
+                    var data = setData(this);
+                    $.ajax({
+                        url:$.url('/merchant'),
+                        data:data,
+                        type:'put',
+                        dataType:'json',
+                        processData: false,
+                        contentType: false,
+                        success:function(re){
+                            console.log(re);
+                        }
+                    });
+                });
+            </script>
+        </form>
+        <hr>
+        <label>商户资料查看 /merchant get</label><br><br>
+        <form action="action">
+            <span>授权人姓名</span><input type="text" name="authorizer_name"  value="授权人" /><br>
+            <input id="merchantget" type="button" value="submit">
+            <script>
+                $('#merchantget').on('click',function(){
+                    $.ajax({
+                        url:$.url('/merchant'),
+                        data:makeSign({}),
+                        type:'get',
+                        dataType:'json',
+                        success:function(re){
+                            console.log(re);
                         }
                     });
                 });

@@ -17,16 +17,16 @@ class Model {
     protected $tablename = '';
     // 表前缀
     protected $tablepre = '';
-    // 主键的字段, 依赖字段分析器 resolution
-    protected $key = null;
-    // 新增时间, 依赖字段分析器 resolution
-    protected $created_time = null;
-    // 更改时间, 依赖字段分析器 resolution
-    protected $updated_time = null;
-    // 新增时间类型, 依赖字段分析器 resolution
-    protected $created_time_type = null;
-    // 更改时间类型, 依赖字段分析器 resolution
-    protected $updated_time_type = null;
+    // 主键的字段
+    protected $key = 'id';
+//    // 新增时间, 依赖字段分析器 resolution
+//    protected $created_time = null;
+//    // 更改时间, 依赖字段分析器 resolution
+//    protected $updated_time = null;
+//    // 新增时间类型, 依赖字段分析器 resolution
+//    protected $created_time_type = null;
+//    // 更改时间类型, 依赖字段分析器 resolution
+//    protected $updated_time_type = null;
     // 表名
     protected $table = '';
     // 表信息
@@ -44,11 +44,11 @@ class Model {
     // 链式操作解释器
     protected $analysis = null;
     // 字段分析器
-    protected $resolution = null;
+//    protected $resolution = null;
     // 是否已设定当前sql表
     protected $from = false;
     // 是否自动维护时间
-    protected $autoTIme = true;
+//    protected $autoTIme = true;
     // 主动指定配置文件
     protected $connection = null;
 
@@ -59,7 +59,7 @@ class Model {
         $this->db = is_null($DbConnection) ? obj(DbConnection::class, $this->getConf($this->connection)) : $DbConnection;
         $this->collect = new \Main\Core\Model\Collect($this->options);
         $this->analysis = obj(\Main\Core\Model\Analysis::class);
-        $this->resolution = obj(\Main\Core\Model\Resolution::class);
+//        $this->resolution = obj(\Main\Core\Model\Resolution::class);
         $this->get_thisTable();
         $this->construct();
     }
@@ -101,7 +101,7 @@ class Model {
         $this->field = obj(Cache::class)->get(function() {
             return $this->db->getAll('SHOW COLUMNS FROM `' . $this->table . '`');
         }, 3600);
-        list($this->key, $this->created_time, $this->created_time_type, $this->updated_time, $this->updated_time_type) = $this->resolution->getKey($this->field);
+//        list($this->key, $this->created_time, $this->created_time_type, $this->updated_time, $this->updated_time_type) = $this->resolution->getKey($this->field);
         foreach ($this->field as $v) {
             if ($v['Extra'] == 'auto_increment') {
                 $this->key = $v['Field'];
@@ -175,7 +175,7 @@ class Model {
      * 填充当前操作表, 填充查询字段, 填充更新时间, , 填充新增时间
      */
     protected function get_ready() {
-        $timestamp = $_SERVER['REQUEST_TIME'];
+//        $timestamp = $_SERVER['REQUEST_TIME'];
         // 填充当前操作表
         if (!$this->from)
             $this->collect->from($this->table);
@@ -190,43 +190,43 @@ class Model {
         // 填充 update
         elseif ($this->options_type == 'UPDATE') {
             // 自动维护时间
-            if ($this->autoTIme && !is_null($this->updated_time) && !is_null($this->updated_time_type)) {
-                switch ($this->updated_time_type) {
-                    case 'timestamp':
-                    case 'datetime':
-                        $time = date('Y-m-d H;i;s', $timestamp);
-                        break;
-                    case 'int':
-                    case 'bigint':
-                        $time = $timestamp;
-                        break;
-                    default:
-                        break;
-                }
-                $str = '`' . $this->table . '`.`' . $this->updated_time . '`="' . $time . '"';
-                $this->options['data']['__string'][] = $str;
-            }
+//            if ($this->autoTIme && !is_null($this->updated_time) && !is_null($this->updated_time_type)) {
+//                switch ($this->updated_time_type) {
+//                    case 'timestamp':
+//                    case 'datetime':
+//                        $time = date('Y-m-d H;i;s', $timestamp);
+//                        break;
+//                    case 'int':
+//                    case 'bigint':
+//                        $time = $timestamp;
+//                        break;
+//                    default:
+//                        break;
+//                }
+//                $str = '`' . $this->table . '`.`' . $this->updated_time . '`="' . $time . '"';
+//                $this->options['data']['__string'][] = $str;
+//            }
         }
         // 填充 create
         elseif ($this->options_type == 'INSERT') {
             // 自动维护时间
-            if ($this->autoTIme && !is_null($this->created_time) && !is_null($this->created_time_type)) {
-                $str = '';
-                switch ($this->created_time_type) {
-                    case 'timestamp':
-                    case 'datetime':
-                        $time = date('Y-m-d H;i;s', $timestamp);
-                        break;
-                    case 'int':
-                    case 'bigint':
-                        $time = $timestamp;
-                        break;
-                    default:
-                        break;
-                }
-                $str .= '`' . $this->table . '`.`' . $this->created_time . '`="' . $time . '"';
-                $this->options['data']['__string'][] = trim($str, ',') . ' ';
-            }
+//            if ($this->autoTIme && !is_null($this->created_time) && !is_null($this->created_time_type)) {
+//                $str = '';
+//                switch ($this->created_time_type) {
+//                    case 'timestamp':
+//                    case 'datetime':
+//                        $time = date('Y-m-d H;i;s', $timestamp);
+//                        break;
+//                    case 'int':
+//                    case 'bigint':
+//                        $time = $timestamp;
+//                        break;
+//                    default:
+//                        break;
+//                }
+//                $str .= '`' . $this->table . '`.`' . $this->created_time . '`="' . $time . '"';
+//                $this->options['data']['__string'][] = trim($str, ',') . ' ';
+//            }
         }
     }
 

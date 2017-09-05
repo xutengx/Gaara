@@ -39,7 +39,7 @@ class Login extends HttpController {
      * @param string $token 原令牌
      */
     public function changeToken(MainUser $user, Request $request) {
-        $token = $request->post('token', 'string');
+        $token = $request->post('token','token');
         $tokenInfo = Token::decryptToken($token);
         if (is_array($tokenInfo) && isset($tokenInfo['email'])) {
             $userInfo = $user->getEmail($tokenInfo['email']);

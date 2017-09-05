@@ -31,10 +31,12 @@ trait ObjectRelationalMappingTrait {
     public function save(int $key):int{
         $param = [];
         $bind  = [];
-        foreach($this->orm as $k => $v){
-            $tempkey = ':'.$k ;
-            $param[$k] = $tempkey;
-            $bind[$tempkey]  = $v;
+        foreach ($this->field as $v) {
+            if (array_key_exists($v['Field'], $this->orm)) {
+                $tempkey = ':'.$v['Field'] ;
+                $param[$v['Field']] = $tempkey;
+                $bind[$tempkey]  = $this->orm[$v['Field']];
+            }
         }
         $this->data($param);
         $this->where($this->key, $key);
@@ -45,14 +47,25 @@ trait ObjectRelationalMappingTrait {
      * orm属性新增
      * @return int      新增的数据的主键
      */
-    public function create():int{
+    public function create(){
+//        var_dump($this->field);exit;;
+        
         $param = [];
         $bind  = [];
-        foreach($this->orm as $k => $v){
-            $tempkey = ':'.$k ;
-            $param[$k] = $tempkey;
-            $bind[$tempkey]  = $v;
+        
+        foreach ($this->field as $v) {
+            if (array_key_exists($v['Field'], $this->orm)) {
+                $tempkey = ':'.$v['Field'] ;
+                $param[$v['Field']] = $tempkey;
+                $bind[$tempkey]  = $this->orm[$v['Field']];
+            }
         }
+        
+//        foreach($this->orm as $k => $v){
+//            $tempkey = ':'.$k ;
+//            $param[$k] = $tempkey;
+//            $bind[$tempkey]  = $v;
+//        }
         $this->data($param);
         return $this->insert($bind);
     }

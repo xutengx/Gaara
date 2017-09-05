@@ -33,7 +33,7 @@ class Sign {
         ksort($param);
         $param['timestamp'] = $timestamp;
         $param['token'] = $token;
-        $str = \json_encode($param, JSON_UNESCAPED_UNICODE);
+        $str = stripslashes(\json_encode($param, JSON_UNESCAPED_UNICODE));
         return ($sign === md5(md5($str) . self::key));
     }    
     

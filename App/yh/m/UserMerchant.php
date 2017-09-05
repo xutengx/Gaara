@@ -6,6 +6,7 @@ defined('IN_SYS') || exit('ACC Denied');
 
 class UserMerchant extends \Main\Core\Model {
 
+    protected $key = 'id';
     /**
      * 获取商户信息
      * @param int $id

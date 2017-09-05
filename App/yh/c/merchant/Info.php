@@ -47,6 +47,14 @@ class Info extends HttpController {
      * @param UserMerchant $merchant
      */
     public function create(Request $request, UserMerchant $merchant) {
+        $userinfo = $request->userinfo;
         
+        
+        $merchant->orm = $userinfo;
+        return $this->returnData(
+            $merchant->create()
+        );
     }
+    
+    
 }

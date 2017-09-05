@@ -59,13 +59,6 @@ jQuery.extend({
         });
         return temp;
     },
-//    moment:function(){
-//        var temp;
-//        $.getScriptWithCache("daterangepicker.js", function(){
-//            temp = moment();
-//        });
-//        return temp;
-//    }
 });
 $.fn.extend({
     submitData:function(method, callback, httpmethod) {
@@ -80,11 +73,4 @@ $.fn.extend({
             $this.copy_base(obj, callback);
         });
     },
-//    date: function (obj, callback) {
-//        var $this = $(this);
-//        $.getScriptWithCache("daterangepicker.js", function(){
-//            $.getCssWithCache("daterangepicker.css");
-//            $this.daterangepicker(obj, callback);
-//        });
-//    }
 });

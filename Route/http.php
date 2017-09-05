@@ -3,6 +3,8 @@
 return [
     // yh
     Route::group(['middleware'=>['api'], 'namespace'=> 'App\yh\c' ], function(){
+        // 接口开发调试页面
+        Route::get('/dev','Dev\Dev@index');
         // 不检测 token
         Route::group(['prefix'=>'/user','namespace' => 'user'],function(){
             // 邮箱检测
@@ -61,20 +63,7 @@ return [
     Route::get('/p',['middleware'=>['web','testMiddleware'],'namespace'=> 'App\Dev', 'uses'=>'Pipeline\index@index']),
     
     '/test' => ['as' => 'tt1', 'uses' => function(){
-            (new class extends PHPUnit\Framework\TestCase{
-                public function testPushAndPop()
-                {
-                $stack = [];
-                $this->assertEquals(0, count($stack));
-
-                array_push($stack, 'foo');
-                $this->assertEquals('foo', $stack[count($stack)-1]);
-                $this->assertEquals(1, count($stack));
-
-                $this->assertEquals('foo', array_pop($stack));
-                $this->assertEquals(0, count($stack));
-                }
-            })->testPushAndPop();
+            return 'test';
         }],
     
     // 支持隐式路由

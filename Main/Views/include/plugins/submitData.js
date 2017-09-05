@@ -33,7 +33,7 @@
 });
 $.fn.extend({
     submitData_base:function(method,callback,httpmethod) {
-        method = arguments[0] || 'submitData';
+//        method = arguments[0] || 'submitData';
         var url = $.url(method);
         callback = arguments[1] || function (re) {
                 if(re.state === 0 ) alert(re.msg);
@@ -146,17 +146,38 @@ $.fn.extend({
             select.each(function(i){
                 fd.append(this.name, this.value);
             });
-            $.ajax({
-                url:url,
-                data:fd,
-                processData: false,
-                contentType: false,
-                type:httpmethod,
-                dataType:'json',
-                success:function(re){
-                    callback(re);
+            // 兼容ajax get
+            if('get' === httpmethod){
+                var gdata = {};             // 传参数组
+                var ij = fd.entries();
+                var s = true;
+                if(s){
+                    var y = ij.next();      // {done:false, value:["k1", "v1"]}
+                    s = y.done;             // 是否继续遍历
+                    gdata[y.value[0]] = y.value[1];
                 }
-            });
+                $.ajax({
+                    url:url,
+                    data:gdata,
+                    type:httpmethod,
+                    dataType:'json',
+                    success:function(re){
+                        callback(re);
+                    }
+                });
+            }else{
+                $.ajax({
+                    url:url,
+                    data:fd,
+                    processData: false,
+                    contentType: false,
+                    type:httpmethod,
+                    dataType:'json',
+                    success:function(re){
+                        callback(re);
+                    }
+                });
+            }
         });
     }
 });

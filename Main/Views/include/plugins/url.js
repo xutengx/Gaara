@@ -14,7 +14,15 @@ jQuery.extend({
             }
             return str.join("&");
         };
+        // 去除左侧指定字符
+        String.prototype.ltrim = function (char) {
+            if (char) {
+                return this.replace(new RegExp('^\\' + char + '+', 'g'), '');
+            } 
+            return this;
+        };
         var p = serialize(param);
-        return HOST + pathInfo + (lock ? "?" : "") + p;
+        // HOST 会在 控制器display中赋值
+        return HOST + pathInfo.ltrim('/') + (lock ? "?" : "") + p;
     }
 });

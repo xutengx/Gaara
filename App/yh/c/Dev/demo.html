@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="<?php echo url('App/Dev/view/view/js/test.js'); ?>"></script>
+        <script src="http://cdn.bootcss.com/blueimp-md5/1.1.0/js/md5.min.js"></script>
+        <style>
+            label{color: #008200}
+            input[type=text]{width:520px;}
+        </style>
+        <script>
+            // api接口获取,并有时效性,
+            var token = 'QhpYXENcCQRUTRQDVFdcWxtfGwhSUwIBBlUFAFdwEkQXW15VQ0oaRAUSRRFdFA8VHVdAHVRUF1VnEQ5pEgggdmB3ZX5TE19_NTJlMEwDWQFzVFRSMlJ3BwwSW0oXUS15SAFIZE4PfA0IBnsFWBQZFUoRWE0QFxELBEoUVQRDF2pVV1ZRDzlRREZbBVQKBAcDD1ALAElGX1BGEmlVClcKW2ZZRRpbRAoEVVYbVgEbBwQZVAwDUVQJAQVEGhsGQgZUTV1VZwASGg5GUwZXDhsFDxRXChlUVQkCAlwGDEccQUBJXFBMBAJnVRBDDEQLBgQAFFUBFFdXEwAAXAUOXwFTFxUaRVcKA1ZrFxVXFE1pQV5UABsDVFEDAgFRAglVAB4';
+            // 双方约定
+            var key = 'yh';
+            var setData = function(obj){
+                var form = $(obj).parents('form')[0];
+                var fd = new FormData(form);
+                var convert_FormData_to_json = function (formData) {
+                    var objData = {};
+                    for (var entry of formData.entries()){
+                        objData[entry[0]] = entry[1];
+                    }
+                    return (objData);
+                };
+                return convert_FormData_to_json(fd);
+            };
+            String.prototype.gblen = function () {
+                var len = 0;
+                for (var i = 0; i < this.length; i++) {
+                    if (this.charCodeAt(i) > 127 || this.charCodeAt(i) === 94) {
+                        len += 2;
+                    } else {
+                        len++;
+                    }
+                }
+                return len;
+            };
+            // 用string替代int
+            var data = {
+                'name': 'xutengh回回千位',
+                'age': '22',
+                'email': '123123@qq.com'
+            };
+            var makeSign = function (data) {
+                //排序的函数
+                var objKeySort = function (obj) {
+                    var newkey = Object.keys(obj).sort();
+                    var newObj = {};
+                    for (var i = 0; i < newkey.length; i++) {
+                        newObj[newkey[i]] = obj[newkey[i]];
+                    }
+                    return newObj;
+                };
+                data = objKeySort(data);
+                data.timestamp = Date.parse(new Date()) / 1000;
+                data.token = token;
+                var str = JSON.stringify(data);
+//                console.log(str);
+//                console.log(str.gblen());
+//                console.log(md5(str));
+//                console.log((md5(str) + key));
+//                console.log(md5(md5(str) + key));
+                data.sign = md5(md5(str) + key);
+                return data;
+
+            };
+        </script>
+    </head>
+    <body>
+        <div>
+            <?php echo '请求接口 : '.$DATA['url']; ?>
+        </div>
+        <hr>
+        <label>邮箱检测 /user/email get</label><br><br>
+        <form action="action">
+            <span>邮箱</span><input type="text" name="email" value="1771033392@qq.com"/><br>
+            <input id="useremail" type="button" value="submit">
+            <script>
+                $('#useremail').submitData('/user/email', function (re) {
+                    console.log(re);
+                }, 'get');
+            </script>
+        </form>
+        <hr>
+        <label>注册( 邮件发送 ) /user/reg post</label><br><br>
+        <form action="action">
+            <span>邮箱</span><input type="text" name="email" value="1771033392@qq.com"/><br>
+            <span>url</span><input type="text" name="url" value="http://前端地址,我要注册#拼接参数=" /><br>
+            <input id="userreg" type="button" value="submit">
+            <script>
+                $('#userreg').submitData('/user/reg', function (re) {
+                    console.log(re);
+                }, 'post');
+            </script>
+        </form>
+        <hr>
+        <label>设置密码 (写入数据库) /user/setpasswd post</label><br><br>
+        <form action="action">
+            <span>邮箱</span><input type="text" name="email"  value="1771033392@qq.com"/><br>
+            <span>密码</span><input type="text" name="passwd"  value="123123"/><br>
+            <span>token用户邮箱链接中的随机码</span><input type="text" name="token" /><br>
+            <input id="usersetpasswd" type="button" value="submit">
+            <script>
+                $('#usersetpasswd').submitData('/user/setpasswd', function (re) {
+                    console.log(re);
+                }, 'post');
+            </script>
+        </form>
+        <hr>
+        <label>忘记密码( 邮件发送 ) /user/forget post</label><br><br>
+        <form action="action">
+            <span>邮箱</span><input type="text" name="email"  value="1771033392@qq.com"/><br>
+            <span>url</span><input type="text" name="url" value="http://前端地址,忘记密码#拼接参数=" /><br>
+            <input id="userforget" type="button" value="submit">
+            <script>
+                $('#userforget').submitData('/user/forget', function (re) {
+                    console.log(re);
+                }, 'post');
+            </script>
+        </form>
+        <hr>
+        <label>忘记密码 设置密码 /user/resetpasswd post</label><br><br>
+        <form action="action">
+            <span>邮箱</span><input type="text" name="email"  value="1771033392@qq.com"/><br>
+            <span>密码</span><input type="text" name="passwd"  value="123123"/><br>
+            <span>token用户邮箱链接中的随机码</span><input type="text" name="token" /><br>
+            <input id="userresetpasswd" type="button" value="submit">
+            <script>
+                $('#userresetpasswd').submitData('/user/resetpasswd', function (re) {
+                    console.log(re);
+                }, 'post');
+            </script>
+        </form>
+        <hr>
+        <label>登入 /user/login post</label><br><br>
+        <form action="action">
+            <span>邮箱</span><input type="text" name="email"  value="1771033392@qq.com"/><br>
+            <span>密码</span><input type="text" name="passwd"  value="123123"/><br>
+            <input id="userlogin" type="button" value="submit">
+            <script>
+                $('#userlogin').submitData('/user/login', function (re) {
+                    console.log(re);
+                    if(re.code === 200){
+                        token = re.data;
+                        console.log('token设置为'+ re.data);
+                    }
+                }, 'post');
+            </script>
+        </form>
+        <hr>
+        <label>令牌以旧换新( 重置有效期 ) /user/token post</label><br><br>
+        <form action="action">
+            <span>邮箱</span><input type="text" name="email"  value="1771033392@qq.com"/><br>
+            <span>密码</span><input type="text" name="passwd"  value="123123"/><br>
+            <input id="usertoken" type="button" value="submit">
+            <script>
+                $('#usertoken').on('click',function(){
+                    var data = setData(this);
+                    $.ajax({
+                        url:$.url('/user/token'),
+                        data:makeSign(data),
+                        type:'post',
+                        dataType:'json',
+                        success:function(re){
+                            console.log(re);
+                            if(re.code === 200){
+                                token = re.data;
+                                console.log('token重新设置为'+ re.data);
+                            }
+                        }
+                    });
+                });
+            </script>
+        </form>
+        <hr>
+    </body>
+</html>

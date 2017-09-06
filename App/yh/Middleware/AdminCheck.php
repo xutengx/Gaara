@@ -12,7 +12,7 @@ use App\yh\s\Sign;
 /**
  * 规则校验
  */
-class SignCheck extends Middleware {
+class AdminCheck extends Middleware {
 
     private $token = null;
     private $sign = null;
@@ -44,7 +44,7 @@ class SignCheck extends Middleware {
      * @return bool
      */
     private function checkIdentity(Request $request): bool{
-        return isset($request->userinfo['email']);
+        return isset($request->userinfo['username']);
     }
 
     /**

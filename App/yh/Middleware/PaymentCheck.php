@@ -21,13 +21,16 @@ class PaymentCheck extends Middleware {
         if ($this->getToken($request)) {
             if ($this->checkToken($this->token)) {
                 // 赋值 $request 
-                $request->userinfo = $userInfo =  $this->analysisToken($this->token);
+                $request->userinfo = $userInfo = $this->analysisToken($this->token);
                 if ($this->getSign($request)) {
                     if ($this->checkSign($request, $userInfo['secret'])) {
-                        if($userInfo['payment'] === 1){
-                            return true;
-                        }else
-                            return $this->error('没有调用支付api的权限');
+                        if ($this->checkIdentity($request)) {
+                            if (isset($userInfo['payment']) && $userInfo['payment'] === 1) {
+                                return true;
+                            } else
+                                return $this->error('没有调用支付api的权限');
+                        } else
+                            return $this->error('调用接口不匹配');
                     } else
                         return $this->error('sign不合法');
                 } else
@@ -36,7 +39,17 @@ class PaymentCheck extends Middleware {
                 return $this->error('token已失效');
         } else
             return $this->error('未携带token');
+    } 
+    
+    /**
+     * 确定当前身份,是否为商户
+     * @param Request $request
+     * @return bool
+     */
+    private function checkIdentity(Request $request): bool{
+        return isset($request->userinfo['email']);
     }
+
 
     /**
      * 获取token

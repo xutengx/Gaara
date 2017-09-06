@@ -20,13 +20,32 @@ return [
             // 忘记密码 设置密码
             Route::post('/resetpasswd','ForgetPasswd@setPasswd');
         });
-        // 检测 web登入令牌
-        Route::group(['middleware'=>['login']],function(){
+        // 检测 merchant web登入令牌
+        Route::group(['middleware'=>['merchant']],function(){
             // 令牌以旧换新( 重置有效期 )
             Route::post('/user/token','user\Login@changeToken');
 
             // 商户资料
             Route::restful('/merchant','merchant\Info');
+            
+            // 应用资料
+            Route::restful('/app','merchant\App');
+          
+        });
+        // 不检测 token
+        Route::group(['prefix'=>'/admin','namespace' => 'admin'],function(){
+            // 管理员登入
+            Route::post('/login','Login@index');
+        });
+        // 检测 管理员登入令牌
+        Route::group(['middleware'=>['admin']],function(){
+            // 令牌以旧换新( 重置有效期 )
+            Route::post('/admin/token','admin\Login@changeToken');
+            // 管理员新增管理员
+            Route::post('/admin/reg','admin\Reg@index');
+            // 管理员设置自己密码
+            Route::put('/admin/setpasswd','admin\Reg@setPasswd');
+
           
         });
         

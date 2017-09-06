@@ -13,7 +13,7 @@ use Cache;
  */
 class Token {
 
-    // 盐
+    // 盐(php自用)
     const key = 'yh';
     // token 有效时间
     const expired = 10800;

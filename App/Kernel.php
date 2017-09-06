@@ -33,12 +33,16 @@ class Kernel extends HttpKernel {
 //            \App\Middleware\test1::class,
 //            \App\Middleware\test2::class,
 //        ],
-        'login' =>[
-            // web登入令牌
+        'admin' =>[
+            // 管理员登入令牌
+            \App\yh\Middleware\AdminCheck::class
+        ],
+        'merchant' =>[
+            // 商户登入令牌
             \App\yh\Middleware\SignCheck::class
         ],
         'payment' =>[
-            // api调用令牌
+            // 商户支付api调用令牌
             \App\yh\Middleware\PaymentCheck::class
         ]
     ];

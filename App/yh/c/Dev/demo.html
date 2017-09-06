@@ -11,6 +11,8 @@
             span{margin-right: 20px;}
             input[type=text]{width:520px;}
             input[type=button]{margin-top: 10px;}
+            .admin{color: #990000}
+            .merchant{color: #0016b0}
         </style>
         <script>
             // api接口获取,并有时效性,
@@ -82,7 +84,7 @@
             <?php echo '请求接口 : '.$DATA['url']; ?>
         </div>
         <hr>
-        <label>邮箱检测 /user/email get</label><br><br>
+        <label class="merchant">邮箱检测 /user/email get</label><br><br>
         <form action="action">
             <span>邮箱</span><input type="text" name="email" value="1771033392@qq.com"/><br>
             <input id="useremail" type="button" value="submit">
@@ -93,7 +95,7 @@
             </script>
         </form>
         <hr>
-        <label>注册( 邮件发送 ) /user/reg post</label><br><br>
+        <label class="merchant">商户注册( 邮件发送 ) /user/reg post</label><br><br>
         <form action="action">
             <span>邮箱</span><input type="text" name="email" value="1771033392@qq.com"/><br>
             <span>url</span><input type="text" name="url" value="http://前端地址,我要注册#拼接参数=" /><br>
@@ -105,7 +107,7 @@
             </script>
         </form>
         <hr>
-        <label>设置密码 (写入数据库) /user/setpasswd post</label><br><br>
+        <label class="merchant">商户设置密码 (写入数据库) /user/setpasswd post</label><br><br>
         <form action="action">
             <span>邮箱</span><input type="text" name="email"  value="1771033392@qq.com"/><br>
             <span>密码</span><input type="text" name="passwd"  value="123123"/><br>
@@ -118,7 +120,7 @@
             </script>
         </form>
         <hr>
-        <label>忘记密码( 邮件发送 ) /user/forget post</label><br><br>
+        <label class="merchant">商户忘记密码( 邮件发送 ) /user/forget post</label><br><br>
         <form action="action">
             <span>邮箱</span><input type="text" name="email"  value="1771033392@qq.com"/><br>
             <span>url</span><input type="text" name="url" value="http://前端地址,忘记密码#拼接参数=" /><br>
@@ -130,7 +132,7 @@
             </script>
         </form>
         <hr>
-        <label>忘记密码 设置密码 /user/resetpasswd post</label><br><br>
+        <label class="merchant">商户忘记密码 设置密码 /user/resetpasswd post</label><br><br>
         <form action="action">
             <span>邮箱</span><input type="text" name="email"  value="1771033392@qq.com"/><br>
             <span>密码</span><input type="text" name="passwd"  value="123123"/><br>
@@ -143,7 +145,75 @@
             </script>
         </form>
         <hr>
-        <label>登入 /user/login post</label><br><br>
+        <label class="admin">管理员登入 /admin/login post</label><br><br>
+        <form action="action">
+            <span>用户名</span><input type="text" name="username"  value="admin"/><br>
+            <span>密码</span><input type="text" name="passwd"  value="123123"/><br>
+            <input id="adminlogin" type="button" value="submit">
+            <script>
+                $('#adminlogin').submitData('/admin/login', function (re) {
+                    console.log(re);
+                    if(re.code === 1){
+                        token = re.data;
+                        console.log('token设置为'+ re.data);
+                    }
+                }, 'post');
+            </script>
+        </form>
+        <hr>
+        <label class="admin">管理员令牌以旧换新( 重置有效期 ) /user/token post</label><br><br>
+        <form action="action">
+            <span>用户名</span><input type="text" name="username"  value="admin"/><br>
+            <span>密码</span><input type="text" name="passwd"  value="123123"/><br>
+            <input id="admintoken" type="button" value="submit">
+            <script>
+                $('#admintoken').on('click',function(){
+                    var data = setData(this);
+                    $.ajax({
+                        url:$.url('/admin/token'),
+                        data:data,
+                        type:'post',
+                        dataType:'json',
+                        processData: false,
+                        contentType: false,
+                        success:function(re){
+                            console.log(re);
+                            if(re.code === 1){
+                                token = re.data;
+                                console.log('token重新设置为'+ re.data);
+                            }
+                        }
+                    });
+                });
+            </script>
+        </form>
+        <hr>
+        <label class="admin">管理员新增管理员 /admin/reg post</label><br><br>
+        <form action="action">
+            <span>用户名</span><input type="text" name="username"  value="admin2"/><br>
+            <span>密码</span><input type="text" name="passwd"  value="123123"/><br>
+            <input id="adminreg" type="button" value="submit">
+            <script>
+                $('#adminreg').submitData('/admin/reg', function (re) {
+                    console.log(re);
+                }, 'post');
+            </script>
+        </form>
+        <hr>
+        <label class="admin">管理员重置自己密码 /admin/setpasswd post</label><br><br>
+        <form action="action">
+            <span>用户名</span><input type="text" name="username"  value="admin2"/><br>
+            <span>原密码</span><input type="text" name="oldpasswd"  value="123123"/><br>
+            <span>密码</span><input type="text" name="passwd"  value="123123123"/><br>
+            <input id="adminsetpasswd" type="button" value="submit">
+            <script>
+                $('#adminsetpasswd').submitData('/admin/setpasswd', function (re) {
+                    console.log(re);
+                }, 'post');
+            </script>
+        </form>
+        <hr>
+        <label class="merchant">商户登入 /user/login post</label><br><br>
         <form action="action">
             <span>邮箱</span><input type="text" name="email"  value="1771033392@qq.com"/><br>
             <span>密码</span><input type="text" name="passwd"  value="123123"/><br>
@@ -159,7 +229,7 @@
             </script>
         </form>
         <hr>
-        <label>令牌以旧换新( 重置有效期 ) /user/token post</label><br><br>
+        <label class="merchant">商户令牌以旧换新( 重置有效期 ) /user/token post</label><br><br>
         <form action="action">
             <span>邮箱</span><input type="text" name="email"  value="1771033392@qq.com"/><br>
             <span>密码</span><input type="text" name="passwd"  value="123123"/><br>
@@ -186,7 +256,7 @@
             </script>
         </form>
         <hr>
-        <label>商户资料新增 /merchant post</label><br><br>
+        <label class="merchant">商户资料新增 /merchant post</label><br><br>
         <form action="action">
             <span>商户名称</span><input type="text" name="merchant_name"  value="深圳测试公司"/><br>
             <span>商户网址</span><input type="text" name="merchant_website"  value="http://www.baidu.com/"/><br>
@@ -231,7 +301,7 @@
             </script>
         </form>
         <hr>
-        <label>商户资料修改 /merchant put</label><br><br>
+        <label class="merchant">商户资料修改 /merchant put</label><br><br>
         <form action="action">
             <span>商户名称</span><input type="text" name="merchant_name"  value="深圳测试公司"/><br>
             <span>商户网址</span><input type="text" name="merchant_website"  value="http://www.baidu.com/"/><br>
@@ -276,7 +346,7 @@
             </script>
         </form>
         <hr>
-        <label>商户资料查看 /merchant get</label><br><br>
+        <label class="merchant">商户资料查看 /merchant get</label><br><br>
         <form action="action">
             <input id="merchantget" type="button" value="submit">
             <script>
@@ -294,7 +364,7 @@
             </script>
         </form>
         <hr>
-        <label>商户资料删除 /merchant delete</label><br><br>
+        <label class="merchant">商户资料删除 /merchant delete</label><br><br>
         <form action="action">
             <input id="merchantdelete" type="button" value="submit">
             <script>

@@ -5,7 +5,6 @@ return <<<EEE
 set names utf8;
 SET FOREIGN_KEY_CHECKS=0;
 
-DROP TABLE IF EXISTS `main_user`;
 CREATE TABLE `main_user` (
   `id` int(1) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户ID',
   `email` varchar(100) NOT NULL DEFAULT '' COMMENT '用户邮箱',
@@ -23,23 +22,21 @@ CREATE TABLE `main_user` (
 
 INSERT INTO `main_user` VALUES ('1', 'admin@163.com', '$2y$10$1T62akHp47oLeIKuv6DzU.ZLnjXycsUlvAjF.m6dBi0XgPYhICF8q', '','1', '2', '3232235814', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-DROP TABLE IF EXISTS `main_admin`;
 CREATE TABLE `main_admin` (
   `id` int(1) unsigned NOT NULL AUTO_INCREMENT COMMENT '管理员ID',
   `username` varchar(100) NOT NULL DEFAULT '' COMMENT '管理员登入名',
   `passwd` varchar(255) NOT NULL DEFAULT '' COMMENT '登入密码',
-  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '是否可登入,1.启用 2.禁用',
   `last_login_ip` int(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '最后登录IP, INET_ATON',
   `last_login_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '最后在线时间',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '新增时间',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '数据更新时间',
+  `create_admin_id` int(1) unsigned NOT NULL DEFAULT '0' COMMENT '此管理员的创建者ID, main_admin.id',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=innodb AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COMMENT='管理员表';
+) ENGINE=innodb AUTO_INCREMENT=8000000000 DEFAULT CHARSET=utf8 COMMENT='管理员表';
 
-INSERT INTO `main_admin` VALUES ('1', 'admin', '$2y$10$1T62akHp47oLeIKuv6DzU.ZLnjXycsUlvAjF.m6dBi0XgPYhICF8q', '1', '3232235814', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `main_admin` VALUES ('4000000000', 'admin', '$2y$10$1T62akHp47oLeIKuv6DzU.ZLnjXycsUlvAjF.m6dBi0XgPYhICF8q', '3232235814', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-DROP TABLE IF EXISTS `user_merchant`;
 CREATE TABLE `user_merchant` (
   `id` int(1) unsigned NOT NULL COMMENT '商户ID, 既是用户ID, main_user.id',
   `merchant_name` varchar(100) NOT NULL DEFAULT '' COMMENT '商户名称',
@@ -75,7 +72,16 @@ CREATE TABLE `user_merchant` (
   UNIQUE KEY `merchant_name` (`merchant_name`)
 ) ENGINE=innodb DEFAULT CHARSET=utf8 COMMENT='商户信息表';
 
-DROP TABLE IF EXISTS `merchant_secret`;
+CREATE TABLE `user_application` (
+  `id` int(1) unsigned NOT NULL AUTO_INCREMENT COMMENT '应用ID',
+  `merchant_id` int(1) unsigned NOT NULL COMMENT '商户ID,user_merchant.id, 既是用户ID, main_user.id',
+  `application_name` varchar(100) NOT NULL DEFAULT '' COMMENT '应用名称',
+  `application_logo_file` varchar(100) NOT NULL DEFAULT '' COMMENT '应用logo文件',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '资料提交时间',
+  `modify_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '资料修改时间',
+  PRIMARY KEY (`id`)
+) ENGINE=innodb AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COMMENT='应用信息表';
+
 CREATE TABLE `merchant_secret` (
   `id` int(1) unsigned NOT NULL COMMENT '商户ID, 既是用户ID, main_user.id',
   PRIMARY KEY (`id`)

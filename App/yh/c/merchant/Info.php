@@ -8,6 +8,9 @@ use App\yh\m\UserMerchant;
 use Main\Core\Request;
 use Main\Core\Controller\HttpController;
 
+/**
+ * 商户操作
+ */
 class Info extends HttpController {
     
     /**
@@ -17,11 +20,11 @@ class Info extends HttpController {
      * @return type
      */
     public function select(Request $request, UserMerchant $merchant) {
-        $userinfo = $request->userinfo;
-       
-        return $this->returnData(
-            $merchant->getInfo( (int)$userinfo['id'] )
-        );
+        $userid = (int)$request->userinfo['id'];
+        
+        return $this->returnData(function() use ($merchant, $userid){
+            return $merchant->getInfo( $userid );
+        });
     }
 
     /**
@@ -36,9 +39,9 @@ class Info extends HttpController {
         $merchant->orm = $merchantInfo;
         $merchant->orm['id'] = $userinfo['id'];
         
-        return $this->returnData(
-            $merchant->create()
-        );
+        return $this->returnData(function() use ($merchant){
+            return $merchant->create();
+        });
     }
 
     /**
@@ -53,16 +56,20 @@ class Info extends HttpController {
         $merchant->orm = $merchantInfo;
         $merchant->orm['modify_at'] = date('Y-m-d H:i:s');
         
-        return $this->returnData(
-            $merchant->save($userid)
-        );
+        return $this->returnData(function() use ($merchant, $userid){
+            $merchant->save($userid);
+        });
     }
 
     /**
      * 删除商户信息
      * @return type
      */
-    public function destroy() {
-        return $this->returnMsg(0, '不可以删除');
+    public function destroy(Request $request, UserMerchant $merchant) {
+        $userid = (int)$request->userinfo['id'];
+        
+        return $this->returnData(function() use ($merchant, $userid){
+            $merchant->delById( $userid );
+        });
     }
 }

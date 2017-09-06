@@ -278,14 +278,31 @@
         <hr>
         <label>商户资料查看 /merchant get</label><br><br>
         <form action="action">
-            <span>授权人姓名</span><input type="text" name="authorizer_name"  value="授权人" /><br>
             <input id="merchantget" type="button" value="submit">
             <script>
                 $('#merchantget').on('click',function(){
                     $.ajax({
                         url:$.url('/merchant'),
-                        data:makeSign({}),
+                        data:makeSign({'id':'101'}),
                         type:'get',
+                        dataType:'json',
+                        success:function(re){
+                            console.log(re);
+                        }
+                    });
+                });
+            </script>
+        </form>
+        <hr>
+        <label>商户资料删除 /merchant delete</label><br><br>
+        <form action="action">
+            <input id="merchantdelete" type="button" value="submit">
+            <script>
+                $('#merchantdelete').on('click',function(){
+                    $.ajax({
+                        url:$.url('/merchant'),
+                        data:makeSign({}),
+                        type:'delete',
                         dataType:'json',
                         success:function(re){
                             console.log(re);

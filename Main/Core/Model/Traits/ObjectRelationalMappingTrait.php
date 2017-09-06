@@ -45,14 +45,11 @@ trait ObjectRelationalMappingTrait {
 
     /**
      * orm属性新增
-     * @return int      新增的数据的主键
+     * @return int      int 0 表示失败, string 0 是主键没自增属性时的成功返回, 其他int表示主键
      */
     public function create(){
-//        var_dump($this->field);exit;;
-        
         $param = [];
         $bind  = [];
-        
         foreach ($this->field as $v) {
             if (array_key_exists($v['Field'], $this->orm)) {
                 $tempkey = ':'.$v['Field'] ;
@@ -60,12 +57,6 @@ trait ObjectRelationalMappingTrait {
                 $bind[$tempkey]  = $this->orm[$v['Field']];
             }
         }
-        
-//        foreach($this->orm as $k => $v){
-//            $tempkey = ':'.$k ;
-//            $param[$k] = $tempkey;
-//            $bind[$tempkey]  = $v;
-//        }
         $this->data($param);
         return $this->insert($bind);
     }

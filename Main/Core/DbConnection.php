@@ -182,7 +182,7 @@ class DbConnection{
                 $res = $PDO->prepare($sql);
                 $res->execute($pars);
             }
-        }catch(\PDOException $pdo){
+        }catch(PDOException $pdo){
             if($i ++ >= 1) throw $pdo;  // 抛出异常
             new Pdo($pdo, $this);       // 尝试解决
             goto loop;

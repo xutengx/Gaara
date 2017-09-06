@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types = 1);
 namespace Main\Core\Controller;
-
 defined('IN_SYS') || exit('ACC Denied');
+
+use \Closure;
+use \PDOException;
 
 /**
  * 响应页面
@@ -52,7 +55,7 @@ abstract class HttpController extends \Main\Core\Controller {
      * @return bool
      */
     protected function returnMsg($code = '', $msg = 'fail !') {
-        $data = ['code' => $code , 'msg' => $msg ];
+        $data = ['code' => $code, 'msg' => $msg];
         return obj('\Main\Core\Response')->returnData($data, false, $code);
     }
 
@@ -63,7 +66,15 @@ abstract class HttpController extends \Main\Core\Controller {
      * @return bool
      */
     protected function returnData($content = '', $type_p = false, $code_p = false) {
-        if($content === false || $content === null || $content === 0 || $content === -1) return $this->returnMsg(0);
+        if ($content === false || $content === null || $content === 0 || $content === -1)
+            return $this->returnMsg(0);
+        if ($content instanceof Closure) {
+            try{
+                $content = call_user_func($content);
+            }catch(PDOException $pdo){
+                return $this->returnMsg(0, $pdo->getMessage());
+            }
+        }
         if (is_int($type_p)) {
             $type = $code_p ? $code_p : false;
             $code = $type_p;
@@ -71,7 +82,7 @@ abstract class HttpController extends \Main\Core\Controller {
             $type = $type_p;
             $code = $code_p;
         }
-        $data = ['code' => 1 , 'data' => $content ];
+        $data = ['code' => 1, 'data' => $content];
         return obj('\Main\Core\Response')->returnData($data, $type, $code);
     }
 
@@ -116,7 +127,7 @@ abstract class HttpController extends \Main\Core\Controller {
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 EEE;
         // 公用view DEBUG下不缓存
-        echo DEBUG ? obj('Template')->includeFiles() : obj('cache')->call(obj('Template'), 'includeFiles',1);
+        echo DEBUG ? obj('Template')->includeFiles() : obj('cache')->call(obj('Template'), 'includeFiles', 1);
         // 页面各种赋值
         echo '<script>' . $ajax, $this->cache . '</script>';
         // 重置

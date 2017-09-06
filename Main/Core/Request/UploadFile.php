@@ -24,6 +24,15 @@ class UploadFile implements Iterator {
         $this->_items[$file->key_name] = $file;
     }
     
+    /**
+     * 删除保存的文件,一般情况下在数据库回滚时调用
+     */
+    public function cleanAll(){
+        foreach($this->_items as $file){
+            $file->clean();
+        }
+    }
+    
     public function __get(string $attr){
         if(isset($this->_items[$attr])){
             return $this->_items[$attr];

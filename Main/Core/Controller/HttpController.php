@@ -6,7 +6,8 @@ defined('IN_SYS') || exit('ACC Denied');
 
 use \Closure;
 use \PDOException;
-
+use \Main\Core\Cache;
+use \Main\Core\Template;
 /**
  * 响应页面
  * Class HttpController
@@ -66,8 +67,6 @@ abstract class HttpController extends \Main\Core\Controller {
      * @return bool
      */
     protected function returnData($content = '', $type_p = false, $code_p = false) {
-        if ($content === false || $content === null || $content === 0 || $content === -1)
-            return $this->returnMsg(0);
         if ($content instanceof Closure) {
             try{
                 $content = call_user_func($content);
@@ -75,6 +74,8 @@ abstract class HttpController extends \Main\Core\Controller {
                 return $this->returnMsg(0, $pdo->getMessage());
             }
         }
+        if ($content === false || $content === null || $content === 0 || $content === -1)
+            return $this->returnMsg(0);
         if (is_int($type_p)) {
             $type = $code_p ? $code_p : false;
             $code = $type_p;
@@ -87,13 +88,13 @@ abstract class HttpController extends \Main\Core\Controller {
     }
 
     // 以组件方式引入html
-    final protected function template($filename = false) {
-        $file = $filename ? $filename : $this->classname;
-        $this->assignPhp('T_VIEW', 'App/' . $this->app . '/View/');
-        $DATA = $this->phparray;
-        include ROOT . 'App/' . $this->app . '/View/template/' . $file . '.html';
-        echo '<script>' . $this->cache . '</script>';
-    }
+//    final protected function template($filename = false) {
+//        $file = $filename ? $filename : $this->classname;
+//        $this->assignPhp('T_VIEW', 'App/' . $this->app . '/View/');
+//        $DATA = $this->phparray;
+//        include ROOT . 'App/' . $this->app . '/View/template/' . $file . '.html';
+//        echo '<script>' . $this->cache . '</script>';
+//    }
 
     // 渲染页面赋值准备
     final protected function getReady() {
@@ -127,7 +128,7 @@ abstract class HttpController extends \Main\Core\Controller {
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 EEE;
         // 公用view DEBUG下不缓存
-        echo DEBUG ? obj('Template')->includeFiles() : obj('cache')->call(obj('Template'), 'includeFiles', 1);
+        echo DEBUG ? obj(Template::class)->includeFiles() : obj(Cache::class)->call(obj(Template::class), 'includeFiles', 30);
         // 页面各种赋值
         echo '<script>' . $ajax, $this->cache . '</script>';
         // 重置

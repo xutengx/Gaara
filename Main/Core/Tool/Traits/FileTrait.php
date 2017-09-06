@@ -151,7 +151,7 @@ trait FileTrait {
      *
      * @return string
      */
-    final public function makeFilename(string $dir = '', string $ext = '', $id = 123) {
+    final public function makeFilename(string $dir = '', string $ext = '', string $id = 'def') : string {
         $ext = trim($ext, '.');
         $dir = $dir ? rtrim($dir, '/') . '/' : './';
         if (!is_dir($dir))

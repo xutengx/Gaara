@@ -109,6 +109,9 @@ class Request {
             if (strpos($block, 'filename=') !== FALSE) {
                 // match "name", then everything after "stream" (optional) except for prepending newlines
                 preg_match("/name=\"([^\"]*)\".*filename=\"([^\"].*?)\".*Content-Type:\s+(.*?)[\n|\r|\r\n]+([^\n\r].*)?$/s", $block, $matches);
+                // 兼容无文件上传的情况
+                if(empty($matches))
+                    continue;
                 $content_blob = $matches[4];
                 $content_blob = substr($content_blob, 0, strlen($content_blob) - strlen(PHP_EOL) * 2);        // 移除尾部多余换行符
                 $this->file->addFile([
@@ -135,13 +138,14 @@ class Request {
     private function consistentFile() {
         if (!empty($_FILES)) {
             foreach ($_FILES as $k => $v) {
-                $this->file->addFile([
-                    'key_name' => $k,
-                    'name' => $v['name'],
-                    'type' => $v['type'],
-                    'tmp_name' => $v['tmp_name'],
-                    'size' => $v['size']
-                ]);
+                if($v['error'] === 0)
+                    $this->file->addFile([
+                        'key_name' => $k,
+                        'name' => $v['name'],
+                        'type' => $v['type'],
+                        'tmp_name' => $v['tmp_name'],
+                        'size' => $v['size']
+                    ]);
             }
         }
     }

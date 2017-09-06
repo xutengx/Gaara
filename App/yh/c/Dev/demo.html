@@ -13,6 +13,17 @@
             input[type=button]{margin-top: 10px;}
             .admin{color: #990000}
             .merchant{color: #0016b0}
+            *{padding:0;list-style-type:none;}
+            a,img{border:0;}
+
+            /* leftsead */
+            #leftsead{width:131px;height:143px;position:fixed;top:258px;right:0px;}
+            #leftsead li{width:131px;height:53px;}
+            #leftsead li img{float:right;border-bottom-left-radius:5px;border-top-left-radius:5px;}
+            #leftsead li a{height:49px;float:right;display:block;min-width:47px;max-width:131px;}
+            #leftsead li a .shows{display:block;}
+            #leftsead li a .hides{margin-right:-166px;cursor:pointer;cursor:hand;}
+            #leftsead li a.youhui .hides{display:none;position:absolute;right:216px;top:2px;}
         </style>
         <script>
             // api接口获取,并有时效性,
@@ -80,6 +91,12 @@
         </script>
     </head>
     <body>
+        <div id="leftsead">
+            <ul>
+                <li><span>当前角色</span><div id="role">未登陆<div></li>
+                <!--<li><span>当前用户名</span><div id="username">未登陆<div></li>-->
+            </ul>
+        </div><!--leftsead end-->
         <div>
             <?php echo '请求接口 : '.$DATA['url']; ?>
         </div>
@@ -155,13 +172,14 @@
                     console.log(re);
                     if(re.code === 1){
                         token = re.data;
+                        $('#role').html('管理员');
                         console.log('token设置为'+ re.data);
                     }
                 }, 'post');
             </script>
         </form>
         <hr>
-        <label class="admin">管理员令牌以旧换新( 重置有效期 ) /user/token post</label><br><br>
+        <label class="admin">管理员令牌以旧换新( 重置有效期 ) /admin/token post</label><br><br>
         <form action="action">
             <span>用户名</span><input type="text" name="username"  value="admin"/><br>
             <span>密码</span><input type="text" name="passwd"  value="123123"/><br>
@@ -194,22 +212,43 @@
             <span>密码</span><input type="text" name="passwd"  value="123123"/><br>
             <input id="adminreg" type="button" value="submit">
             <script>
-                $('#adminreg').submitData('/admin/reg', function (re) {
-                    console.log(re);
-                }, 'post');
+                $('#adminreg').on('click',function(){
+                    var data = setData(this);
+                    $.ajax({
+                        url:$.url('/admin/reg'),
+                        data:data,
+                        type:'post',
+                        dataType:'json',
+                        processData: false,
+                        contentType: false,
+                        success:function(re){
+                            console.log(re);
+                        }
+                    });
+                });
             </script>
         </form>
         <hr>
-        <label class="admin">管理员重置自己密码 /admin/setpasswd post</label><br><br>
+        <label class="admin">管理员重置自己密码 /admin/setpasswd put</label><br><br>
         <form action="action">
-            <span>用户名</span><input type="text" name="username"  value="admin2"/><br>
             <span>原密码</span><input type="text" name="oldpasswd"  value="123123"/><br>
             <span>密码</span><input type="text" name="passwd"  value="123123123"/><br>
             <input id="adminsetpasswd" type="button" value="submit">
             <script>
-                $('#adminsetpasswd').submitData('/admin/setpasswd', function (re) {
-                    console.log(re);
-                }, 'post');
+                $('#adminsetpasswd').on('click',function(){
+                    var data = setData(this);
+                    $.ajax({
+                        url:$.url('/admin/setpasswd'),
+                        data:data,
+                        type:'put',
+                        dataType:'json',
+                        processData: false,
+                        contentType: false,
+                        success:function(re){
+                            console.log(re);
+                        }
+                    });
+                });;
             </script>
         </form>
         <hr>
@@ -223,6 +262,7 @@
                     console.log(re);
                     if(re.code === 1){
                         token = re.data;
+                        $('#role').html('商户');
                         console.log('token设置为'+ re.data);
                     }
                 }, 'post');
@@ -353,7 +393,7 @@
                 $('#merchantget').on('click',function(){
                     $.ajax({
                         url:$.url('/merchant'),
-                        data:makeSign({'id':'101'}),
+                        data:makeSign({}),
                         type:'get',
                         dataType:'json',
                         success:function(re){

@@ -17,7 +17,7 @@ class MainUser extends \Main\Core\Model {
      */
     public function createUser(string $email, string $passwd) {
         $hashPasswd = password_hash($passwd, self::encryption);
-        try{
+//        try{
             return $this->data([
                 'email' => ':email',
                 'passwd' => ':passwd'
@@ -26,9 +26,9 @@ class MainUser extends \Main\Core\Model {
                 ':email' => $email,
                 ':passwd' => $hashPasswd
             ]);
-        }catch (\Exception $e){
-            return false;
-        }
+//        }catch (\Exception $e){
+//            return false;
+//        }
     }
     /**
      * 加密保存, 并发下处理

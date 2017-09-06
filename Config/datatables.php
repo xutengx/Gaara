@@ -33,9 +33,9 @@ CREATE TABLE `main_admin` (
   `create_admin_id` int(1) unsigned NOT NULL DEFAULT '0' COMMENT '此管理员的创建者ID, main_admin.id',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=innodb AUTO_INCREMENT=8000000000 DEFAULT CHARSET=utf8 COMMENT='管理员表';
+) ENGINE=innodb AUTO_INCREMENT=2000000000 DEFAULT CHARSET=utf8 COMMENT='管理员表';
 
-INSERT INTO `main_admin` VALUES ('4000000000', 'admin', '$2y$10$1T62akHp47oLeIKuv6DzU.ZLnjXycsUlvAjF.m6dBi0XgPYhICF8q', '3232235814', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `main_admin` VALUES ('2000000000', 'admin', '$2y$10$1T62akHp47oLeIKuv6DzU.ZLnjXycsUlvAjF.m6dBi0XgPYhICF8q', '3232235814', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,'0');
 
 CREATE TABLE `user_merchant` (
   `id` int(1) unsigned NOT NULL COMMENT '商户ID, 既是用户ID, main_user.id',

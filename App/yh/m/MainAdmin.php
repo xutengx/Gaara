@@ -15,20 +15,18 @@ class MainAdmin extends \Main\Core\Model {
      * @param string $passwd
      * @return boolean
      */
-    public function createUser(string $username, string $passwd) {
+    public function createUser(string $username, string $passwd, int $admin_id) {
         $hashPasswd = password_hash($passwd, self::encryption);
-        try{
-            return $this->data([
-                'username' => ':username',
-                'passwd' => ':passwd'
-            ])
-            ->insert([
-                ':username' => $username,
-                ':passwd' => $hashPasswd
-            ]);
-        }catch (\Exception $e){
-            return false;
-        }
+        return $this->data([
+            'username' => ':username',
+            'passwd' => ':passwd',
+            'create_admin_id' => ':create_admin_id',
+        ])
+        ->insert([
+            ':username' => $username,
+            ':passwd' => $hashPasswd,
+            ':create_admin_id' => $admin_id
+        ]);
     }
     /**
      * 加密保存, 并发下处理
@@ -38,19 +36,15 @@ class MainAdmin extends \Main\Core\Model {
      */
     public function resetPasswd(string $username, string $passwd) {
         $hashPasswd = password_hash($passwd, self::encryption);
-        try{
-            return $this->where([
-                'username' => ':username'
-            ])->data([
-                'passwd' => ':passwd'
-            ])
-            ->update([
-                ':username' => $username,
-                ':passwd' => $hashPasswd
-            ]);
-        }catch (\Exception $e){
-            return false;
-        }
+        return $this->where([
+            'username' => ':username'
+        ])->data([
+            'passwd' => ':passwd'
+        ])
+        ->update([
+            ':username' => $username,
+            ':passwd' => $hashPasswd
+        ]);
     }
     
     

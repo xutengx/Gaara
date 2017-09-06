@@ -55,7 +55,7 @@ trait RequestTrait {
 
     protected function put($key = null, $rule = null, $msg = null) {
         $this->checkCsrfToken();
-        return $this->requestFun($key, $rule, $msg, 'post');
+        return $this->requestFun($key, $rule, $msg, 'put');
     }
 
     protected function post($key = null, $rule = null, $msg = null) {

@@ -49,7 +49,10 @@ class Reg extends HttpController {
         // 验证链接
         $this->checkToken($token, $email, $secure);
         // 新增用户
-        return $this->returnData($user->createUser($email, $passwd)); 
+        return $this->returnData(function() use ($user, $email, $passwd){
+            return $user->createUser($email, $passwd);
+        });
+//        return $this->returnData($user->createUser($email, $passwd)); 
     }
 
     /**

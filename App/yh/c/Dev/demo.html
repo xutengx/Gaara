@@ -30,13 +30,13 @@
             var token = 'QhpYXENcCQRUTRQDVFdcWxtfGwhSUwIBBlUFAFdwEkQXW15VQ0oaRAUSRRFdFA8VHVdAHVRUF1VnEQ5pEgggdmB3ZX5TE19_NTJlMEwDWQFzVFRSMlJ3BwwSW0oXUS15SAFIZE4PfA0IBnsFWBQZFUoRWE0QFxELBEoUVQRDF2pVV1ZRDzlRREZbBVQKBAcDD1ALAElGX1BGEmlVClcKW2ZZRRpbRAoEVVYbVgEbBwQZVAwDUVQJAQVEGhsGQgZUTV1VZwASGg5GUwZXDhsFDxRXChlUVQkCAlwGDEccQUBJXFBMBAJnVRBDDEQLBgQAFFUBFFdXEwAAXAUOXwFTFxUaRVcKA1ZrFxVXFE1pQV5UABsDVFEDAgFRAglVAB4';
             // 双方约定
             var key = 'yh';
-            var setData = function(obj){
+            var setData = function (obj) {
                 var form = $(obj).parents('form')[0];
                 var fd = new FormData(form);
                 // FormData 转 普通对象
                 var convert_FormData_to_json = function (formData) {
                     var objData = {};
-                    for (var entry of formData.entries()){
+                    for (var entry of formData.entries()) {
                         objData[entry[0]] = entry[1];
                     }
                     return (objData);
@@ -46,7 +46,7 @@
                     var newkey = Object.keys(obj).sort();
                     var newObj = {};
                     for (var i = 0; i < newkey.length; i++) {
-                        if(obj[newkey[i]] instanceof File)
+                        if (obj[newkey[i]] instanceof File)
                             continue;
                         newObj[newkey[i]] = obj[newkey[i]];
                     }
@@ -54,23 +54,23 @@
                 };
                 var timestamp = Date.parse(new Date()) / 1000;
                 var data = objKeySort(convert_FormData_to_json(fd));
-                data.timestamp = timestamp
+                data.timestamp = timestamp;
                 data.token = token;
-                var str = JSON.stringify(data); 
-                
+                var str = JSON.stringify(data);
+
                 fd.append('timestamp', timestamp);
                 fd.append('token', token);
                 fd.append('sign', md5(md5(str) + key));
                 return fd;
             };
-            
+
             var makeSign = function (data) {
                 //排序的函数
                 var objKeySort = function (obj) {
                     var newkey = Object.keys(obj).sort();
                     var newObj = {};
                     for (var i = 0; i < newkey.length; i++) {
-                        if(obj[newkey[i]] instanceof File)
+                        if (obj[newkey[i]] instanceof File)
                             continue;
                         newObj[newkey[i]] = obj[newkey[i]];
                     }
@@ -93,7 +93,10 @@
     <body>
         <div id="leftsead">
             <ul>
-                <li><span>当前角色</span><div id="role">未登陆<div></li>
+                <li>
+                    <span>当前角色</span>
+                    <div id="role">未登陆</div>
+                </li>
                 <!--<li><span>当前用户名</span><div id="username">未登陆<div></li>-->
             </ul>
         </div><!--leftsead end-->
@@ -170,10 +173,10 @@
             <script>
                 $('#adminlogin').submitData('/admin/login', function (re) {
                     console.log(re);
-                    if(re.code === 1){
+                    if (re.code === 1) {
                         token = re.data;
                         $('#role').html('管理员');
-                        console.log('token设置为'+ re.data);
+                        console.log('token设置为' + re.data);
                     }
                 }, 'post');
             </script>
@@ -185,20 +188,20 @@
             <span>密码</span><input type="text" name="passwd"  value="123123"/><br>
             <input id="admintoken" type="button" value="submit">
             <script>
-                $('#admintoken').on('click',function(){
+                $('#admintoken').on('click', function () {
                     var data = setData(this);
                     $.ajax({
-                        url:$.url('/admin/token'),
-                        data:data,
-                        type:'post',
-                        dataType:'json',
+                        url: $.url('/admin/token'),
+                        data: data,
+                        type: 'post',
+                        dataType: 'json',
                         processData: false,
                         contentType: false,
-                        success:function(re){
+                        success: function (re) {
                             console.log(re);
-                            if(re.code === 1){
+                            if (re.code === 1) {
                                 token = re.data;
-                                console.log('token重新设置为'+ re.data);
+                                console.log('token重新设置为' + re.data);
                             }
                         }
                     });
@@ -212,16 +215,16 @@
             <span>密码</span><input type="text" name="passwd"  value="123123"/><br>
             <input id="adminreg" type="button" value="submit">
             <script>
-                $('#adminreg').on('click',function(){
+                $('#adminreg').on('click', function () {
                     var data = setData(this);
                     $.ajax({
-                        url:$.url('/admin/reg'),
-                        data:data,
-                        type:'post',
-                        dataType:'json',
+                        url: $.url('/admin/reg'),
+                        data: data,
+                        type: 'post',
+                        dataType: 'json',
                         processData: false,
                         contentType: false,
-                        success:function(re){
+                        success: function (re) {
                             console.log(re);
                         }
                     });
@@ -235,20 +238,21 @@
             <span>密码</span><input type="text" name="passwd"  value="123123123"/><br>
             <input id="adminsetpasswd" type="button" value="submit">
             <script>
-                $('#adminsetpasswd').on('click',function(){
+                $('#adminsetpasswd').on('click', function () {
                     var data = setData(this);
                     $.ajax({
-                        url:$.url('/admin/setpasswd'),
-                        data:data,
-                        type:'put',
-                        dataType:'json',
+                        url: $.url('/admin/setpasswd'),
+                        data: data,
+                        type: 'put',
+                        dataType: 'json',
                         processData: false,
                         contentType: false,
-                        success:function(re){
+                        success: function (re) {
                             console.log(re);
                         }
                     });
-                });;
+                });
+                ;
             </script>
         </form>
         <hr>
@@ -260,10 +264,10 @@
             <script>
                 $('#userlogin').submitData('/user/login', function (re) {
                     console.log(re);
-                    if(re.code === 1){
+                    if (re.code === 1) {
                         token = re.data;
                         $('#role').html('商户');
-                        console.log('token设置为'+ re.data);
+                        console.log('token设置为' + re.data);
                     }
                 }, 'post');
             </script>
@@ -275,20 +279,20 @@
             <span>密码</span><input type="text" name="passwd"  value="123123"/><br>
             <input id="usertoken" type="button" value="submit">
             <script>
-                $('#usertoken').on('click',function(){
+                $('#usertoken').on('click', function () {
                     var data = setData(this);
                     $.ajax({
-                        url:$.url('/user/token'),
-                        data:data,
-                        type:'post',
-                        dataType:'json',
+                        url: $.url('/user/token'),
+                        data: data,
+                        type: 'post',
+                        dataType: 'json',
                         processData: false,
                         contentType: false,
-                        success:function(re){
+                        success: function (re) {
                             console.log(re);
-                            if(re.code === 1){
+                            if (re.code === 1) {
                                 token = re.data;
-                                console.log('token重新设置为'+ re.data);
+                                console.log('token重新设置为' + re.data);
                             }
                         }
                     });
@@ -324,16 +328,16 @@
             <span>授权人联系方式</span><input type="text" name="authorizer_phone"  value="15536482222"/><br>
             <input id="merchantpost" type="button" value="submit">
             <script>
-                $('#merchantpost').on('click',function(){
+                $('#merchantpost').on('click', function () {
                     var data = setData(this);
                     $.ajax({
-                        url:$.url('/merchant'),
-                        data:data,
-                        type:'post',
-                        dataType:'json',
+                        url: $.url('/merchant'),
+                        data: data,
+                        type: 'post',
+                        dataType: 'json',
                         processData: false,
                         contentType: false,
-                        success:function(re){
+                        success: function (re) {
                             console.log(re);
                         }
                     });
@@ -369,16 +373,16 @@
             <span>授权人联系方式</span><input type="text" name="authorizer_phone"  value="15536482222"/><br>
             <input id="merchantput" type="button" value="submit">
             <script>
-                $('#merchantput').on('click',function(){
+                $('#merchantput').on('click', function () {
                     var data = setData(this);
                     $.ajax({
-                        url:$.url('/merchant'),
-                        data:data,
-                        type:'put',
-                        dataType:'json',
+                        url: $.url('/merchant'),
+                        data: data,
+                        type: 'put',
+                        dataType: 'json',
                         processData: false,
                         contentType: false,
-                        success:function(re){
+                        success: function (re) {
                             console.log(re);
                         }
                     });
@@ -390,13 +394,13 @@
         <form action="action">
             <input id="merchantget" type="button" value="submit">
             <script>
-                $('#merchantget').on('click',function(){
+                $('#merchantget').on('click', function () {
                     $.ajax({
-                        url:$.url('/merchant'),
-                        data:makeSign({}),
-                        type:'get',
-                        dataType:'json',
-                        success:function(re){
+                        url: $.url('/merchant'),
+                        data: makeSign({}),
+                        type: 'get',
+                        dataType: 'json',
+                        success: function (re) {
                             console.log(re);
                         }
                     });
@@ -408,13 +412,13 @@
         <form action="action">
             <input id="merchantdelete" type="button" value="submit">
             <script>
-                $('#merchantdelete').on('click',function(){
+                $('#merchantdelete').on('click', function () {
                     $.ajax({
-                        url:$.url('/merchant'),
-                        data:makeSign({}),
-                        type:'delete',
-                        dataType:'json',
-                        success:function(re){
+                        url: $.url('/merchant'),
+                        data: makeSign({}),
+                        type: 'delete',
+                        dataType: 'json',
+                        success: function (re) {
                             console.log(re);
                         }
                     });
@@ -422,5 +426,138 @@
             </script>
         </form>
         <hr>
+        <script>
+
+            function loadXMLDoc()
+            {
+                var xmlhttp;
+                if (window.XMLHttpRequest)
+                {// code for IE7+, Firefox, Chrome, Opera, Safari
+                    xmlhttp = new XMLHttpRequest();
+                } else
+                {// code for IE6, IE5
+                    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                xmlhttp.onreadystatechange = function ()
+                {
+                    if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
+                    {
+                        document.getElementById("myDiv").innerHTML = xmlhttp.responseText;
+                    }
+                }
+                xmlhttp.open("PUT", $.url('/merchant'), true);
+                xmlhttp.send();
+            }
+            loadXMLDoc();
+        </script>
+        <script>
+
+            import {baseUrl} from './env';
+            import md5 from 'js-md5';
+
+            let makeSign = function (data) {
+
+                // api接口获取,并有时效性,
+                let token = localStorage.getItem('USER_TOKEN');
+                // 双方约定
+                let key = 'yh';
+                //排序的函数
+                let objKeySort = function (obj) {
+                    let newkey = Object.keys(obj).sort();
+                    let newObj = {};
+                    for (let i = 0; i < newkey.length; i++) {
+                        newObj[newkey[i]] = obj[newkey[i]];
+                    }
+                    return newObj;
+                };
+                data = objKeySort(data);
+                data.timestamp = Date.parse(new Date()) / 1000;
+                data.token = token;
+                let str = JSON.stringify(data);
+                data.sign = md5(md5(str) + key);
+                return data;
+            };
+
+
+
+            export default async(type = 'GET', url = '', InData = {}, method = 'fetch', singFlag = true) => {
+                var data = InData;
+                if (singFlag) {
+                    data = makeSign(InData);
+                }
+
+                type = type.toUpperCase();
+                url = baseUrl + url;
+
+                if (type === 'GET') {
+                    let dataStr = ''; //数据拼接字符串
+                    Object.keys(data).forEach(key => {
+                        dataStr += key + '=' + data[key] + '&';
+                    });
+
+                    if (dataStr !== '') {
+                        dataStr = dataStr.substr(0, dataStr.lastIndexOf('&'));
+                        url = url + '?' + dataStr;
+                    }
+                }
+
+                if (window.fetch && method === 'fetch') {
+                    let requestConfig = {
+                        credentials: 'include',
+                        method: type,
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        mode: "cors",
+                        cache: "force-cache"
+                    };
+
+                    if (type !== 'GET') {
+                        Object.defineProperty(requestConfig, 'body', {
+                            value: JSON.stringify(data)
+                        });
+                    }
+
+                    try {
+                        var response = await fetch(url, requestConfig);
+                        var responseJson = await response.json();
+                    } catch (error) {
+                        throw new Error(error);
+                    }
+                    return responseJson;
+                } else {
+                    let requestObj;
+                    if (window.XMLHttpRequest) {
+                        requestObj = new XMLHttpRequest();
+                    } else {
+                        requestObj = new ActiveXObject;
+                    }
+
+                    let sendData = '';
+                    if (type !== 'GET') {
+                        sendData = JSON.stringify(data);
+                    }
+
+                    requestObj.open(type, url, true);
+                    requestObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    requestObj.send(sendData);
+
+                    requestObj.onreadystatechange = () => {
+                        if (requestObj.readyState === 4) {
+                            if (requestObj.status === 200) {
+                                let obj = requestObj.response;
+                                if (typeof obj !== 'object') {
+                                    obj = JSON.parse(obj);
+                                }
+                                return obj;
+                            } else {
+                                throw new Error(requestObj);
+                            }
+                        }
+                    };
+                }
+            }
+        </script>
     </body>
 </html>

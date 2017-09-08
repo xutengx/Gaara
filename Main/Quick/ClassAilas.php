@@ -13,4 +13,6 @@ namespace {
     final class Template extends \Main\Core\Container {}
     final class Tool extends \Main\Core\Container {}
     final class Mail extends \Main\Core\Container {}
+    final class Log extends \Main\Core\Container {}
+    final class PhpConsole extends \Main\Core\Container {}
 }

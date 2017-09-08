@@ -426,10 +426,13 @@
             </script>
         </form>
         <hr>
-        <script>
+<!--        <script>
 
             function loadXMLDoc()
             {
+                
+                var fd = new FormData;
+                fd.append('tt','test');
                 var xmlhttp;
                 if (window.XMLHttpRequest)
                 {// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -446,7 +449,8 @@
                     }
                 }
                 xmlhttp.open("PUT", $.url('/merchant'), true);
-                xmlhttp.send();
+//                xmlhttp.send(JSON.stringify({'test':'data'}));
+                xmlhttp.send(fd);
             }
             loadXMLDoc();
         </script>
@@ -558,6 +562,6 @@
                     };
                 }
             }
-        </script>
+        </script>-->
     </body>
 </html>

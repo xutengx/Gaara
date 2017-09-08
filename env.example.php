@@ -15,6 +15,8 @@ return [
     
     'DB_CONNECTION' => '_test',
     
+    'PHP_CONSOLE_PASSWD' => 'passwd',
+    
     'db_user' => 'root',
     'db_host' => '127.0.0.1',
     'db_passwd' => 'root',

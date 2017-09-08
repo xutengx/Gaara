@@ -1,7 +1,7 @@
 <?php
 
+declare(strict_types = 1);
 namespace Main\Core;
-
 defined('IN_SYS') || exit('ACC Denied');
 
 abstract class Container {
@@ -24,11 +24,11 @@ abstract class Container {
         throw new Exception('别名类: ' . $class . ' 的 $instance 没有被正确定义!');
     }
 
-    final public function __set($param, $value) {
+    final public function __set(string $param, $value) {
         return static::getInstance()->$param = $value;
     }
 
-    final public function __get($name) {
+    final public function __get(string $name) {
         return static::getInstance()->$name;
     }
 
@@ -37,12 +37,12 @@ abstract class Container {
         return static::getInstance()(...$param);
     }
 
-    final public function __call($method, $args) {
+    final public function __call(string $method, array $args) {
         $instance = static::getInstance();
         return $instance->$method(...$args);
     }
 
-    final public static function __callStatic($method, $args) {
+    final public static function __callStatic(string $method, array $args) {
         $instance = static::getInstance();
         return $instance->$method(...$args);
     }

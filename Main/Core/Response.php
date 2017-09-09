@@ -25,7 +25,6 @@ class Response {
     }
 
     public function init() {
-//        ob_start();
         $this->getInfo();
     }
     /*
@@ -64,7 +63,7 @@ class Response {
     public function returnData($data = '', $type = false, $code = 200) {
         $type = $type ? strtolower($type) : $this->acceptType;
         $this->sendHttpHeader($code, $type);
-        exit($this->encodeData($data, $type));
+        return ($this->encodeData($data, $type));
     }
 
     // 发送Http状态信息

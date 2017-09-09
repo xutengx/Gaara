@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace App\yh\c\merchant;
 defined('IN_SYS') || exit('ACC Denied');
 
-use App\yh\m\UserMerchant;
+use App\yh\m\UserApplication;
 use Main\Core\Request;
 use Main\Core\Controller\HttpController;
 use PDOException;
@@ -15,36 +15,36 @@ use PDOException;
 class Application extends HttpController {
     
     /**
-     * 查询单个应用信息
+     * 查询商户下所有应用信息
      * @param Request $request
      * @param UserMerchant $merchant
      * @return type
      */
-    public function select(Request $request, UserMerchant $merchant) {
-        $userid = (int)$request->userinfo['id'];
+    public function select(Request $request, UserApplication $application) {
+        $merchant_id = (int)$request->userinfo['id'];
         
-        return $this->returnData(function() use ($merchant, $userid){
-            return $merchant->getInfo( $userid );
+        return $this->returnData(function() use ($application, $merchant_id){
+            return $application->getAllByMerchantId( $merchant_id );
         });
     }
 
     /**
-     * 新增商户信息
+     * 新增一个应用信息
      * @param Request $request
-     * @param UserMerchant $merchant
+     * @param UserApplication $application
      */
-    public function create(Request $request, UserMerchant $merchant) {
+    public function create(Request $request, UserApplication $application) {
         $userinfo = $request->userinfo;
-        $merchantInfo = $request->input;
+        $applicationInfo = $request->input;
         
-        $merchant->orm = $merchantInfo;
-        $merchant->orm['id'] = $userinfo['id'];
+        $application->orm = $applicationInfo;
+        $application->orm['merchant_id'] = $userinfo['id'];
         
         // 保存文件
         foreach($request->file as $k => $file){
             if($file->is_img() && $file->is_less()){
                 if($file->move_uploaded_file())
-                    $merchant->orm[$k] = $file->save_path;
+                    $application->orm[$k] = $file->save_path;
             }else {
                 $request->file->cleanAll();
                 return $this->returnMsg(0, '上传类型不为图片, 或者大于8m');
@@ -53,7 +53,7 @@ class Application extends HttpController {
         
         // 写入数据库, 若失败则删除已保存的文件
         try{
-            $res = $merchant->create();
+            $res = $application->create();
             return $this->returnData($res);
         }catch(PDOException $pdo){
             $request->file->cleanAll();
@@ -62,26 +62,26 @@ class Application extends HttpController {
     }
 
     /**
-     * 更新商户信息
+     * 更新应用信息
      * @param Request $request
-     * @param UserMerchant $merchant
+     * @param UserApplication $application
      */
-    public function update(Request $request, UserMerchant $merchant) {
+    public function update(Request $request, UserApplication $application) {
         $userid = $request->userinfo['id'];
-        $merchantInfo = $request->input;
+        $applicationInfo = $request->input;
         // 原数据
-        $merchantOldInfo = $merchant->getInfo( $userid );
+        $applicationOldInfo = $application->getInfo( $userid );
         // 将要被替换的文件
         $oldFileArr = [];
         
-        $merchant->orm = $merchantInfo;
+        $merchant->orm = $applicationInfo;
         $merchant->orm['modify_at'] = date('Y-m-d H:i:s');
         // 保存文件
         foreach($request->file as $k => $file){
             if($file->is_img() && $file->is_less()){
                 if($file->move_uploaded_file()){
-                    $merchant->orm[$k] = $file->save_path;
-                    $oldFileArr[] = $merchantOldInfo[$k];
+                    $application->orm[$k] = $file->save_path;
+                    $oldFileArr[] = $applicationOldInfo[$k];
                 }
             } else {
                 $request->file->cleanAll();
@@ -91,7 +91,7 @@ class Application extends HttpController {
         
         // 写入数据库, 若失败则删除已保存的文件
         try{
-            $res = $merchant->save($userid);
+            $res = $application->save($userid);
             $this->clean($oldFileArr);
             return $this->returnData($res);
         }catch(PDOException $pdo){
@@ -101,26 +101,26 @@ class Application extends HttpController {
     }
 
     /**
-     * 删除商户信息
+     * 删除应用信息
      * @return type
      */
-    public function destroy(Request $request, UserMerchant $merchant) {
+    public function destroy(Request $request, UserApplication $application) {
         $userid = (int)$request->userinfo['id'];
         
         //数据库中的文件字段,都以 _file 结尾 eg : organization_file
         $end_string = '_file';
         // 原数据
-        $merchantOldInfo = $merchant->getInfo( $userid );
+        $applicationOldInfo = $application->getInfo( $userid );
         // 将要被替换的文件
         $oldFileArr = []; 
-        foreach($merchantOldInfo as $k => $v){
-            if( strrchr($k, $end_string)===$end_string ){
+        foreach($applicationOldInfo as $k => $v){
+            if( strrchr($k, $end_string) === $end_string ){
                 $oldFileArr[] = $v;
             }
         }
         
         try{
-            $res = $merchant->delById( $userid );
+            $res = $application->delById( $userid );
             $this->clean($oldFileArr);
             return $this->returnData($res);
         }catch(PDOException $pdo){

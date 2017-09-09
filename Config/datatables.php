@@ -76,10 +76,12 @@ CREATE TABLE `user_application` (
   `id` int(1) unsigned NOT NULL AUTO_INCREMENT COMMENT '应用ID',
   `merchant_id` int(1) unsigned NOT NULL COMMENT '商户ID,user_merchant.id, 既是用户ID, main_user.id',
   `application_name` varchar(100) NOT NULL DEFAULT '' COMMENT '应用名称',
+  `describe` varchar(250) NOT NULL DEFAULT '' COMMENT '应用描述',
   `application_logo_file` varchar(100) NOT NULL DEFAULT '' COMMENT '应用logo文件',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '资料提交时间',
   `modify_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '资料修改时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  INDEX KEY `merchant_id` (`merchant_id`)
 ) ENGINE=innodb AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COMMENT='应用信息表';
 
 CREATE TABLE `merchant_secret` (

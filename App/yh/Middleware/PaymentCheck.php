@@ -8,6 +8,7 @@ use Main\Core\Middleware;
 use \Main\Core\Request;
 use App\yh\s\Token;
 use App\yh\s\Sign;
+use Response;
 
 /**
  * 规则校验api调用权限
@@ -118,6 +119,6 @@ class PaymentCheck extends Middleware {
      */
     private function error(string $msg, int $code = 0){
         $data = ['code'=> $code, 'msg' => $msg];
-        \Response::returnData($data, 'json', 403);
+        exit(Response::returnData($data, 'json', 403));
     }
 }

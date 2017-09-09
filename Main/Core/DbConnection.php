@@ -4,6 +4,7 @@ defined('IN_SYS')||exit('ACC Denied');
 
 use PDOException;
 use Main\Core\Exception\Pdo;
+use \Log;
 /**
  * 数据库连接类，依赖 PDO_MYSQL 扩展
  */

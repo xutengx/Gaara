@@ -26,7 +26,7 @@ class CrossDomainAccess extends Middleware {
         $headers['Access-Control-Allow-Methods'] = $this->allowMothods();
         $response->setHeaders($headers);
         if ($request->method === 'options') {
-            $response->returnData();
+            exit($response->returnData());
         }
     }
     

@@ -122,6 +122,7 @@ abstract class HttpController extends \Main\Core\Controller {
         $DATA = $this->phparray;
         // 防scrf的ajax(基于jquery), 接受post提交数据前.先验证http头中的 csrftoken
         $ajax = obj('Secure')->csrfAjax($this->classname);
+        ob_start();
         echo <<<EEE
 <!DOCTYPE html>
 <html lang="zh-CN" xml:lang='zh-CN' xmlns='http://www.w3.org/1999/xhtml'>
@@ -140,7 +141,9 @@ EEE;
         echo <<<EEE
 </html>
 EEE;
-        return true;
+        $contents = ob_get_contents();
+        ob_end_clean();
+        return $contents;
     }
 
     /**

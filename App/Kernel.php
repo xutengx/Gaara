@@ -1,28 +1,38 @@
 <?php
 
+declare(strict_types = 1);
 namespace App;
+defined('IN_SYS') || exit('ACC Denied');
 
 use Main\Core\Kernel as HttpKernel;
+use Main\Core\Middleware\ReturnResponse;
+use Main\Core\Middleware\ValidatePostSize;
+use Main\Core\Middleware\StartSession;
+use Main\Core\Middleware\CrossDomainAccess;
+use Main\Core\Middleware\ThrottleRequests;
+use Main\Core\Middleware\PerformanceMonitoring;
 
 class Kernel extends HttpKernel {
     // 全局中间件
     protected $middlewareGlobel = [
         // 根据http协议返回
-        \Main\Core\Middleware\ReturnResponse::class,
+        ReturnResponse::class,
         // post请求体大小检测
-        \Main\Core\Middleware\ValidatePostSize::class,
+        ValidatePostSize::class,
+        // php-console 显示执行性能
+        PerformanceMonitoring::class,
     ];
     // 路由中间件
     protected $middlewareGroups = [
         'web' => [
             // 开启session
-            \Main\Core\Middleware\StartSession::class,
+            StartSession::class,
         ],
         'api' => [
             // 允许跨域
-            \Main\Core\Middleware\CrossDomainAccess::class,
+            CrossDomainAccess::class,
             // 访问频率控制  30次 / 60s
-            \Main\Core\Middleware\ThrottleRequests::class.'@30@60',
+            ThrottleRequests::class.'@30@60',
         ],
 //        'sendMail' => [
 //            // 访问频率控制  1次 / 30s

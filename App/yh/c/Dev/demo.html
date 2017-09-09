@@ -426,6 +426,90 @@
             </script>
         </form>
         <hr>
+        <label class="merchant">应用资料新增 /application post</label><br><br>
+        <form action="action">
+            <span>应用名称</span><input type="text" name="application_name"  value="应用一"/><br>
+            <span>应用logo</span><input type="file" name="application_logo_file"/><br>
+            <span>应用描述</span><input type="text" name="describe" value="1应用描述应用描述1" /><br>
+            <input id="applicationpost" type="button" value="submit">
+            <script>
+                $('#applicationpost').on('click', function () {
+                    var data = setData(this);
+                    $.ajax({
+                        url: $.url('/application'),
+                        data: data,
+                        type: 'post',
+                        dataType: 'json',
+                        processData: false,
+                        contentType: false,
+                        success: function (re) {
+                            console.log(re);
+                        }
+                    });
+                });
+            </script>
+        </form>
+        <hr>
+        <label class="merchant">应用资料修改 /application put</label><br><br>
+        <form action="action">
+            <span>应用名称</span><input type="text" name="application_name"  value="应用一"/><br>
+            <span>应用logo</span><input type="file" name="application_logo_file"/><br>
+            <span>应用描述</span><input type="text" name="describe" value="2应用描述应用描述2" /><br>
+            <input id="applicationput" type="button" value="submit">
+            <script>
+                $('#applicationput').on('click', function () {
+                    var data = setData(this);
+                    $.ajax({
+                        url: $.url('/application'),
+                        data: data,
+                        type: 'put',
+                        dataType: 'json',
+                        processData: false,
+                        contentType: false,
+                        success: function (re) {
+                            console.log(re);
+                        }
+                    });
+                });
+            </script>
+        </form>
+        <hr>
+        <label class="merchant">应用资料查看 /application get</label><br><br>
+        <form action="action">
+            <input id="applicationget" type="button" value="submit">
+            <script>
+                $('#applicationget').on('click', function () {
+                    $.ajax({
+                        url: $.url('/application'),
+                        data: makeSign({}),
+                        type: 'get',
+                        dataType: 'json',
+                        success: function (re) {
+                            console.log(re);
+                        }
+                    });
+                });
+            </script>
+        </form>
+        <hr>
+        <label class="merchant">应用资料删除 /application delete</label><br><br>
+        <form action="action">
+            <input id="applicationdelete" type="button" value="submit">
+            <script>
+                $('#applicationdelete').on('click', function () {
+                    $.ajax({
+                        url: $.url('/application'),
+                        data: makeSign({}),
+                        type: 'delete',
+                        dataType: 'json',
+                        success: function (re) {
+                            console.log(re);
+                        }
+                    });
+                });
+            </script>
+        </form>
+        <hr>
 <!--        <script>
 
             function loadXMLDoc()

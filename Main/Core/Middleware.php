@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types = 1);
 namespace Main\Core;
-
 defined('IN_SYS') || exit('ACC Denied');
+
 use Closure;
 /**
  * 中间件父类
@@ -20,9 +21,10 @@ abstract class Middleware {
         
         // 末置中间件
         $newResponse = $this->doTerminate($response);
-        
+
         // 返回
-        return is_null($newResponse) ? $response : $newResponse;
+//        return is_null($newResponse) ? $response : $newResponse;
+        return $newResponse;
     }
     
     /**
@@ -40,11 +42,10 @@ abstract class Middleware {
      * @return mix              本次操作的响应 ( 合理的返回不应该为 null , null 将会忽略 )
      */
     final protected function doTerminate($response){
-        $newResponse = null;
         if($this->effective() && method_exists($this, 'terminate')){
-            $newResponse = Integrator::run($this, 'terminate',[$response]);
-        }
-        return $newResponse;
+            return Integrator::run($this, 'terminate',[$response]);
+        }else
+            return $response;
     }
     
     /**

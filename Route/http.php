@@ -29,7 +29,7 @@ return [
             Route::restful('/merchant','merchant\Info');
             
             // 应用资料
-            Route::restful('/app','merchant\App');
+            Route::restful('/application','merchant\Application');
           
         });
         // 不检测 token

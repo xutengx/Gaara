@@ -6,6 +6,7 @@ defined('IN_SYS') || exit('ACC Denied');
 
 use Main\Core\Response\Traits;
 use Main\Core\Conf;
+use PhpConsole;
 /**
  * 处理系统全部响应( 输出 )
  */
@@ -117,7 +118,12 @@ class Response {
      * @param type $data
      */
     public function exitData($data = ''){
-        exit($this->setStatus(200)->setContentType($this->acceptType)->encodeData($data));
+        if(ob_get_length() > 0){
+            $content = ob_get_contents();
+            ob_end_clean();
+            PhpConsole::debug ($content, '未捕获的输出, exitData');
+        }
+        exit($this->response($data));
     }
     
     /**
@@ -125,6 +131,14 @@ class Response {
      * @param type $data
      */
     public function returnData($data = ''){
+        return $this->response($data);
+    }
+    
+    /**
+     * 
+     * @param type $data
+     */
+    private function response($data){
         return $this->setStatus(200)->setContentType($this->acceptType)->encodeData($data);
     }
 

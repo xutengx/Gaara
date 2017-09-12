@@ -117,12 +117,12 @@ class Response {
      * 终止进程并响应内容, 可通过set方法设置状态码等
      * @param type $data
      */
-    public function exitData($data = ''){
+    public function exitData($data = ''): void {
+        $content = ob_get_contents();
         if(ob_get_length() > 0){
-            $content = ob_get_contents();
-            ob_end_clean();
-            PhpConsole::debug ($content, '未捕获的输出, exitData');
+            PhpConsole::debug ($content, '未捕获的输出');
         }
+        ob_end_clean();
         exit($this->response($data));
     }
     
@@ -130,7 +130,7 @@ class Response {
      * 返回响应内容, 可通过set方法设置状态码等
      * @param type $data
      */
-    public function returnData($data = ''){
+    public function returnData($data = ''): string {
         return $this->response($data);
     }
     
@@ -138,7 +138,7 @@ class Response {
      * 
      * @param type $data
      */
-    private function response($data){
+    private function response($data): string{
         return $this->setStatus(200)->setContentType($this->acceptType)->encodeData($data);
     }
 
@@ -150,9 +150,10 @@ class Response {
      *
      * @return string
      */
-    private function encodeData($data = '') {
-        if ($this->encode === true)
-            return $data;
+    private function encodeData($data = ''): string {
+        if ($this->encode === true){
+            return is_null($data) ? '' : $data;
+        }
         $this->encode = true;
         switch ($this->contentType) {
             case 'json':

@@ -18,7 +18,7 @@ class ValidatePostSize extends Middleware {
             throw new Exception('too large post');
         }
     }
-    
+
     /**
      * Determine the server 'post_max_size' as bytes.
      *

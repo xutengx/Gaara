@@ -15,7 +15,7 @@ use Main\Core\Middleware\PerformanceMonitoring;
 class Kernel extends HttpKernel {
     // 全局中间件
     protected $middlewareGlobel = [
-        // 根据http协议返回
+        // 移除意外输出,根据http协议返回
         ReturnResponse::class,
         // post请求体大小检测
         ValidatePostSize::class,

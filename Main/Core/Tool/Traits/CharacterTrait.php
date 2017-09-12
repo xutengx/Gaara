@@ -128,7 +128,7 @@ trait CharacterTrait {
      * @param string $str
      * @return false|array 解析正确就返回解析结果,否则返回false,说明字符串不是XML格式
      */
-    public function xml_decode($str) {
+    public function xml_decode(string $str) {
         $bool = null;
         $xml_parser = xml_parser_create();
         if (xml_parse($xml_parser, $str, true))
@@ -139,15 +139,15 @@ trait CharacterTrait {
 
     /**
      * XML编码
-     * @param mixed $data 数据
-     * @param string $root 根节点名
-     * @param string $item 数字索引的子节点名
-     * @param string $attr 根节点属性
-     * @param string $id   数字索引子节点key转换的属性名
-     * @param string $encoding 数据编码
+     * @param type $data        数据
+     * @param string $encoding  数据编码
+     * @param string $root      根节点名
+     * @param string $item      数字索引的子节点名
+     * @param string $attr      根节点属性
+     * @param string $id        数字索引子节点key转换的属性名
      * @return string
      */
-    public function xml_encode($data, $root = 'root', $item = 'item', $attr = '', $id = 'id', $encoding = 'utf-8') {
+    public function xml_encode($data, string $encoding = 'utf-8', string $root = 'root', string $item = 'item', string $attr = '', string $id = 'id'): string {
         if (is_array($attr)) {
             $_attr = array();
             foreach ($attr as $key => $value) {

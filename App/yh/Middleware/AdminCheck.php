@@ -113,6 +113,6 @@ class AdminCheck extends Middleware {
      */
     private function error(string $msg, int $code = 0){
         $data = ['code'=> $code, 'msg' => $msg];
-        exit(Response::returnData($data, 'json', 403));
+        Response::setStatus(403)->exitData($data);
     }
 }

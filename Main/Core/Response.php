@@ -1,118 +1,150 @@
 <?php
 
+declare(strict_types = 1);
 namespace Main\Core;
-
 defined('IN_SYS') || exit('ACC Denied');
 
+use Main\Core\Response\Traits;
+use Main\Core\Conf;
 /**
  * 处理系统全部响应( 输出 )
  */
 class Response {
-
+    
+    use Traits\SetTrait;
+    
+    private static $httpStatus = array(
+        100 => 'Continue',
+        101 => 'Switching Protocols',
+        102 => 'Processing',            // RFC2518
+        200 => 'OK',
+        201 => 'Created',
+        202 => 'Accepted',
+        203 => 'Non-Authoritative Information',
+        204 => 'No Content',
+        205 => 'Reset Content',
+        206 => 'Partial Content',
+        207 => 'Multi-Status',          // RFC4918
+        208 => 'Already Reported',      // RFC5842
+        226 => 'IM Used',               // RFC3229
+        300 => 'Multiple Choices',
+        301 => 'Moved Permanently',
+        302 => 'Found',
+        303 => 'See Other',
+        304 => 'Not Modified',
+        305 => 'Use Proxy',
+        307 => 'Temporary Redirect',
+        308 => 'Permanent Redirect',    // RFC7238
+        400 => 'Bad Request',
+        401 => 'Unauthorized',
+        402 => 'Payment Required',
+        403 => 'Forbidden',
+        404 => 'Not Found',
+        405 => 'Method Not Allowed',
+        406 => 'Not Acceptable',
+        407 => 'Proxy Authentication Required',
+        408 => 'Request Timeout',
+        409 => 'Conflict',
+        410 => 'Gone',
+        411 => 'Length Required',
+        412 => 'Precondition Failed',
+        413 => 'Payload Too Large',
+        414 => 'URI Too Long',
+        415 => 'Unsupported Media Type',
+        416 => 'Range Not Satisfiable',
+        417 => 'Expectation Failed',
+        418 => 'I\'m a teapot',                                               // RFC2324
+        421 => 'Misdirected Request',                                         // RFC7540
+        422 => 'Unprocessable Entity',                                        // RFC4918
+        423 => 'Locked',                                                      // RFC4918
+        424 => 'Failed Dependency',                                           // RFC4918
+        425 => 'Reserved for WebDAV advanced collections expired proposal',   // RFC2817
+        426 => 'Upgrade Required',                                            // RFC2817
+        428 => 'Precondition Required',                                       // RFC6585
+        429 => 'Too Many Requests',                                           // RFC6585
+        431 => 'Request Header Fields Too Large',                             // RFC6585
+        451 => 'Unavailable For Legal Reasons',                               // RFC7725
+        500 => 'Internal Server Error',
+        501 => 'Not Implemented',
+        502 => 'Bad Gateway',
+        503 => 'Service Unavailable',
+        504 => 'Gateway Timeout',
+        505 => 'HTTP Version Not Supported',
+        506 => 'Variant Also Negotiates',                                     // RFC2295
+        507 => 'Insufficient Storage',                                        // RFC4918
+        508 => 'Loop Detected',                                               // RFC5842
+        510 => 'Not Extended',                                                // RFC2774
+        511 => 'Network Authentication Required',                             // RFC6585
+    );
+    private static $httpType = [
+        'php' => ['application/php', 'text/php', 'php'],
+        'xml' => ['application/xml', 'text/xml', 'application/x-xml'],
+        'json' => ['application/json', 'text/x-json', 'application/jsonrequest', 'text/json'],
+        'js' => ['text/javascript', 'application/javascript', 'application/x-javascript'],
+        'css' => ['text/css'],
+        'rss' => ['application/rss+xml'],
+        'yaml' => ['application/x-yaml,text/yaml'],
+        'atom' => ['application/atom+xml'],
+        'pdf' => ['application/pdf'],
+        'text' => ['text/plain'],
+        'png' => ['image/png'],
+        'jpg' => ['image/jpg,image/jpeg,image/pjpeg'],
+        'gif' => ['image/gif'],
+        'csv' => ['text/csv'],
+        'html' => ['text/html', 'application/xhtml+xml', '*/*']
+    ];
     // 当前请求类型
     private $requestMethod = '';
     // 当前请求的资源类型
     private $acceptType = '';
-    // REST允许的请求类型列表
-    private $allowMethod = array('post', 'delete', 'get', 'put', 'patch');
-    // 默认的资源类型
-    private $defaultType = 'html';
-    // REST允许输出的资源类型列表
-    private $allowOutputType = array('xml' => 'application/xml', 'json' => 'application/json', 'html' => 'text/html',);
+    // 响应的字符编码
+    private $char = null;
+    // 响应状态码
+    private $status = null;
+    // 响应文档格式
+    private $contentType = null;
+    // 是否已经编码(encode)
+    private $encode = false;
 
     public function __construct() {
-        $this->init();
-    }
-
-    public function init() {
-        $this->getInfo();
-    }
-    /*
-     * 分析请求头中的信息
-     */
-
-    private function getInfo() {
         $this->acceptType = $this->getAcceptType();
         $this->requestMethod = $this->getRequestMethod();
+        $this->char = obj(Conf::class)->app['char'];
     }
     
     /**
-     * 返回成功
+     * 终止进程并响应内容, 可通过set方法设置状态码等
+     * @param type $data
      */
-    public function returnSuccess(){
-        
+    public function exitData($data = ''){
+        exit($this->setStatus(200)->setContentType($this->acceptType)->encodeData($data));
     }
     
     /**
-     * 返回失败
+     * 返回响应内容, 可通过set方法设置状态码等
+     * @param type $data
      */
-    public function returnFail(){
-        
+    public function returnData($data = ''){
+        return $this->setStatus(200)->setContentType($this->acceptType)->encodeData($data);
     }
-
-    /**
-     * 输出返回数据
-     * @access protected
-     *
-     * @param mixed   $data 要返回的数据
-     * @param String  $type 返回类型 JSON XML
-     * @param integer $code HTTP状态
-     *
-     * @return void
-     */
-    public function returnData($data = '', $type = false, $code = 200) {
-        $type = $type ? strtolower($type) : $this->acceptType;
-        $this->sendHttpHeader($code, $type);
-        return ($this->encodeData($data, $type));
-    }
-
-    // 发送Http状态信息
-    private function sendHttpHeader($code = 200, $type = false) {
-        static $_status = array(
-            // Informational 1xx
-            100 => 'Continue', 101 => 'Switching Protocols', // Success 2xx
-            200 => 'OK', 201 => 'Created', 202 => 'Accepted', 203 => 'Non-Authoritative Information', 204 => 'No Content', 205 => 'Reset Content', 206 => 'Partial Content', // Redirection 3xx
-            300 => 'Multiple Choices', 301 => 'Moved Permanently', 302 => 'Moved Temporarily ', // 1.1
-            303 => 'See Other', 304 => 'Not Modified', 305 => 'Use Proxy', // 306 is deprecated but reserved
-            307 => 'Temporary Redirect', // Client Error 4xx
-            400 => 'Bad Request', 401 => 'Unauthorized', 402 => 'Payment Required', 403 => 'Forbidden', 404 => 'Not Found', 405 => 'Method Not Allowed', 406 => 'Not Acceptable', 407 => 'Proxy Authentication Required', 408 => 'Request Timeout', 409 => 'Conflict', 410 => 'Gone', 411 => 'Length Required', 412 => 'Precondition Failed', 413 => 'Request Entity Too Large', 414 => 'Request-URI Too Long', 415 => 'Unsupported Media Type', 416 => 'Requested Range Not Satisfiable', 417 => 'Expectation Failed', // Server Error 5xx
-            500 => 'Internal Server Error', 501 => 'Not Implemented', 502 => 'Bad Gateway', 503 => 'Service Unavailable', 504 => 'Gateway Timeout', 505 => 'HTTP Version Not Supported', 509 => 'Bandwidth Limit Exceeded');
-        if (isset($_status[$code]) && !headers_sent()) {
-            header('HTTP/1.1 ' . $code . ' ' . $_status[$code]);
-            // 确保FastCGI模式下正常
-            header('Status:' . $code . ' ' . $_status[$code]);
-        }
-        $charset = !empty($charset) ? $charset : obj('conf')->char;
-        if (isset($this->allowOutputType[strtolower($type)]))
-            header('Content-Type: ' . $this->allowOutputType[$type] . '; charset=' . $charset);
-    }
-    
-    // 设置Http头信息
-    public function setHeaders(array $headers):void{
-        foreach($headers as $k => $v)
-            $this->setHeader($k.':'.$v);
-    }
-    
-    // 设置Http头信息
-    public function setHeader(string $header):void{
-        header($header);
-    }
-    
 
     /**
      * 编码数据
      * @access protected
      * @param mixed  $data 要返回的数据
-     * @param String $type 返回类型 JSON XML
+     * @param string $type 返回类型 JSON XML
      *
      * @return string
      */
-    private function encodeData($data = '', $type = 'json') {
-        switch ($type) {
+    private function encodeData($data = '') {
+        if ($this->encode === true)
+            return $data;
+        $this->encode = true;
+        switch ($this->contentType) {
             case 'json':
                 return json_encode($data, JSON_UNESCAPED_UNICODE);
             case 'xml':
-                return obj('tool')->xml_encode($data);
+                return obj(Tool::class)->xml_encode($data, $this->char);
             case 'php':
                 return serialize($data);
             case 'html':
@@ -127,25 +159,9 @@ class Response {
      * @return string
      */
     private function getAcceptType() {
-        if (!empty($_SERVER['PATH_INFO']))
-            return \strtolower(\pathinfo($_SERVER['PATH_INFO'], 4));
-        $type = [
-            'html'  => ['text/html', 'application/xhtml+xml', '*/*'],
-            'xml'   => ['application/xml', 'text/xml', 'application/x-xml'],
-            'json'  => ['application/json', 'text/x-json', 'application/jsonrequest', 'text/json'],
-            'js'    => ['text/javascript', 'application/javascript', 'application/x-javascript'],
-            'css'   => ['text/css'],
-            'rss'   => ['application/rss+xml'],
-            'yaml'  => ['application/x-yaml,text/yaml'],
-            'atom'  => ['application/atom+xml'],
-            'pdf'   => ['application/pdf'],
-            'text'  => ['text/plain'],
-            'png'   => ['image/png'],
-            'jpg'   => ['image/jpg,image/jpeg,image/pjpeg'],
-            'gif'   => ['image/gif'],
-            'csv'   => ['text/csv']
-        ];
-        foreach ($type as $key => $val) {
+//        if (!empty($_SERVER['PATH_INFO']))
+//            return \strtolower(\pathinfo($_SERVER['PATH_INFO'], 4));
+        foreach (self::$httpType as $key => $val) {
             foreach ($val as $v) {
                 if (stristr($_SERVER['HTTP_ACCEPT'], $v)) {
                     return $key;
@@ -163,17 +179,17 @@ class Response {
         return \strtolower($_SERVER['REQUEST_METHOD']);
     }
     
-/************************************************************************/
-    
-    public function doException(Exception $exception){
+    /************************************************************************/
+
+    public function doException(Exception $exception) {
         $data['msg'] = $exception->getMessage();
-        if(DEBUG) 
+        if (DEBUG)
             $data['exception'] = $exception->getTraceAsString();
-        
-        $this->sendHttpHeader(500);
-        
+
+        $this->setStatus(500);
+
         echo '<pre>';
-        foreach($data as $v){
+        foreach ($data as $v) {
             echo $v;
             echo '<br>';
             echo '<br>';

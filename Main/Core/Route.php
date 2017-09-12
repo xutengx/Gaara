@@ -35,7 +35,7 @@ class Route {
     /**
      * 读取配置 ( 全局设置 )
      */
-    private static function getConf() {
+    private static function getConf(): void {
         $conf = obj(Conf::class)->app;
         date_default_timezone_set($conf['timezone']);
         if ($conf['debug'] === true) {
@@ -49,7 +49,7 @@ class Route {
      * 分析url,得到pathinfo  eg:http://192.168.64.128/git/php_/project/user/login/123/11?id=12 -> /user/login/123/11
      * @return string
      */
-    private static function getPathInfo() {
+    private static function getPathInfo(): string {
         return '/' . \str_replace('?' . $_SERVER['QUERY_STRING'], '', \str_replace(\str_replace(\IN_SYS, '', $_SERVER['SCRIPT_NAME']), '', $_SERVER['REQUEST_URI']));
     }
 
@@ -57,7 +57,7 @@ class Route {
      * 分析当前执行环境 CLI/http ?
      * @return type
      */
-    private static function getRouteType() {
+    private static function getRouteType(): string {
         return CLI ? 'cli' : 'http';
     }
 
@@ -66,15 +66,15 @@ class Route {
      * 可以接收直接返回的数组格式, 也可以直接执行
      * @return array
      */
-    private static function getRouteRule() {
+    private static function getRouteRule(): array {
         $fileRule = require(ROUTE . self::$routeType . '.php');
         return is_array($fileRule) ? array_merge(self::$routeRule, $fileRule) : self::$routeRule;
     }
 
     /**
-     * 路由分析
+     * 路由分析, 包含最终执行
      */
-    private static function routeAnalysis() {
+    private static function routeAnalysis(): void {
         foreach (self::$routeRule as $rule => $info) {
             // 路由分组
             if (is_int($rule)) {
@@ -108,7 +108,7 @@ class Route {
      * @return string               正则表达式
      * @return array    $param      形参数组
      */
-    private static function ruleToPreg($rule = '', &$param = []) {
+    private static function ruleToPreg(string $rule = '', array &$param = []): string {
         $temp = explode('/', $rule);
         foreach ($temp as $k => $v) {
             $key = false;
@@ -133,7 +133,7 @@ class Route {
      * @param array $argument   实参数组列表(一维数组)
      * @return array 可调用的参数数组(一维链表)
      */
-    private static function paramAnalysis($parameter, $argument) {
+    private static function paramAnalysis($parameter, $argument): array {
         $arr = [];
         if (!empty($parameter)) {
             foreach ($parameter as $k => $v) {
@@ -156,8 +156,9 @@ class Route {
      * @param string|array $info    路由执行段 (可能是形如 'App\index\Contr\IndexContr@indexDo' 或者 闭包, 或者 数组包含以上2钟)
      * @param array $urlParam       url参数数组
      * @param array $request
+     * @return bool
      */
-    private static function infoAnalysis($rule, $info, $urlParam) {
+    private static function infoAnalysis($rule, $info, $urlParam): bool {
         // 一致化格式
         $info = self::unifiedInfo($info);
         // 别名分析
@@ -188,18 +189,20 @@ class Route {
         self::$alias = $alias;
         self::$methods = $info['method'];
 
-        //
+        // 框架性能
         self::statistic();
 
         // 核心执行,管道模式中间件,以及控制器
-        return self::doKernel($middleware, $contr, $request);
+        self::doKernel($middleware, $contr, $request);
+        
+        return true;
     }
 
     /**
      * info 一致化格式
      * @param \Closure $info
      */
-    private static function unifiedInfo($info) {
+    private static function unifiedInfo($info): array {
         $arr = [];
         if (is_string($info) || $info instanceof \Closure) {
             $arr = [
@@ -221,8 +224,8 @@ class Route {
         return $arr;
     }
 
-    private static function doKernel($middleware, $contr, $request) {
-        return obj(\App\Kernel::class)->run($middleware, $contr, $request);
+    private static function doKernel($middleware, $contr, $request): void {
+        obj(\App\Kernel::class)->run($middleware, $contr, $request);
     }
 
     /**
@@ -252,7 +255,7 @@ class Route {
     }
 
     // 运行统计
-    private static function statistic() {
+    private static function statistic(): void {
         $GLOBALS['statistic']['_initTime'] = microtime(true);
         $GLOBALS['statistic']['_initMemory'] = memory_get_usage();
     }
@@ -261,7 +264,7 @@ class Route {
      * 返回当前的路由别名
      * @return string
      */
-    public static function getAlias() {
+    public static function getAlias(): string {
         return self::$alias;
     }
 
@@ -269,7 +272,7 @@ class Route {
      * 返回 域名参数
      * @return array
      */
-    public static function getDomainParam() {
+    public static function getDomainParam(): array {
         return self::$domainParam;
     }
 
@@ -277,7 +280,7 @@ class Route {
      * 返回 路由参数
      * @return array
      */
-    public static function getUrlParam() {
+    public static function getUrlParam(): array {
         return self::$urlParam;
     }
 
@@ -285,7 +288,7 @@ class Route {
      * 返回 路由参数
      * @return array
      */
-    public static function getMethods() {
+    public static function getMethods(): array {
         return self::$methods;
     }
     /*     * ************************************************** 分组以及静态方法申明路由 ******************************************** */

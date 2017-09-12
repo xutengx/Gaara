@@ -81,7 +81,7 @@ CREATE TABLE `user_application` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '资料提交时间',
   `modify_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '资料修改时间',
   PRIMARY KEY (`id`),
-  INDEX KEY `merchant_id` (`merchant_id`)
+  KEY `merchant_id` (`merchant_id`)
 ) ENGINE=innodb AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COMMENT='应用信息表';
 
 CREATE TABLE `merchant_secret` (

@@ -2,7 +2,6 @@
 
 declare(strict_types = 1);
 namespace Main\Core;
-
 defined('IN_SYS') || exit('ACC Denied');
 
 class Kernel {
@@ -18,7 +17,7 @@ class Kernel {
         $this->pipeline = $pipeline;
     }
 
-    public function run($middlewareGroups, $contr, $request) {
+    public function run($middlewareGroups, $contr, $request): void {
         $this->pipeline->setPipes($this->addMiddleware($middlewareGroups));
         $this->pipeline->setDefaultClosure($this->doController($contr, $request));
         $this->pipeline->then();
@@ -107,7 +106,7 @@ class Kernel {
         };
     }
 
-    final public function __get($param) {
+    final public function __get(string $param) {
         return $this->$param;
     }
 }

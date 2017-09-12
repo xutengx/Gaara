@@ -8,6 +8,7 @@ use \Closure;
 use \PDOException;
 use \Main\Core\Cache;
 use \Main\Core\Template;
+use \Response;
 /**
  * 响应页面
  * Class HttpController
@@ -57,7 +58,7 @@ abstract class HttpController extends \Main\Core\Controller {
      */
     protected function returnMsg($code = '', $msg = 'fail !') {
         $data = ['code' => $code, 'msg' => $msg];
-        return obj('\Main\Core\Response')->returnData($data, false, $code);
+        return Response::returnData($data);
     }
 
     /**
@@ -66,7 +67,7 @@ abstract class HttpController extends \Main\Core\Controller {
      * @param  $code_p  响应 http 状态码
      * @return bool
      */
-    protected function returnData($content = '', $type_p = false, $code_p = false) {
+    protected function returnData($content = '') {
         if ($content instanceof Closure) {
             try{
                 $content = call_user_func($content);
@@ -76,15 +77,8 @@ abstract class HttpController extends \Main\Core\Controller {
         }
         if ($content === false || $content === null || $content === 0 || $content === -1)
             return $this->returnMsg(0);
-        if (is_int($type_p)) {
-            $type = $code_p ? $code_p : false;
-            $code = $type_p;
-        } else {
-            $type = $type_p;
-            $code = $code_p;
-        }
         $data = ['code' => 1, 'data' => $content];
-        return obj('\Main\Core\Response')->returnData($data, $type, $code);
+        return Response::returnData($data);
     }
 
     // 以组件方式引入html
@@ -143,7 +137,7 @@ EEE;
 EEE;
         $contents = ob_get_contents();
         ob_end_clean();
-        return $contents;
+        return Response::setContentType('html')->returnData($contents);
     }
 
     /**

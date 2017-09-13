@@ -31,7 +31,7 @@ trait FileTrait {
 
     // 分割下载 // test
     public function download2(string $path,string $name,string $showname) {
-        $this->absoluteDir($path);
+//        $this->absoluteDir($path);
         $filename = $path . $name;
         $file = $filename;
         if (FALSE !== ($handler = fopen($file, 'r'))) {
@@ -53,7 +53,7 @@ trait FileTrait {
     // 推送下载文件
     // param  路径  文件名
     public function download(string $path, string $name) {
-        $this->absoluteDir($path);
+//        $this->absoluteDir($path);
         $filename = $path . $name;
         $file = fopen($filename, "r");
         header("Content-type: application/octet-stream");
@@ -72,7 +72,7 @@ trait FileTrait {
      * @return void
      */
     public function delDirAndFile(string $dirName = '') {
-        $this->absoluteDir($dirName);
+//        $this->absoluteDir($dirName);
         if (is_dir($dirName) && $dir_arr = scandir($dirName)) {
             foreach ($dir_arr as $k => $v) {
                 if ($v == '.' || $v == '..') {
@@ -97,7 +97,8 @@ trait FileTrait {
      */
     public function printInFile(string $fileName = '', string $text = '') {
         //if( ! $fileName || ! $text ) return false;
-        $this->absoluteDir($fileName);
+//        $this->absoluteDir($fileName);
+//        var_dump($fileName);
         if (strripos($fileName, '/') === (strlen($fileName) - 1))
             return false;      // filename 为路径,而不是文件名
         if (!file_exists($fileName)) {
@@ -145,7 +146,7 @@ trait FileTrait {
 
     /**
      * 生成随机文件名
-     * @param string $dir 文件所在的目录
+     * @param string $dir 文件所在的目录(相对,绝对)
      * @param string $ext 文件后缀
      * @param int    $id  唯一标识
      *
@@ -154,8 +155,6 @@ trait FileTrait {
     final public function makeFilename(string $dir = '', string $ext = '', string $id = 'def') : string {
         $ext = trim($ext, '.');
         $dir = $dir ? rtrim($dir, '/') . '/' : './';
-        if (!is_dir($dir))
-            $this->__mkdir($dir);
         $dir .= uniqid($id);
         $dir .= '.' . $ext;
         return $dir;
@@ -169,7 +168,7 @@ trait FileTrait {
      * @return bool
      */
     final public function __mkdir(string $dir = '', $mode = 0777) {
-        $this->absoluteDir($dir);
+//        $this->absoluteDir($dir);
         if (is_dir(dirname($dir)) || $this->__mkdir(dirname($dir)))
             return mkdir($dir, $mode);
     }

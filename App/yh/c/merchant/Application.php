@@ -44,7 +44,7 @@ class Application extends HttpController {
         foreach($request->file as $k => $file){
             if($file->is_img() && $file->is_less()){
                 if($file->move_uploaded_file())
-                    $application->orm[$k] = $file->save_path;
+                    $application->orm[$k] = $file->saveFilename;
             }else {
                 $request->file->cleanAll();
                 return $this->returnMsg(0, '上传类型不为图片, 或者大于8m');
@@ -80,7 +80,7 @@ class Application extends HttpController {
         foreach($request->file as $k => $file){
             if($file->is_img() && $file->is_less()){
                 if($file->move_uploaded_file()){
-                    $application->orm[$k] = $file->save_path;
+                    $application->orm[$k] = $file->saveFilename;
                     $oldFileArr[] = $applicationOldInfo[$k];
                 }
             } else {
@@ -134,7 +134,9 @@ class Application extends HttpController {
      */
     private function clean(array $arr){
         foreach ($arr as $v) {
-            if(file_exists($v)){
+            if(file_exists(ROOT.$v)){
+                unlink(ROOT.$v);
+            }elseif(file_exists($v)){
                 unlink($v);
             }
         }

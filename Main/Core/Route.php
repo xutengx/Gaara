@@ -73,6 +73,7 @@ class Route {
 
     /**
      * 路由分析, 包含最终执行
+     * 路由匹配失败, 则响应404
      */
     private static function routeAnalysis(): void {
         foreach (self::$routeRule as $rule => $info) {
@@ -98,7 +99,7 @@ class Route {
                     exit();
             }
         }
-        obj(Response::class)->returnData('', false, 404);
+        obj(Response::class)->setStatus(404);
     }
 
     /**

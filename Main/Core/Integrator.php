@@ -64,8 +64,9 @@ class Integrator {
      * @throws Exception
      */
     private static function getins($class, $par = []) {
-        if (!class_exists($class))
+        if (!class_exists($class)){
             throw new Exception('实例化类 : ' . $class . ' 不存在!', 99);
+        }
 //        return isset(self::$obj_ins[$class]) ? self::$obj_ins[$class] : self::$obj_ins[$class] = new $class(...$par);
         return isset(self::$obj_ins[$class]) ? self::$obj_ins[$class] : self::$obj_ins[$class] = self::getInstance($class, $par);
     }

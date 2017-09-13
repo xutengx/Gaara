@@ -17,18 +17,14 @@ class MainUser extends \Main\Core\Model {
      */
     public function createUser(string $email, string $passwd) {
         $hashPasswd = password_hash($passwd, self::encryption);
-//        try{
-            return $this->data([
-                'email' => ':email',
-                'passwd' => ':passwd'
-            ])
-            ->insert([
-                ':email' => $email,
-                ':passwd' => $hashPasswd
-            ]);
-//        }catch (\Exception $e){
-//            return false;
-//        }
+        return $this->data([
+            'email' => ':email',
+            'passwd' => ':passwd'
+        ])
+        ->insert([
+            ':email' => $email,
+            ':passwd' => $hashPasswd
+        ]);
     }
     /**
      * 加密保存, 并发下处理
@@ -53,8 +49,6 @@ class MainUser extends \Main\Core\Model {
         }
     }
     
-    
-    
     /**
      * 查询用户名
      * @param string $email
@@ -62,6 +56,15 @@ class MainUser extends \Main\Core\Model {
      */
     public function getEmail(string $email) : array{
         return $this->where('email', $email)->getRow();
+    } 
+    
+    /**
+     * 查询用户ID
+     * @param int $id
+     * @return array
+     */
+    public function getId(int $id) : array{
+        return $this->where('id', $id)->getRow();
     }
 
     

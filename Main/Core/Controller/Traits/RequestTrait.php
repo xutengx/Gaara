@@ -40,6 +40,9 @@ trait RequestTrait {
             return $arrayKey;
         }
     }
+    protected function input($key = null, $rule = null, $msg = null){
+        return $this->requestFun($key, $rule, $msg, 'input');
+    }
 
     protected function get($key = null, $rule = null, $msg = null) {
         return $this->requestFun($key, $rule, $msg, 'get');

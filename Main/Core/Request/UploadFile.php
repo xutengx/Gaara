@@ -6,40 +6,42 @@ defined('IN_SYS') || exit('ACC Denied');
 
 use Main\Core\Request\Component\File;
 use Iterator;
+
 /**
  * \Main\Core\Request->file
  */
 class UploadFile implements Iterator {
-    
+
     private $_items = [];
+
     /**
      * 加入一个文件
      * @param \Main\Core\Request\Main\Core\Request\Tool\File $fileInfo
      */
-    public function addFile(array $fileInfo):void{
+    public function addFile(array $fileInfo): void {
         $file = new File;
-        foreach($fileInfo as $k => $v){
+        foreach ($fileInfo as $k => $v) {
             $file->{$k} = $v;
         }
         $this->_items[$file->key_name] = $file;
     }
-    
+
     /**
      * 删除保存的文件,一般情况下在数据库回滚时调用
      */
-    public function cleanAll(){
-        foreach($this->_items as $file){
+    public function cleanAll() {
+        foreach ($this->_items as $file) {
             $file->clean();
         }
     }
-    
-    public function __get(string $attr){
-        if(isset($this->_items[$attr])){
+
+    public function __get(string $attr) {
+        if (isset($this->_items[$attr])) {
             return $this->_items[$attr];
         }
     }
-    
-/************************************************ 以下 Iterator 实现 ***************************************************/
+    /*     * ********************************************** 以下 Iterator 实现 ************************************************** */
+
     public function rewind() {
         reset($this->_items);
     }

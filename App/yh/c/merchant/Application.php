@@ -17,7 +17,7 @@ class Application extends HttpController {
     /**
      * 查询商户下所有应用信息
      * @param Request $request
-     * @param UserMerchant $merchant
+     * @param UserApplication $application
      * @return type
      */
     public function select(Request $request, UserApplication $application) {
@@ -69,13 +69,15 @@ class Application extends HttpController {
     public function update(Request $request, UserApplication $application) {
         $userid = $request->userinfo['id'];
         $applicationInfo = $request->input;
+        $app_id = (int)$request->input('id');
         // 原数据
-        $applicationOldInfo = $application->getInfo( $userid );
+        $applicationOldInfo = $application->getInfoByIdWithMerchant($app_id, $userid );
+        if(empty($applicationOldInfo))
+            return $this->returnMsg(0, '要修改的应用不存在');
         // 将要被替换的文件
         $oldFileArr = [];
-        
-        $merchant->orm = $applicationInfo;
-        $merchant->orm['modify_at'] = date('Y-m-d H:i:s');
+        $application->orm = $applicationInfo;
+        $application->orm['modify_at'] = date('Y-m-d H:i:s');
         // 保存文件
         foreach($request->file as $k => $file){
             if($file->is_img() && $file->is_less()){
@@ -91,7 +93,7 @@ class Application extends HttpController {
         
         // 写入数据库, 若失败则删除已保存的文件
         try{
-            $res = $application->save($userid);
+            $res = $application->save($applicationOldInfo['id']);
             $this->clean($oldFileArr);
             return $this->returnData($res);
         }catch(PDOException $pdo){
@@ -106,11 +108,13 @@ class Application extends HttpController {
      */
     public function destroy(Request $request, UserApplication $application) {
         $userid = (int)$request->userinfo['id'];
-        
+        $app_id = (int)$request->input('id');
+        // 原数据
+        $applicationOldInfo = $application->getInfoByIdWithMerchant($app_id, $userid );
+        if(empty($applicationOldInfo))
+            return $this->returnMsg(0, '要删除的应用不存在');
         //数据库中的文件字段,都以 _file 结尾 eg : organization_file
         $end_string = '_file';
-        // 原数据
-        $applicationOldInfo = $application->getInfo( $userid );
         // 将要被替换的文件
         $oldFileArr = []; 
         foreach($applicationOldInfo as $k => $v){
@@ -120,7 +124,7 @@ class Application extends HttpController {
         }
         
         try{
-            $res = $application->delById( $userid );
+            $res = $application->delById( $applicationOldInfo['id'] );
             $this->clean($oldFileArr);
             return $this->returnData($res);
         }catch(PDOException $pdo){

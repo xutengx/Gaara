@@ -453,7 +453,8 @@
         <hr>
         <label class="merchant">应用资料修改 /application put</label><br><br>
         <form action="action">
-            <span>应用名称</span><input type="text" name="application_name"  value="应用一"/><br>
+            <span>应用ID</span><input type="text" name="id"  value="101"/><br>
+            <span>应用名称</span><input type="text" name="application_name"  value="应用wwww"/><br>
             <span>应用logo</span><input type="file" name="application_logo_file"/><br>
             <span>应用描述</span><input type="text" name="describe" value="2应用描述应用描述2" /><br>
             <input id="applicationput" type="button" value="submit">
@@ -495,14 +496,101 @@
         <hr>
         <label class="merchant">应用资料删除 /application delete</label><br><br>
         <form action="action">
+            <span>应用ID</span><input type="text" name="id"  value="101"/><br>
             <input id="applicationdelete" type="button" value="submit">
             <script>
                 $('#applicationdelete').on('click', function () {
+                    var data = setData(this);
                     $.ajax({
                         url: $.url('/application'),
-                        data: makeSign({}),
+                        data: data,
                         type: 'delete',
                         dataType: 'json',
+                        processData: false,
+                        contentType: false,
+                        success: function (re) {
+                            console.log(re);
+                        }
+                    });
+                });
+            </script>
+        </form>
+        <hr>
+        <label class="admin">管理员查看所有商户 /admin/merchant get</label><br><br>
+        <form action="action">
+            <input id="adminmerchantget" type="button" value="submit">
+            <script>
+                $('#adminmerchantget').on('click', function () {
+                    $.ajax({
+                        url: $.url('/admin/merchant'),
+                        data: makeSign({}),
+                        type: 'get',
+                        dataType: 'json',
+                        success: function (re) {
+                            console.log(re);
+                        }
+                    });
+                });
+            </script>
+        </form>
+        <hr>
+        <label class="admin">管理员修改指定id商户的任意内容 /admin/merchant put</label><br><br>
+        <form action="action">
+            <span>商户ID</span><input type="text" name="id"  value="100"/><br>
+            <span>审核</span><select name="status"><option value="2">审核通过</option><option value="3">审核不通过</option></select><br>
+            <input id="adminmerchantput" type="button" value="submit">
+            <script>
+                $('#adminmerchantput').on('click', function () {
+                    var data = setData(this);
+                    $.ajax({
+                        url: $.url('/admin/merchant'),
+                        data: data,
+                        type: 'put',
+                        dataType: 'json',
+                        processData: false,
+                        contentType: false,
+                        success: function (re) {
+                            console.log(re);
+                        }
+                    });
+                });
+            </script>
+        </form>
+        <hr>
+        <label class="admin">管理员查看所有用户 /admin/user get</label><br><br>
+        <form action="action">
+            <input id="adminuserget" type="button" value="submit">
+            <script>
+                $('#adminuserget').on('click', function () {
+                    $.ajax({
+                        url: $.url('/admin/user'),
+                        data: makeSign({}),
+                        type: 'get',
+                        dataType: 'json',
+                        success: function (re) {
+                            console.log(re);
+                        }
+                    });
+                });
+            </script>
+        </form>
+        <hr>
+        <label class="admin">管理员修改指定id商户的任意内容 /admin/user put</label><br><br>
+        <form action="action">
+            <span>商户ID</span><input type="text" name="id"  value="100"/><br>
+            <span>登入权限</span><select name="status"><option value="1">启用</option><option value="2">禁用</option></select><br>
+            <span>支付权限</span><select name="payment"><option value="1">启用</option><option value="2">禁用</option></select><br>
+            <input id="adminuserput" type="button" value="submit">
+            <script>
+                $('#adminuserput').on('click', function () {
+                    var data = setData(this);
+                    $.ajax({
+                        url: $.url('/admin/user'),
+                        data: data,
+                        type: 'put',
+                        dataType: 'json',
+                        processData: false,
+                        contentType: false,
                         success: function (re) {
                             console.log(re);
                         }

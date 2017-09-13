@@ -8,12 +8,13 @@ defined('IN_SYS') || exit('ACC Denied');
  * ORM相关
  */
 trait ObjectRelationalMappingTrait {
+
     /**
      * orm属性集合
      * @var array 
      */
     public $orm = [];
-    
+
     /**
      * orm属性设置
      * @param string $key
@@ -22,20 +23,20 @@ trait ObjectRelationalMappingTrait {
     public function __set(string $key, string $value): void {
         $this->orm[$key] = $value;
     }
-    
+
     /**
      * orm属性保存更新
      * @param int $key  主键
      * @return int      受影响的行数
      */
-    public function save(int $key):int{
+    public function save(int $key): int {
         $param = [];
-        $bind  = [];
+        $bind = [];
         foreach ($this->field as $v) {
             if (array_key_exists($v['Field'], $this->orm)) {
-                $tempkey = ':'.$v['Field'] ;
+                $tempkey = ':' . $v['Field'];
                 $param[$v['Field']] = $tempkey;
-                $bind[$tempkey]  = $this->orm[$v['Field']];
+                $bind[$tempkey] = $this->orm[$v['Field']];
             }
         }
         $this->data($param);
@@ -47,14 +48,14 @@ trait ObjectRelationalMappingTrait {
      * orm属性新增
      * @return int      int 0 表示失败, string 0 是主键没自增属性时的成功返回, 其他int表示主键
      */
-    public function create(){
+    public function create() {
         $param = [];
-        $bind  = [];
+        $bind = [];
         foreach ($this->field as $v) {
             if (array_key_exists($v['Field'], $this->orm)) {
-                $tempkey = ':'.$v['Field'] ;
+                $tempkey = ':' . $v['Field'];
                 $param[$v['Field']] = $tempkey;
-                $bind[$tempkey]  = $this->orm[$v['Field']];
+                $bind[$tempkey] = $this->orm[$v['Field']];
             }
         }
         $this->data($param);

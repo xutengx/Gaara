@@ -71,6 +71,8 @@ class Info extends HttpController {
         $merchantInfo = $request->input;
         // 原数据
         $merchantOldInfo = $merchant->getInfo( $userid );
+        if(empty($merchantOldInfo))
+            return $this->returnMsg(0, '要修改的商户不存在');
         // 将要被替换的文件
         $oldFileArr = [];
         
@@ -91,7 +93,7 @@ class Info extends HttpController {
         
         // 写入数据库, 若失败则删除已保存的文件
         try{
-            $res = $merchant->save($userid);
+            $res = $merchant->save($merchantOldInfo['id']);
             $this->clean($oldFileArr);
             return $this->returnData($res);
         }catch(PDOException $pdo){

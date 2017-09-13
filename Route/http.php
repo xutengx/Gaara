@@ -24,10 +24,8 @@ return [
         Route::group(['middleware'=>['merchant']],function(){
             // 令牌以旧换新( 重置有效期 )
             Route::post('/user/token','user\Login@changeToken');
-
             // 商户资料
             Route::restful('/merchant','merchant\Info');
-            
             // 应用资料
             Route::restful('/application','merchant\Application');
           

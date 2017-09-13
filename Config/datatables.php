@@ -84,9 +84,46 @@ CREATE TABLE `user_application` (
   KEY `merchant_id` (`merchant_id`)
 ) ENGINE=innodb AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COMMENT='应用信息表';
 
-CREATE TABLE `merchant_secret` (
-  `id` int(1) unsigned NOT NULL COMMENT '商户ID, 既是用户ID, main_user.id',
+CREATE TABLE `application_secret` (
+  `id` int(1) unsigned NOT NULL COMMENT '应用ID,user_application.id',
+  `yh_key` char(32) NOT NULL DEFAULT '' COMMENT '32位随机字符',
+  `notify_url` varchar(100) NOT NULL DEFAULT '' COMMENT '商户异步通知地址',
   PRIMARY KEY (`id`)
-) ENGINE=innodb DEFAULT CHARSET=utf8 COMMENT='商户密钥表';
+) ENGINE=innodb DEFAULT CHARSET=utf8 COMMENT='应用密钥表';
+
+CREATE TABLE `application_passage` (
+  `id` int(1) unsigned NOT NULL COMMENT '应用ID,user_application.id',
+  PRIMARY KEY (`id`)
+) ENGINE=innodb DEFAULT CHARSET=utf8 COMMENT='应用通道表';
+
+CREATE TABLE `passage_wechat` (
+  `id` int(1) unsigned NOT NULL AUTO_INCREMENT COMMENT '配置ID',
+  `application_id` int(1) unsigned NOT NULL COMMENT '应用ID,user_application.id',
+  PRIMARY KEY (`id`)
+) ENGINE=innodb AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COMMENT='微信配置信息表';
+
+CREATE TABLE `passage_alipay` (
+  `id` int(1) unsigned NOT NULL AUTO_INCREMENT COMMENT '配置ID',
+  `application_id` int(1) unsigned NOT NULL COMMENT '应用ID,user_application.id',
+  PRIMARY KEY (`id`)
+) ENGINE=innodb AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COMMENT='支付宝配置信息表';
+
+CREATE TABLE `payment_order` (
+  `id` int(1) unsigned NOT NULL AUTO_INCREMENT COMMENT '订单ID',
+  `application_id` int(1) unsigned NOT NULL COMMENT '应用ID,user_application.id',
+  PRIMARY KEY (`id`)
+) ENGINE=innodb AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COMMENT='支付订单表';
+
+CREATE TABLE `payment_order_process` (
+  `id` int(1) unsigned NOT NULL AUTO_INCREMENT COMMENT '订单ID',
+  `application_id` int(1) unsigned NOT NULL COMMENT '应用ID,user_application.id',
+  PRIMARY KEY (`id`)
+) ENGINE=innodb DEFAULT CHARSET=utf8 COMMENT='支付订单流程表';
+
+CREATE TABLE `notify_record` (
+  `id` int(1) unsigned NOT NULL AUTO_INCREMENT COMMENT '通知ID',
+  `application_id` int(1) unsigned NOT NULL COMMENT '应用ID,user_application.id',
+  PRIMARY KEY (`id`)
+) ENGINE=innodb AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COMMENT='异步通知记录表';
 
 EEE;

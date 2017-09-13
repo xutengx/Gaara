@@ -173,14 +173,18 @@ trait CharacterTrait {
      */
     public function data_to_xml($data, $item = 'item', $id = 'id') {
         $xml = $attr = '';
-        foreach ($data as $key => $val) {
-            if (is_numeric($key)) {
-                $id && $attr = " {$id}=\"{$key}\"";
-                $key = $item;
+        if(is_array($data)){
+            foreach ($data as $key => $val) {
+                if (is_numeric($key)) {
+                    $id && $attr = " {$id}=\"{$key}\"";
+                    $key = $item;
+                }
+                $xml .= "<{$key}{$attr}>";
+                $xml .= (is_array($val) || is_object($val)) ? data_to_xml($val, $item, $id) : $val;
+                $xml .= "</{$key}>";
             }
-            $xml .= "<{$key}{$attr}>";
-            $xml .= (is_array($val) || is_object($val)) ? data_to_xml($val, $item, $id) : $val;
-            $xml .= "</{$key}>";
+        }else{
+            return $data;
         }
         return $xml;
     }

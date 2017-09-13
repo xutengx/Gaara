@@ -78,6 +78,7 @@ class Response {
         511 => 'Network Authentication Required',                             // RFC6585
     );
     private static $httpType = [
+        'html' => ['text/html', 'application/xhtml+xml', '*/*'],
         'php' => ['application/php', 'text/php', 'php'],
         'xml' => ['application/xml', 'text/xml', 'application/x-xml'],
         'json' => ['application/json', 'text/x-json', 'application/jsonrequest', 'text/json'],
@@ -91,8 +92,7 @@ class Response {
         'png' => ['image/png'],
         'jpg' => ['image/jpg,image/jpeg,image/pjpeg'],
         'gif' => ['image/gif'],
-        'csv' => ['text/csv'],
-        'html' => ['text/html', 'application/xhtml+xml', '*/*']
+        'csv' => ['text/csv']
     ];
     // 当前请求类型
     private $requestMethod = '';
@@ -165,7 +165,7 @@ class Response {
             case 'html':
                 return is_array($data) ? json_encode($data, JSON_UNESCAPED_UNICODE) : $data;
             default:
-                return var_export($data);
+                return ($data);
         }
     }
 

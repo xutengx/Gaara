@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types = 1);
 namespace Main\Core;
 defined('IN_SYS') || exit('ACC Denied');
 
@@ -46,11 +47,13 @@ class Route {
     }
 
     /**
-     * 分析url,得到pathinfo  eg:http://192.168.64.128/git/php_/project/user/login/123/11?id=12 -> /user/login/123/11
+     * 分析url,得到pathinfo  
+     * eg:http://192.168.64.128/git/php_/project/user/login/123/11?id=12 -> /user/login/123/11
+     * eg:http://git.gitxt.com/data/upload?id=123 -> /data/upload
      * @return string
      */
     private static function getPathInfo(): string {
-        return '/' . \str_replace('?' . $_SERVER['QUERY_STRING'], '', \str_replace(\str_replace(\IN_SYS, '', $_SERVER['SCRIPT_NAME']), '', $_SERVER['REQUEST_URI']));
+        return '/' . \str_replace('?' . $_SERVER['QUERY_STRING'], '', \substr_replace($_SERVER['REQUEST_URI'], '',0, strlen(\str_replace(\IN_SYS, '', $_SERVER['SCRIPT_NAME']))));  
     }
 
     /**
@@ -99,7 +102,7 @@ class Route {
                     exit();
             }
         }
-        obj(Response::class)->setStatus(404);
+        obj(Response::class)->setStatus(404)->exitData('Not Found ..');
     }
 
     /**

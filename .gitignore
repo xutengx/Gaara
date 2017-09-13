@@ -1,5 +1,7 @@
 /data/*
 !/data/.gitignore
+/public/open/*
+!/public/open/.gitignore
 /nbproject/
 /vendor/
 /env.php

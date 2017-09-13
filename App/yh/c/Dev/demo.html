@@ -241,8 +241,8 @@
                 $('#adminsetpasswd').on('click', function () {
                     var data = setData(this);
                     $.ajax({
-//                        url: $.url('/admin/setpasswd'),
-                        url: 'http://www.gitxt.com/git/php_/admin/setpasswd',
+                        url: $.url('/admin/setpasswd'),
+//                        url: 'http://www.gitxt.com/git/php_/admin/setpasswd',
                         data: data,
                         type: 'put',
                         dataType: 'json',

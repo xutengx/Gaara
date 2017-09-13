@@ -120,7 +120,7 @@ class Response {
     public function exitData($data = ''): void {
         $content = ob_get_contents();
         if(ob_get_length() > 0){
-            PhpConsole::debug ($content, '未捕获的输出');
+            PhpConsole::debug ($content, 'Unexpected output');
         }
         ob_end_clean();
         exit($this->response($data));
@@ -152,7 +152,7 @@ class Response {
      */
     private function encodeData($data = ''): string {
         if ($this->encode === true){
-            return is_null($data) ? '' : $data;
+            return is_null($data) ? '' : (string)$data;
         }
         $this->encode = true;
         switch ($this->contentType) {

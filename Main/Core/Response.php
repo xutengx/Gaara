@@ -78,10 +78,10 @@ class Response {
         511 => 'Network Authentication Required',                             // RFC6585
     );
     private static $httpType = [
-        'html' => ['text/html', 'application/xhtml+xml', '*/*'],
+        'html' => ['text/html', 'application/xhtml+xml'],
         'php' => ['application/php', 'text/php', 'php'],
         'xml' => ['application/xml', 'text/xml', 'application/x-xml'],
-        'json' => ['application/json', 'text/x-json', 'application/jsonrequest', 'text/json'],
+        'json' => ['application/json', 'text/x-json', 'application/jsonrequest', 'text/json','text/javascript'],
         'js' => ['text/javascript', 'application/javascript', 'application/x-javascript'],
         'css' => ['text/css'],
         'rss' => ['application/rss+xml'],
@@ -92,7 +92,7 @@ class Response {
         'png' => ['image/png'],
         'jpg' => ['image/jpg,image/jpeg,image/pjpeg'],
         'gif' => ['image/gif'],
-        'csv' => ['text/csv']
+        'csv' => ['text/csv'],
     ];
     // 当前请求类型
     private $requestMethod = '';
@@ -173,9 +173,7 @@ class Response {
      * 获取当前请求的Accept头信息
      * @return string
      */
-    private function getAcceptType() {
-//        if (!empty($_SERVER['PATH_INFO']))
-//            return \strtolower(\pathinfo($_SERVER['PATH_INFO'], 4));
+    private function getAcceptType(): string {
         foreach (self::$httpType as $key => $val) {
             foreach ($val as $v) {
                 if (stristr($_SERVER['HTTP_ACCEPT'], $v)) {
@@ -183,7 +181,7 @@ class Response {
                 }
             }
         }
-        return false;
+        return 'html';
     }
 
     /**

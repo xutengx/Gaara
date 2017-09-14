@@ -28,10 +28,10 @@ class Template {
      * @param string $message
      * @param string $jumpUrl
      */
-//    public function jumpTo(string $message = '', $jumpUrl = 'index.php?path=index/index/indexDo/', $waitSecond = 3) {
-//        include ROOT . 'Main/Views/tpl/' . $this->jumpTo . '.html';
-//        exit;
-//    }
+    public function jumpTo(string $url, string $message, int $waitSecond = 3) {
+        include ROOT . 'Main/Views/tpl/' . $this->jumpTo . '.html';
+        exit;
+    }
 
     /**
      * 自动加载静态文件 , 目前仅在控制器父类 HttpController->display() 中调用并缓存

@@ -66,21 +66,15 @@ function template($template = '') {
 }
 
 /**
- * 目前不兼容新路由
  * 重定向到指定路由
- * @param string        $where 指定路由,如:index/index/indexDo/
- * @param string|false  $msg   跳转中间页显示信息|不使用中间页
- * @param array         $pars  参数数组
+ * @param string $where 指定路由,如:index/index/indexDo/
+ * @param array $pars   跳转中间页显示信息|不使用中间页
+ * @param string $msg   参数数组
+ * @throws \Exception
  */
-function headerTo($where = '', $msg = false, array $pars = array()) {
-    $str = '';
-    foreach ($pars as $k => $v) {
-        $str .= $k . '/' . $v . '/';
-    }
-    $where = IN_SYS . '?' . PATH . '=' . trim($where, '/') . '/' . $str;
-    $t = ( ( $msg !== false ) ? obj('template')->jumpTo($msg, $where) : header('location:' . $where) );
-    if (!$t)
-        throw new \Exception;
+function headerTo(string $where = '', array $pars = array(), string $msg = null) {
+    $url = url($where, $pars);
+    !is_null($msg) ? obj(Template::class)->jumpTo($url, $msg) : exit(header('Location:' . $url));
 }
 
 /**

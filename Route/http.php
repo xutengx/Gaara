@@ -90,9 +90,12 @@ return [
     Route::get('/p',['middleware'=>['web','testMiddleware'],'namespace'=> 'App\Dev', 'uses'=>'Pipeline\index@index']),
     
     '/test' => ['as' => 'tt1', 'uses' => function(){
-            headerTo('/dev', ['id'=>'1232323123'] );
-            return 'test';
-        }],
+        headerTo('/dev', ['id'=>'1232323123'],'test' );
+        return 'test';
+    }],
+    '/404' => function(){
+            return Response::setStatus(404)->view(404);
+    },
     
     // 支持隐式路由
     Route::any('/{app}/{contr}/{action}', function ($app, $contr, $action) {

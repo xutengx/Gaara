@@ -134,6 +134,11 @@ class Response {
         return $this->response($data);
     }
     
+    public function view(string $file){
+        $data = obj(Template::class)->view($file);
+        return $this->setContentType('html')->response($data);
+    }
+    
     /**
      * 
      * @param type $data

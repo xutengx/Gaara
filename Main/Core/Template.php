@@ -19,10 +19,15 @@ class Template {
     // 自动压缩后js 存放的目录, public 下
     const dataDir = 'open/minStatic/';
 
-    public function show(string $file) {
+    public function show(string $file): bool {
         include ROOT . 'App/' . APP . '/View/template/' . $file . '.html';
         return true;
     }
+    
+    public function view(string $file): string{
+        return file_get_contents( ROOT.'Main/Views/tpl/'.$file.'.html' );
+    }
+    
     /**
      * 跳转中间页
      * @param string $message

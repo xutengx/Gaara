@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 /**
  * 单例 实例化对象
  * 依赖 Integrator.class.php 指向 obj::get()
@@ -19,7 +21,7 @@ function obj(string $obj) {
  * @param string $methodName
  * @return type
  */
-function run($obj, string $methodName){
+function run($obj, string $methodName) {
     $param = func_get_args();
     unset($param[0]);
     unset($param[1]);
@@ -38,10 +40,10 @@ function dobj($obj) {
     return new $obj(...$arr);
 }
 
-function url(string $string = '', array $param = []): string{
-    $url = HOST.ltrim($string, '/');
-    if(!empty($param)){
-        $url .= '?'.http_build_query($param);
+function url(string $string = '', array $param = []): string {
+    $url = HOST . ltrim($string, '/');
+    if (!empty($param)) {
+        $url .= '?' . http_build_query($param);
     }
     return $url;
 }
@@ -83,12 +85,12 @@ function headerTo(string $where = '', array $pars = array(), string $msg = null)
  * @param type $default
  * @return type
  */
-function env(string $envname, $default = null){
+function env(string $envname, $default = null) {
     return obj(Conf::class)->getEnv($envname, $default);
 }
 
 // 运行状态统计
-function statistic() {
+function statistic() : array {
     global $statistic;
     // 框架初始化消耗时间
     $initTime = ( $statistic['_initTime'] - $statistic['_beginTime'] ) * 1000; //将时间转换为毫秒
@@ -104,16 +106,16 @@ function statistic() {
     $nowMemory = ( memory_get_usage() ) / 1024;
     // 当前程序消耗内存
     $now2Memory = ( memory_get_usage() - $statistic['_beginMemory']) / 1024;
-  
+
     $data = [
-        '框架初始化消耗内存' => $initMemory .'K',
-        '框架初始化消耗时间' => $initTime .'毫秒',
-        '程序消耗内存峰值' => $usedMemory .'K',
-        '当前程序消耗内存' => $now2Memory .'K',
-        '当前总体消耗内存' => $nowMemory .'K',
-        '总体消耗内存峰值' => $totleMemory .'K',
-        '总体消耗时间' => $runtime .'毫秒',
+        '框架初始化消耗内存' => $initMemory . 'K',
+        '框架初始化消耗时间' => $initTime . '毫秒',
+        '程序消耗内存峰值' => $usedMemory . 'K',
+        '当前程序消耗内存' => $now2Memory . 'K',
+        '当前总体消耗内存' => $nowMemory . 'K',
+        '总体消耗内存峰值' => $totleMemory . 'K',
+        '总体消耗时间' => $runtime . '毫秒',
     ];
-    
+
     return $data;
 }

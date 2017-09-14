@@ -1,4 +1,9 @@
 {
+    "name": "xuteng/php_",
+    "description": "Framework For PHPer.",
+    "keywords": ["framework", "xuteng", "php_"],
+    "license": "MIT",
+    "type": "project",
     "repositories": {
         "packagist": {
             "type": "composer",

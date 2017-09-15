@@ -27,7 +27,7 @@ README
 php_ 可以通过 composer 进行安装。
 
 ```
-$ composer require xutengx/php_
+$ composer require xutengx/php
 ```
 
 ## nginx配置

@@ -24,7 +24,7 @@ README
 `惜时如金的人们, 请直接看下面快速指引`
 ## 安装
 
-php_ 可以通过 composer 进行安装。
+php 可以通过 composer 进行安装。
 
 ```
 $ composer create-project xutengx/php
@@ -46,7 +46,7 @@ location / {
 [centos7.3]$ systemctl restart nginx
 ```
 ## 目录权限
-安装完 php_ 后，需要配置一些目录的读写权限：data 和 public/open 目录应该是可写的
+安装完毕后，需要配置一些目录的读写权限：data 和 public/open 目录应该是可写的
 ## 路由
 建立路由 : Route/http.php 中写入如下内容
 ``` php

@@ -43,5 +43,9 @@
         ]
     },
     "require-dev": {
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
     }
 }

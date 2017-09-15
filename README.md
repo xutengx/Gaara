@@ -21,7 +21,7 @@ README
 * [获取对象](/helper/getobj.md)
 * [惰性js](/helper/inertjs.md)
 
-`惜时如金的人们, 请直接看下面`
+`惜时如金的人们, 请直接看下面快速指引`
 ## 安装
 
 php_ 可以通过 composer 进行安装。

@@ -22,13 +22,13 @@ README
 * [视图](/helper/view.md)
 * [获取对象](/helper/getobj.md)
 * [惰性js](/helper/inertjs.md)
-##composer
+## composer
 在你希望建立项目的目录下通过 composer 进行安装。
 ```
 $ composer create-project xutengx/php
 ```
 将会生成 php 的文件夹，并自动安装依赖。
-##clone
+## clone
 在你希望建立项目的目录下通过 git 进行安装。
 ```
 $ git clone https://github.com/xutengx/php

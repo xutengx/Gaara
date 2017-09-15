@@ -21,7 +21,7 @@ README
 * [视图](/helper/view.md)
 * [获取对象](/helper/getobj.md)
 * [惰性js](/helper/inertjs.md)
-##总览
+## 总览
 * App
     * `建议的项目目录(新建)`
     * Kernel.php    `核心执行(虽说是核心,常用功能还是定义中间件以及异常捕获后的处理)`

@@ -18,6 +18,7 @@ class Dev extends HttpController {
     protected $language = 1;
 
     public function index() {
+        return obj(\App\yh\m\UserMerchant::class)->getRow();
         $this->assignPhp('url', url(''));
         $this->assign('test', 'this is test string !');
         return $this->display('demo');

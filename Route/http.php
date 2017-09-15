@@ -100,5 +100,9 @@ return [
     // 支持隐式路由
     Route::any('/{app}/{contr}/{action}', function ($app, $contr, $action) {
         return run('\App/'.$app.'/Contr/'.$contr.'Contr', $action);
-    })
+    }),
+    
+    '/hello' => function(){
+        return 'hello world'.PHP_EOL;
+    }
 ];

@@ -53,6 +53,7 @@
                     return newObj;
                 };
                 var timestamp = Date.parse(new Date()) / 1000;
+//                var timestamp = 1505442608; // 调试
                 var data = objKeySort(convert_FormData_to_json(fd));
                 data.timestamp = timestamp;
                 data.token = token;

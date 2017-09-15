@@ -4,6 +4,13 @@
     "keywords": ["framework", "xuteng", "php_"],
     "license": "MIT",
     "type": "project",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "xuteng",
+            "email": "l771033392@qq.com"
+        }
+    ],
     "repositories": {
         "packagist": {
             "type": "composer",

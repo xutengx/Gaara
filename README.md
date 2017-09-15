@@ -36,7 +36,7 @@ $ composer require xutengx/php
 
 ``` nginx
 # 站点根目录
-root /mnt/hgfs/www/php_/public;
+root /mnt/hgfs/www/php/public;
 location / {
     try_files $uri $uri/ /index.php?$query_string;
 }

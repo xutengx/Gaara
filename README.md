@@ -131,3 +131,7 @@ class showdb {
 {"id":100,"name":"公式一","key":"$10$fF2AyitnU9jm1wx/udJr3uVblCvMXIZCHgbogsVuQeG5uYvlTNbj2"}
 ```
 返回 json ?
+****
+更多详细内容，请移步查看 [github][github] or [码云][oschina]
+[oschina]:http://git.oschina.net/dianlaoshu_xT/php_ "我的码云"
+[github]:https://github.com/xutengx/php_ "我的github"

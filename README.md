@@ -1,6 +1,6 @@
 README
 ===========================
-以下的信息可以帮助你更好的使用这个框架, 更好的使用php
+以下的信息可以帮助你更好的使用这个框架gaara(嘎啦), 更好的使用php
 ****
 ### Author:xuteng
 ### E-mail:1771033392@qq.com
@@ -27,7 +27,7 @@ README
 php 可以通过 composer 进行安装。
 
 ```
-$ composer create-project xutengx/php
+$ composer create-project xutengx/gaara
 ```
 
 ## nginx配置
@@ -135,4 +135,4 @@ class showdb {
 更多详细内容，请移步查看 [github][github] or [码云][oschina]
 --------------------------------
 [oschina]:http://git.oschina.net/dianlaoshu_xT/php "码云"
-[github]:https://github.com/xutengx/php "github"
+[github]:https://github.com/xutengx/gaara "github"

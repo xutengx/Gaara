@@ -1,7 +1,7 @@
 {
-    "name": "xutengx/php",
+    "name": "xutengx/gaara",
     "description": "Framework For PHPer.",
-    "keywords": ["framework", "xuteng", "php_"],
+    "keywords": ["framework", "xuteng", "gaara"],
     "license": "MIT",
     "type": "project",
     "authors": [

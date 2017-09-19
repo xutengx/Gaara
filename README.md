@@ -1,9 +1,9 @@
-README
-===========================
-以下的信息可以帮助你更好的使用这个框架gaara(嘎啦), 更好的使用php
+**gaara** `嘎啦`
+==========================
+以下的信息可以帮助你更好的使用这个框架 **gaara**, 更好的使用 **php**
 ****
-### Author:xuteng
-### E-mail:1771033392@qq.com
+#### Author:xuteng
+#### E-mail:1771033392@qq.com
 ****
 ## 目录
 * [安装](/helper/install.md)
@@ -21,116 +21,29 @@ README
 * [获取对象](/helper/getobj.md)
 * [惰性js](/helper/inertjs.md)
 
-`惜时如金的人们, 请直接看下面快速指引`
-## 安装
+[`惜时如金的人们, 请直接看快速指引`](/helper/fastguide.md)
 
-php 可以通过 composer 进行安装。
+### gaara 其主要特性包括：
 
-```
-$ composer create-project xutengx/gaara
-```
+ + 基于命名空间和众多PHP新特性
+ + 堆栈中间件
+ + 无线级路由分组
+ + 定制路由
+ + 依赖注入
+ + 分布式数据库支持
+ + 筛选式配置文件
+ + REST完美支持(包含put文件上传)
+ + API支持完善
+ + 一行代码式缓存
+ + JS惰性加载
+ + JS跨域
+ + PHP惰性加载
+ + 多种调试方式
+ + 异常处理编程
+ + 遵循HTTP协议式响应
 
-## nginx配置
+> gaara 的运行环境要求PHP7.1以上。
 
-需要将 HTTP 服务器的 web 根目录指向 public 目录，该目录下的 index.php 文件将作为默认入口。
-
-``` nginx
-# 站点根目录
-root /mnt/hgfs/www/php/public;
-location / {
-    try_files $uri $uri/ /index.php?$query_string;
-}
-```
-重启你的nginx
-```
-[centos7.3]$ systemctl restart nginx
-```
-## 目录权限
-安装完毕后，需要配置一些目录的读写权限：data 和 public/open 目录应该是可写的
-## 路由
-建立路由 : Route/http.php 中写入如下内容
-``` php
-<?php
-return [
-    '/' => funtion(){
-        return 'hello world'.PHP_EOL;
-    }
-];
-```
-或者
-``` php
-<?php
-Route::get('/', function(){
-    return 'hello world'.PHP_EOL;
-});
-```
-那么在终端或者浏览器中, 将如约而见 hello world
-```
-[centos7.3]$ curl 127.0.0.1 
-hello world
-```
-## 控制器
-建立路由 : Route/http.php 写入如下内容
-``` php
-<?php
-Route::get('/showcontr', 'App\showcontr@index');
-```
-建立控制器 : App/showcontr.php (新建)写入如下内容
-``` php
-<?php
-namespace App;
-class showcontr{
-    public function index(){
-        return 'this is a controller'.PHP_EOL;
-    }
-}
-```
-那么在终端或者浏览器中
-```
-[centos7.3]$ curl 127.0.0.1/showcontr
-this is a controller
-```
-## 数据库
-写入配置 : env.php 写入如下内容
-``` php
-<?php
-return [
-    'db_user' => 'root',
-    'db_host' => '127.0.0.1',
-    'db_passwd' => 'root',
-    'db_db'     => 'ts'
-];
-```
-建立路由 : Route/http.php 写入如下内容
-``` php
-<?php
-Route::get('/showdb', 'App\showdb@index');
-```
-建立模型 : App/m/db.php (新建)写入如下内容
-``` php
-<?php
-namespace App\m;
-class db extends \Main\Core\Model {
-    protected $table = '你的数据表';
-}
-```
-建立控制器 : 在 App/showdb.php (新建)写入如下内容
-``` php
-<?php
-namespace App;
-use App/m/db;
-class showdb {
-    public function index(db $db) {
-        return $db->getRow();
-    }
-}
-```
-那么在终端或者浏览器中, 将会输出 '你的数据表' 中的第一行数据 ( 如果有的话 )
-```
-[centos7.3]$ curl 127.0.0.1/showdb
-{"id":100,"name":"公式一","key":"$10$fF2AyitnU9jm1wx/udJr3uVblCvMXIZCHgbogsVuQeG5uYvlTNbj2"}
-```
-返回 json ?
 ****
 更多详细内容，请移步查看 [github][github] or [码云][oschina]
 --------------------------------

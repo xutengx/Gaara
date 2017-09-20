@@ -25,13 +25,13 @@
 ## composer
 在你希望建立项目的目录下通过 composer 进行安装。
 ```
-$ composer create-project xutengx/php
+$ composer create-project xutengx/gaara
 ```
 将会生成 php 的文件夹，并自动安装依赖。
 ## clone
 在你希望建立项目的目录下通过 git 进行安装。
 ```
-$ git clone https://github.com/xutengx/php
+$ git clone https://github.com/xutengx/gaara
 ```
 将会生成 php 的文件夹，并不会自动安装依赖。
 进入 php 文件夹执行 composer 依赖安装。

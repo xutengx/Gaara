@@ -22,7 +22,9 @@
 * [获取对象](/helper/getobj.md)
 * [惰性js](/helper/inertjs.md)
 ## 总览
+
 ```flow
+
 index.php=>start: public\index.php
 init.php=>operation: init.php
 Route.php=>operation: Main\Core\Route.php
@@ -40,4 +42,5 @@ index.php->init.php->Route.php->校验路由
 路由匹配完结(no)->Route.php
 路由匹配完结(yes)->e
 校验路由(yes)->Kernel->Middlewarehandle->mainFunc->Middlewareterminate->e
+
 ```

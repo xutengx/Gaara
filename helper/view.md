@@ -18,5 +18,10 @@
 * [数据库模型](/helper/model.md)
 * [缓存](/helper/cache.md)
 * [视图](/helper/view.md)
+    * [总览](#总览)
 * [获取对象](/helper/getobj.md)
 * [惰性js](/helper/inertjs.md)
+
+## 总览
+
+> php自己就是最好的视图渲染器

@@ -85,7 +85,7 @@ class Integrator {
      * 方法依赖注入, 执行
      * @param string|object    $className  类名|对象
      * @param string    $methodName 方法名
-     * @param array     $par        实参数组
+     * @param array     $params     实参数组
      * @return mix
      */
     public static function run($className, string $methodName, array $params = []) {

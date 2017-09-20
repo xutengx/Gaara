@@ -20,3 +20,16 @@
 * [视图](/helper/view.md)
 * [获取对象](/helper/getobj.md)
 * [惰性js](/helper/inertjs.md)
+    * [总览](#总览)
+    * [方法列表](#别名获取)
+
+## 总览
+
+> 实现依赖jquery
+> 当使用一个指定方法时, 对应的js及css文件将会被异步加载一次
+> 所有预置的静态文件将被压缩后放于`public/open/minStatic`
+
+## 方法列表
+
+**注 : 详情查看`Main\Views\Include\js\_autoload.js`**
+

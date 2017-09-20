@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Main\Core\Model\Traits;
 defined('IN_SYS') || exit('ACC Denied');
 
+use Main\Core\Exception;
 /**
  * ORM相关
  */
@@ -29,7 +30,7 @@ trait ObjectRelationalMappingTrait {
      * @param int $key  主键
      * @return int      受影响的行数
      */
-    public function save(int $key): int {
+    public function save(int $key = null): int {
         $param = [];
         $bind = [];
         foreach ($this->field as $v) {
@@ -39,6 +40,10 @@ trait ObjectRelationalMappingTrait {
                 $bind[$tempkey] = $this->orm[$v['Field']];
             }
         }
+        if(is_null($key) && isset($this->orm[$this->key])){
+            $key = $this->orm[$this->key];
+        }else
+            throw new Exception ('model ORM save without key');
         $this->data($param);
         $this->where($this->key, $key);
         return $this->update($bind);

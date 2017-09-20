@@ -102,7 +102,8 @@ return [
         return run('\App/'.$app.'/Contr/'.$contr.'Contr', $action);
     }),
     
-    '/hello' => function(){
-        return 'hello world'.PHP_EOL;
+    '/hello' => function(\Main\Core\Request $request, Main\Core\Response $response){
+        $response->setStatus(400);
+        return $request->get('name');
     }
 ];

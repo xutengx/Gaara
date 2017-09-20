@@ -39,7 +39,7 @@ require (ROOT . 'vendor/autoload.php');
 /**
  * 申明debug ( 读取配置 )
  */
-define('DEBUG', obj(Conf::class)->debug);
+define('DEBUG', obj(Conf::class)->app['debug']);
 
 /**
  * 执行

@@ -53,7 +53,7 @@ class Route {
      * @return string
      */
     private static function getPathInfo(): string {
-        return '/' . \str_replace('?' . $_SERVER['QUERY_STRING'], '', \substr_replace($_SERVER['REQUEST_URI'], '',0, strlen(\str_replace(\IN_SYS, '', $_SERVER['SCRIPT_NAME']))));  
+        return $_SERVER['path_info'] ?? '/' . \str_replace('?' . $_SERVER['QUERY_STRING'], '', \substr_replace($_SERVER['REQUEST_URI'], '',0, strlen(\str_replace(\IN_SYS, '', $_SERVER['SCRIPT_NAME']))));  
     }
 
     /**
@@ -61,7 +61,8 @@ class Route {
      * @return type
      */
     private static function getRouteType(): string {
-        return CLI ? 'cli' : 'http';
+        return 'http';
+//        return CLI ? 'cli' : 'http';
     }
 
     /**
@@ -78,7 +79,7 @@ class Route {
      * 路由分析, 包含最终执行
      * 路由匹配失败, 则响应404
      */
-    private static function routeAnalysis(): void {
+    private static function routeAnalysis() {
         foreach (self::$routeRule as $rule => $info) {
             // 路由分组
             if (is_int($rule)) {
@@ -99,7 +100,7 @@ class Route {
                 if ($check === false)
                     continue;
                 else
-                    exit();
+                    return true;
             }
         }
         obj(Response::class)->setStatus(404)->exitData('Not Found ..');

@@ -106,6 +106,8 @@ class Response {
     private $contentType = null;
     // 是否已经编码(encode)
     private $encode = false;
+    // 
+    private $data = null;
 
     public function __construct() {
         $this->acceptType = $this->getAcceptType();
@@ -123,7 +125,11 @@ class Response {
             PhpConsole::debug ($content, 'Unexpected output');
         }
         ob_end_clean();
-        exit($this->response($data));
+        if(CLI){
+            $this->setData($this->response($data));
+        }else{
+            exit($this->response($data));
+        }
     }
     
     /**
@@ -139,6 +145,12 @@ class Response {
         return $this->setContentType('html')->response($data);
     }
     
+    private function setData(string $data): void{
+        $this->data = $data;
+    }
+    public function getData(): string{
+        return $this->data;
+    }
     /**
      * 
      * @param type $data

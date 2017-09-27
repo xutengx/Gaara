@@ -1,6 +1,8 @@
 <?php
+
+declare(strict_types = 1);
 namespace Main\Core;
-defined('IN_SYS')||exit('ACC Denied');
+
 abstract class Controller{
 
 }

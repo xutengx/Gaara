@@ -2,7 +2,6 @@
 
 declare(strict_types = 1);
 namespace Main\Core\Model\Traits;
-defined('IN_SYS') || exit('ACC Denied');
 
 use Main\Core\Exception;
 /**
@@ -20,6 +19,7 @@ trait ObjectRelationalMappingTrait {
      * orm属性设置
      * @param string $key
      * @param string $value
+     * @return void
      */
     public function __set(string $key, string $value): void {
         $this->orm[$key] = $value;
@@ -27,8 +27,8 @@ trait ObjectRelationalMappingTrait {
 
     /**
      * orm属性保存更新
-     * @param int $key  主键
-     * @return int      受影响的行数
+     * @param int $key 主键
+     * @return int 受影响的行数
      */
     public function save(int $key = null): int {
         $param = [];

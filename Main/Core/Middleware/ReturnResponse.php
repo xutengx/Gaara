@@ -2,7 +2,6 @@
 
 declare(strict_types = 1);
 namespace Main\Core\Middleware;
-defined('IN_SYS') || exit('ACC Denied');
 
 use Main\Core\Middleware;
 use Main\Core\PhpConsole;
@@ -25,7 +24,16 @@ class ReturnResponse extends Middleware {
         ob_start();
     }
 
+    /**
+     * 特殊处理 true/false
+     * @param type $response
+     */
     public function terminate($response) {
+        if($response === true){
+            Response::setStatus(200)->exitData();
+        }elseif($response === false){
+            Response::setStatus(400)->exitData();
+        }
         Response::exitData($response);
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
+declare(strict_types = 1);
 namespace Main\Core;
-defined('IN_SYS') || exit('ACC Denied');
 
 use \Main\Core\Session\Driver;
 
@@ -11,9 +11,7 @@ use \Main\Core\Session\Driver;
  */
 class Session {
 
-    /**
-     * @var bool 是否手动
-     */
+    // 是否手动
     private $Manual = false;
 
     final public function __construct($Manual = false) {

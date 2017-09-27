@@ -8,6 +8,7 @@ use Main\Core\Middleware;
 use Main\Core\Request;
 use Cache;
 use Route;
+use Response;
 
 /**
  * 访问频率限制
@@ -24,8 +25,8 @@ class ThrottleRequests extends Middleware {
     protected $decaySecond = 60;
 
     public function __construct($maxAttempts = 100, $decaySecond = 60) {
-        $this->maxAttempts = $maxAttempts;
-        $this->decaySecond = $decaySecond;
+        $this->maxAttempts = (int)$maxAttempts;
+        $this->decaySecond = (int)$decaySecond;
     }
 
     /**
@@ -74,11 +75,10 @@ class ThrottleRequests extends Middleware {
     }
 
     /**
-     * 返回429响应头
-     * @param string $key
-     * @param int $maxAttempts
+     * 增加对应的响应头
+     * 超过请求次数限制,则中断
      */
-    protected function buildResponse() {
+    protected function buildResponse(): void {
         $retryAfter = Cache::ttl($this->key);
         // 高并发下容错处理
         if ($retryAfter === -1) {
@@ -88,7 +88,7 @@ class ThrottleRequests extends Middleware {
             $this->addHeader();
         } else {
             $this->addHeader($retryAfter);
-            \Response::returnData('Too Many Attempts. Try again after ' . $retryAfter . ' seconds', false, 429);
+            Response::setStatus(429)->exitData('Too Many Attempts. Try again after ' . $retryAfter . ' seconds');
         }
     }
 
@@ -103,6 +103,7 @@ class ThrottleRequests extends Middleware {
     /**
      * 增加响应头
      * @param int $retryAfter
+     * @return void
      */
     protected function addHeader(int $retryAfter = null): void {
         $headers = [

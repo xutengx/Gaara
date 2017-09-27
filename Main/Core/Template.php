@@ -19,11 +19,21 @@ class Template {
     // 自动压缩后js 存放的目录, public 下
     const dataDir = 'open/minStatic/';
 
+    /**
+     * 插入页面内容
+     * @param string $file
+     * @return bool
+     */
     public function show(string $file): bool {
         include ROOT . 'App/' . APP . '/View/template/' . $file . '.html';
         return true;
     }
     
+    /**
+     * 返回页面内容
+     * @param string $file
+     * @return string
+     */
     public function view(string $file): string{
         return file_get_contents( ROOT.'Main/Views/tpl/'.$file.'.html' );
     }
@@ -54,9 +64,8 @@ class Template {
 
     /**
      * 生成压缩文件
-     * @param string $originaDir    需要压缩的js所在目录
-     * @param string $newDir        压缩后的js存放目录
-     * 
+     * @param string $originaDir 需要压缩的js所在目录
+     * @param string $newDir 压缩后的js存放目录
      * @return string JS引入语句 (直接echo即可使用)
      */
     private function createMin(string $originaDir, $newDir = null): string {
@@ -85,9 +94,9 @@ class Template {
     }
 
     /**
-     * 压缩js , 比较2种模式
-     * @param string $content   压缩前js内容
-     * @return string           压缩后js
+     * 压缩js,比较2种模式
+     * @param string $content 压缩前js内容
+     * @return string 压缩后js
      */
     private function AutomaticPacking(string $content): string {
         $packerNormal = (new \Main\Core\JavaScriptPacker($content, 'Normal', false, false))->pack();
@@ -96,9 +105,9 @@ class Template {
     }
 
     /**
-     * 压缩 css
-     * @param string $content   压缩前 css 内容
-     * @return string           压缩后 css
+     * 压缩css
+     * @param string $content 压缩前css内容
+     * @return string 压缩后css内容
      */
     private function compressCss(string $content): string {
         /* remove comments */

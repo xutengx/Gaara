@@ -1,7 +1,7 @@
 <?php
 
+declare(strict_types = 1);
 namespace Main\Core\Tool\Traits;
-defined('IN_SYS') || exit('ACC Denied');
 
 /**
  * 发送请求
@@ -16,12 +16,12 @@ trait RequestTrait {
      * @param string    $host   异步执行的服务器ip
      * @return true
      */
-    function asynExe(string $where = '', array $pars = array(), $scheme = 'http', $host = '127.0.0.1') {
-        $where = str_replace('\\','/',$where);
-        $host =  $scheme . '://' . $host . str_replace(IN_SYS, '', $_SERVER['SCRIPT_NAME']);
-        $url = $host.ltrim($where, '/');
-        if(!empty($pars)){
-            $url .= '?'.http_build_query($pars);
+    function asynExe(string $where = '', array $pars = array(), string $scheme = 'http', string $host = '127.0.0.1'): bool {
+        $where = str_replace('\\', '/', $where);
+        $host = $scheme . '://' . $host . str_replace(IN_SYS, '', $_SERVER['SCRIPT_NAME']);
+        $url = $host . ltrim($where, '/');
+        if (!empty($pars)) {
+            $url .= '?' . http_build_query($pars);
         }
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -35,8 +35,8 @@ trait RequestTrait {
 
     /**
      * 并行请求
-     * @param   array   $urls   需要请求的url组成数组,如 ['www.baidu.com','test.xuteng.com?testpar=123']
-     * @return  array           每个请求的响应体
+     * @param array $urls 需要请求的url组成数组,如 ['www.baidu.com','test.xuteng.com?testpar=123']
+     * @return array 每个请求的响应体
      */
     function parallelExe(array $urls) {
         if (!is_array($urls) or count($urls) === 0) {
@@ -119,4 +119,5 @@ trait RequestTrait {
         //显示获得的数据
         return $re;
     }
+
 }

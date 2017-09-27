@@ -1,15 +1,19 @@
 <?php
 
+declare(strict_types = 1);
 namespace Main\Core\Request\Traits;
-
-defined('IN_SYS') || exit('ACC Denied');
 
 /**
  * 客户端相关信息获取
  */
 trait ClientInfo {
 
-    private function getIp() {
+    /**
+     * 获取客户端ip
+     * @return string
+     * @throws \Main\Core\Exception
+     */
+    private function getIp(): string {
         if (isset($_SERVER['HTTP_CLIENT_IP']) && !empty($_SERVER["HTTP_CLIENT_IP"])) {
             $cip = $_SERVER["HTTP_CLIENT_IP"];
         } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && !empty($_SERVER["HTTP_X_FORWARDED_FOR"])) {

@@ -1,8 +1,7 @@
 <?php
 
+declare(strict_types = 1);
 namespace Main\Core\Cache;
-
-defined('IN_SYS') || exit('ACC Denied');
 
 interface DriverInterface {
 

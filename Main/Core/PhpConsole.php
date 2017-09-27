@@ -2,11 +2,9 @@
 
 declare(strict_types = 1);
 namespace Main\Core;
-defined('IN_SYS') || exit('ACC Denied');
 
 use PhpConsole\Handler;
 use PhpConsole\Connector;
-use PhpConsole\Storage\Session;
 
 /**
  * 借助谷歌浏览器的 php console 插件, 以及 php-console 包, 进行调试

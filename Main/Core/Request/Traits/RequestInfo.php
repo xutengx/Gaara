@@ -1,7 +1,7 @@
 <?php
 
+declare(strict_types = 1);
 namespace Main\Core\Request\Traits;
-defined('IN_SYS') || exit('ACC Denied');
 
 /**
  * 请求相关信息获取
@@ -26,9 +26,9 @@ trait RequestInfo {
 
     /**
      * 是否ajax请求
-     * @return boolean
+     * @return bool
      */
-    private function isAjax() {
+    private function isAjax(): bool {
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && (strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'))
             return true;
         return false;

@@ -2,7 +2,6 @@
 
 declare(strict_types = 1);
 namespace Main\Core\Request\Traits;
-defined('IN_SYS') || exit('ACC Denied');
 
 /**
  * 客户端相关信息获取
@@ -72,7 +71,7 @@ trait Filter {
     /**
      * 获取当前请求类型的参数
      * @param string $key
-     * @param type $filter
+     * @param string $filter 预定规则 or 正则表达式
      * @return type
      */
     public function input(string $key, $filter = false) {
@@ -83,8 +82,11 @@ trait Filter {
             return null;
     }
 
-    // 外部获取 预定义验证规则
-    public function getFilterArr() {
+    /**
+     * 外部获取 预定义验证规则
+     * @return array
+     */
+    public function getFilterArr(): array {
         return $this->filterArr;
     }
 
@@ -94,7 +96,7 @@ trait Filter {
      * @param string $filter 匹配规则
      * @return mixed or false
      */
-    private function filterMatch($str, $filter) {
+    private function filterMatch(string $str, string $filter) {
         $filter = array_key_exists($filter, $this->filterArr) ? $this->filterArr[$filter] : $filter;
         return preg_match($filter, $str) ? $str : false;
     }

@@ -2,17 +2,28 @@
 
 declare(strict_types = 1);
 namespace Main\Core;
-defined('IN_SYS') || exit('ACC Denied');
 
+/**
+ * 快捷类
+ */
 abstract class Container {
 
     protected static $instance = null;
 
+    /**
+     * 返回自快捷类对应的实体类的实例
+     * @return object
+     */
     final public static function getInstance() {
         return \obj(static::getInstanceName());
     }
 
-    final public static function getInstanceName() {
+    /**
+     * 返回自快捷类对应的实体类的类名
+     * @return string
+     * @throws Exception
+     */
+    final public static function getInstanceName(): string {
         if (!is_null(static::$instance))
             return static::$instance;
         else {

@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 namespace Main\Core\Tool\Traits;
-defined('IN_SYS') || exit('ACC Denied');
 
 use Main\Core\Exception;
+
 /**
  * 文件操作
  */
@@ -12,7 +12,7 @@ trait FileTrait {
 
     /**
      * 路径 转 绝对路径
-     * @param string $dir
+     * @param string &$dir
      */
     public function absoluteDir(string &$dir = '') {
         $system = php_uname('s');
@@ -30,7 +30,7 @@ trait FileTrait {
     }
 
     // 分割下载 // test
-    public function download2(string $path,string $name,string $showname) {
+    public function download2(string $path, string $name, string $showname) {
 //        $this->absoluteDir($path);
         $filename = $path . $name;
         $file = $filename;
@@ -92,10 +92,9 @@ trait FileTrait {
      * 将任意内容写进文件
      * @param string $fileName  文件名
      * @param string $text  内容
-     *
      * @return bool
      */
-    public function printInFile(string $fileName = '', string $text = '') {
+    public function printInFile(string $fileName = '', string $text = ''): bool {
         //if( ! $fileName || ! $text ) return false;
 //        $this->absoluteDir($fileName);
 //        var_dump($fileName);
@@ -119,12 +118,12 @@ trait FileTrait {
     }
 
     /**
-     * @param string $dirName 文件夹
-     *
-     * @return array 返回文件夹下的所有文件 组成的一维数组
+     * 返回文件夹下的所有文件 组成的一维数组
+     * @param string $dirName 文件夹路径
+     * @return array 一维数组
      * @throws Exception
      */
-    public function getFiles(string $dirName = '') {
+    public function getFiles(string $dirName = ''): array {
         $dirName = rtrim($dirName, '/');
         $arr = array();
         if (is_dir($dirName) && $dir_arr = scandir($dirName)) {
@@ -148,14 +147,13 @@ trait FileTrait {
      * 生成随机文件名
      * @param string $dir 文件所在的目录(相对,绝对)
      * @param string $ext 文件后缀
-     * @param int    $id  唯一标识
-     *
+     * @param string $uni 唯一标识
      * @return string
      */
-    final public function makeFilename(string $dir = '', string $ext = '', string $id = 'def') : string {
+    final public function makeFilename(string $dir = '', string $ext = '', string $uni = 'def'): string {
         $ext = trim($ext, '.');
         $dir = $dir ? rtrim($dir, '/') . '/' : './';
-        $dir .= uniqid($id);
+        $dir .= uniqid($uni);
         $dir .= '.' . $ext;
         return $dir;
     }
@@ -164,12 +162,12 @@ trait FileTrait {
      * 递归创建目录
      * @param string $dir 目录名(相对or绝对路径)
      * @param int    $mode 目录权限
-     *
      * @return bool
      */
-    final public function __mkdir(string $dir = '', $mode = 0777) {
+    final public function __mkdir(string $dir = '', $mode = 0777): bool {
 //        $this->absoluteDir($dir);
         if (is_dir(dirname($dir)) || $this->__mkdir(dirname($dir)))
             return mkdir($dir, $mode);
     }
+
 }

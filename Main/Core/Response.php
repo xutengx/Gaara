@@ -2,7 +2,6 @@
 
 declare(strict_types = 1);
 namespace Main\Core;
-defined('IN_SYS') || exit('ACC Denied');
 
 use Main\Core\Response\Traits;
 use Main\Core\Conf;
@@ -106,7 +105,7 @@ class Response {
     private $contentType = null;
     // 是否已经编码(encode)
     private $encode = false;
-    // 
+    // cli模式下响应存放
     private $data = null;
 
     public function __construct() {
@@ -117,7 +116,8 @@ class Response {
     
     /**
      * 终止进程并响应内容, 可通过set方法设置状态码等
-     * @param type $data
+     * @param mix $data
+     * @return void
      */
     public function exitData($data = ''): void {
         $content = ob_get_contents();
@@ -135,36 +135,50 @@ class Response {
     /**
      * 返回响应内容, 可通过set方法设置状态码等
      * @param type $data
+     * @return string
      */
     public function returnData($data = ''): string {
         return $this->response($data);
     }
     
-    public function view(string $file){
+    /**
+     * 返回页面
+     * @param string $file
+     * @return string
+     */
+    public function view(string $file): string{
         $data = obj(Template::class)->view($file);
         return $this->setContentType('html')->response($data);
     }
     
+    /**
+     * cli模式下 设置返回值
+     * @param string $data
+     */
     private function setData(string $data): void{
         $this->data = $data;
     }
+    
+    /**
+     * cli模式下 获取返回值
+     * @return string
+     */
     public function getData(): string{
         return $this->data;
     }
+    
     /**
-     * 
+     * 编码响应内容,设置状态码
      * @param type $data
+     * @return string
      */
     private function response($data): string{
         return $this->setStatus(200)->setContentType($this->acceptType)->encodeData($data);
     }
 
     /**
-     * 编码数据
-     * @access protected
+     * 编码响应内容
      * @param mixed  $data 要返回的数据
-     * @param string $type 返回类型 JSON XML
-     *
      * @return string
      */
     private function encodeData($data = ''): string {
@@ -172,25 +186,24 @@ class Response {
             return is_null($data) ? '' : (string)$data;
         }
         $this->encode = true;
-        if($data === true){
-            $this->setStatus(200);
-            return '';
-        }elseif($data === false){
-            $this->setStatus(500);
-            return '';
-        }
+        $encode = '';
         switch ($this->contentType) {
             case 'json':
-                return json_encode($data, JSON_UNESCAPED_UNICODE);
+                $encode = json_encode($data, JSON_UNESCAPED_UNICODE);
+                break;
             case 'xml':
-                return obj(Tool::class)->xml_encode($data, $this->char);
+                $encode = obj(Tool::class)->xml_encode($data, $this->char);
+                break;
             case 'php':
-                return serialize($data);
+                $encode = serialize($data);
+                break;
             case 'html':
-                return is_array($data) ? json_encode($data, JSON_UNESCAPED_UNICODE) : $data;
+                $encode = is_array($data) ? json_encode($data, JSON_UNESCAPED_UNICODE) : $data;
+                break;
             default:
-                return ($data);
+                $encode = $data;
         }
+        return (string)$encode;
     }
 
     /**
@@ -212,13 +225,15 @@ class Response {
      * 获取当前请求的请求方法信息
      * @return string
      */
-    private function getRequestMethod() {
+    private function getRequestMethod(): string {
         return \strtolower($_SERVER['REQUEST_METHOD']);
     }
-    
-    /************************************************************************/
 
-    public function doException(Exception $exception) {
+    /**
+     * 异常中断
+     * @param \Main\Core\Exception $exception
+     */
+    public function doException(Exception $exception): void {
         $data['msg'] = $exception->getMessage();
         if (DEBUG)
             $data['exception'] = $exception->getTraceAsString();

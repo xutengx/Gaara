@@ -2,7 +2,8 @@
 
 declare(strict_types = 1);
 namespace Main\Core;
-defined('IN_SYS') || exit('ACC Denied');
+
+use Closure;
 
 class Kernel {
 
@@ -17,7 +18,14 @@ class Kernel {
         $this->pipeline = $pipeline;
     }
 
-    public function run($middlewareGroups, $contr, $request): void {
+    /**
+     * 执行中间件以及用户业务代码
+     * @param array $middlewareGroups
+     * @param string|callback|array $contr
+     * @param array $request
+     * @return void
+     */
+    public function run(array $middlewareGroups, $contr, array $request): void {
         $this->pipeline->setPipes($this->addMiddleware($middlewareGroups));
         $this->pipeline->setDefaultClosure($this->doController($contr, $request));
         $this->pipeline->then();
@@ -49,7 +57,7 @@ class Kernel {
      * @param array $request 请求参数
      * @return void
      */
-    protected function doController($contr, $request) {
+    protected function doController($contr, array $request): Closure {
         return function () use ($contr, $request) {
             /**
              * 方法依赖注入
@@ -109,4 +117,5 @@ class Kernel {
     final public function __get(string $param) {
         return $this->$param;
     }
+
 }

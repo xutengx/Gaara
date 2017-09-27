@@ -97,9 +97,10 @@ return [
         headerTo('/dev', ['id'=>'1232323123'],'test' );
         return 'test';
     }],
-    '/404' => function(){
-            return Response::setStatus(404)->view(404);
-    },
+    '/404' => ['middleware'=>['api'],'uses'=>function(){
+//            return Response::setStatus(404)->view(404);
+        return false;
+    }],
     
     // 支持隐式路由
     Route::any('/{app}/{contr}/{action}', function ($app, $contr, $action) {

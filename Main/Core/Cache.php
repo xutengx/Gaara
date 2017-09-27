@@ -1,7 +1,7 @@
 <?php
 
+declare(strict_types = 1);
 namespace Main\Core;
-defined('IN_SYS') || exit('ACC Denied');
 
 use \Main\Core\Cache\Driver;
 
@@ -28,14 +28,14 @@ class Cache {
 
     /**
      * 方法缓存 兼容 return 与 打印输出
-     * @param object  $obj 执行对象
-     * @param string  $func 执行方法
+     * @param object $obj 执行对象
+     * @param string $func 执行方法
      * @param bool|true $cacheTime 缓存过期时间
      * @param $par 非限定参数 
      *
      * @return mixed
      */
-    public function call($obj, $func, $cacheTime = true) {
+    public function call($obj, string $func, $cacheTime = true) {
         $cacheTime = is_numeric($cacheTime) ? (int) $cacheTime : $this->cacheLimitTime;
         $pars = func_get_args();
         unset($pars[0]);

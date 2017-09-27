@@ -1,13 +1,7 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2016/2/22 0022
- * Time: 11:05
- */
+declare(strict_types = 1);
 namespace Main\Core;
-defined('IN_SYS') || exit('ACC Denied');
 
 class Secure {
 

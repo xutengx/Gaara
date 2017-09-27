@@ -2,7 +2,6 @@
 
 declare(strict_types = 1);
 namespace Main\Core;
-defined('IN_SYS') || exit('ACC Denied');
 
 use Closure;
 
@@ -41,8 +40,8 @@ class Conf {
     /**
      * 获取环境变量, function env 指向此
      * @param string $name
-     * @param type $default     当此变量不存在时的默认值
-     * @return type
+     * @param mix $default  当此变量不存在时的默认值
+     * @return mix
      */
     public function getEnv(string $name, $default = null) {
         return self::$env[$name] ?? $default;
@@ -65,10 +64,12 @@ class Conf {
     }
 
     /**
-     * 返回指定的配置文件  eg Conf::db('_dev');     将返回以 _dev为键的配置数组
+     * 返回指定的配置文件  
+     * eg Conf::db('_dev');     将返回以 _dev为键的配置
      * @param string $name
-     * @param string $arguments
+     * @param array $arguments
      * @return mix
+     * @throws Exception
      */
     public function __call(string $name, array $arguments) {
         // 存在对应配置文件
@@ -83,7 +84,8 @@ class Conf {
         }
     }
 
-    public function __set($key, $value) {
+    public function __set(string $key, $value): void {
         $this->data[$key] = $value;
     }
+
 }

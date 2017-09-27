@@ -1,6 +1,8 @@
 <?php
+
+declare(strict_types = 1);
 namespace Main\Core;
-defined('IN_SYS') || exit('ACC Denied');
+
 class Exception extends \Exception{
     protected $code_map = array(
         // 自动加载

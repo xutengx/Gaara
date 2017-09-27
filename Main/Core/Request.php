@@ -2,7 +2,6 @@
 
 declare(strict_types = 1);
 namespace Main\Core;
-defined('IN_SYS') || exit('ACC Denied');
 
 use \Main\Core\Request\Traits;
 use \Main\Core\Request\UploadFile;
@@ -31,8 +30,9 @@ class Request {
      * 获取参数到当前类的属性
      * @param array $urlPar     来自路由的 url 参数
      * @param array $domainPar  来自路由的 域名 参数
+     * @return void
      */
-    private function getContentType(array $urlPar, array $domainPar) {
+    private function getContentType(array $urlPar, array $domainPar): void {
         $this->domain = $this->filter($domainPar);
         $this->get = $this->filter($urlPar);
         $this->cookie = $this->_htmlspecialchars($_COOKIE);
@@ -67,9 +67,9 @@ class Request {
      * @param string $domain
      * @param bool $secure
      * @param bool $httponly
-     * @return type
+     * @return bool
      */
-    public function setcookie(string $name, $value = '', int $expire = 0, string $path = "", string $domain = "", bool $secure = false, bool $httponly = true) {
+    public function setcookie(string $name, $value = '', int $expire = 0, string $path = "", string $domain = "", bool $secure = false, bool $httponly = true): bool {
         $expire += time();
         $this->cookie[$name] = $_COOKIE[$name] = $value;
         if (is_array($value))
@@ -110,7 +110,7 @@ class Request {
                 // match "name", then everything after "stream" (optional) except for prepending newlines
                 preg_match("/name=\"([^\"]*)\".*filename=\"([^\"].*?)\".*Content-Type:\s+(.*?)[\n|\r|\r\n]+([^\n\r].*)?$/s", $block, $matches);
                 // 兼容无文件上传的情况
-                if(empty($matches))
+                if (empty($matches))
                     continue;
                 $content_blob = $matches[4];
                 $content_blob = substr($content_blob, 0, strlen($content_blob) - strlen(PHP_EOL) * 2);        // 移除尾部多余换行符
@@ -134,11 +134,12 @@ class Request {
 
     /**
      * 将$_FILES 放入 $this->file
+     * @return void
      */
-    private function consistentFile() {
+    private function consistentFile(): void {
         if (!empty($_FILES)) {
             foreach ($_FILES as $k => $v) {
-                if($v['error'] === 0)
+                if ($v['error'] === 0)
                     $this->file->addFile([
                         'key_name' => $k,
                         'name' => $v['name'],
@@ -195,6 +196,7 @@ class Request {
         }
         return $q;
     }
+
     /**
      * 获取原始数据数组
      * @param $property_name
@@ -206,7 +208,7 @@ class Request {
             return $this->$property_name;
         elseif (method_exists($this, $method = 'get' . ucfirst($property_name))) {
             return $this->$method();
-        }elseif (method_exists($this, $property_name)) {
+        } elseif (method_exists($this, $property_name)) {
             return $this->$property_name();
         }
     }
@@ -224,4 +226,5 @@ class Request {
             return true;
         }
     }
+
 }

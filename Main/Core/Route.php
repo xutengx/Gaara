@@ -2,15 +2,17 @@
 
 declare(strict_types = 1);
 namespace Main\Core;
-defined('IN_SYS') || exit('ACC Denied');
 
 /**
  * 显式自定义路由
  */
 class Route {
 
+    // 当前 $pathInfo
     private static $pathInfo = null;
+    // 路由模式 http/cli
     private static $routeType = null;
+    // 全部路由规则
     protected static $routeRule = [];
     // 路由别名, 默认为路由正则string
     private static $alias = null;
@@ -21,20 +23,21 @@ class Route {
     // 当前路由可用http方法
     private static $methods = [];
 
-    public static function Start() {
+    public static function Start(): void {
         self::getConf();
         // 得到 $pathInfo
         self::$pathInfo = self::getPathInfo();
-        // 得到当前模式 cli ?
+        // 得到当前模式 http/cli
         self::$routeType = self::getRouteType();
         // 引入route规则
         self::$routeRule = self::getRouteRule();
         // 分析路由, 并执行
         self::routeAnalysis();
     }
-    
+
     /**
      * 读取配置 ( 全局设置 )
+     * @return void
      */
     private static function getConf(): void {
         $conf = obj(Conf::class)->app;
@@ -53,16 +56,15 @@ class Route {
      * @return string
      */
     private static function getPathInfo(): string {
-        return $_SERVER['path_info'] ?? '/' . \str_replace('?' . $_SERVER['QUERY_STRING'], '', \substr_replace($_SERVER['REQUEST_URI'], '',0, strlen(\str_replace(\IN_SYS, '', $_SERVER['SCRIPT_NAME']))));  
+        return $_SERVER['path_info'] ?? '/' . \str_replace('?' . $_SERVER['QUERY_STRING'], '', \substr_replace($_SERVER['REQUEST_URI'], '', 0, strlen(\str_replace(\IN_SYS, '', $_SERVER['SCRIPT_NAME']))));
     }
 
     /**
-     * 分析当前执行环境 CLI/http ?
-     * @return type
+     * 分析当前执行环境 CLI/http
+     * @return string
      */
     private static function getRouteType(): string {
-        return 'http';
-//        return CLI ? 'cli' : 'http';
+        return CLI ? 'cli' : 'http';
     }
 
     /**
@@ -78,8 +80,9 @@ class Route {
     /**
      * 路由分析, 包含最终执行
      * 路由匹配失败, 则响应404
+     * @return void
      */
-    private static function routeAnalysis() {
+    private static function routeAnalysis(): void {
         foreach (self::$routeRule as $rule => $info) {
             // 路由分组
             if (is_int($rule)) {
@@ -95,12 +98,9 @@ class Route {
                 $urlParam = self::paramAnalysis($parameter, $argument);
                 // 执行分析
                 $check = self::infoAnalysis($rule, $info, $urlParam);
-
                 // 域名不匹配, 则继续 foreach
                 if ($check === false)
                     continue;
-                else
-                    return true;
             }
         }
         obj(Response::class)->setStatus(404)->exitData('Not Found ..');
@@ -108,10 +108,10 @@ class Route {
 
     /**
      * 将路由规则翻译为正则表达式
-     * @param string    $rule       url规则
-     * @param array     &$param     url上的形参组成的一维数组
-     * @return string               正则表达式
-     * @return array    $param      形参数组
+     * @param string $rule url规则
+     * @param array &$param url上的形参组成的一维数组
+     * @return string 正则表达式
+     * @return array $param 形参数组
      */
     private static function ruleToPreg(string $rule = '', array &$param = []): string {
         $temp = explode('/', $rule);
@@ -134,8 +134,8 @@ class Route {
 
     /**
      * url 参数分析
-     * @param array $parameter  形参数组列表(一维数组)
-     * @param array $argument   实参数组列表(一维数组)
+     * @param array $parameter 形参数组列表(一维数组)
+     * @param array $argument 实参数组列表(一维数组)
      * @return array 可调用的参数数组(一维链表)
      */
     private static function paramAnalysis($parameter, $argument): array {
@@ -157,13 +157,12 @@ class Route {
      * 申明 self::$alias
      * 申明 self::$urlParam
      * 申明 self::$methods
-     * @param string $rule          路由匹配段
-     * @param string|array $info    路由执行段 (可能是形如 'App\index\Contr\IndexContr@indexDo' 或者 闭包, 或者 数组包含以上2钟)
-     * @param array $urlParam       url参数数组
-     * @param array $request
+     * @param string $rule 路由匹配段
+     * @param string|array $info 路由执行段 (可能是形如 'App\index\Contr\IndexContr@indexDo' 或者 闭包, 或者 数组包含以上2钟)
+     * @param array $urlParam url参数数组
      * @return bool
      */
-    private static function infoAnalysis($rule, $info, $urlParam): bool {
+    private static function infoAnalysis(string $rule, $info, array $urlParam): bool {
         // 一致化格式
         $info = self::unifiedInfo($info);
         // 别名分析
@@ -185,7 +184,7 @@ class Route {
         $contr = $info['uses'];
 
         // 合并 域名参数 与 路由参数
-        $request = array_merge($domainParam, $urlParam);
+        $wholeParam = array_merge($domainParam, $urlParam);
 
         // 初始化 Request
         \obj(Request::class, $urlParam, $domainParam);
@@ -198,14 +197,15 @@ class Route {
         self::statistic();
 
         // 核心执行,管道模式中间件,以及控制器
-        self::doKernel($middleware, $contr, $request);
-        
+        self::doKernel($middleware, $contr, $wholeParam);
+
         return true;
     }
 
     /**
      * info 一致化格式
      * @param \Closure $info
+     * @return void
      */
     private static function unifiedInfo($info): array {
         $arr = [];
@@ -229,8 +229,15 @@ class Route {
         return $arr;
     }
 
-    private static function doKernel($middleware, $contr, $request): void {
-        obj(\App\Kernel::class)->run($middleware, $contr, $request);
+    /**
+     * 执行中间件, 控制器
+     * @param array $middleware
+     * @param string|callback|array $contr
+     * @param array $wholeParam
+     * @return void
+     */
+    private static function doKernel(array $middleware, $contr, array $wholeParam): void {
+        obj(\App\Kernel::class)->run($middleware, $contr, $wholeParam);
     }
 
     /**
@@ -296,7 +303,8 @@ class Route {
     public static function getMethods(): array {
         return self::$methods;
     }
-    /*     * ************************************************** 分组以及静态方法申明路由 ******************************************** */
+
+    /**************************************************** 分组以及静态方法申明路由 ******************************************** */
 
     // 可用的 http 动作
     private static $allowMethod = [
@@ -310,59 +318,109 @@ class Route {
         'as' => [],
         'middleware' => [],
     ];
-
-    public static function restful($url, string $action) {
-        self::post($url, $action . '@create');
-        self::delete($url, $action . '@destroy');
-        self::get($url, $action . '@select');
-        self::put($url, $action . '@update');
+    
+    /**
+     * restful风格申明post,delete,get,put四条路由分别对应controller中的create,destroy,select,update方法
+     * @param string $url
+     * @param string $controller
+     * @return void
+     */
+    public static function restful(string $url, string $controller): void {
+        self::post($url, $controller . '@create');
+        self::delete($url, $controller . '@destroy');
+        self::get($url, $controller . '@select');
+        self::put($url, $controller . '@update');
     }
 
-    public static function options($url, $action) {
-        return self::match(['options'], $url, $action);
-    }
 
-    public static function post($url, $action) {
-        return self::match(['post', 'options'], $url, $action);
-    }
-
-    public static function get($url, $action) {
-        return self::match(['get', 'options'], $url, $action);
-    }
-
-    public static function put($url, $action) {
-        return self::match(['put', 'options'], $url, $action);
-    }
-
-    public static function delete($url, $action) {
-        return self::match(['delete', 'options'], $url, $action);
-    }
-
-    public static function head($url, $action) {
-        return self::match(['head'], $url, $action);
-    }
-
-    public static function patch($url, $action) {
-        return self::match(['patch'], $url, $action);
+    /**
+     * options路由
+     * @param string $url
+     * @param mix $action
+     * @return void
+     */
+    public static function options(string $url, $action): void {
+        self::match(['options'], $url, $action);
     }
 
     /**
-     * 
-     * @param type $url
-     * @param type $action
-     * @return type
+     * post路由
+     * @param string $url
+     * @param mix $action
+     * @return void
      */
-    public static function any($url, $action) {
-        return self::match(self::$allowMethod, $url, $action);
+    public static function post(string $url, $action): void {
+        self::match(['post', 'options'], $url, $action);
+    }
+    
+    /**
+     * get路由
+     * @param string $url
+     * @param mix $action
+     * @return void
+     */
+    public static function get(string $url, $action): void {
+        self::match(['get', 'options'], $url, $action);
+    }
+    
+    /**
+     * put路由
+     * @param string $url
+     * @param mix $action
+     * @return void
+     */
+    public static function put(string $url, $action): void {
+        self::match(['put', 'options'], $url, $action);
+    }
+    
+    /**
+     * delete路由
+     * @param string $url
+     * @param mix $action
+     * @return void
+     */
+    public static function delete(string $url, $action) : void{
+        self::match(['delete', 'options'], $url, $action);
+    }
+    
+    /**
+     * head路由
+     * @param string $url
+     * @param mix $action
+     * @return void
+     */
+    public static function head(string $url, $action): void {
+        self::match(['head'], $url, $action);
+    }
+    
+    /**
+     * patch路由
+     * @param string $url
+     * @param mix $action
+     * @return void
+     */
+    public static function patch(string $url, $action): void {
+        self::match(['patch'], $url, $action);
+    }
+
+    /**
+     * 任意http方法路由
+     * @param string $url
+     * @param mix $action
+     * @return void
+     */
+    public static function any(string $url, $action): void {
+        self::match(self::$allowMethod, $url, $action);
     }
 
     /**
      * 处理分析每个路由以及所在组环境, 并加入 self::$routeRule
-     * @param type $method
-     * @param string $url
-     * @param type $action
+     * @param array $method 可以匹配的http方法数组
+     * @param string $url 路由
+     * @param mix $action
+     * @return void
      */
-    public static function match($method, $url, $action) {
+    public static function match(array $method, string $url, $action): void {
         // 格式化action
         $actionInfo = self::formatAction($action);
 
@@ -447,11 +505,12 @@ class Route {
     }
 
     /**
-     * 路由分组, 支持无线级嵌套
-     * @param type $rule
+     * 路由分组, 无线级嵌套
+     * @param array $rule
      * @param \Closure $callback
+     * @return void
      */
-    public static function group($rule, \Closure $callback) {
+    public static function group(array $rule, \Closure $callback): void {
         // 当前 group 分组信息填充
         self::$group['middleware'][] = isset($rule['middleware']) ? $rule['middleware'] : [];
         self::$group['namespace'][] = isset($rule['namespace']) ? $rule['namespace'] : '';
@@ -470,9 +529,10 @@ class Route {
 
     /**
      * 格式化 action 参数
-     * @param type $action
+     * @param mix $action
+     * @return array
      */
-    private static function formatAction($action) {
+    private static function formatAction($action): array {
         $actionInfo = [];
         if (is_array($action)) {
             if ($action['uses'] instanceof \Closure) {
@@ -507,4 +567,5 @@ class Route {
         }
         return $actionInfo;
     }
+
 }

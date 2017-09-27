@@ -2,7 +2,6 @@
 
 declare(strict_types = 1);
 namespace Main\Core\Response\Traits;
-defined('IN_SYS') || exit('ACC Denied');
 
 use Main\Core\Response;
 

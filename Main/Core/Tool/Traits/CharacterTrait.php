@@ -1,8 +1,7 @@
 <?php
 
+declare(strict_types = 1);
 namespace Main\Core\Tool\Traits;
-
-defined('IN_SYS') || exit('ACC Denied');
 
 /**
  * 字符操作
@@ -11,12 +10,11 @@ trait CharacterTrait {
 
     /**
      * 人性化相对时间
-     * @param int    $sTime 目标时间
+     * @param int $sTime 目标时间戳
      * @param string $format 时间格式
-     *
-     * @return bool|string
+     * @return string
      */
-    final public function friendlyDate($sTime = 0, $format = 'Y-m-d H:i') {
+    final public function friendlyDate(int $sTime = 0, string $format = 'Y-m-d H:i'): string {
         $dTime = time() - $sTime;
         $state = $dTime > 0 ? '前' : '后';
         $dTime = abs($dTime);
@@ -34,14 +32,13 @@ trait CharacterTrait {
 
     /**
      * 字符串长度控制(截取)
-     * @param string     $string 原字符串
-     * @param int        $length 目标长度
-     * @param bool|false $havedot 多余展示符,false则没有, 如 ...
-     * @param string     $charset 字符编码
-     *
-     * @return mixed|string
+     * @param string $string 原字符串
+     * @param int $length 目标长度
+     * @param string $havedot 多余展示符, 如 ...
+     * @param string $charset 字符编码
+     * @return string
      */
-    public function cutstr($string = '', $length = 9, $havedot = false, $charset = 'utf8') {
+    public function cutstr(string $string = '', int $length = 9, string $havedot = '', string $charset = 'utf8'): string {
         if (strtolower($charset) == 'gbk')
             $charset = 'gbk';
         else
@@ -117,14 +114,11 @@ trait CharacterTrait {
             }
             $string = str_replace(array($pre . '&' . $end, $pre . '"' . $end, $pre . '<' . $end, $pre . '>' . $end), array('&amp;', '&quot;', '&lt;', '&gt;'), $strcut);
         }
-        if ($havedot)
-            $string = $string . $havedot;
-        return $string;
+        return $string . $havedot;
     }
 
     /**
      * 解析XML格式的字符串
-     *
      * @param string $str
      * @return false|array 解析正确就返回解析结果,否则返回false,说明字符串不是XML格式
      */
@@ -171,9 +165,9 @@ trait CharacterTrait {
      * @param string $id   数字索引key转换为的属性名
      * @return string
      */
-    public function data_to_xml($data, $item = 'item', $id = 'id') {
+    public function data_to_xml($data, string $item = 'item', string $id = 'id'): string {
         $xml = $attr = '';
-        if(is_array($data)){
+        if (is_array($data)) {
             foreach ($data as $key => $val) {
                 if (is_numeric($key)) {
                     $id && $attr = " {$id}=\"{$key}\"";
@@ -183,9 +177,10 @@ trait CharacterTrait {
                 $xml .= (is_array($val) || is_object($val)) ? data_to_xml($val, $item, $id) : $val;
                 $xml .= "</{$key}>";
             }
-        }else{
+        } else {
             return $data;
         }
         return $xml;
     }
+
 }

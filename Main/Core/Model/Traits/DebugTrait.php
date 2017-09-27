@@ -2,7 +2,6 @@
 
 declare(strict_types = 1);
 namespace Main\Core\Model\Traits;
-defined('IN_SYS') || exit('ACC Denied');
 
 /**
  * 调试相关
@@ -12,6 +11,7 @@ trait DebugTrait {
     /**
      * 返回完整sql, 已执行sql
      * @param type $pars
+     * @return string
      */
     public static function getLastSql(): string {
         return \obj(static::class)->lastSql;
@@ -19,7 +19,8 @@ trait DebugTrait {
 
     /**
      * 返回完整sql, 不执行sql
-     * @param type $pars
+     * @param array $pars
+     * @return string
      */
     public function getRowToSql(array $pars = array()): string {
         $this->options_type = 'SELECT';
@@ -28,12 +29,22 @@ trait DebugTrait {
         return $this->lastSql;
     }
 
+    /**
+     * 返回完整sql, 不执行sql
+     * @param array $pars
+     * @return string
+     */
     public function getAllToSql(array $pars = array()): string {
         $this->options_type = 'SELECT';
         $sql = $this->prepare(true, $pars);
         return $this->lastSql;
     }
 
+    /**
+     * 返回完整sql, 不执行sql
+     * @param array $pars
+     * @return string
+     */
     public function updateToSql(array $pars = array()): string {
         $this->options_type = 'UPDATE';
         if (!isset($this->options['data']))
@@ -42,6 +53,11 @@ trait DebugTrait {
         return $this->lastSql;
     }
 
+    /**
+     * 返回完整sql, 不执行sql
+     * @param array $pars
+     * @return string
+     */
     public function insertToSql(array $pars = array()): string {
         $this->options_type = 'INSERT';
         if (!isset($this->options['data']))
@@ -50,6 +66,11 @@ trait DebugTrait {
         return $this->lastSql;
     }
 
+    /**
+     * 返回完整sql, 不执行sql
+     * @param array $pars
+     * @return string
+     */
     public function deleteToSql(array $pars = array()): string {
         $this->options_type = 'DELETE';
         if (!isset($this->options['where']))
@@ -58,6 +79,11 @@ trait DebugTrait {
         return $this->lastSql;
     }
 
+    /**
+     * 返回完整sql, 不执行sql
+     * @param array $pars
+     * @return string
+     */
     public function replaceToSql(array $pars = array()): string {
         $this->options_type = 'REPLACE';
         if (!isset($this->options['data']))
@@ -65,4 +91,5 @@ trait DebugTrait {
         $sql = $this->prepare(true, $pars);
         return $this->lastSql;
     }
+
 }

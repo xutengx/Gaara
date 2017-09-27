@@ -36,6 +36,8 @@ return [
             Route::restful('/merchant','merchant\Info');
             // 应用资料
             Route::restful('/application','merchant\Application');
+            // 商户公私钥资料
+            Route::restful('/secret','merchant\Secret');
           
         });
         // 不检测 token
@@ -44,22 +46,24 @@ return [
             Route::post('/login','Login@index');
         });
         // 检测 管理员登入令牌
-        Route::group(['middleware' => ['admin']], function() {
+        Route::group(['middleware' => ['admin'],'prefix'=>'/admin'], function() {
             // 令牌以旧换新( 重置有效期 )
-            Route::post('/admin/token', 'admin\Login@changeToken');
+            Route::post('/token', 'admin\Login@changeToken');
             // 管理员新增管理员
-            Route::post('/admin/reg', 'admin\Reg@index');
+            Route::post('/reg', 'admin\Reg@index');
             // 管理员设置自己密码
-            Route::put('/admin/setpasswd', 'admin\Reg@setPasswd');
+            Route::put('/setpasswd', 'admin\Reg@setPasswd');
             // 管理员 管理商户信息
-            Route::restful('/admin/merchant', 'admin\Merchant');
+            Route::restful('/merchant', 'admin\Merchant');
             // 管理员 管理用户 登入/支付, 启用/禁用
-            Route::restful('/admin/user', 'admin\User');
+            Route::restful('/user', 'admin\User');
+            // 管理员 管理通道信息
+            Route::restful('/passageway', 'admin\Passageway');
         });
 
                 // 检测 api调用令牌
-        Route::group(['middleware'=>['payment']],function(){
-                
+        Route::group(['middleware'=>['payment'],'prefix'=>'/api'],function(){
+            Route::post('/create', 'UnifiedOrderRequest@index');
         });
            
     }),

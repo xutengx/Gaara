@@ -21,6 +21,8 @@ CREATE TABLE `main_user` (
 ) ENGINE=innodb AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COMMENT='用户表';
 
 INSERT INTO `main_user` VALUES ('1', 'admin@163.com', '$2y$10$1T62akHp47oLeIKuv6DzU.ZLnjXycsUlvAjF.m6dBi0XgPYhICF8q', '','1', '2', '3232235814', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `main_user` VALUES ('100', '1771033392@qq.com', '$2y$10$1T62akHp47oLeIKuv6DzU.ZLnjXycsUlvAjF.m6dBi0XgPYhICF8q', '', '1', '1', '3232246529', '2017-09-27 14:48:21', '2017-09-13 11:37:43', '2017-09-27 14:48:21');
+
 
 CREATE TABLE `main_admin` (
   `id` int(1) unsigned NOT NULL AUTO_INCREMENT COMMENT '管理员ID',
@@ -84,25 +86,41 @@ CREATE TABLE `user_application` (
   KEY `merchant_id` (`merchant_id`)
 ) ENGINE=innodb AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COMMENT='应用信息表';
 
-CREATE TABLE `application_secret` (
-  `id` int(1) unsigned NOT NULL COMMENT '应用ID,user_application.id',
+CREATE TABLE `merchant_secret` (
+  `id` int(1) unsigned NOT NULL COMMENT '商户ID,user_merchant.id',
   `yh_key` char(32) NOT NULL DEFAULT '' COMMENT '32位随机字符',
-  `notify_url` varchar(100) NOT NULL DEFAULT '' COMMENT '商户异步通知地址',
+  `public_key` varchar(2048) NOT NULL COMMENT '公钥',
+  `private_key` varchar(2048) NOT NULL COMMENT '私钥',
   PRIMARY KEY (`id`)
-) ENGINE=innodb DEFAULT CHARSET=utf8 COMMENT='应用密钥表';
+) ENGINE=innodb DEFAULT CHARSET=utf8 COMMENT='商户密钥表';
 
-CREATE TABLE `application_passage` (
-  `id` int(1) unsigned NOT NULL COMMENT '应用ID,user_application.id',
+CREATE TABLE `payment_type` (
+  `id` int(1) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `describe` varchar(100) NOT NULL DEFAULT '' COMMENT '描述',
   PRIMARY KEY (`id`)
-) ENGINE=innodb DEFAULT CHARSET=utf8 COMMENT='应用通道表';
+) ENGINE=innodb AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='支付场景表';
 
-CREATE TABLE `passage_wechat` (
+INSERT INTO `payment_type` VALUES (1,'微信公众号支付 JSAPI');
+
+CREATE TABLE `passageway_wechat` (
   `id` int(1) unsigned NOT NULL AUTO_INCREMENT COMMENT '配置ID',
   `application_id` int(1) unsigned NOT NULL COMMENT '应用ID,user_application.id',
   PRIMARY KEY (`id`)
 ) ENGINE=innodb AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COMMENT='微信配置信息表';
 
-CREATE TABLE `passage_alipay` (
+CREATE TABLE `passageway_fuiou` (
+  `id` int(1) unsigned NOT NULL AUTO_INCREMENT COMMENT '配置ID',
+  `application_id` int(1) unsigned NOT NULL COMMENT '应用ID,user_application.id',
+  `merchant_id` int(1) unsigned NOT NULL COMMENT '商户ID,user_merchant.id',
+  `payment_type_id` int(1) unsigned NOT NULL COMMENT '支付场景ID, payment_type.id',
+  `ins_cd` varchar(20) NOT NULL COMMENT '机构号,接入机构在富友的唯一代码',
+  `mchnt_cd` varchar(15) NOT NULL COMMENT '商户号, 富友分配给二级商户的商户号',
+  `public_key` varchar(2048) NOT NULL COMMENT '公钥',
+  `peivate_key` varchar(2048) NOT NULL COMMENT '私钥',
+  PRIMARY KEY (`id`)
+) ENGINE=innodb AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COMMENT='上海富友支付配置信息表';
+
+CREATE TABLE `passageway_alipay` (
   `id` int(1) unsigned NOT NULL AUTO_INCREMENT COMMENT '配置ID',
   `application_id` int(1) unsigned NOT NULL COMMENT '应用ID,user_application.id',
   PRIMARY KEY (`id`)
@@ -111,6 +129,7 @@ CREATE TABLE `passage_alipay` (
 CREATE TABLE `payment_order` (
   `id` int(1) unsigned NOT NULL AUTO_INCREMENT COMMENT '订单ID',
   `application_id` int(1) unsigned NOT NULL COMMENT '应用ID,user_application.id',
+  `type` tinyint(1) unsigned NOT NULL COMMENT '支付场景 1 微信公众号支付,2 ...',
   PRIMARY KEY (`id`)
 ) ENGINE=innodb AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COMMENT='支付订单表';
 

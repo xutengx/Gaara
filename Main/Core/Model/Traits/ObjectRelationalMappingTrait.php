@@ -42,7 +42,7 @@ trait ObjectRelationalMappingTrait {
         }
         if(is_null($key) && isset($this->orm[$this->key])){
             $key = $this->orm[$this->key];
-        }else
+        }elseif(is_null($key))
             throw new Exception ('model ORM save without key');
         $this->data($param);
         $this->where($this->key, $key);
@@ -51,9 +51,9 @@ trait ObjectRelationalMappingTrait {
 
     /**
      * orm属性新增
-     * @return int      int 0 表示失败, string 0 是主键没自增属性时的成功返回, 其他int表示主键
+     * @return bool
      */
-    public function create() {
+    public function create(): bool{
         $param = [];
         $bind = [];
         foreach ($this->field as $v) {

@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types = 1);
 namespace Main\Core\Exception;
 
 use \Main\Core\Conf;
@@ -79,7 +80,7 @@ class Pdo extends \Exception{
      * @param string $value     值
      * @return boolean
      */
-    private function setProp($cls, string $prop, string $value) {
+    private function setProp($cls, string $prop, string $value): bool {
         $reflectCls = new ReflectionClass($cls);
         $pro = $reflectCls->getProperty($prop);
         if ($pro && ($pro->isPrivate() || $pro->isProtected())) {

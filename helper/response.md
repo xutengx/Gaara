@@ -34,6 +34,7 @@
 ## 设定ContentType
 
 ```php
+<?php
 // put请求域名 http://eg.com/?name=gaara, 
 // 响应头 Content-Type:application/xml; charset=utf-8
 // 响应 <?xml version="1.0" encoding="utf-8"?><root>gaara</root> 
@@ -47,6 +48,7 @@ Route::put('/', function(Main\Core\Reuqest $request, Main\Core\Response $respons
 ## http状态码
 
 ```php
+<?php
 // put请求域名 http://eg.com/?name=gaara, 
 // 响应 状态码 400
 // 响应 gaara 
@@ -60,6 +62,7 @@ Route::put('/', function(Main\Core\Reuqest $request, Main\Core\Response $respons
 ## 链式返回响应
 
 ```php
+<?php
 // 响应 gaara 
 // 状态码 200
 Route::get('/', function(Main\Core\Response $response){
@@ -74,6 +77,7 @@ Route::get('/', function(Main\Core\Response $response){
 ## 中断响应
 
 ```php
+<?php
 // 响应 gaara 
 // 状态码 200
 // 不会执行中间件 terminate
@@ -88,6 +92,7 @@ Route::get('/', function(Main\Core\Response $response){
 ## 其他方法
 
 ```php
+<?php
 Route::get('/', function(Main\Core\Response $response){
     // 加入响应头
     $response->setHeader('userHeadr:www');

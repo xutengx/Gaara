@@ -42,6 +42,7 @@ class Model {
     protected $connection = null;
 
     /**
+     * 构造方法, 连接对象
      * @param object $DbConnection db连接对象 如 obj('Mysql',false);
      */
     final public function __construct($DbConnection = null) {
@@ -63,6 +64,9 @@ class Model {
         return $dbConf['connections'][$default];
     }
 
+    /**
+     * 得到当前模型对应的数据表名
+     */
     final protected function get_thisTable() {
         // 驼峰转下划线
         $uncamelize = function ($camelCaps, $separator = '_') {
@@ -79,11 +83,17 @@ class Model {
         $this->getTableInfo();
     }
 
-    public static function getTable() {
+    /**
+     * 返回当前表名
+     * @return string
+     */
+    public static function getTable() :string {
         return \obj(static::class)->table;
     }
 
-    // 获取表信息, 自动信息填充
+    /**
+     * 获取表字段信息, 填充主键
+     */
     protected function getTableInfo() {
         // todo
         $this->field = obj(Cache::class)->get(function() {
@@ -97,7 +107,9 @@ class Model {
         }
     }
 
-    // 所有手动初始化建议在此执行
+    /**
+     * 所有手动初始化建议在此执行
+     */
     protected function construct() {
         
     }
@@ -189,25 +201,41 @@ class Model {
      * 参数绑定, 并执行
      * @param array $pars
      */
-    public function execute($pars = array()) {
+    public function execute(array $pars = array()) {
         $this->PDOStatement->execute($pars);
         return $this->PDOStatement->fetchall(\PDO::FETCH_ASSOC);
     }
 
-    public function getRow($pars = array()) {
+    /**
+     * 查询一行
+     * @param array $pars 参数绑定数组
+     * @return array    一维数组
+     */
+    public function getRow(array $pars = array()): array {
         $this->options_type = 'SELECT';
         $this->collect->limit(1);
         $sql = $this->prepare(true, $pars);
         return $this->db->getRow($sql, $pars);
     }
 
-    public function getAll($pars = array()) {
+    /**
+     * 查询多行
+     * @param array $pars 参数绑定数组
+     * @return array    二维数组
+     */
+    public function getAll(array $pars = array()): array  {
         $this->options_type = 'SELECT';
         $sql = $this->prepare(true, $pars);
         return $this->db->getAll($sql, $pars);
     }
 
-    public function update($pars = array()) {
+    /**
+     * 更新数据, 返回受影响的行数
+     * @param array $pars 参数绑定数组
+     * @return int 受影响的行数
+     * @throws Exception
+     */
+    public function update(array $pars = array()): int {
         $this->options_type = 'UPDATE';
         if (!isset($this->options['data']))
             throw new Exception('要执行UPDATE操作, 需要使用data方法设置更新的值');
@@ -215,7 +243,27 @@ class Model {
         return $this->db->update($sql, $pars);
     }
 
-    public function insert($pars = array()) {
+    /**
+     * 插入数据, 返回插入的主键
+     * @param array $pars 参数绑定数组
+     * @return int 插入的主键
+     * @throws Exception
+     */
+    public function insertGetId(array $pars = array()): int {
+        $this->options_type = 'INSERT';
+        if (!isset($this->options['data']))
+            throw new Exception('要执行INSERT操作, 需要使用data方法设置新增的值');
+        $sql = $this->prepare(true, $pars);
+        return $this->db->insertGetId($sql, $pars);
+    }
+
+    /**
+     * 插入数据
+     * @param array $pars 参数绑定数组
+     * @return bool
+     * @throws Exception
+     */
+    public function insert(array $pars = array()): bool {
         $this->options_type = 'INSERT';
         if (!isset($this->options['data']))
             throw new Exception('要执行INSERT操作, 需要使用data方法设置新增的值');
@@ -223,7 +271,13 @@ class Model {
         return $this->db->insert($sql, $pars);
     }
 
-    public function delete($pars = array()) {
+    /**
+     * 删除数据, 返回受影响的行数
+     * @param array $pars 参数绑定数组
+     * @return int 受影响的行数
+     * @throws Exception
+     */
+    public function delete(array $pars = array()): int {
         $this->options_type = 'DELETE';
         if (!isset($this->options['where']))
             throw new Exception('执行 DELETE 操作并没有相应的 where 约束, 请确保操作正确, 使用where(1)将强制执行.');
@@ -231,7 +285,13 @@ class Model {
         return $this->db->update($sql, $pars);
     }
 
-    public function replace($pars = array()) {
+    /**
+     * 插入or更新数据, 返回受影响的行数
+     * @param array $pars 参数绑定数组
+     * @return int 受影响的行数
+     * @throws Exception
+     */
+    public function replace(array $pars = array()): int {
         $this->options_type = 'REPLACE';
         if (!isset($this->options['data']))
             throw new Exception('要执行REPLACE操作, 需要使用data方法设置新增or修改的值');
@@ -242,5 +302,6 @@ class Model {
     public function __get($attr) {
         if ($attr === 'db')
             return $this->db;
+        else throw new \Main\Core\Exception;
     }
 }

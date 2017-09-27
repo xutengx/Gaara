@@ -126,7 +126,7 @@ class Request {
             else {
                 // match "name" and optional value in between newline sequences
                 preg_match('/name=\"([^\"]*)\"[\n|\r]+([^\n\r].*)?\r$/s', $block, $matches);
-                $a_data[$matches[1]] = $matches[2];
+                $a_data[$matches[1]] = $matches[2] ?? '';
             }
         }
         return $a_data;

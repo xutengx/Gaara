@@ -172,6 +172,13 @@ class Response {
             return is_null($data) ? '' : (string)$data;
         }
         $this->encode = true;
+        if($data === true){
+            $this->setStatus(200);
+            return '';
+        }elseif($data === false){
+            $this->setStatus(500);
+            return '';
+        }
         switch ($this->contentType) {
             case 'json':
                 return json_encode($data, JSON_UNESCAPED_UNICODE);

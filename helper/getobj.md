@@ -26,10 +26,10 @@
 
 ## 总览
 
-> 通过`\Main\Core\Integrator::get(string $class_name, array $param_arr)`获取一个对象
+> 通过`\Main\Core\Integrator::get(string $class_name, array $param_arr)`获取一个对象。
 > 快捷方式 `obj(string $class_name, mix $param_1)`
 > 将会自动解决富依赖问题
-> 获取一次后, 类将被缓存, 下次将直接返回
+> 获取一次后, 类将被缓存, 下次将直接返回。
 
 ## 别名获取
 
@@ -58,6 +58,7 @@ class Test extends HttpController {
 ## 通常获取
 
 ```php
+<?php
 obj(App\Model\User::class, '构造参数1', '构造参数2');
 
 ```

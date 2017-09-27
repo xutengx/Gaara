@@ -1,24 +1,28 @@
 <?php
+
+declare(strict_types = 1);
 namespace Main\Core;
-defined('IN_SYS')||exit('ACC Denied');
+defined('IN_SYS') || exit('ACC Denied');
 
 use PDOException;
 use Main\Core\Exception\Pdo;
 use \Log;
+
 /**
  * 数据库连接类，依赖 PDO_MYSQL 扩展
  */
-class DbConnection{
-    // 是否主从分离数据库
+class DbConnection {
+
+    // 是否主从数据库
     static $Master_slave = true;
     // 数据库 读 连接集合
-    static $dbRead            = array();
+    static $dbRead = array();
     // 数据库 读 权重
-    static $dbReadWeight      = array();
+    static $dbReadWeight = array();
     // 数据库 写 连接集合
-    static $dbWrite           = array();
+    static $dbWrite = array();
     // 数据库 写 权重
-    static $dbWriteWeight     = array();
+    static $dbWriteWeight = array();
     // 当前操作类型 SELECT UPDATE DELETE INSERT
     private $type = 'SELECT';
     // 是否事务过程中 不进行数据库更换
@@ -30,45 +34,46 @@ class DbConnection{
     static $dbReadSingle;
     // 当前数据库 写 连接
     static $dbWriteSingle;
+
     // ------------------------------------------------------------------//
 
     /**
      * 读取配置信息
      * @param array $DBconf
      * 如下结构:
-    'db'=>[
-        'write'=>[
-            [
-                'weight'=>10,
-                'type'=>'mysql',
-                'host'=>'10.4.17.200',
-                'port'=>3306,
-                'user'=>'root',
-                'pwd'=>'Huawei$123#_',
-                'db'=>'hk'
-            ]
-        ],
-        'read'=>[
-            [
-                'weight'=>10,
-                'type'=>'mysql',
-                'host'=>'10.4.17.218',
-                'port'=>3306,
-                'user'=>'root',
-                'pwd'=>'Huawei$123#_',
-                'db'=>'hk'
-            ],
-            [
-                'weight'=>10,
-                'type'=>'mysql',
-                'host'=>'10.4.17.219',
-                'port'=>3306,
-                'user'=>'root',
-                'pwd'=>'Huawei$123#_',
-                'db'=>'hk'
-            ]
-        ]
-    ],
+      'db'=>[
+      'write'=>[
+      [
+      'weight'=>10,
+      'type'=>'mysql',
+      'host'=>'10.4.17.200',
+      'port'=>3306,
+      'user'=>'root',
+      'pwd'=>'Huawei$123#_',
+      'db'=>'hk'
+      ]
+      ],
+      'read'=>[
+      [
+      'weight'=>10,
+      'type'=>'mysql',
+      'host'=>'10.4.17.218',
+      'port'=>3306,
+      'user'=>'root',
+      'pwd'=>'Huawei$123#_',
+      'db'=>'hk'
+      ],
+      [
+      'weight'=>10,
+      'type'=>'mysql',
+      'host'=>'10.4.17.219',
+      'port'=>3306,
+      'user'=>'root',
+      'pwd'=>'Huawei$123#_',
+      'db'=>'hk'
+      ]
+      ]
+      ],
      * @param int    $weight        // 权重
      * @param string $type          // 数据库类型
      * @param string $host          // 连接地址
@@ -77,87 +82,88 @@ class DbConnection{
      * @param string $pwd           // 密码
      * @param string $db            // 数据库
      */
-    public function __construct(array $DBconf, $single = true){
+    public function __construct(array $DBconf, $single = true) {
         $this->single = $single;
-        foreach($DBconf['write'] as $k=>$v){
-            self::$dbWrite[serialize($v)] = $v;
+        foreach ($DBconf['write'] as $k => $v) {
+            self::$dbWrite[md5(serialize($v))] = $v;
             $t = end(self::$dbWriteWeight);
-            if(empty($t))
-                self::$dbWriteWeight[$v['weight']] = serialize($v);
+            if (empty($t))
+                self::$dbWriteWeight[$v['weight']] = md5(serialize($v));
             else {
                 $weight = array_keys(self::$dbWriteWeight);
-                self::$dbWriteWeight[$v['weight']+end($weight)] = serialize($v);
+                self::$dbWriteWeight[$v['weight'] + end($weight)] = md5(serialize($v));
             }
         }
-        if(isset($DBconf['read'])){
-            foreach($DBconf['read'] as $k=>$v){
-                self::$dbRead[serialize($v)] = $v;
+        if (isset($DBconf['read'])) {
+            foreach ($DBconf['read'] as $k => $v) {
+                self::$dbRead[md5(serialize($v))] = $v;
                 $t = end(self::$dbReadWeight);
-                if(empty($t))
-                    self::$dbReadWeight[$v['weight']] = serialize($v);
+                if (empty($t))
+                    self::$dbReadWeight[$v['weight']] = md5(serialize($v));
                 else {
                     $weight = array_keys(self::$dbReadWeight);
-                    self::$dbReadWeight[$v['weight']+end($weight)] = serialize($v);
+                    self::$dbReadWeight[$v['weight'] + end($weight)] = md5(serialize($v));
                 }
             }
-        }else self::$Master_slave = false;
+        } else
+            self::$Master_slave = false;
     }
 
     /**
-     * 单进程单链接实现
-     * @return object PDO
+     * 由操作类型(读/写), 返回已存在的PDO实现
+     * @return PDO
      */
-    private function &PDO(){
+    private function PDO(): \PDO {
         // http请求都属于此
-        if($this->single){
+        if ($this->single) {
             // 查询操作且不属于事务,使用读连接
-            if($this->type === 'SELECT' && !$this->transaction){
-                if(is_object(self::$dbReadSingle) || (self::$dbReadSingle = &$this->connect()))
+            if ($this->type === 'SELECT' && !$this->transaction) {
+                if (is_object(self::$dbReadSingle) || (self::$dbReadSingle = $this->connect()))
                     return self::$dbReadSingle;
             }
             // 写连接
-            elseif(is_object(self::$dbWriteSingle) || (self::$dbWriteSingle = &$this->connect()))
+            elseif (is_object(self::$dbWriteSingle) || (self::$dbWriteSingle = $this->connect()))
                 return self::$dbWriteSingle;
-        }else return $this->connect();
+        } else
+            return $this->connect();
     }
 
     /**
-     * 由操作类型 和 权重 选择数据库连接
-     * 创建 PDO 实例
-     * @return object PDO
+     * 由操作类型(读/写)和权重(weight), 创建并返回PDO数据库连接
+     * @return PDO
      */
-    private function &connect(){
+    private function connect(): \PDO {
         // 查询操作且不属于事务,使用读连接
-        if($this->type === 'SELECT'  && !$this->transaction && self::$Master_slave){
+        if ($this->type === 'SELECT' && !$this->transaction && self::$Master_slave) {
             $tmp = array_keys(self::$dbReadWeight);
-            $weight = rand(1,end($tmp));
-            foreach(self::$dbReadWeight as $k=>$v){
-                if($k-$weight >= 0){
+            $weight = rand(1, end($tmp));
+            foreach (self::$dbReadWeight as $k => $v) {
+                if ($k - $weight >= 0) {
                     $key = $v;
                     break;
                 }
             }
-            if( !is_object(self::$dbRead[$key]) ){
+            if (!is_object(self::$dbRead[$key])) {
                 $settings = self::$dbRead[$key];
-                $dsn = 'mysql:dbname='.$settings['db'].';host='.$settings['host'].';port='.$settings['port'];
-                self::$dbRead[$key] = new \PDO($dsn, $settings['user'], $settings['pwd'], array(\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES '.(!empty($settings['char']) ? $settings['char'] : 'utf8')));
+                $dsn = 'mysql:dbname=' . $settings['db'] . ';host=' . $settings['host'] . ';port=' . $settings['port'];
+                self::$dbRead[$key] = new \PDO($dsn, $settings['user'], $settings['pwd'], array(\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . (!empty($settings['char']) ? $settings['char'] : 'utf8')));
                 self::$dbRead[$key]->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
                 self::$dbRead[$key]->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
             }
             return self::$dbRead[$key];
-        }else{
+        } else {
             $tmp = array_keys(self::$dbWriteWeight);
-            $weight = rand(1,end($tmp));
-            foreach(self::$dbWriteWeight as $k=>$v){
-                if($k-$weight >= 0){
+            $weight = rand(1, end($tmp));
+            foreach (self::$dbWriteWeight as $k => $v) {
+                if ($k - $weight >= 0) {
                     $key = $v;
                     break;
                 }
             }
-            if( !is_object(self::$dbWrite[$key]) ){
+            if (!is_object(self::$dbWrite[$key])) {
                 $settings = self::$dbWrite[$key];
-                $dsn = 'mysql:dbname='.$settings['db'].';host='.$settings['host'].';port='.$settings['port'];
-                self::$dbWrite[$key] = new \PDO($dsn, $settings['user'], $settings['pwd'], array(\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES '.(!empty($settings['char']) ? $settings['char'] : 'utf8')));
+                $dsn = 'mysql:dbname=' . $settings['db'] . ';host=' . $settings['host'] . ';port=' . $settings['port'];
+                self::$dbWrite[$key] = new \PDO($dsn, $settings['user'], $settings['pwd'], array(\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . (!empty($settings['char']) ? $settings['char'] : 'utf8')));
                 self::$dbWrite[$key]->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
                 self::$dbWrite[$key]->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
             }
@@ -166,97 +172,163 @@ class DbConnection{
     }
 
     /**
-     * 内部执行, 返回原始数据对象
+     * 内部执行, 返回原始数据对象, 触发异常处理
      * @param string $sql
-     * @param array  $pars
-     *
-     * @return mixed
+     * @param array $pars 参数绑定数组
+     * @return PDOStatement or PDO
+     * @throws PDOException
      */
-    private function query_prepare_execute(string $sql='', array $pars=array()){
+    private function query_prepare_execute(string $sql = '', array $pars = array()) {
         $PDO = $this->PDO();
         $i = 0;
-        try{
-            loop :
-            if(empty($pars)){
+        loop :
+        try {
+            if (empty($pars)) {
                 $res = $PDO->query($sql);
-            }else{
+            } else {
                 $res = $PDO->prepare($sql);
                 $res->execute($pars);
             }
-        }catch(PDOException $pdo){
-            if($i ++ >= 1) {
+        } catch (PDOException $pdo) {
+            if ($i ++ >= 1) {
                 Log::error($sql, [' sql error ', $pdo->getMessage()]);
                 throw $pdo;  // 抛出异常
             }
             new Pdo($pdo, $this);       // 尝试解决
             goto loop;
         }
-        if($this->type === 'INSERT')
+        if ($this->type === 'INSERT')
             return $PDO;
         return $res;
     }
-    public function getAll($sql='', array $pars=array()){
+
+    /**
+     * 查询一行
+     * @param type $sql
+     * @param array $pars 参数绑定数组
+     * @return array 一维数组
+     */
+    public function getRow(string $sql = '', array $pars = array()): array {
+        $this->type = 'SELECT';
+        $re = $this->query_prepare_execute($sql, $pars)->fetch(\PDO::FETCH_ASSOC);
+        return $re ? $re : [];
+    }
+
+    /**
+     * 查询多行
+     * @param type $sql
+     * @param array $pars 参数绑定数组
+     * @return array 二维数组
+     */
+    public function getAll($sql = '', array $pars = array()): array {
         $this->type = 'SELECT';
         return $this->query_prepare_execute($sql, $pars)->fetchall(\PDO::FETCH_ASSOC);
     }
-    public function getRow($sql='', array $pars=array()){
-        $this->type = 'SELECT';
-        $re = $this->query_prepare_execute($sql, $pars)->fetch(\PDO::FETCH_ASSOC);
-        return $re ? $re : array();
-    }
-
+    
     /**
+     * 更新数据, 返回受影响的行数
      * @param string $sql
-     * @param array  $pars
-     *
-     * @return 1|0
+     * @param array $pars 参数绑定数组
+     * @return int 受影响的行数
      */
-    public function update($sql='', array $pars=array()) {
+    public function update(string $sql = '', array $pars = array()): int {
         $this->type = 'UPDATE';
         $res = $this->query_prepare_execute($sql, $pars);
-        if($res)
+        if ($res)
             return $res->rowCount();
     }
-    public function execute($sql='', array $pars=array()){
+
+    public function execute(string $sql = '', array $pars = array()) {
         return $this->update($sql, $pars);
     }
+
     /**
-     * 
+     * 插入数据, 返回插入的主键
      * @param string $sql
-     * @param array $pars
-     * @return type         int 0 表示失败, string 0 是主键没自增属性时的成功返回
+     * @param array $pars 参数绑定数组
+     * @return int 插入的主键
      */
-    public function insert(string $sql='', array $pars=array()){
+    public function insertGetId(string $sql = '', array $pars = array()): int {
         $this->type = 'INSERT';
         $res = $this->query_prepare_execute($sql, $pars);
-        if($res)
+        if ($res)
             return $res->lastInsertId();
     }
-    public function count($sql=''){
-        $this->type = 'SELECT';
-        return $this->PDO()->query($sql)->fetchColumn();
+
+    /**
+     * 插入数据
+     * @param string $sql
+     * @param array $pars 参数绑定数组
+     * @return bool
+     */
+    public function insert(string $sql = '', array $pars = array()): bool {
+        $this->type = 'INSERT';
+        $res = $this->query_prepare_execute($sql, $pars);
+        return $res ? true : false;
     }
 
-    public function prepare(string $sql='', string $type='UPTATE') {
+    /**
+     * 查询数据总数
+     * @param string $sql
+     * @param array $pars 参数绑定数组
+     * @return int
+     */
+    public function count(string $sql = '', array $pars = array()): int {
+        $this->type = 'SELECT';
+        $res = $this->query_prepare_execute($sql, $pars);
+        return $res->fetchColumn();
+    }
+
+    /**
+     * 使用PDO->prepare(), 返回的对象可用$res->execute($pars)重复调用
+     * @param string $sql
+     * @param string $type
+     * @return type
+     * @throws Exception
+     */
+    public function prepare(string $sql = '', string $type = 'UPDATE'): \PDOStatement {
+        if (!in_array($type, ['SELECT', 'UPDATE', ' DELETE', 'INSERT']))
+                throw new Exception('$type mast in_array(SELECT UPDATE DELETE INSERT)');
         $this->type = $type;
         return $this->PDO()->prepare($sql);
     }
-    public function begin() : bool{
-        if($this->single !== true)
+
+    /**
+     * 开启事务
+     * @return bool
+     * @throws \Exception
+     */
+    public function begin(): bool {
+        if ($this->single !== true)
             throw new \Exception('非常不建议在单进程,多数据库切换模式下开启事务!');
         $this->transaction = true;
         $PDO = $this->PDO();
         return $PDO->beginTransaction();
     }
-    public function commit() : bool{
+
+    /**
+     * 提交事务
+     * @return bool
+     */
+    public function commit(): bool {
         $this->transaction = false;
         $PDO = $this->PDO();
         return $PDO->commit();
     }
-    public function inTransaction() : bool{
+
+    /**
+     * 是否在事务中
+     * @return bool
+     */
+    public function inTransaction(): bool {
         return $this->transaction;
     }
-    public function rollBack() : bool{
+
+    /**
+     * 回滚事务
+     * @return bool
+     */
+    public function rollBack(): bool {
         $this->transaction = false;
         $PDO = $this->PDO();
         return $PDO->rollBack();
@@ -265,8 +337,7 @@ class DbConnection{
     /**
      * 关闭连接
      */
-    public function close(){
+    public function close() {
         $this->pdo = NULL;
     }
-
 }

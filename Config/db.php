@@ -30,7 +30,7 @@ return [
                     'db' => env('db_db'),
                 ],
                 [
-                    'weight' => 2,
+                    'weight' => 1,
                     'type' => 'mysql',
                     'host' => env('db_host'),
                     'port' => 3306,

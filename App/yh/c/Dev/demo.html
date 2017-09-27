@@ -600,5 +600,83 @@
             </script>
         </form>
         <hr>
+        <label class="merchant">商户密钥新增(初始化) /secret post</label><br><br>
+        <form action="action">
+            <input id="secretpost" type="button" value="submit">
+            <script>
+                $('#secretpost').on('click', function () {
+                    $.ajax({
+                        url: $.url('/secret'),
+                        data: makeSign({}),
+                        type: 'post',
+                        dataType: 'json',
+                        success: function (re) {
+                            console.log(re);
+                        }
+                    });
+                });
+            </script>
+        </form>
+        <hr>
+        <label class="merchant">商户密钥修改 /secret put</label><br><br>
+        <form action="action">
+            <span>key</span><input type="text" name="yh_key"  value="qwerasdeqwerasdeqwerasdeqwerasde"/><br>
+            <span>公钥</span><input type="text" name="public_key"  value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCYAMw/HxLwR0E8sVBHivet5o84jFhu58aYvqQzHbVompHOsVYYW2oqS2h6OMFSPdgNsK96bRkNf2LAEhB5t5tsBjqU9r629i5/0u5c9UoY0ymk/FOqyoAnaUDR1Li4QUJaSXq9pnGBMxv5xs3MmpTgoFwv+gskoiQliZj8keOWyQIDAQAB"/><br>
+            <span>私钥</span><input type="text" name="private_key"  value="MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAJgAzD8fEvBHQTyxUEeK963mjziMWG7nxpi+pDMdtWiakc6xVhhbaipLaHo4wVI92A2wr3ptGQ1/YsASEHm3m2wGOpT2vrb2Ln/S7lz1ShjTKaT8U6rKgCdpQNHUuLhBQlpJer2mcYEzG/nGzcyalOCgXC/6CySiJCWJmPyR45bJAgMBAAECgYBHFfBvAKBBwIEQ2jeaDbKBIFcQcgoVa81jt5xgz178WXUg/awu3emLeBKXPh2i0YtN87hM/+J8fnt3KbuMwMItCsTD72XFXLM4FgzJ4555CUCXBf5/tcKpS2xT8qV8QDr8oLKA18sQxWp8BMPrNp0epmwun/gwgxoyQrJUB5YgZQJBAOiVXHiTnc3KwvIkdOEPmlfePFnkD4zzcv2UwTlHWgCyM/L8SCAFclXmSiJfKSZZS7o0kIeJJ6xe3Mf4/HSlhdMCQQCnTow+TnlEhDTPtWa+TUgzOys83Q/VLikqKmDzkWJ7I12+WX6AbxxEHLD+THn0JGrlvzTEIZyCe0sjQy4LzQNzAkEAr2SjfVJkuGJlrNENSwPHMugmvusbRwH3/38ET7udBdVdE6poga1Z0al+0njMwVypnNwy+eLWhkhrWmpLh3OjfQJAI3BV8JS6xzKh5SVtn/3Kv19XJ0tEIUnn2lCjvLQdAixZnQpj61ydxie1rggRBQ/5vLSlvq3H8zOelNeUF1fT1QJADNo+tkHVXLY9H2kdWFoYTvuLexHAgrsnHxONOlSA5hcVLd1B3p9utOt3QeDf6x2i1lqhTH2w8gzjvsnx13tWqg=="/><br>
+            <input id="secretput" type="button" value="submit">
+            <script>
+                $('#secretput').on('click', function () {
+                    var data = setData(this);
+                    $.ajax({
+                        url: $.url('/secret'),
+                        data: data,
+                        type: 'put',
+                        dataType: 'json',
+                        processData: false,
+                        contentType: false,
+                        success: function (re) {
+                            console.log(re);
+                        }
+                    });
+                });
+            </script>
+        </form>
+        <hr>
+        <label class="merchant">商户密钥查看 /secret get</label><br><br>
+        <form action="action">
+            <input id="secretget" type="button" value="submit">
+            <script>
+                $('#secretget').on('click', function () {
+                    $.ajax({
+                        url: $.url('/secret'),
+                        data: makeSign({}),
+                        type: 'get',
+                        dataType: 'json',
+                        success: function (re) {
+                            console.log(re);
+                        }
+                    });
+                });
+            </script>
+        </form>
+        <hr>
+        <label class="merchant">商户密钥删除 /secret delete</label><br><br>
+        <form action="action">
+            <input id="secretdelete" type="button" value="submit">
+            <script>
+                $('#secretdelete').on('click', function () {
+                    $.ajax({
+                        url: $.url('/secret'),
+                        data: makeSign({}),
+                        type: 'delete',
+                        dataType: 'json',
+                        success: function (re) {
+                            console.log(re);
+                        }
+                    });
+                });
+            </script>
+        </form>
+        <hr>
     </body>
 </html>

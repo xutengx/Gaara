@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types = 1);
 namespace App\yh\Exception;
 defined('IN_SYS') || exit('ACC Denied');
 
@@ -13,11 +14,15 @@ class createTable {
      * @param type $msg
      * @param DbConnection $db
      */
-    public function handle($msg, DbConnection $db) {
+    public function handle($msg, DbConnection $db): void {
         $this->table_not_exist($db);
     }
 
-    private function table_not_exist($db) {
+    /**
+     * 建表语句无法回滚.
+     * @param type $db
+     */
+    private function table_not_exist($db): void {
         $datatables = obj(Conf::class)->datatables;
         $arr = explode(';', trim($datatables));
         if ($arr[count($arr) - 1] == '')
@@ -25,6 +30,5 @@ class createTable {
         foreach ($arr as $v) {
             $db->insert($v);
         }
-        return true;
     }
 }

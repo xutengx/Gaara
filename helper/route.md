@@ -29,7 +29,7 @@
 默认的 http 路由文件是 Route/http.php , 可以在 init.php 中重新定义
 所有风格的路由都可以依赖注入`类`以及`形参`
 ## 快捷路由
-``` php
+```php
 <?php
 return [
     // 访问域名 http://eg.com/, 响应 hello world
@@ -42,7 +42,7 @@ return [
 ```
 ## 静态路由
 静态 Route 类申明路由, 以及传参
-``` php
+```php
 <?php
 // get请求的域名 http://eg.com/, 响应 hello world
 Route::get('/',function(){
@@ -65,7 +65,7 @@ Route::delete('/id/{id}',function($id, App\Model\User $user){
 ```
 ## 路由分组
 无限级路由分组, 下面是一个相对复杂的例子
-``` php
+```php
 <?php
 // 设定一个路由组, 以/group开头, 并使用 web 中件间组
 // 限制 192.168.43.128 域名可访问, 组内成员都在 App\index 命名空间下
@@ -92,7 +92,7 @@ Route::group(['prefix'=>'/group','middleware'=>['web'],'domain'=> '192.168.43.12
 ```
 ## restful
 一句话申明restful
-``` php
+```php
 <?php
 // get 请求的域名 http://eg.com/merchant, 响应 App\merchant\Info::select()
 // post 请求的域名 http://eg.com/merchant, 响应 App\merchant\Info::create()

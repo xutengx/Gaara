@@ -34,6 +34,7 @@
 ## 获取参数
 ### 获取单个参数
 ```php
+<?php
 // 获取put请求下的get参数
 // put请求域名 http://eg.com/?name=gaara, 响应 gaara
 Route::put('/', function(Main\Core\Reuqest $request){
@@ -42,13 +43,16 @@ Route::put('/', function(Main\Core\Reuqest $request){
 ```
 ### 获取全部参数
 ```php
+<?php
 // 获取put请求下的get参数
 // put请求域名 http://eg.com/?name=gaara&age=18, 响应 {'name':'gaara','age':'18'}
 Route::put('/', function(Main\Core\Reuqest $request){
     return $request->get;
 });
 ```
+
 ```php
+<?php
 // 获取put请求下的全部参数
 // put请求域名 http://eg.com/?name=gaara&age=18, 响应 '';
 Route::put('/', function(Main\Core\Reuqest $request){
@@ -58,7 +62,9 @@ Route::put('/', function(Main\Core\Reuqest $request){
 });
 ```
 ## 过滤参数
+
 ```php
+<?php
 // 获取put请求下的get参数
 // put请求域名 http://eg.com/?name=18, 响应 ''
 Route::put('/', function(Main\Core\Reuqest $request){
@@ -70,15 +76,17 @@ Route::put('/', function(Main\Core\Reuqest $request){
 ## 文件参数
 Main\Core\Reuqest->file 即 Main\Core\Request\UploadFile，实现迭代器接口
 下面这个例子可以快速验证文件类型后保存
-```php
 
+```php
+<?php
 Route::put('/', function(Main\Core\Reuqest $request){
     // 保存文件
     foreach($request->file as $k => $file){
         // 文件是img, 且小于8M
         if($file->is_img() && $file->is_less(8388608)){
-            // 保存的默认路径 'data/upload/'. date('Ym/d/')
-            if($file->move_uploaded_file())
+            // 不使用`makeFilename`时默认路径 'data/upload/'. date('Ym/d/')
+            // `makeFilename`方法指定相对路径, 若为绝对路径则指定第2个参数true
+            if($file->makeFilename('data/upload/')->move_uploaded_file())
                 // 获得文件保存的路径 
                 echo '文件保存的路径是'.$file->saveFilename;
         }else {
@@ -88,7 +96,9 @@ Route::put('/', function(Main\Core\Reuqest $request){
 });
 ```
 ## 其他方法
+
 ```php
+<?php
 Route::get('/', function(Main\Core\Reuqest $request){
     // 域名参数
     $request->domain;

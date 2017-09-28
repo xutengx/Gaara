@@ -81,6 +81,14 @@ trait Filter {
         else
             return null;
     }
+    
+    /**
+     * 获取请求头中的内容
+     * @param string $key
+     */
+    public function header(string $key){
+        return $_SERVER[$key] ?? null;
+    }
 
     /**
      * 外部获取 预定义验证规则

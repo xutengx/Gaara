@@ -2,7 +2,6 @@
 
 declare(strict_types = 1);
 namespace Main\Core\Middleware;
-defined('IN_SYS') || exit('ACC Denied');
 
 use Main\Core\Middleware;
 use Main\Core\Request;
@@ -77,6 +76,7 @@ class ThrottleRequests extends Middleware {
     /**
      * 增加对应的响应头
      * 超过请求次数限制,则中断
+     * @return void
      */
     protected function buildResponse(): void {
         $retryAfter = Cache::ttl($this->key);
@@ -94,7 +94,7 @@ class ThrottleRequests extends Middleware {
 
     /**
      * 访问计数器自增
-     * @return int
+     * @return int 返回自增后的值
      */
     protected function increment(): int {
         return \Cache::incrby($this->key, 1);
@@ -124,9 +124,11 @@ class ThrottleRequests extends Middleware {
      * @return string
      */
     protected function resolveRequestSignature(Request $request): string {
-        $url = $request->urlWithoutQueryString;
-        $methods = Route::getMethods();
-        $ip = $request->ip;
-        return sha1(implode('|', array_merge($methods, [$url, $ip])));
+        $methods = $request->methods;
+        $factor[] = $request->urlWithoutQueryString;
+        $factor[] = $request->ip;
+        // 增加用户区分
+        // $factor[] = $request->userinfo['id'];
+        return sha1(implode('|', array_merge($methods, $factor)));
     }
 }

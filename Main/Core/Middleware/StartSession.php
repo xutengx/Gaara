@@ -2,7 +2,6 @@
 
 declare(strict_types = 1);
 namespace Main\Core\Middleware;
-defined('IN_SYS') || exit('ACC Denied');
 
 use Main\Core\Middleware;
 use Main\Core\Session;

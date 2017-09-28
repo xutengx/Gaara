@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Main\Core;
 
 use Closure;
+use Main\Core\Request;
 
 /**
  * 中间件父类
@@ -59,7 +60,7 @@ abstract class Middleware {
      * @return bool
      */
     final protected function effective(): bool {
-        return !\in_array(Route::getAlias(), $this->except);
+        return !\in_array(obj(Request::class)->alias, $this->except);
     }
 
 }

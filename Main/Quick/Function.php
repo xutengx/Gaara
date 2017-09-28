@@ -30,16 +30,22 @@ function run($obj, string $methodName) {
 
 /**
  * 普通 实例化对象
- * @param $class
+ * @param string $obj
  * @param 其他参数
  * @return mixed 对象
  */
-function dobj($obj) {
+function dobj(string $obj) {
     $arr = func_get_args();
     unset($arr[0]);
     return new $obj(...$arr);
 }
 
+/**
+ * 生成完整url
+ * @param string $string 路由
+ * @param array $param 参数
+ * @return string
+ */
 function url(string $string = '', array $param = []): string {
     $url = HOST . ltrim($string, '/');
     if (!empty($param)) {
@@ -60,9 +66,9 @@ function delobj() {
  * 依赖 template.php 指向 template::show()
  * @param string $template 引入模板名
  */
-function template($template = '') {
+function template(string $template) {
     if ($template)
-        obj('\Main\Core\template')->show($template);
+        Template::show($template);
     else
         throw new \Exception('引入模板名有误!');
 }
@@ -74,7 +80,7 @@ function template($template = '') {
  * @param string $msg   参数数组
  * @throws \Exception
  */
-function headerTo(string $where = '', array $pars = array(), string $msg = null) {
+function redirect(string $where = '', array $pars = array(), string $msg = null) {
     $url = url($where, $pars);
     !is_null($msg) ? obj(Template::class)->jumpTo($url, $msg) : exit(header('Location:' . $url));
 }
@@ -82,14 +88,18 @@ function headerTo(string $where = '', array $pars = array(), string $msg = null)
 /**
  * 读取环境变量
  * @param string $envname
- * @param type $default
- * @return type
+ * @param mixed $default
+ * @return mixed
  */
 function env(string $envname, $default = null) {
     return obj(Conf::class)->getEnv($envname, $default);
 }
 
-// 运行状态统计
+/**
+ * 运行状态统计
+ * @global type $statistic
+ * @return array
+ */
 function statistic() : array {
     global $statistic;
     // 框架初始化消耗时间
@@ -108,13 +118,13 @@ function statistic() : array {
     $now2Memory = ( memory_get_usage() - $statistic['_beginMemory']) / 1024;
 
     $data = [
-        '框架初始化消耗内存' => $initMemory . 'K',
-        '框架初始化消耗时间' => $initTime . '毫秒',
-        '程序消耗内存峰值' => $usedMemory . 'K',
-        '当前程序消耗内存' => $now2Memory . 'K',
-        '当前总体消耗内存' => $nowMemory . 'K',
-        '总体消耗内存峰值' => $totleMemory . 'K',
-        '总体消耗时间' => $runtime . '毫秒',
+        '框架初始化消耗内存' => round($initMemory,3) . 'K',
+        '框架初始化消耗时间' => round($initTime,3) . '毫秒',
+        '程序消耗内存峰值' => round($usedMemory,3) . 'K',
+        '当前程序消耗内存' => round($now2Memory,3) . 'K',
+        '当前总体消耗内存' => round($nowMemory,3) . 'K',
+        '总体消耗内存峰值' => round($totleMemory,3) . 'K',
+        '总体消耗时间' => round($runtime,3) . '毫秒',
     ];
 
     return $data;

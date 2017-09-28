@@ -1,12 +1,11 @@
 <?php
 
+declare(strict_types = 1);
 namespace Main\Core\Middleware;
 
 use Main\Core\Middleware;
 use Main\Core\Request;
-use Main\Core\Exception;
-
-defined('IN_SYS') || exit('ACC Denied');
+use Response;
 
 /**
  * 验证 post 数据大小,避免大于php设定的post_max_size
@@ -15,16 +14,15 @@ class ValidatePostSize extends Middleware {
 
     public function handle(Request $request) {
         if ($request->CONTENT_LENGTH > $this->getPostMaxSize()) {
-            throw new Exception('too large post');
+            Response::setStatus(413)->exitData();
         }
     }
 
     /**
      * Determine the server 'post_max_size' as bytes.
-     *
      * @return int
      */
-    protected function getPostMaxSize(){
+    protected function getPostMaxSize(): int{
         if (is_numeric($postMaxSize = ini_get('post_max_size'))) {
             return (int) $postMaxSize;
         }

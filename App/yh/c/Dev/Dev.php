@@ -13,6 +13,8 @@ use \PhpConsole;
  */
 class Dev extends HttpController {
     
+    protected $viewOverTime = 3;
+    
     protected $view = 'App/yh/c/Dev/';
     
     protected $language = 1;
@@ -21,6 +23,6 @@ class Dev extends HttpController {
 //        return obj(\App\yh\m\UserMerchant::class)->getRow();
         $this->assignPhp('url', url(''));
         $this->assign('test', 'this is test string !');
-        return $this->display('demo');
+        return $this->display();
     }
 }

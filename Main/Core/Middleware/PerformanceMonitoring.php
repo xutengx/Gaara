@@ -1,12 +1,10 @@
 <?php
 
+declare(strict_types = 1);
 namespace Main\Core\Middleware;
 
 use Main\Core\Middleware;
-use Main\Core\Request;
 use Main\Core\PhpConsole;
-
-defined('IN_SYS') || exit('ACC Denied');
 
 /**
  * 性能监控

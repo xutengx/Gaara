@@ -19,33 +19,11 @@ class Secure {
 
     /**
      * 返回带有header的ajax方法,依赖jquery, 应用于Controller->display();
-     * @param string $classname
+     * 将cookie中的X-CSRF-TOKEN加入ajax请求头
      * @return string
      */
-    public function csrfAjax(string $classname): string {
-        $time = $_SERVER['REQUEST_TIME'];
-        $csrftoken = $this->encrypt($classname . '|' . $time);
-        return '(function($){var _ajax=$.ajax;$.ajax=function(opt){ var fn = {beforeSend: function(request) {}};if(opt.beforeSend) fn.beforeSend=opt.beforeSend; var _opt = $.extend(opt,{beforeSend: function(request) {request.setRequestHeader("SCRFTOKEN", "' . $csrftoken . '");fn.beforeSend(request); }});_ajax(_opt);};})(jQuery);';
-    }
-
-    /**
-     * 核对http头部的csrftaoken, 应用于Controller->post();等
-     * @param string $classname
-     * @param int $overTime
-     * @return bool
-     */
-    public function checkCsrftoken(string $classname, int $overTime): bool {
-        if ($overTime === 0)
-            return true;
-        if (isset($_SERVER['HTTP_SCRFTOKEN']) && $csrftoken = $_SERVER['HTTP_SCRFTOKEN']) {
-            $str = $this->decrypt($csrftoken);
-            $arr = explode('|', $str);
-            if ($classname != $arr[0])
-                return false;
-            if (($overTime != 0 && (($arr[1] + $overTime) > $_SERVER['REQUEST_TIME'])) || $overTime === 0)
-                return true;
-        }
-        return false;
+    public function csrfAjax(): string {
+        return '(function($){var _ajax=$.ajax;$.ajax=function(opt){ var fn = {beforeSend: function(request) {}};if(opt.beforeSend) fn.beforeSend=opt.beforeSend; var _opt = $.extend(opt,{beforeSend: function(request) {var match = window.document.cookie.match(/(?:^|\s|;)X-XSRF-TOKEN\s*=\s*([^;]+)(?:;|$)/);request.setRequestHeader("X-XSRF-TOKEN", match && match[1]);fn.beforeSend(request); }});_ajax(_opt);};})(jQuery);';
     }
 
     /**

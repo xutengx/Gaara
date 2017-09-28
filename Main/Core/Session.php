@@ -13,25 +13,31 @@ class Session {
 
     // 是否手动
     private $Manual = false;
+    // session驱动
+    private $Drivers;
+    // session.name
+    private $session_name = 'gaara_session';
 
     final public function __construct($Manual = false) {
         $conf = obj(Conf::class)->session;
+        
+        $driver = $conf['driver'] ?? 'file';
+        $httponly = $conf['httponly'] ?? true;
+        $lifetime = $conf['lifetime'] ?? '600000';
+        $autostart = $conf['autostart'] ?? true;
+        
+        ini_set('session.cookie_httponly', ($httponly === true)? 'On' : 'Off');
+        ini_set('session.cookie_lifetime', (string)$lifetime);
+        ini_set('session.gc_maxlifetime', (string)$lifetime);
+        ini_set('session.name', $this->session_name);
 
-        $driver = ( isset($conf['driver']) && !is_null($conf['driver']) ) ? $conf['driver'] : 'file';
-        $httponly = ( isset($conf['httponly']) && !is_null($conf['httponly']) ) ? $conf['httponly'] : true;
-        $lifetime = ( isset($conf['lifetime']) && !is_null($conf['lifetime']) ) ? $conf['lifetime'] : 600000;
-        $autostart = ( isset($conf['autostart']) && !is_null($conf['autostart']) ) ? $conf['autostart'] : true;
-
-        ini_set('session.cookie_httponly', $httponly);
-        ini_set('session.cookie_lifetime', $lifetime);
-        ini_set('session.gc_maxlifetime', $lifetime);
 
         if ($driver === 'redis')
-            $this->Drivers['redis'] = new Driver\Redis($conf[$driver]);
+            $this->Drivers = new Driver\Redis($conf[$driver]);
         elseif ($driver === 'file')
-            $this->Drivers['file'] = new Driver\File($conf[$driver]);
+            $this->Drivers = new Driver\File($conf[$driver]);
         elseif ($driver === 'mysql')
-            $this->Drivers['mysql'] = new Driver\Mysql($conf[$driver]);
+            $this->Drivers = new Driver\Mysql($conf[$driver]);
 
         // 重写后 未完成
         $this->Manual = $Manual;

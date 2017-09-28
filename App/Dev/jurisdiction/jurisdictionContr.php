@@ -41,7 +41,7 @@ class jurisdictionContr extends HttpController {
     }
     
     protected function 允许访问的URL(){
-        $alias = \Main\Core\Route::getAlias();
+        $alias = obj(Request::class)->alias;
         if(in_array($alias, static::$urlRule[$this->获取当前用户身份()]) ){
             return true;
         }else exit('没得权限!');

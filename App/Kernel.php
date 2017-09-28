@@ -8,6 +8,7 @@ use Main\Core\Kernel as HttpKernel;
 use Main\Core\Middleware\ReturnResponse;
 use Main\Core\Middleware\ValidatePostSize;
 use Main\Core\Middleware\StartSession;
+use Main\Core\Middleware\VerifyCsrfToken;
 use Main\Core\Middleware\CrossDomainAccess;
 use Main\Core\Middleware\ThrottleRequests;
 use Main\Core\Middleware\PerformanceMonitoring;
@@ -20,13 +21,15 @@ class Kernel extends HttpKernel {
         // post请求体大小检测
         ValidatePostSize::class,
         // php-console 显示执行性能
-//        PerformanceMonitoring::class,
+        PerformanceMonitoring::class,
     ];
     // 路由中间件
     protected $middlewareGroups = [
         'web' => [
             // 开启session
             StartSession::class,
+            // csrf校验
+            VerifyCsrfToken::class,
         ],
         'api' => [
             // 允许跨域

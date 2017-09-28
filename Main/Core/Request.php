@@ -20,7 +20,18 @@ class Request {
     private $cookie = array();
     private $input = array();
     private $file = null;
+    // 当前http方法
+    public $method;
+    // 当前路由别名
+    public $alias;
+    // 当前路由可用的http方法数组
+    public $methods;
 
+    /**
+     * 初始化参数
+     * @param array $urlPar 路由参数数组
+     * @param array $domainPar 域名参数数组
+     */
     final public function __construct(array $urlPar = [], array $domainPar = []) {
         $this->file = obj(UploadFile::class);
         $this->getContentType($urlPar, $domainPar);

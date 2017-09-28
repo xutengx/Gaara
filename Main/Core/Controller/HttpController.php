@@ -7,12 +7,9 @@ use \Closure;
 use \PDOException;
 use \Main\Core\Cache;
 use \Main\Core\Template;
+use \Main\Core\Secure;
 use \Response;
-/**
- * 响应页面
- * Class HttpController
- * @package Main\Core\Controller
- */
+
 abstract class HttpController extends \Main\Core\Controller {
 
     // 可以使用 $this->post('id', '/^1[3|4|5|7|8][0-9]\d{8}$/', 'id不合法!'); 过滤参数
@@ -20,8 +17,7 @@ abstract class HttpController extends \Main\Core\Controller {
 
     // 可以使用 $this->getInfoOnWechatProfessional(); 一键授权(对数据库字段有一定要求)
     // use Traits\WechatTrait;
-    // 页面过期时间  0 : 不过期
-    protected $viewOverTime = 0;
+
     // 页面加载地址
     protected $view = '';
     // 页面渲染语言种类
@@ -32,17 +28,12 @@ abstract class HttpController extends \Main\Core\Controller {
     protected $cache = ';';
     // 缓存php赋值
     protected $phparray = array();
-    // 当前Contr所在app名
-    protected $app = NULL;
     // 当前Contr名
     protected $classname = NULL;
 
     public function __construct() {
         $app = explode('\\', get_class($this));
         $this->classname = str_replace('Contr', '', end($app));
-
-        defined('APP') || define('APP', $this->app);
-
         $this->construct();
     }
 
@@ -51,26 +42,26 @@ abstract class HttpController extends \Main\Core\Controller {
     }
 
     /**
-     * @param int    $code   状态标记
-     * @param string $msg  状态描述
-     * @return bool
+     * 返回一个msg响应
+     * @param int $code 状态标记
+     * @param string $msg 状态描述
+     * @return string
      */
-    protected function returnMsg($code = '', $msg = 'fail !') {
+    protected function returnMsg(int $code = 0, string $msg = 'fail !'): string {
         $data = ['code' => $code, 'msg' => $msg];
         return Response::returnData($data);
     }
 
     /**
-     * @param  $content 响应内容
-     * @param  $type_p  响应数据格式 json xml
-     * @param  $code_p  响应 http 状态码
-     * @return bool
+     * 返回一个data响应,当接收的参数是Closure时,会捕获PDOException异常,一旦捕获成功,将返回msg响应
+     * @param mixed $content 响应内容
+     * @return string
      */
-    protected function returnData($content = '') {
+    protected function returnData($content = ''): string {
         if ($content instanceof Closure) {
-            try{
+            try {
                 $content = call_user_func($content);
-            }catch(PDOException $pdo){
+            } catch (PDOException $pdo) {
                 return $this->returnMsg(0, $pdo->getMessage());
             }
         }
@@ -79,7 +70,6 @@ abstract class HttpController extends \Main\Core\Controller {
         $data = ['code' => 1, 'data' => $content];
         return Response::returnData($data);
     }
-
     // 以组件方式引入html
 //    final protected function template($filename = false) {
 //        $file = $filename ? $filename : $this->classname;
@@ -89,8 +79,11 @@ abstract class HttpController extends \Main\Core\Controller {
 //        echo '<script>' . $this->cache . '</script>';
 //    }
 
-    // 渲染页面赋值准备
-    final protected function getReady() {
+    /**
+     * 渲染页面时的通用赋值
+     * @return void
+     */
+    final protected function getReady(): void {
         $debug = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4);
         // 方法名,为调用此方法的最近级别函数
         $method = $debug[2]['function'];
@@ -103,18 +96,28 @@ abstract class HttpController extends \Main\Core\Controller {
         }
     }
 
-    // javascript 设置
-    final protected function script($word) {
+    /**
+     * javascript 语句设置
+     * @param string $word
+     * @return void
+     */
+    final protected function script(string $word): void {
         $this->cache .= $word . ';';
     }
 
-    // 写入script路由方法,js赋值,并引入html文件
-    final protected function display($filename = false) {
-        $file = $filename ? $filename : $this->classname;
+    /**
+     * 写入script路由方法,js赋值,并引入html文件
+     * @param string $filename 模版文件名
+     * @return string
+     * @throws \Main\Core\Exception
+     */
+    final protected function display(string $filename = null): string {
+        $file = $filename ?? $this->classname;
         $this->getReady();
         $DATA = $this->phparray;
-        // 防scrf的ajax(基于jquery), 接受post提交数据前.先验证http头中的 csrftoken
-        $ajax = obj('Secure')->csrfAjax($this->classname);
+        // 防scrf的ajax(基于jquery), 将cookie中的X-CSRF-TOKEN, 加入ajax请求头
+        $ajax = obj(Secure::class)->csrfAjax();
+
         ob_start();
         echo <<<EEE
 <!DOCTYPE html>
@@ -142,11 +145,11 @@ EEE;
     /**
      * 将数据赋值到页面js 支持 int string array bool
      * @param string $name js对应键
-     * @param string $val  js对应值
-     *
+     * @param mixed $val js对应值
+     * @return void
      * @throws \Main\Core\Exception
      */
-    protected function assign($name = '', $val = '') {
+    protected function assign(string $name, $val): void {
         $type = gettype($val);
         switch ($type) {
             case 'boolean':
@@ -172,9 +175,10 @@ EEE;
     /**
      * 将数据赋值到页面php 以$DATA[$key]调用
      * @param string $key
-     * @param string $val
+     * @param mixed $val
+     * @return void
      */
-    protected function assignPhp($key = '', $val = '') {
+    protected function assignPhp(string $key, $val): void {
         $this->phparray[$key] = $val;
     }
 }

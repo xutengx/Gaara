@@ -1,18 +1,12 @@
 <?php
 
+declare(strict_types = 1);
 namespace Main\Core\Controller\Traits;
-defined('IN_SYS') || exit('ACC Denied');
 
 /**
  * 请求过滤
  */
 trait RequestTrait {
-
-    // 令牌校验
-    protected function checkCsrfToken() {
-        if (!obj('Secure')->checkCsrftoken($this->classname, $this->viewOverTime))
-            $this->returnMsg(0, '页面已过期,请刷新!!') && exit;
-    }
 
     // 请求参数获取
     protected function requestFun($key = null, $rule = null, $msg = null, $fun = 'get') {
@@ -57,17 +51,14 @@ trait RequestTrait {
     }
 
     protected function put($key = null, $rule = null, $msg = null) {
-        $this->checkCsrfToken();
         return $this->requestFun($key, $rule, $msg, 'put');
     }
 
     protected function post($key = null, $rule = null, $msg = null) {
-        $this->checkCsrfToken();
         return $this->requestFun($key, $rule, $msg, 'post');
     }
 
     protected function delete($key = null, $rule = null, $msg = null) {
-        $this->checkCsrfToken();
         return $this->requestFun($key, $rule, $msg, 'post');
     }
 }

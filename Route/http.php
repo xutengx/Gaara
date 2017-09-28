@@ -10,7 +10,7 @@ return [
         else return \Response::setStatus(404)->exitData();
     }),
     // yh
-    Route::group(['middleware'=>['api'], 'namespace'=> 'App\yh\c' ], function(){
+    Route::group(['middleware'=>['web'], 'namespace'=> 'App\yh\c' ], function(){
         // 接口开发调试页面
         Route::get('/dev','Dev\Dev@index');
         // 不检测 token
@@ -94,10 +94,10 @@ return [
     Route::get('/p',['middleware'=>['web','testMiddleware'],'namespace'=> 'App\Dev', 'uses'=>'Pipeline\index@index']),
     
     '/test' => ['as' => 'tt1', 'uses' => function(){
-        headerTo('/dev', ['id'=>'1232323123'],'test' );
+        redirect('/dev', ['id'=>'1232323123'],'test' );
         return 'test';
     }],
-    '/404' => ['middleware'=>['api'],'uses'=>function(){
+    '/404' => ['middleware'=>['web'],'uses'=>function(){
 //            return Response::setStatus(404)->view(404);
         return false;
     }],

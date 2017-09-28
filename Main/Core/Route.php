@@ -14,14 +14,10 @@ class Route {
     private static $routeType = null;
     // 全部路由规则
     protected static $routeRule = [];
-    // 路由别名, 默认为路由正则string
-    private static $alias = null;
     // 域名参数
     private static $domainParam = [];
     // 路由参数
     private static $urlParam = [];
-    // 当前路由可用http方法
-    private static $methods = [];
 
     public static function Start(): void {
         self::getConf();
@@ -154,9 +150,7 @@ class Route {
      * 执行分析 : 路由别名, 域名分析, 中间件注册, 执行闭包
      * 申明 obj('request');
      * 申明 self::$domainParam
-     * 申明 self::$alias
      * 申明 self::$urlParam
-     * 申明 self::$methods
      * @param string $rule 路由匹配段
      * @param string|array $info 路由执行段 (可能是形如 'App\index\Contr\IndexContr@indexDo' 或者 闭包, 或者 数组包含以上2钟)
      * @param array $urlParam url参数数组
@@ -187,11 +181,11 @@ class Route {
         $wholeParam = array_merge($domainParam, $urlParam);
 
         // 初始化 Request
-        \obj(Request::class, $urlParam, $domainParam);
+        $request = \obj(Request::class, $urlParam, $domainParam);
         self::$domainParam = $domainParam;
         self::$urlParam = $urlParam;
-        self::$alias = $alias;
-        self::$methods = $info['method'];
+        $request->alias = $alias;
+        $request->methods = $info['method'];
 
         // 框架性能
         self::statistic();
@@ -318,7 +312,7 @@ class Route {
         'as' => [],
         'middleware' => [],
     ];
-    
+
     /**
      * restful风格申明post,delete,get,put四条路由分别对应controller中的create,destroy,select,update方法
      * @param string $url

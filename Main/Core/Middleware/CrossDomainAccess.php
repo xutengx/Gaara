@@ -2,7 +2,6 @@
 
 declare(strict_types = 1);
 namespace Main\Core\Middleware;
-defined('IN_SYS') || exit('ACC Denied');
 
 use Main\Core\Middleware;
 use Main\Core\Request;
@@ -23,7 +22,7 @@ class CrossDomainAccess extends Middleware {
             $headers['Access-Control-Allow-Origin'] = '*';
         }
         $headers['Access-Control-Allow-Headers'] = 'X-Requested-With,scrftoken,Origin, Content-Type, Cookie, Accept, multipart/form-data, application/json';
-        $headers['Access-Control-Allow-Methods'] = $this->allowMothods();
+        $headers['Access-Control-Allow-Methods'] = $this->allowMothods($request);
         $response->setHeaders($headers);
         if ($request->method === 'options') {
             exit($response->returnData());
@@ -50,9 +49,10 @@ class CrossDomainAccess extends Middleware {
     
     /**
      * 返回路由允许的 http 方法
+     * @param Request $request
      * @return string
      */
-    private function allowMothods(): string {
-        return strtoupper(implode(',', \Route::getMethods()));
+    private function allowMothods(Request $request): string {
+        return strtoupper(implode(',', $request->methods));
     }
 }

@@ -150,7 +150,7 @@ class Request {
     private function consistentFile(): void {
         if (!empty($_FILES)) {
             foreach ($_FILES as $k => $v) {
-                if ($v['error'] === 0)
+                if ($v['error'] === 0){
                     $this->file->addFile([
                         'key_name' => $k,
                         'name' => $v['name'],
@@ -158,6 +158,7 @@ class Request {
                         'tmp_name' => $v['tmp_name'],
                         'size' => $v['size']
                     ]);
+                }
             }
         }
     }

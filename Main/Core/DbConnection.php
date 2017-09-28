@@ -223,7 +223,7 @@ class DbConnection {
         $this->type = 'SELECT';
         return $this->query_prepare_execute($sql, $pars)->fetchall(\PDO::FETCH_ASSOC);
     }
-    
+
     /**
      * 更新数据, 返回受影响的行数
      * @param string $sql
@@ -287,7 +287,7 @@ class DbConnection {
      */
     public function prepare(string $sql = '', string $type = 'UPDATE'): \PDOStatement {
         if (!in_array($type, ['SELECT', 'UPDATE', ' DELETE', 'INSERT']))
-                throw new Exception('$type mast in_array(SELECT UPDATE DELETE INSERT)');
+            throw new Exception('$type mast in_array(SELECT UPDATE DELETE INSERT)');
         $this->type = $type;
         return $this->PDO()->prepare($sql);
     }

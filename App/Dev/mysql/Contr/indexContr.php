@@ -152,13 +152,17 @@ class indexContr extends HttpController {
             $obj->data(['name' => ':autoInsertName'])
                 ->insert([':autoInsertName' => 'autoInsertName transaction2']);
             $obj->data(['id' => ':autoInsertNam'])
-                ->insert([':autoInsertNam' => '432']);
+                ->insert([':autoInsertNam' => '1432']);
         },3);
         var_dump($res);
     }
-    private function test_10(){
-        $res = Model\Non::select(['id', 'name', 'phone'])->getAll();
-        var_dump($res);
+    private function test_10(Model\visitorInfoModel $visitorInfo){
+//        $res = Model\Non::select(['id', 'name', 'phone'])->getAll();
+//        var_dump($res);
+//        var_dump($visitorInfo::$dbs);
+        var_dump($visitorInfo->db === reset($visitorInfo::$dbs));
+        var_export(statistic());
+        exit;
     }
     
     

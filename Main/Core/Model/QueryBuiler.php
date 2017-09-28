@@ -1,12 +1,18 @@
 <?php
+
+declare(strict_types = 1);
 namespace Main\Core\Model;
+
+use Main\Core\Model\QueryBuiler;
+
 /**
  * 链式操作
  */
 class QueryBuiler{
-    // 数据收集
-    private $options = [];
 
+    use QueryBuiler\Where;
+    use QueryBuiler\Select;
+    
     public function __construct() {
         throw new \Main\Core\Exception('not support yet ...');
     }
@@ -17,11 +23,12 @@ class QueryBuiler{
     public function where($p, $symbol = '=', $value = null){
         
     }
+    
     /**
      * sql条件
      * @param String|array 数组 $p
      */
-    public function whereIn($p, $symbol = '=', $value = null){
+    public function whereIn(){
         
     }
     /**

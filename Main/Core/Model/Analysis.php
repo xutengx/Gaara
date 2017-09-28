@@ -1,10 +1,8 @@
 <?php
 
 namespace Main\Core\Model;
-defined('IN_SYS') || exit('ACC Denied');
 
 use \Main\Core;
-
 /**
  * 解析 \Main\Core\Model 中的链式调用数据
  */
@@ -16,9 +14,6 @@ final class Analysis {
     private $options_sql = [];
     // 链式操作 类型 select update delete insert
     private $options_type = '';
-
-    // 最终sql
-//    private $sql = '';
 
     public function __construct() {
         

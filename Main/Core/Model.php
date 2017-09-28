@@ -11,7 +11,9 @@ class Model {
     use Traits\DebugTrait;
     use Traits\ObjectRelationalMappingTrait;
     use Traits\Transaction;
-
+    // 所有数据库连接类
+    public static $dbs;
+    // 当前model的数据库连接类
     protected $db;
     // 表名,不包含表前缀
     protected $tablename = '';
@@ -44,23 +46,23 @@ class Model {
      * 构造方法, 连接对象
      * @param object $DbConnection db连接对象 如 obj('Mysql',false);
      */
-    final public function __construct($DbConnection = null) {
-        $this->db = is_null($DbConnection) ? obj(DbConnection::class, $this->getConf($this->connection)) : $DbConnection;
+    final public function __construct( $DbConnection = null) {
+        $this->db = $this->getDB();
         $this->collect = new \Main\Core\Model\Collect($this->options);
         $this->analysis = obj(\Main\Core\Model\Analysis::class);
         $this->get_thisTable();
         $this->construct();
     }
-
+    
     /**
-     * 获取当前应应用的配置
-     * @param $connections
-     * @return type
+     * 获取数据库链接对象 $this->db
+     * @return DbConnection
      */
-    protected function getConf($connections) {
-        $dbConf = obj(Conf::class)->db;
-        $default = is_null($connections) ? $dbConf['default'] : $connections;
-        return $dbConf['connections'][$default];
+    protected function getDB(): DbConnection {
+        $conf = obj(Conf::class)->db;
+        $this->connection = $this->connection ?? $conf['default'];
+        $connectionConf = $conf['connections'][$this->connection];
+        return self::$dbs[$this->connection] ?? self::$dbs[$this->connection] = dobj(DbConnection::class, $connectionConf);;
     }
 
     /**
@@ -113,14 +115,26 @@ class Model {
         
     }
 
-    final public function __call($func, $pars = array()) {
+    /**
+     * 对象链式操作
+     * @param string $func
+     * @param array $pars
+     * @return \Main\Core\Model
+     */
+    final public function __call(string $func, array $pars = array()): Model {
         if (method_exists($this->collect, $func)) {
             call_user_func_array(array($this->collect, $func), $pars);
             return $this;
         }
     }
 
-    final public static function __callStatic($func, $pars = array()) {
+    /**
+     * 静态链式操作
+     * @param string $func
+     * @param array $pars
+     * @return \Main\Core\Model
+     */
+    final public static function __callStatic(string $func, array $pars = array()): Model {
         $thisObj = \obj(static::class);
         if (method_exists($thisObj->collect, $func)) {
             call_user_func_array(array($thisObj->collect, $func), $pars);

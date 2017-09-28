@@ -103,6 +103,7 @@ class VerifyCsrfToken extends Middleware {
      * @return string
      */
     protected function theToken(): string {
-        return Secure::md5($_COOKIE['gaara_session']);
+        return Secure::md5(session_id());
     }
+
 }

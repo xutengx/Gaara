@@ -2,7 +2,6 @@
 
 declare(strict_types = 1);
 namespace Main\Core\Request\Component;
-defined('IN_SYS') || exit('ACC Denied');
 
 use \Main\Core\Tool;
 
@@ -44,6 +43,7 @@ class File {
 
     /**
      * 获取本对象的内容
+     * @return string
      */
     private function getContent(): string {
         if (!is_null($this->tmp_name)) {
@@ -72,6 +72,7 @@ class File {
 
     /**
      * 当前文件是否过小
+     * @param int $size 文件最小字节数
      * @return bool
      */
     public function is_greater(int $size = 2): bool {
@@ -80,6 +81,7 @@ class File {
 
     /**
      * 当前文件是否过大 8388608 8M
+     * @param int $size 文件最大字节数
      * @return bool
      */
     public function is_less(int $size = 8388608): bool {

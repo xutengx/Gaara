@@ -1,9 +1,10 @@
 <?php
 
-namespace Main\Core\Model;
-defined('IN_SYS') || exit('ACC Denied');
+declare(strict_types = 1);
+namespace Main\Core\Model;;
 
 use \Main\Core\Model\QueryBuiler;
+use \Main\Core\Model\Collect;
 use \Closure;
 
 /**
@@ -11,6 +12,8 @@ use \Closure;
  */
 class Collect {
 
+    use Collect\Where;
+    
     // 数据收集
     private $options = [];
 

@@ -1,6 +1,5 @@
 <?php
 
-defined('IN_SYS') || exit('ACC Denied');
 /**
  * 本配置将直接赋值给 new PHPMailer 对象
  * 更改 : 你可以在任何地方重新定义这些属性, 因为,他们都是 public, 在你不定义的时候这些就是缺省值

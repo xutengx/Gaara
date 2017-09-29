@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Main\Core\Model;
 
 use Main\Core\Model\QueryBuiler;
-
+use Closure;
 /**
  * 链式操作
  */
@@ -13,15 +13,62 @@ class QueryBuiler{
     use QueryBuiler\Where;
     use QueryBuiler\Select;
     
-    public function __construct() {
-        throw new \Main\Core\Exception('not support yet ...');
+    // 绑定的表名
+    private $table;
+    // 主键
+    private $primaryKey;
+
+
+    public function __construct(string $table, string $primaryKey) {
+        $this->table = $table;
+        $this->primaryKey = $primaryKey;
     }
+    
+    /**
+     * 获取一个与自己主属性相同的实例, 不同于clone
+     * @return QueryBuiler
+     */
+    private function getSelf(): QueryBuiler {
+        return new QueryBuiler($this->table, $this->primaryKey);
+    }
+    
     /**
      * sql条件
      * @param String|array 数组 $p
      */
-    public function where($p, $symbol = '=', $value = null){
-        
+    public function where(): QueryBuiler {
+        $params = func_get_args();
+        var_dump(func_num_args());exit;
+        switch (func_num_args()) {
+            case 1:
+                switch (gettype($params[0])) {
+                    case 'object':
+                        if($params[0] instanceof Closure){
+                            $this->whereClosure($params[0]);
+                        }else 
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+
+                    default:
+                        break;
+            
+                }
+                break;
+            case 2:
+                
+                
+                
+                break;
+            case 3:
+                break;
+
+            default:
+                break;
+        }
+        return $this;
     }
     
     /**

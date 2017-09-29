@@ -4,15 +4,12 @@ declare(strict_types = 1);
 namespace Main\Core\Model;;
 
 use \Main\Core\Model\QueryBuiler;
-use \Main\Core\Model\Collect;
 use \Closure;
 
 /**
  * 收集 \Main\Core\Model 中的链式调用数据
  */
 class Collect {
-
-    use Collect\Where;
     
     // 数据收集
     private $options = [];

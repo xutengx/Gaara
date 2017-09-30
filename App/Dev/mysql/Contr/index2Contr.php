@@ -43,38 +43,38 @@ class index2Contr extends HttpController {
 //        $obj->where(function(){
 //            return 1;
 //        });
-        $sql = $obj
-                ->selectString('name,age,sex')
-                ->selectArray(['a','b'])
-                ->whereBetweenString('age','23','33')
-                ->whereNotInArray('sex',[1])
-                ->whereValue('name','!=','coppe')
-                ->orWhere(function($query){
-                    $query->whereColumn('create_time','>','update_time');
-                })
-                ->joinString('ww','name','>=','qwee', 'left join')
-                ->groupString('ww.age')
-                ->grouparray([
-                    'ww.school',
-                    'ww.time'
-                ])
-                ->orderString('name')
-                ->orderString('name','desc')
-                        ->limitTake('444')
-                ->getRow();
-        var_dump($sql);
-        exit;
+//        $sql = $obj
+//                ->selectString('name,age,sex')
+//                ->selectArray(['a','b'])
+//                ->whereBetweenString('age','23','33')
+//                ->whereNotInArray('sex',[1])
+//                ->whereValue('name','!=','coppe')
+//                ->orWhere(function($query){
+//                    $query->whereColumn('create_time','>','update_time');
+//                })
+//                ->joinString('ww','name','>=','qwee', 'left join')
+//                ->groupString('ww.age')
+//                ->grouparray([
+//                    'ww.school',
+//                    'ww.time'
+//                ])
+//                ->orderString('name')
+//                ->orderString('name','desc')
+//                        ->limitTake('444')
+//                ->getRow();
+//        var_dump($sql);
+//        exit;
         
         
         $sql = $obj->select(['id', 'name', 'phone'])
-            ->where([ 'id' => [ '>', '101' ]])
-            ->where(['id' => ['<', '104']])
+            ->where( 'id', '>', '101')
+            ->where('id' ,'<', '104')
             ->getAllToSql();
         var_dump($sql);
 
         $res = $obj->select(['id', 'name', 'phone'])
-            ->where([ 'id' => [ '>', '101' ]])
-            ->where(['id' => ['<', '104']])
+            ->where( 'id', '>', '101')
+            ->where('id' ,'<', '104')
             ->getAll();
         var_dump($res);
     }
@@ -83,30 +83,30 @@ class index2Contr extends HttpController {
         $obj = obj(Model\visitorInfoDev::class);
       
         $sql = $obj->select(['id', 'name', 'phone'])
-            ->where([ 'scene' => [ '&', ':scene_1' ]])
+            ->where( 'scene', '&', ':scene_1' )
             ->getRowToSql([':scene_1' => '1']);
         var_dump($sql);
 
         $res = $obj->select(['id', 'name', 'phone'])
-            ->where([ 'scene' => [ '&', ':scene_1' ]])
-            ->getRow([':scene_1' => '1']);
+            ->where( 'scene', '&', '?' )
+            ->getRow(['1']);
         var_dump($res);
     }
     private function test_3() {
         $obj = obj(Model\visitorInfoDev::class);
       
-        $sql = $obj->select(['id', 'name', 'phone','count(id)','sum(id)'])
-            ->where([ 'scene' => [ '&', '1' ]])
-            ->where(['name' => ['like', '%t%']])
+        $sql = $obj->select(['id', 'name', 'phone','count(id)','sum(id) as sum'])
+            ->where('scene' , '&', '1' )
+            ->where('name','like', '%t%')
             ->group(['phone'])
-            ->getAllToSql([':scene_1' => '1']);
+            ->getAllToSql();
         var_dump($sql);
 
-        $res = $obj->select(['id', 'name', 'phone','count(id)','sum(id)'])
-            ->where([ 'scene' => [ '&', ':scene_1' ]])
-            ->where(['name' => ['like', '%t%']])
+        $res = $obj->select(['id', 'name', 'phone','count(id)','sum(id) as sum'])
+            ->where('scene' , '&', '1' )
+            ->where('name','like', '%t%')
             ->group(['phone'])
-            ->getAll([':scene_1' => '1']);
+            ->getAll();
         var_dump($res);
     }
     private function test_4() {

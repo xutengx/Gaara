@@ -30,6 +30,7 @@ trait Limit{
      
     /**
      * 将limit片段加入limit, 返回当前对象
+     * 多次调用,将覆盖之前
      * @param string $part
      * @return QueryBuiler
      */

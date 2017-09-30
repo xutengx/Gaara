@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Main\Core\Model;
 
 use Main\Core\Model\QueryBuiler;
-use Closure;
+use Main\Core\DbConnection;
 
 /**
  * 链式操作
@@ -21,6 +21,9 @@ class QueryBuiler {
     use QueryBuiler\Order;
     use QueryBuiler\Limit;
     use QueryBuiler\Having;
+    
+    use QueryBuiler\Execute;
+    use QueryBuiler\Debug;
 
     // 绑定的表名
     private $table;
@@ -28,6 +31,12 @@ class QueryBuiler {
     private $primaryKey;
     // 当前语句类别
     private $sqlType;
+    // 数据库链接
+    private $db;
+    // 最近次执行的sql
+    private $lastSql;
+
+
     private $select;
     private $data;
     private $from;
@@ -38,9 +47,10 @@ class QueryBuiler {
     private $order;
     private $limit;
 
-    public function __construct(string $table, string $primaryKey) {
+    public function __construct(string $table, string $primaryKey, DbConnection $db) {
         $this->table = $table;
         $this->primaryKey = $primaryKey;
+        $this->db = $db;
     }
 
     /**
@@ -54,6 +64,8 @@ class QueryBuiler {
                 switch (gettype($params[0])) {
                     case 'object':
                         return $this->andWhere(...$params);
+                    case 'array':
+                        return $this->whereArray(...$params);
                     default :
                         return $this->whereRaw('1');
                 }
@@ -234,9 +246,5 @@ class QueryBuiler {
                 return $this->limitOffsetTake(...$params);
         }
     }
-
-    public function getRow() {
-        $this->sqlType = 'select';
-        return $this->toSql();
-    }
+    
 }

@@ -35,10 +35,6 @@ class ModelDev {
     protected $options_type = null;
     // PDOStatement
     protected $PDOStatement = null;
-    // 链式操作收集器
-    protected $collect = null;
-    // 链式操作解释器
-    protected $analysis = null;
     // 是否已设定当前sql表
     protected $from = false;
     // 主动指定配置文件
@@ -50,8 +46,6 @@ class ModelDev {
      */
     final public function __construct( $DbConnection = null) {
         $this->db = $this->getDB();
-//        $this->collect = new \Main\Core\Model\Collect($this->options);
-//        $this->analysis = obj(\Main\Core\Model\Analysis::class);
         $this->get_thisTable();
         $this->construct();
     }
@@ -126,7 +120,7 @@ class ModelDev {
     public function newQuery(string $table = null, string $primaryKey = null): QueryBuiler {
         $queryTable = $table ?? $this->table;
         $queryPrimaryKey = $primaryKey ?? $this->primaryKey;
-        return new QueryBuiler($queryTable, $queryPrimaryKey);
+        return new QueryBuiler($queryTable, $queryPrimaryKey, $this->db);
     }
 
     /**

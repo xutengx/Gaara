@@ -64,6 +64,18 @@ trait Where {
         $sql = $this->fieldFormat($field) . $symbol . $this->valueFormat($value);
         return $this->wherePush($sql);
     }
+    
+    /**
+     * 批量相等条件
+     * @param array $arr
+     * @return QueryBuiler
+     */
+    public function whereArray(array $arr): QueryBuiler {
+        foreach($arr as $field => $value){
+            $this->whereValue($field, '=', $value);
+        }
+        return $this;
+    }
 
     /**
      * 字段值在2值之间

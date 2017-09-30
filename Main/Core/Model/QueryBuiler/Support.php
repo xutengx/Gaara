@@ -12,7 +12,7 @@ trait Support {
      * @return QueryBuiler
      */
     private function getSelf(): QueryBuiler {
-        return new QueryBuiler($this->table, $this->primaryKey);
+        return new QueryBuiler($this->table, $this->primaryKey, $this->db);
     }
 
     /**
@@ -30,24 +30,49 @@ trait Support {
      * @return string eg: sum(`order`.`amount`) as `sum_price`
      */
     private function fieldFormat(string $field): string {
-        //todo
-        //todo
-        //todo
-        if (strpos($field, '.') === false) {
-            return '`' . $field . '`';
+//        $field = 'sum(order.amount) as sum_price';
+        if($has_as = stristr($field, ' as ')){
+            $as = substr($has_as, 0, 4);
+            $info = explode($as, $field);
+            $alias = ' as `'.end($info).'`';
+            $maybefunc = reset($info);
         } else {
-            $arr = explode('.', $field);
-            return '`' . reset($arr) . '`.`' . end($arr) . '`';
+            $alias = '';
+            $maybefunc = $field;    // eg: sum(order.amount)
         }
+        if (($a = strstr($maybefunc, '('))) {   // eg: (order.amount)
+            $action = str_replace($a, '', $maybefunc);  // eg: sum
+            $a = ltrim($a, '(');
+            $a = rtrim($a, ')');
+            if (strstr($a, '.')) {
+                $arr = explode('.', $a);
+                $temp = '`' . reset($arr) . '`.`' . end($arr) . '`';
+            } else
+                $temp = '`' . $a . '`';
+            $temp = $action . '(' . $temp . ')';
+        }else{
+            if (strpos($maybefunc, '.') === false) {
+                $temp = '`' . $maybefunc . '`';
+            } else {
+                $arr = explode('.', $maybefunc);
+                $temp = '`' . reset($arr) . '`.`' . end($arr) . '`';
+            }
+        }
+        return $temp.$alias;
+        
     }
 
     /**
      * 值加上双引号
+     * 注:参数绑定的形参不加双引号
      * @param string $value 字段 eg:1765595948
      * @return string   eg:"1765595948"
      */
     private function valueFormat(string $value): string {
-        return '"' . $value . '"';
+        if ((strpos($value, ':') === 0) || ($value === '?'))
+            return $value;
+        else
+            return '"' . $value . '"';
     }
 
     /**
@@ -59,8 +84,13 @@ trait Support {
         return '(' . $value . ')';
     }
 
-    public function toSql(): string {
+    /**
+     * 生成sql
+     * @return string
+     */
+    public function toSql(array $pars = []): string {
         $sql = '';
+        $remember = true;
         switch ($this->sqlType) {
             case 'select':
                 $sql = 'select ' . $this->dealSelect() . ' from ' . $this->dealFrom();
@@ -77,15 +107,31 @@ trait Support {
             case 'delete':
                 $sql = 'delete from ' . $this->dealFrom();
                 break;
+            default :
+                $remember = false;
+                break;
         }
-
         $sql .= $this->dealJoin() .
                 $this->dealWhere() .
                 $this->dealGroup() .
                 $this->dealHaving() .
                 $this->dealOrder() .
                 $this->dealLimit();
+        if ($remember)
+            $this->rememberSql($sql, $pars);
         return $sql;
+    }
+
+    /**
+     * 记录最近次的sql, 完成参数绑定的填充
+     * 重载此方法可用作sql日志
+     */
+    private function rememberSql(string $sql, array $pars) {
+        $pars = is_array($pars) ? $pars : [];
+        foreach ($pars as $k => $v) {
+            $pars[$k] = '\'' . $v . '\'';
+        }
+        $this->lastSql = strtr($sql, $pars);
     }
 
     /**
@@ -100,6 +146,10 @@ trait Support {
         }
     }
 
+    /**
+     * data
+     * @return string
+     */
     private function dealData(): string {
         if (empty($this->data)) {
             return '';
@@ -120,6 +170,10 @@ trait Support {
         }
     }
 
+    /**
+     * join
+     * @return string
+     */
     private function dealJoin(): string {
         if (empty($this->join)) {
             return '';
@@ -143,6 +197,10 @@ trait Support {
         }
     }
 
+    /**
+     * group
+     * @return string
+     */
     private function dealGroup(): string {
         if (empty($this->group)) {
             return '';
@@ -151,6 +209,10 @@ trait Support {
         }
     }
 
+    /**
+     * having
+     * @return string
+     */
     private function dealHaving(): string {
         if (empty($this->having)) {
             return '';
@@ -159,6 +221,10 @@ trait Support {
         }
     }
 
+    /**
+     * order
+     * @return string
+     */
     private function dealOrder(): string {
         if (empty($this->order)) {
             return '';
@@ -167,6 +233,10 @@ trait Support {
         }
     }
 
+    /**
+     * limit
+     * @return string
+     */
     private function dealLimit(): string {
         if (empty($this->limit)) {
             return '';
@@ -174,4 +244,5 @@ trait Support {
             return ' limit ' . $this->limit;
         }
     }
+
 }

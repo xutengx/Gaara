@@ -131,8 +131,8 @@ class ModelDev {
 
     /**
      * 对象链式操作
-     * @param string $func
-     * @param array $pars
+     * @param string $method
+     * @param array $parameters
      * @return \Main\Core\Model
      */
     public function __call(string $method, array $parameters = array()) {

@@ -5,131 +5,238 @@ namespace Main\Core\Model;
 
 use Main\Core\Model\QueryBuiler;
 use Closure;
+
 /**
  * 链式操作
  */
-class QueryBuiler{
+class QueryBuiler {
 
+    use QueryBuiler\Support;
     use QueryBuiler\Where;
     use QueryBuiler\Select;
-    
+    use QueryBuiler\Data;
+    use QueryBuiler\From;
+    use QueryBuiler\Join;
+    use QueryBuiler\Group;
+    use QueryBuiler\Order;
+    use QueryBuiler\Limit;
+    use QueryBuiler\Having;
+
     // 绑定的表名
     private $table;
     // 主键
     private $primaryKey;
-
+    // 当前语句类别
+    private $sqlType;
+    private $select;
+    private $data;
+    private $from;
+    private $where;
+    private $join;
+    private $group;
+    private $having;
+    private $order;
+    private $limit;
 
     public function __construct(string $table, string $primaryKey) {
         $this->table = $table;
         $this->primaryKey = $primaryKey;
     }
-    
+
     /**
-     * 获取一个与自己主属性相同的实例, 不同于clone
+     * 查询条件
      * @return QueryBuiler
-     */
-    private function getSelf(): QueryBuiler {
-        return new QueryBuiler($this->table, $this->primaryKey);
-    }
-    
-    /**
-     * sql条件
-     * @param String|array 数组 $p
      */
     public function where(): QueryBuiler {
         $params = func_get_args();
-        var_dump(func_num_args());exit;
         switch (func_num_args()) {
             case 1:
                 switch (gettype($params[0])) {
                     case 'object':
-                        if($params[0] instanceof Closure){
-                            $this->whereClosure($params[0]);
-                        }else 
-                        break;
-                    case 2:
-                        break;
-                    case 3:
-                        break;
-
-                    default:
-                        break;
-            
+                        return $this->andWhere(...$params);
+                    default :
+                        return $this->whereRaw('1');
                 }
-                break;
             case 2:
-                
-                
-                
-                break;
+                return $this->whereValue($params[0], '=', $params[1]);
             case 3:
-                break;
-
-            default:
-                break;
+                return $this->whereValue(...$params);
         }
         return $this;
     }
     
     /**
-     * sql条件
-     * @param String|array 数组 $p
+     * 字段值在范围内
+     * @return QueryBuiler
      */
-    public function whereIn(){
-        
-    }
-    /**
-     * where语句中同时出现条件的“与”或者“或的时候”，要将多个OR用小括号括起来再和AND进行“与”，或者将多个AND用小括号括起来再与OR进行“或”。
-     * @param \Closure $callback
-     */
-    public function orWhere(\Closure $callback){
+    public function whereIn(): QueryBuiler {
+        $params = func_get_args();
+        switch (func_num_args()) {
+            case 2:
+                switch (gettype($params[1])) {
+                    case 'array':
+                        return $this->whereInArray(...$params);
+                    default :
+                        return $this->whereInString(...$params);
+                }
+        }
     }
     
     /**
-     * 查询字段筛选
-     * @param  String|array 一维数组 $p
+     * 字段值不在范围内
+     * @return QueryBuiler
      */
-    public function select($p){
+    public function whereNotIn(): QueryBuiler {
+        $params = func_get_args();
+        switch (func_num_args()) {
+            case 2:
+                switch (gettype($params[1])) {
+                    case 'array':
+                        return $this->whereNotInArray(...$params);
+                    default :
+                        return $this->whereNotInString(...$params);
+                }
+        }
     }
+
     /**
-     * 更新字段筛选
-     * @param  String|array 一维数组 $p
+     * 字段值在2值之间
+     * @return QueryBuiler
      */
-    public function data($p){
+    public function whereBetween(): QueryBuiler {
+        $params = func_get_args();
+        switch (func_num_args()) {
+            case 2:
+                return $this->whereBetweenArray(...$params);
+            case 3:
+                return $this->whereBetweenString(...$params);
+        }
     }
+    
+    /**
+     * 字段值不在2值之间
+     * @return QueryBuiler
+     */
+    public function whereNotBetween(): QueryBuiler {
+        $params = func_get_args();
+        switch (func_num_args()) {
+            case 2:
+                return $this->whereNotBetweenArray(...$params);
+            case 3:
+                return $this->whereNotBetweenString(...$params);
+        }
+    }
+
+    /**
+     * 查询字段
+     * @return QueryBuiler
+     */
+    public function select(): QueryBuiler {
+        $params = func_get_args();
+        switch (func_num_args()) {
+            case 1:
+                switch (gettype(reset($params))) {
+                    case 'array':
+                        return $this->selectArray(...$params);
+                    case 'string':
+                        return $this->selectString(...$params);
+                }
+        }
+    }
+
+    /**
+     * 更新字段
+     * @return QueryBuiler
+     */
+    public function data(): QueryBuiler {
+        $params = func_get_args();
+        switch (func_num_args()) {
+            case 1:
+                switch (gettype(reset($params))) {
+                    case 'array':
+                        return $this->dataArray(...$params);
+                    case 'string':
+                        return $this->dataString(...$params);
+                }
+        }
+    }
+
     /**
      * 设置数据表
-     * @param string $table 表名
-     * @return true
+     * @return QueryBuiler
      */
-    public function from($table=''){
+    public function from(): QueryBuiler {
+        $params = func_get_args();
+        switch (func_num_args()) {
+            case 1:
+                return $this->fromString(...$params);
+        }
     }
-     /**
+
+    /**
      * 连接
-    * @param  String $p
+     * @return QueryBuiler
      */
-    public function join($str=''){
+    public function join(): QueryBuiler {
+        $params = func_get_args();
+        switch (func_num_args()) {
+            case 5:
+                return $this->joinString(...$params);
+        }
     }
-     /**
-     * @param $group
+
+
+    public function having() {
+        
+    }
+
+    /**
+     * 分组
+     * @return QueryBuiler
      */
-    public function group($group){
+    public function group(): QueryBuiler {
+        $params = func_get_args();
+        switch (func_num_args()) {
+            case 1:
+                switch (gettype(reset($params))) {
+                    case 'array':
+                        return $this->groupArray(...$params);
+                    case 'string':
+                        return $this->groupString(...$params);
+                }
+        }
     }
-     /**
-     * @param $having
-     */
-    public function having($having){
-    }
-     /**
+
+    /**
      * 排序
-     * @param string $order
+     * @return QueryBuiler
      */
-    public function order($order){
+    public function order(): QueryBuiler {
+        $params = func_get_args();
+        switch (func_num_args()) {
+            case 1:
+                return $this->orderString(...$params);
+            case 2:
+                return $this->orderString(...$params);
+        }
     }
-     /**
-     * @param int $start
-     * @param int $max
+
+    /**
+     * 限制
+     * @return QueryBuiler
      */
-    public function limit($start=0, $max=1){
+    public function limit(): QueryBuiler {
+        $params = func_get_args();
+        switch (func_num_args()) {
+            case 1:
+                return $this->limitTake(...$params);
+            case 2:
+                return $this->limitOffsetTake(...$params);
+        }
+    }
+
+    public function getRow() {
+        $this->sqlType = 'select';
+        return $this->toSql();
     }
 }

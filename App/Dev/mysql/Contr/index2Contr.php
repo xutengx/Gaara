@@ -40,10 +40,32 @@ class index2Contr extends HttpController {
     private function test_1() {
         $obj = obj(Model\visitorInfoDev::class);
         
-        $obj->where(function(){
-            return 1;
-        });
+//        $obj->where(function(){
+//            return 1;
+//        });
+        $sql = $obj
+                ->selectString('name,age,sex')
+                ->selectArray(['a','b'])
+                ->whereBetweenString('age','23','33')
+                ->whereNotInArray('sex',[1])
+                ->whereValue('name','!=','coppe')
+                ->orWhere(function($query){
+                    $query->whereColumn('create_time','>','update_time');
+                })
+                ->joinString('ww','name','>=','qwee', 'left join')
+                ->groupString('ww.age')
+                ->grouparray([
+                    'ww.school',
+                    'ww.time'
+                ])
+                ->orderString('name')
+                ->orderString('name','desc')
+                        ->limitTake('444')
+                ->getRow();
+        var_dump($sql);
         exit;
+        
+        
         $sql = $obj->select(['id', 'name', 'phone'])
             ->where([ 'id' => [ '>', '101' ]])
             ->where(['id' => ['<', '104']])

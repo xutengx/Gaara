@@ -40,13 +40,13 @@ trait ObjectRelationalMappingTrait {
                 $bind[$tempkey] = $this->orm[$v['Field']];
             }
         }
-        if(is_null($key) && isset($this->orm[$this->key])){
-            $key = $this->orm[$this->key];
+        if(is_null($key) && isset($this->orm[$this->primaryKey])){
+            $key = $this->orm[$this->primaryKey];
         }elseif(is_null($key))
             throw new Exception ('model ORM save without key');
-        $this->data($param);
-        $this->where($this->key, $key);
-        return $this->update($bind);
+        return $this->data($param)
+                ->where($this->primaryKey, $key)
+                ->update($bind);
     }
 
     /**
@@ -63,7 +63,7 @@ trait ObjectRelationalMappingTrait {
                 $bind[$tempkey] = $this->orm[$v['Field']];
             }
         }
-        $this->data($param);
-        return $this->insert($bind);
+        return $this->data($param)
+                ->insert($bind);
     }
 }

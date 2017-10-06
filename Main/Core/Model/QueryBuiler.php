@@ -21,7 +21,7 @@ class QueryBuiler {
     use QueryBuiler\Order;
     use QueryBuiler\Limit;
     use QueryBuiler\Having;
-    
+
     use QueryBuiler\Execute;
     use QueryBuiler\Debug;
 
@@ -33,10 +33,10 @@ class QueryBuiler {
     private $sqlType;
     // 数据库链接
     private $db;
+    // 所属模型
+    private $model;
     // 最近次执行的sql
     private $lastSql;
-
-
     private $select;
     private $data;
     private $from;
@@ -47,10 +47,11 @@ class QueryBuiler {
     private $order;
     private $limit;
 
-    public function __construct(string $table, string $primaryKey, DbConnection $db) {
+    public function __construct(string $table, string $primaryKey, DbConnection $db, $model) {
         $this->table = $table;
         $this->primaryKey = $primaryKey;
         $this->db = $db;
+        $this->model = $model;
     }
 
     /**
@@ -70,13 +71,13 @@ class QueryBuiler {
                         return $this->whereRaw('1');
                 }
             case 2:
-                return $this->whereValue($params[0], '=', $params[1]);
+                return $this->whereValue((string)$params[0], '=', (string)$params[1]);
             case 3:
-                return $this->whereValue(...$params);
+                return $this->whereValue((string)$params[0], (string)$params[1], (string)$params[2]);
         }
         return $this;
     }
-    
+
     /**
      * 字段值在范围内
      * @return QueryBuiler
@@ -93,7 +94,7 @@ class QueryBuiler {
                 }
         }
     }
-    
+
     /**
      * 字段值不在范围内
      * @return QueryBuiler
@@ -106,7 +107,7 @@ class QueryBuiler {
                     case 'array':
                         return $this->whereNotInArray(...$params);
                     default :
-                        return $this->whereNotInString(...$params);
+                        return $this->whereNotInString((string)$params[0], (string)$params[1], (string)$params[2]);
                 }
         }
     }
@@ -121,10 +122,10 @@ class QueryBuiler {
             case 2:
                 return $this->whereBetweenArray(...$params);
             case 3:
-                return $this->whereBetweenString(...$params);
+                return $this->whereBetweenString((string)$params[0], (string)$params[1], (string)$params[2]);
         }
     }
-    
+
     /**
      * 字段值不在2值之间
      * @return QueryBuiler
@@ -135,7 +136,7 @@ class QueryBuiler {
             case 2:
                 return $this->whereNotBetweenArray(...$params);
             case 3:
-                return $this->whereNotBetweenString(...$params);
+                return $this->whereNotBetweenString((string)$params[0], (string)$params[1], (string)$params[2]);
         }
     }
 
@@ -151,7 +152,7 @@ class QueryBuiler {
                     case 'array':
                         return $this->selectArray(...$params);
                     case 'string':
-                        return $this->selectString(...$params);
+                        return $this->selectString((string)$params[0], (string)$params[1], (string)$params[2]);
                 }
         }
     }
@@ -174,7 +175,7 @@ class QueryBuiler {
     }
 
     /**
-     * 设置数据表
+     * from数据表
      * @return QueryBuiler
      */
     public function from(): QueryBuiler {
@@ -186,17 +187,26 @@ class QueryBuiler {
     }
 
     /**
+     * 设置数据表
+     * @return QueryBuiler
+     */
+    public function table(string $table): QueryBuiler {
+        $this->table = $table;
+        return $this;
+    }
+
+    /**
      * 连接
      * @return QueryBuiler
      */
     public function join(): QueryBuiler {
         $params = func_get_args();
         switch (func_num_args()) {
+            case 4:
             case 5:
                 return $this->joinString(...$params);
         }
     }
-
 
     public function having() {
         
@@ -246,5 +256,5 @@ class QueryBuiler {
                 return $this->limitOffsetTake(...$params);
         }
     }
-    
+
 }

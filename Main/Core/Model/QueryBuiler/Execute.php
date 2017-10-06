@@ -14,7 +14,7 @@ trait Execute {
      */
     public function getRow(array $pars = []): array {
         $this->sqlType = 'select';
-        $this->limitTake('1');
+        $this->limitTake(1);
         $sql = $this->toSql($pars);
         return $this->db->getRow($sql, $pars);
     }
@@ -80,7 +80,7 @@ trait Execute {
      */
     public function delete(array $pars = []): int {
         $this->sqlType = 'delete';
-        if (empty($this->data))
+        if (empty($this->where))
             throw new Exception('执行 DELETE 操作并没有相应的 where 约束, 请确保操作正确, 使用where(1)将强制执行.');
         $sql = $this->toSql($pars);
         return $this->db->update($sql, $pars);
@@ -100,7 +100,4 @@ trait Execute {
         return $this->db->update($sql, $pars);
     }
     
-    public function prepare(){
-        
-    }
 }

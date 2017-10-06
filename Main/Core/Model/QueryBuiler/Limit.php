@@ -9,21 +9,21 @@ trait Limit{
 
     /**
      * limit带偏移量
-     * @param string $offset
-     * @param string $take
+     * @param int $offset
+     * @param int $take
      * @return QueryBuiler
      */
-    public function limitOffsetTake(string $offset, string $take): QueryBuiler {
+    public function limitOffsetTake(int $offset, int $take): QueryBuiler {
         $sql = $offset.','.$take;
         return $this->limitPush($sql);
     }
 
     /**
      * limit不带偏移量
-     * @param string $take
+     * @param int $take
      * @return QueryBuiler
      */
-    public function limitTake(string $take): QueryBuiler {
+    public function limitTake(int $take): QueryBuiler {
         $sql = $take;
         return $this->limitPush($sql);
     }
@@ -31,10 +31,10 @@ trait Limit{
     /**
      * 将limit片段加入limit, 返回当前对象
      * 多次调用,将覆盖之前
-     * @param string $part
+     * @param int $part
      * @return QueryBuiler
      */
-    private function limitPush(string $part): QueryBuiler {
+    private function limitPush(int $part): QueryBuiler {
         $this->limit = $part;
         return $this;
     }

@@ -8,6 +8,15 @@ use Main\Core\Model\QueryBuiler;
 trait Join {
 
     /**
+     * 加入不做处理的join段
+     * @param string $sql
+     * @return QueryBuiler
+     */
+    public function joinRaw(string $sql): QueryBuiler {
+        return $this->joinPush($sql);
+    }
+    
+    /**
      * 表连接
      * @param string $table
      * @param string $fieldOne

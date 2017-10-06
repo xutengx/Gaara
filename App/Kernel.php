@@ -2,7 +2,6 @@
 
 declare(strict_types = 1);
 namespace App;
-defined('IN_SYS') || exit('ACC Denied');
 
 use Main\Core\Kernel as HttpKernel;
 use Main\Core\Middleware\ReturnResponse;
@@ -21,7 +20,7 @@ class Kernel extends HttpKernel {
         // post请求体大小检测
         ValidatePostSize::class,
         // php-console 显示执行性能
-        PerformanceMonitoring::class,
+//        PerformanceMonitoring::class,
     ];
     // 路由中间件
     protected $middlewareGroups = [

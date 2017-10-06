@@ -24,7 +24,7 @@ trait Group {
      */
     public function groupArray(array $arr): QueryBuiler {
         foreach ($arr as $field) {
-            $this->groupString($field);
+            $this->groupString((string)$field);
         }
         return $this;
     }

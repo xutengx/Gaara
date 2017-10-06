@@ -12,7 +12,7 @@ trait Support {
      * @return QueryBuiler
      */
     private function getSelf(): QueryBuiler {
-        return new QueryBuiler($this->table, $this->primaryKey, $this->db);
+        return new QueryBuiler($this->table, $this->primaryKey, $this->db, $this->model);
     }
 
     /**
@@ -30,7 +30,6 @@ trait Support {
      * @return string eg: sum(`order`.`amount`) as `sum_price`
      */
     private function fieldFormat(string $field): string {
-//        $field = 'sum(order.amount) as sum_price';
         if($has_as = stristr($field, ' as ')){
             $as = substr($has_as, 0, 4);
             $info = explode($as, $field);
@@ -70,9 +69,9 @@ trait Support {
      */
     private function valueFormat(string $value): string {
         if ((strpos($value, ':') === 0) || ($value === '?'))
-            return $value;
+            return (string)$value;
         else
-            return '"' . $value . '"';
+            return '"' . (string)$value . '"';
     }
 
     /**
@@ -125,13 +124,15 @@ trait Support {
     /**
      * 记录最近次的sql, 完成参数绑定的填充
      * 重载此方法可用作sql日志
+     * @return void
      */
-    private function rememberSql(string $sql, array $pars) {
+    private function rememberSql(string $sql, array $pars): void {
         $pars = is_array($pars) ? $pars : [];
         foreach ($pars as $k => $v) {
             $pars[$k] = '\'' . $v . '\'';
         }
         $this->lastSql = strtr($sql, $pars);
+        $this->model->setLastSql($this->lastSql);
     }
 
     /**

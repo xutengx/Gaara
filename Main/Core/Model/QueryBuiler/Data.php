@@ -24,7 +24,7 @@ trait Data {
      */
     public function dataArray(array $arr): QueryBuiler {
         foreach ($arr as $field => $value) {
-            $this->dataString($field, $value);
+            $this->dataString((string)$field, (string)$value);
         }
         return $this;
     }
@@ -35,10 +35,10 @@ trait Data {
      * @return QueryBuiler
      */
     private function dataPush(string $part): QueryBuiler {
-        if (empty($this->select)) {
-            $this->select = $part;
+        if (empty($this->data)) {
+            $this->data = $part;
         } else
-            $this->select .= ',' . $part;
+            $this->data .= ',' . $part;
         return $this;
     }
 }

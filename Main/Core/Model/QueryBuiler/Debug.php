@@ -7,22 +7,13 @@ use Main\Core\Exception;
 
 trait Debug {
     /**
-     * 返回完整sql, 已执行sql
-     * @param type $pars
-     * @return string
-     */
-//    public function getLastSql(): string {
-//        return $this->lastSql;
-//    }
-//    
-    /**
      * 查询一行
      * @param array $pars
      * @return string
      */
     public function getRowToSql(array $pars = []): string {
         $this->sqlType = 'select';
-        $this->limitTake('1');
+        $this->limitTake(1);
         $sql = $this->toSql($pars);
         return $this->lastSql;
     }

@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Dev\mysql\Model;
+namespace App\Dev\mysql\Model;;
 
-defined('IN_SYS') || exit('ACC Denied');
-
-class visitorInfoDev extends \Main\Core\ModelDev {
+class visitorInfoDev extends \Main\Core\Model {
     
     protected $table = 'visitor_info';
 

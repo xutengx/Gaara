@@ -13,16 +13,17 @@ use \App\Dev\mysql\Model;
 class index2Contr extends HttpController {
 
     private $fun_array = [
-        '简易多行查询, 参数为数组形式, 非参数绑定' => 'test_1',
-        '简易单行查询, 参数为数组形式, 参数绑定' => 'test_2',
-        '多条件分组查询, 参数为数组形式, 非参数绑定' => 'test_3',
-        '简易单行更新, 参数为数组形式, 参数绑定, 自动维护时间戳( model自动获取,默认开启 ),返回受影响的行数' => 'test_4',
-        '简易单行插入, 参数为数组形式, 参数绑定, 自动维护时间戳( model自动获取,默认开启 ),返回bool' => 'test_5',
+        '多行查询, 参数为数组形式, 非参数绑定' => 'test_1',
+        '单行查询, select参数为string形式, (?)参数绑定' => 'test_2',
+        '多条件分组查询, 参数为数组形式, 聚合表达式, 非参数绑定' => 'test_3',
+        '简易单行更新, 参数为数组形式, 参数绑定, 返回受影响的行数' => 'test_4',
+        '简易单行插入, 参数为数组形式, 参数绑定, 返回bool' => 'test_5',
         '静态调用model, where参数数量为2, 3, where的in条件, where闭包' => 'test_6',
-        '静态调用model, where的between条件, 参数绑定,' => 'test_7',
-        '静态调用model, where的and or嵌套条件, 参数绑定,' => 'test_8',
+        '静态调用model, where的between条件, having条件, 参数绑定,' => 'test_7',
+        '静态调用model, whereRaw(不处理)的and or嵌套条件, 参数绑定,' => 'test_8',
         '闭包事务,' => 'test_9',
-        '呼叫一个不存在的表,' => 'test_10',
+        'union,3种链接写法' => 'test_10',
+        'where exists,3种链接写法' => 'test_11',
     ];
 
     public function indexDo() {
@@ -42,12 +43,14 @@ class index2Contr extends HttpController {
         $sql = $obj->select(['id', 'name', 'phone'])
             ->where( 'id', '>', '101')
             ->where('id' ,'<', '104')
+            ->order('id','desc')
             ->getAllToSql();
         var_dump($sql);
 
         $res = $obj->select(['id', 'name', 'phone'])
             ->where( 'id', '>', '101')
             ->where('id' ,'<', '104')
+            ->order('id','desc')
             ->getAll();
         var_dump($res);
     }
@@ -55,12 +58,12 @@ class index2Contr extends HttpController {
     private function test_2() {
         $obj = obj(Model\visitorInfoDev::class);
       
-        $sql = $obj->select(['id', 'name', 'phone'])
-            ->where( 'scene', '&', ':scene_1' )
-            ->getRowToSql([':scene_1' => '1']);
+        $sql = $obj->select('id,name,phone')
+            ->where( 'scene', '&', '?' )
+            ->getRowToSql(['1']);
         var_dump($sql);
 
-        $res = $obj->select(['id', 'name', 'phone'])
+        $res = $obj->select('id,name,phone')
             ->where( 'scene', '&', '?' )
             ->getRow(['1']);
         var_dump($res);
@@ -134,6 +137,7 @@ class index2Contr extends HttpController {
         $res = Model\visitorInfoDev::select(['id', 'name', 'phone'])
             ->where( 'scene', '&', ':scene_1')
             ->whereBetween('id', ['100','103' ])
+            ->havingIn('id',['100','102'])
             ->getAll([':scene_1' => '1']);
         $sql = Model\visitorInfoDev::getLastSql();
         
@@ -162,17 +166,49 @@ class index2Contr extends HttpController {
         var_dump($res);
     }
     private function test_10(Model\visitorInfoDev $visitorInfo){
-//        $res = Model\Non::select(['id', 'name', 'phone'])->getAll();
-//        var_dump($res);
-//        var_dump($visitorInfo::$dbs);
-        var_export(statistic());
+        $first = $visitorInfo->select(['id', 'name', 'phone'])
+            ->whereBetween('id','100','103');
+        
+        $res = Model\visitorInfoDev::select(['id', 'name', 'phone'])
+            ->whereBetween('id','100','103')
+            ->union($first)
+            ->union(function($obj){
+                $obj->select(['id', 'name', 'phone'])
+                ->whereBetween('id','100','103');
+            })
+            ->unionAll($first->getAllToSql())
+            ->getAll();
+        $sql = Model\visitorInfoDev::getLastSql();
+        
+        var_dump($sql);
+        var_dump($res);
+    }
+    private function test_11(Model\visitorInfoDev $visitorInfo){
+        $first = $visitorInfo->select(['id', 'name', 'phone'])
+            ->whereBetween('id','100','103');
+        
+        $res = Model\visitorInfoDev::select(['id', 'name', 'phone'])
+            ->whereBetween('id','100','103')
+            ->whereExists($first)
+            ->whereExists(function($obj){
+                $obj->select(['id', 'name', 'phone'])
+                ->whereBetween('id','100','103');
+            })
+            ->whereExists($first->getAllToSql())
+            ->getAll();
+        $sql = Model\visitorInfoDev::getLastSql();
+        
+        var_dump($sql);
+        var_dump($res);
+        
         exit;
     }
     
     
     
     public function __destruct() {
-        \statistic();
+        
+        var_export(statistic());
     }
     
     public function test(Model\visitorInfoDev $visitorInfo){

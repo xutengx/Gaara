@@ -17,10 +17,6 @@ class Model {
     protected static $dbs;
     // 当前model的数据库连接类
     protected $db;
-    // 表名,不包含表前缀
-//    protected $tablename = '';
-    // 表前缀
-//    protected $tablepre = '';
     // 主键的字段
     protected $primaryKey = 'id';
     // 表名
@@ -31,12 +27,8 @@ class Model {
     protected $options = array();
     // 链式操作 sql
     protected $lastSql = '';
-    // 链式操作 类型 select update delete insert
-//    protected $options_type = null;
     // PDOStatement
     protected $PDOStatement = null;
-    // 是否已设定当前sql表
-//    protected $from = false;
     // 主动指定配置文件
     protected $connection = null;
 
@@ -138,182 +130,7 @@ class Model {
      */
     final public static function __callStatic(string $method, array $parameters = []) {
         return obj(static::class)->newQuery()->$method(...$parameters);
-//        $thisObj = \obj(static::class);
-//        if (method_exists($thisObj->collect, $func)) {
-//            call_user_func_array(array($thisObj->collect, $func), $pars);
-//            return $thisObj;
-//        }
     }
-
-//---------------------------------------------------------- 链式操作 -----------------------------------------------------//
-    /**
-     * 准备sql, 统一执行方法
-     * @param bool|true $onlyOnce 是否执行一次后销毁(一般情况下如此)
-     *
-     * @return $this
-     */
-//    public function prepare($onlyOnce = false, $pars = array()) {
-//        // 系统填充用户调用时未填充的先关信息
-//        $this->get_ready();
-//
-//        // 调用解释器
-//        $sql = $this->analysis->todo_analysis($this->options, $this->options_type);
-//
-//        // 重置当前model
-//        $this->reset();
-//
-//        // 记录sql
-//        $this->rememberSql($sql, $pars);
-//
-//        // return
-//        if ($onlyOnce)
-//            return $sql;
-//        else {
-//            $this->PDOStatement = $this->db->prepare($sql, $this->options_type);
-//            return $this;
-//        }
-//    }
-
-    /**
-     * 记录最近次的sql, 完成参数绑定的填充
-     * 重载此方法可用作sql日志
-     */
-//    protected function rememberSql($sql, $pars) {
-//        $pars = is_array($pars) ? $pars : [];
-//        foreach ($pars as $k => $v) {
-//            $pars[$k] = '\'' . $v . '\'';
-//        }
-//        $this->lastSql = strtr($sql, $pars);
-//    }
-
-    /**
-     * 填充当前操作表, 填充查询字段, 填充更新时间, , 填充新增时间
-     */
-//    protected function get_ready() {
-//        // 填充当前操作表
-//        if (!$this->from)
-//            $this->collect->from($this->table);
-//        // 填充 select
-//        if (!isset($this->options['select']) && $this->options_type == 'SELECT') {
-//            $str = '';
-//            foreach ($this->field as $v) {
-//                $str .= '`' . $this->table . '`.`' . $v['Field'] . '`,';
-//            }
-//            $this->options['select']['__string'][] = trim($str, ',') . ' ';
-//        }
-//    }
-
-    /**
-     * 重置链式操作
-     */
-//    protected function reset() {
-//        // 链式操作集合
-//        $this->options = array();
-//        // 链式操作 类型 select update delete insert
-//        $this->options_type = null;
-//    }
-
-    /**
-     * 参数绑定, 并执行
-     * @param array $pars
-     */
-//    public function execute(array $pars = array()) {
-//        $this->PDOStatement->execute($pars);
-//        return $this->PDOStatement->fetchall(\PDO::FETCH_ASSOC);
-//    }
-
-    /**
-     * 查询一行
-     * @param array $pars 参数绑定数组
-     * @return array    一维数组
-     */
-//    public function getRow(array $pars = array()): array {
-//        $this->options_type = 'SELECT';
-//        $this->collect->limit(1);
-//        $sql = $this->prepare(true, $pars);
-//        return $this->db->getRow($sql, $pars);
-//    }
-
-    /**
-     * 查询多行
-     * @param array $pars 参数绑定数组
-     * @return array    二维数组
-     */
-//    public function getAll(array $pars = array()): array  {
-//        $this->options_type = 'SELECT';
-//        $sql = $this->prepare(true, $pars);
-//        return $this->db->getAll($sql, $pars);
-//    }
-
-    /**
-     * 更新数据, 返回受影响的行数
-     * @param array $pars 参数绑定数组
-     * @return int 受影响的行数
-     * @throws Exception
-     */
-//    public function update(array $pars = array()): int {
-//        $this->options_type = 'UPDATE';
-//        if (!isset($this->options['data']))
-//            throw new Exception('要执行UPDATE操作, 需要使用data方法设置更新的值');
-//        $sql = $this->prepare(true, $pars);
-//        return $this->db->update($sql, $pars);
-//    }
-
-    /**
-     * 插入数据, 返回插入的主键
-     * @param array $pars 参数绑定数组
-     * @return int 插入的主键
-     * @throws Exception
-     */
-//    public function insertGetId(array $pars = array()): int {
-//        $this->options_type = 'INSERT';
-//        if (!isset($this->options['data']))
-//            throw new Exception('要执行INSERT操作, 需要使用data方法设置新增的值');
-//        $sql = $this->prepare(true, $pars);
-//        return $this->db->insertGetId($sql, $pars);
-//    }
-
-    /**
-     * 插入数据
-     * @param array $pars 参数绑定数组
-     * @return bool
-     * @throws Exception
-     */
-//    public function insert(array $pars = array()): bool {
-//        $this->options_type = 'INSERT';
-//        if (!isset($this->options['data']))
-//            throw new Exception('要执行INSERT操作, 需要使用data方法设置新增的值');
-//        $sql = $this->prepare(true, $pars);
-//        return $this->db->insert($sql, $pars);
-//    }
-
-    /**
-     * 删除数据, 返回受影响的行数
-     * @param array $pars 参数绑定数组
-     * @return int 受影响的行数
-     * @throws Exception
-     */
-//    public function delete(array $pars = array()): int {
-//        $this->options_type = 'DELETE';
-//        if (!isset($this->options['where']))
-//            throw new Exception('执行 DELETE 操作并没有相应的 where 约束, 请确保操作正确, 使用where(1)将强制执行.');
-//        $sql = $this->prepare(true, $pars);
-//        return $this->db->update($sql, $pars);
-//    }
-
-    /**
-     * 插入or更新数据, 返回受影响的行数
-     * @param array $pars 参数绑定数组
-     * @return int 受影响的行数
-     * @throws Exception
-     */
-//    public function replace(array $pars = array()): int {
-//        $this->options_type = 'REPLACE';
-//        if (!isset($this->options['data']))
-//            throw new Exception('要执行REPLACE操作, 需要使用data方法设置新增or修改的值');
-//        $sql = $this->prepare(true, $pars);
-//        return $this->db->update($sql, $pars);
-//    }
 
     public function __get($attr) {
         if ($attr === 'db')

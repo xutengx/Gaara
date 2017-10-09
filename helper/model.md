@@ -35,6 +35,7 @@
         * [limit](#limit)
         * [table](#table)
         * [data](#data)
+        * [union](#union)
     * [debug](#debug)
 * [缓存](/helper/cache.md)
 * [视图](/helper/view.md)
@@ -271,9 +272,31 @@ $row = Model\visitorInfoDev::whereNotNull('name')->getAll();
 $row = Model\visitorInfoDev::whereNull('name')->getAll();
 
 ```
+
+> whereExists 可接收QueryBuiler,Closure,String,3种参数
+
+```php
+<?php
+$first = $visitorInfo->select(['id', 'name', 'phone'])->whereBetween('id','100','103');
+
+$res = Model\visitorInfoDev::select(['id', 'name', 'phone'])
+    ->whereBetween('id','100','103')
+    // 接收QueryBuiler
+    ->whereExists($first)
+    // 接收String
+    ->whereExists($first->getAllToSql())
+    // 接收Closure
+    ->whereExists(function($obj){
+        $obj->select(['id', 'name', 'phone'])
+        ->whereBetween('id','100','103');
+    })
+    ->getAll();
+
+```
+
 ### having
 
-> 同 where, 但没有快捷方法
+> 同 where
 
 ### order
 
@@ -320,6 +343,28 @@ $row = $yourModel::table('表名')->getAll();
 <?php
 $row = $yourModel::data('name','bob')->data([
 'age'=> '12'])->update();
+
+```
+### union
+
+> union 可接收QueryBuiler,Closure,String,3种参数. 也可使用 unionAll 方法，它和 union 方法有着相同的用法
+
+```php
+<?php
+$first = $visitorInfo->select(['id', 'name', 'phone'])->whereBetween('id','100','103');
+        
+$res = Model\visitorInfoDev::select(['id', 'name', 'phone'])
+    ->whereBetween('id','100','103')
+    // 接收QueryBuiler
+    ->union($first)
+    // 接收String
+    ->unionAll($first->getAllToSql())
+    // 接收Closure
+    ->union(function($obj){
+        $obj->select(['id', 'name', 'phone'])
+        ->whereBetween('id','100','103');
+    })
+    ->getAll();
 
 ```
 ## debug

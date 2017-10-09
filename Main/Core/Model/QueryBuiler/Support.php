@@ -95,13 +95,13 @@ trait Support {
                 $sql = 'select ' . $this->dealSelect() . ' from ' . $this->dealFrom();
                 break;
             case 'update':
-                $sql = 'update ' . $this->dealFrom() . ' set ' . $this->dealData();
+                $sql = 'update ' . $this->dealFrom() . ' set' . $this->dealData();
                 break;
             case 'insert':
-                $sql = 'insert into ' . $this->dealFrom() . ' set ' . $this->dealData();
+                $sql = 'insert into ' . $this->dealFrom() . ' set' . $this->dealData();
                 break;
             case 'replace':
-                $sql = 'replace into ' . $this->dealFrom() . ' set ' . $this->dealData();
+                $sql = 'replace into ' . $this->dealFrom() . ' set' . $this->dealData();
                 break;
             case 'delete':
                 $sql = 'delete from ' . $this->dealFrom();
@@ -116,6 +116,13 @@ trait Support {
                 $this->dealHaving() .
                 $this->dealOrder() .
                 $this->dealLimit();
+        if(!empty($this->union)){
+            $sql = $this->bracketFormat($sql);
+            foreach($this->union as $type => $clauseArray){
+                foreach($clauseArray as $clause)
+                    $sql .= $type.$this->bracketFormat($clause);
+            }
+        }
         if ($remember)
             $this->rememberSql($sql, $pars);
         return $sql;
@@ -124,6 +131,8 @@ trait Support {
     /**
      * 记录最近次的sql, 完成参数绑定的填充
      * 重载此方法可用作sql日志
+     * @param string $sql 拼接完成的sql
+     * @param array $pars 参数绑定数组
      * @return void
      */
     private function rememberSql(string $sql, array $pars): void {

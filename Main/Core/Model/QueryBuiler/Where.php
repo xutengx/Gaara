@@ -8,8 +8,46 @@ use Main\Core\Model\QueryBuiler;
 
 trait Where {
 
-    public function whereExists() {
+    /**
+     * exists一句完整的sql
+     * @param string $sql
+     * @return QueryBuiler
+     */
+    public function whereExistsRaw(string $sql): QueryBuiler {
+        $sql = 'exists '.$this->bracketFormat($sql);
+        return $this->wherePush($sql);
+    }
+    
+    /**
+     * exists一个QueryBuiler对象
+     * @param QueryBuiler $queryBuiler
+     * @return QueryBuiler
+     */
+    public function whereExistsQueryBuiler(QueryBuiler $queryBuiler): QueryBuiler {
+        $sql = $queryBuiler->getAllToSql();
+        return $this->whereExistsRaw($sql);
         
+    }
+    
+    /**
+     * exists一个闭包
+     * @param Closure $callback
+     * @return QueryBuiler
+     */
+    public function whereExistsClosure(Closure $callback): QueryBuiler {
+        $res = $callback($queryBuiler = $this->getSelf());
+        // 调用方未调用return
+        if (is_null($res)) {
+            $sql = $queryBuiler->getAllToSql();
+        }
+        // 调用方未调用toSql
+        elseif ($res instanceof QueryBuiler) {
+            $sql = $res->getAllToSql();
+        }
+        // 调用正常
+        else
+            $sql = $res;
+        return $this->whereExistsRaw($sql); 
     }
 
     /**
@@ -203,7 +241,7 @@ trait Where {
         elseif ($res instanceof QueryBuiler) {
             $str = $res->toSql();
         }
-        // 正常
+        // 调用正常
         else
             $str = $res;
         $sql = $this->bracketFormat($str);

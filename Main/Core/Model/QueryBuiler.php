@@ -21,6 +21,7 @@ class QueryBuiler {
     use QueryBuiler\Order;
     use QueryBuiler\Limit;
     use QueryBuiler\Having;
+    use QueryBuiler\Union;
 
     use QueryBuiler\Execute;
     use QueryBuiler\Debug;
@@ -46,6 +47,7 @@ class QueryBuiler {
     private $having;
     private $order;
     private $limit;
+    private $union = [];
 
     public function __construct(string $table, string $primaryKey, DbConnection $db, $model) {
         $this->table = $table;
@@ -139,7 +141,139 @@ class QueryBuiler {
                 return $this->whereNotBetweenString((string)$params[0], (string)$params[1], (string)$params[2]);
         }
     }
+    
+    /**
+     * where exists
+     * @return QueryBuiler
+     */
+    public function whereExists(): QueryBuiler {
+        $params = func_get_args();
+        switch (func_num_args()) {
+            case 1:
+                switch (gettype($obj = reset($params))) {
+                    case 'object':
+                        if($obj instanceof \Closure){
+                            return $this->whereExistsClosure($obj);
+                        }elseif($obj instanceof QueryBuiler){
+                            return $this->whereExistsQueryBuiler($obj);
+                        }
+                    case 'string':
+                        return $this->whereExistsRaw($obj);
+                }
+        }
+    }
 
+    /**
+     * having条件
+     * @return QueryBuiler
+     */
+    public function having(): QueryBuiler {
+        $params = func_get_args();
+        switch (func_num_args()) {
+            case 1:
+                switch (gettype($params[0])) {
+                    case 'object':
+                        return $this->andHaving(...$params);
+                    case 'array':
+                        return $this->havingArray(...$params);
+                    default :
+                        return $this->havingRaw('1');
+                }
+            case 2:
+                return $this->havingValue((string)$params[0], '=', (string)$params[1]);
+            case 3:
+                return $this->havingValue((string)$params[0], (string)$params[1], (string)$params[2]);
+        }
+        return $this;
+    }
+
+    /**
+     * having字段值在范围内
+     * @return QueryBuiler
+     */
+    public function havingIn(): QueryBuiler {
+        $params = func_get_args();
+        switch (func_num_args()) {
+            case 2:
+                switch (gettype($params[1])) {
+                    case 'array':
+                        return $this->havingInArray(...$params);
+                    default :
+                        return $this->havingInString(...$params);
+                }
+        }
+    }
+
+    /**
+     * having字段值不在范围内
+     * @return QueryBuiler
+     */
+    public function havingNotIn(): QueryBuiler {
+        $params = func_get_args();
+        switch (func_num_args()) {
+            case 2:
+                switch (gettype($params[1])) {
+                    case 'array':
+                        return $this->havingNotInArray(...$params);
+                    default :
+                        return $this->havingNotInString((string)$params[0], (string)$params[1], (string)$params[2]);
+                }
+        }
+    }
+
+    /**
+     * having字段值在2值之间
+     * @return QueryBuiler
+     */
+    public function havingBetween(): QueryBuiler {
+        $params = func_get_args();
+        switch (func_num_args()) {
+            case 2:
+                return $this->havingBetweenArray(...$params);
+            case 3:
+                return $this->havingBetweenString((string)$params[0], (string)$params[1], (string)$params[2]);
+        }
+    }
+
+    /**
+     * having字段值不在2值之间
+     * @return QueryBuiler
+     */
+    public function havingNotBetween(): QueryBuiler {
+        $params = func_get_args();
+        switch (func_num_args()) {
+            case 2:
+                return $this->havingNotBetweenArray(...$params);
+            case 3:
+                return $this->havingNotBetweenString((string)$params[0], (string)$params[1], (string)$params[2]);
+        }
+    }
+    
+    /**
+     * 左链接
+     * @return QueryBuiler
+     */
+    public function leftJoin(string $table, string $fieldOne, string $symbol, string $fieldTwo): QueryBuiler {
+        return $this->joinString($table, $fieldOne, $symbol, $fieldTwo, 'left join');
+    }
+    
+    /**
+     * 右链接
+     * @return QueryBuiler
+     */
+    public function rightJoin(string $table, string $fieldOne, string $symbol, string $fieldTwo): QueryBuiler {
+        return $this->joinString($table, $fieldOne, $symbol, $fieldTwo, 'right join');
+    }
+    
+    /**
+     * 内链接
+     * @return QueryBuiler
+     */
+    public function join(): QueryBuiler {
+        $params = func_get_args();
+        return $this->joinString(...$params);
+    }    
+    
     /**
      * 查询字段
      * @return QueryBuiler
@@ -152,7 +286,7 @@ class QueryBuiler {
                     case 'array':
                         return $this->selectArray(...$params);
                     case 'string':
-                        return $this->selectString((string)$params[0], (string)$params[1], (string)$params[2]);
+                        return $this->selectString(...$params);
                 }
         }
     }
@@ -193,23 +327,6 @@ class QueryBuiler {
     public function table(string $table): QueryBuiler {
         $this->table = $table;
         return $this;
-    }
-
-    /**
-     * 连接
-     * @return QueryBuiler
-     */
-    public function join(): QueryBuiler {
-        $params = func_get_args();
-        switch (func_num_args()) {
-            case 4:
-            case 5:
-                return $this->joinString(...$params);
-        }
-    }
-
-    public function having() {
-        
     }
 
     /**
@@ -257,4 +374,45 @@ class QueryBuiler {
         }
     }
 
+    /**
+     * union 联合查询
+     * @return QueryBuiler
+     */
+    public function union(): QueryBuiler {
+        $params = func_get_args();
+        switch (func_num_args()) {
+            case 1:
+                switch (gettype($obj = reset($params))) {
+                    case 'object':
+                        if($obj instanceof \Closure){
+                            return $this->unionClosure($obj);
+                        }elseif($obj instanceof QueryBuiler){
+                            return $this->unionQueryBuiler($obj);
+                        }
+                    case 'string':
+                        return $this->unionRaw(...$params);
+                }
+        }
+    }
+
+    /**
+     * union all 联合查询
+     * @return QueryBuiler
+     */
+    public function unionAll(): QueryBuiler {
+        $params = func_get_args();
+        switch (func_num_args()) {
+            case 1:
+                switch (gettype($obj = reset($params))) {
+                    case 'object':
+                        if($obj instanceof \Closure){
+                            return $this->unionClosure($obj, 'union all');
+                        }elseif($obj instanceof QueryBuiler){
+                            return $this->unionQueryBuiler($obj, 'union all');
+                        }
+                    case 'string':
+                        return $this->unionRaw($obj, 'union all');
+                }
+        }
+    }
 }

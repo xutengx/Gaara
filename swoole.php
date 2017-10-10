@@ -1,7 +1,6 @@
 #!/usr/bin/env php
 <?php
-class Server
-{
+class Server{
     private $serv;
 /**
 server {

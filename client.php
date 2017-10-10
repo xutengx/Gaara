@@ -1,7 +1,6 @@
 #!/usr/bin/env php
 <?php
-class Client
-{
+class Client{
     private $client;
 
     public function __construct() {

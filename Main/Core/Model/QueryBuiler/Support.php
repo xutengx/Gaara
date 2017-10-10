@@ -82,10 +82,11 @@ trait Support {
     private function bracketFormat(string $value): string {
         return '(' . $value . ')';
     }
-
+    
     /**
      * 生成sql
-     * @return string
+     * @param array $pars 参数绑定, 在此处, 仅作记录sql作用
+     * @return string sql
      */
     public function toSql(array $pars = []): string {
         $sql = '';

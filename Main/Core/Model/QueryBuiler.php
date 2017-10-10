@@ -22,6 +22,7 @@ class QueryBuiler {
     use QueryBuiler\Limit;
     use QueryBuiler\Having;
     use QueryBuiler\Union;
+    use QueryBuiler\Prepare;
 
     use QueryBuiler\Execute;
     use QueryBuiler\Debug;
@@ -299,12 +300,9 @@ class QueryBuiler {
         $params = func_get_args();
         switch (func_num_args()) {
             case 1:
-                switch (gettype(reset($params))) {
-                    case 'array':
-                        return $this->dataArray(...$params);
-                    case 'string':
-                        return $this->dataString(...$params);
-                }
+                return $this->dataArray(...$params);
+            case 2:
+                return $this->dataString(...$params);
         }
     }
 

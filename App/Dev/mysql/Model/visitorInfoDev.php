@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Dev\mysql\Model;;
+namespace App\Dev\mysql\Model;
 
 class visitorInfoDev extends \Main\Core\Model {
     

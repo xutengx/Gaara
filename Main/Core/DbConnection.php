@@ -22,8 +22,8 @@ class DbConnection {
     static $dbWrite = array();
     // 数据库 写 权重
     static $dbWriteWeight = array();
-    // 当前操作类型 SELECT UPDATE DELETE INSERT
-    private $type = 'SELECT';
+    // 当前操作类型 select update delate insert
+    private $type = 'select';
     // 是否事务过程中 不进行数据库更换
     private $transaction = false;
     // ---------------------------- 单进程 ----------------------------- //
@@ -116,7 +116,7 @@ class DbConnection {
         // http请求都属于此
         if ($this->single) {
             // 查询操作且不属于事务,使用读连接
-            if ($this->type === 'SELECT' && !$this->transaction) {
+            if ($this->type === 'select' && !$this->transaction) {
                 if (is_object(self::$dbReadSingle) || (self::$dbReadSingle = $this->connect()))
                     return self::$dbReadSingle;
             }
@@ -133,7 +133,7 @@ class DbConnection {
      */
     private function connect(): \PDO {
         // 查询操作且不属于事务,使用读连接
-        if ($this->type === 'SELECT' && !$this->transaction && self::$Master_slave) {
+        if ($this->type === 'select' && !$this->transaction && self::$Master_slave) {
             $tmp = array_keys(self::$dbReadWeight);
             $weight = rand(1, end($tmp));
             foreach (self::$dbReadWeight as $k => $v) {
@@ -196,11 +196,11 @@ class DbConnection {
             new Pdo($pdo, $this);       // 尝试解决
             goto loop;
         }
-        if ($this->type === 'INSERT')
+        if ($this->type === 'insert')
             return $PDO;
         return $res;
     }
-
+    
     /**
      * 查询一行
      * @param type $sql
@@ -208,7 +208,7 @@ class DbConnection {
      * @return array 一维数组
      */
     public function getRow(string $sql = '', array $pars = array()): array {
-        $this->type = 'SELECT';
+        $this->type = 'select';
         $re = $this->query_prepare_execute($sql, $pars)->fetch(\PDO::FETCH_ASSOC);
         return $re ? $re : [];
     }
@@ -220,7 +220,7 @@ class DbConnection {
      * @return array 二维数组
      */
     public function getAll($sql = '', array $pars = array()): array {
-        $this->type = 'SELECT';
+        $this->type = 'select';
         return $this->query_prepare_execute($sql, $pars)->fetchall(\PDO::FETCH_ASSOC);
     }
 
@@ -231,15 +231,15 @@ class DbConnection {
      * @return int 受影响的行数
      */
     public function update(string $sql = '', array $pars = array()): int {
-        $this->type = 'UPDATE';
+        $this->type = 'update';
         $res = $this->query_prepare_execute($sql, $pars);
         if ($res)
             return $res->rowCount();
     }
 
-    public function execute(string $sql = '', array $pars = array()) {
-        return $this->update($sql, $pars);
-    }
+//    public function execute(string $sql = '', array $pars = array()) {
+//        return $this->update($sql, $pars);
+//    }
 
     /**
      * 插入数据, 返回插入的主键
@@ -248,7 +248,7 @@ class DbConnection {
      * @return int 插入的主键
      */
     public function insertGetId(string $sql = '', array $pars = array()): int {
-        $this->type = 'INSERT';
+        $this->type = 'insert';
         $res = $this->query_prepare_execute($sql, $pars);
         if ($res)
             return $res->lastInsertId();
@@ -261,7 +261,7 @@ class DbConnection {
      * @return bool
      */
     public function insert(string $sql = '', array $pars = array()): bool {
-        $this->type = 'INSERT';
+        $this->type = 'insert';
         $res = $this->query_prepare_execute($sql, $pars);
         return $res ? true : false;
     }
@@ -273,7 +273,7 @@ class DbConnection {
      * @return int
      */
     public function count(string $sql = '', array $pars = array()): int {
-        $this->type = 'SELECT';
+        $this->type = 'select';
         $res = $this->query_prepare_execute($sql, $pars);
         return $res->fetchColumn();
     }
@@ -285,9 +285,9 @@ class DbConnection {
      * @return type
      * @throws Exception
      */
-    public function prepare(string $sql = '', string $type = 'UPDATE'): \PDOStatement {
-        if (!in_array($type, ['SELECT', 'UPDATE', ' DELETE', 'INSERT']))
-            throw new Exception('$type mast in_array(SELECT UPDATE DELETE INSERT)');
+    public function prepare(string $sql = '', string $type = 'update'): \PDOStatement {
+        if (!in_array($type, ['select', 'update', 'delete', 'insert', 'replace']))
+            throw new Exception('$type mast in_array(select update delete insert replace). but '.$type.' given');
         $this->type = $type;
         return $this->PDO()->prepare($sql);
     }
@@ -338,5 +338,10 @@ class DbConnection {
      */
     public function close() {
         $this->pdo = NULL;
+    }
+    
+    public function __call(string $method, array $parameters = []) {
+        $this->type = 'update';
+        return $this->PDO()->$method(...$parameters);
     }
 }

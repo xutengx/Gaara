@@ -131,6 +131,10 @@ class Model {
     final public static function __callStatic(string $method, array $parameters = []) {
         return obj(static::class)->newQuery()->$method(...$parameters);
     }
+    
+    public function query(string $sql){
+        return $this->db->prepare($sql, 'UPDATE');
+    }
 
     public function __get($attr) {
         if ($attr === 'db')

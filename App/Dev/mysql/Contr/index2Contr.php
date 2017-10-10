@@ -24,6 +24,9 @@ class index2Contr extends HttpController {
         '闭包事务,' => 'test_9',
         'union,3种链接写法' => 'test_10',
         'where exists,3种链接写法' => 'test_11',
+        'model中的pdo使用(原始sql)' => 'test_12',
+        'model中的pdo使用 使用pdo的参数绑定, 以不同的参数重复执行同一语句' => 'test_13',
+        '链式操作 参数绑定, 以不同的参数重复执行同一语句' => 'test_14',
     ];
 
     public function indexDo() {
@@ -200,6 +203,62 @@ class index2Contr extends HttpController {
         
         var_dump($sql);
         var_dump($res);
+    }
+    
+    private function test_12(Model\visitorInfoDev $visitorInfo){
+        $sql = 'select * from visitor_info limit 1';
+        $pdo = $visitorInfo->db->query($sql);
+        $res = ($pdo->fetchall(\PDO::FETCH_ASSOC));
+        
+        var_dump($sql);
+        var_dump($res);
+    }
+    
+    private function test_13(Model\visitorInfoDev $visitorInfo){
+        $sql = 'select * from visitor_info limit :number';
+        $PDOStatement = $visitorInfo->db->prepare($sql);
+        
+        $PDOStatement->execute([':number' => 1]);
+        $res = ($PDOStatement->fetchall(\PDO::FETCH_ASSOC));
+        
+        $PDOStatement->execute([':number' => 2]);
+        $res2 = ($PDOStatement->fetchall(\PDO::FETCH_ASSOC));
+        
+        $PDOStatement->execute([':number' => 3]);
+        $res3 = ($PDOStatement->fetchall(\PDO::FETCH_ASSOC));
+        
+        var_dump($sql);
+        var_dump($res);
+        var_dump($res2);
+        var_dump($res3);
+
+    }
+    
+    private function test_14(Model\visitorInfoDev $visitorInfo){
+        $p = $visitorInfo->where('id',':id')->selectPrepare();
+        
+        var_dump($p->getRow([':id' => '12']));
+        var_dump($p->getRow([':id' => '11']));
+        var_dump($p->getRow([':id' => '102']));
+        
+        $p2 = $visitorInfo->where('id',':id')->data('name','prepare')->updatePrepare();
+        
+        var_dump($p2->update([':id' => '12']));
+        var_dump($p2->update([':id' => '11']));
+        var_dump($p2->update([':id' => '102']));
+        
+        $p3 = $visitorInfo->data('name',':name')->insertPrepare();
+        
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        
+        $p4 = $visitorInfo->where('name',':name')->limit(1)->deletePrepare();
+        
+        var_dump($p4->delete([':name' => 'prepare']));
+        var_dump($p4->delete([':name' => 'prepare']));
+        var_dump($p4->delete([':name' => 'prepare']));
+        
         
         exit;
     }

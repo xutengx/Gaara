@@ -37,6 +37,8 @@
         * [data](#data)
         * [union](#union)
     * [debug](#debug)
+    * [预处理语句复用](#预处理语句复用)
+    * [原生sql](#原生sql)
 * [缓存](/helper/cache.md)
 * [视图](/helper/view.md)
 * [获取对象](/helper/getobj.md)
@@ -398,4 +400,26 @@ sql = Model\visitorInfoDev::select(['id', 'name', 'phone'])
                 });
     })
     ->getAllToSql([':scene_1' => '1']);
+```
+## 预处理语句复用
+
+> 链式操作对象`QueryBuiler`中包含`selectPrepare`,`detelePrepare`,`updatePrepare`,`insertPrepare`,`replacePrepare`五个方法, 他们均返回`QueryPrepare`对象;
+
+> `QueryPrepare`中包含`getRow`,`getAll`,`delete`,`update`,`insert`,`replace`六个方法,可每次接收不同绑定参数重复调用
+
+```php
+$p = $visitorInfo->where('id',':id')->selectPrepare();
+var_dump($p->getRow([':id' => '12']));
+var_dump($p->getRow([':id' => '11']));
+var_dump($p->getRow([':id' => '102']));
+```
+
+## 原生sql
+
+> Model的db属性对象可理解为\PDO对象,直接使用, 值得注意的是, 原生sql总是使用write链接;
+
+```php
+$sql = 'select * from visitor_info limit 1';
+$pdo = $visitorInfo->db->query($sql);
+$res = ($pdo->fetchall(\PDO::FETCH_ASSOC));
 ```

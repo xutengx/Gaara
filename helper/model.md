@@ -26,6 +26,8 @@
         * [插入](#插入)
         * [更新](#更新)
         * [删除](#删除)
+        * [聚合函数](#聚合函数)
+        * [自增或自减](#自增或自减)
         * [select](#select)
         * [where](#where)
         * [having](#having)
@@ -37,6 +39,7 @@
         * [data](#data)
         * [union](#union)
     * [debug](#debug)
+    * [子查询](#子查询)
     * [预处理语句复用](#预处理语句复用)
     * [原生sql](#原生sql)
 * [缓存](/helper/cache.md)
@@ -173,6 +176,38 @@ $row = $yourModel::data(['name','bob'])->where('id',12)->update();
 <?php
 // 返回 int 受影响的行数
 $row = $yourModel::->where('id',12)->delete();
+
+```
+
+### 聚合函数
+
+> 可以在创建查询后调用 count、 max、 min、 avg 和 sum 其中的任意一个方法, 他们均返回 int
+
+```php
+
+<?php
+// name=prepare 的行数
+$visitorInfo->where('name',':name')->count('*', [':name'=>'prepare']);
+// 最大id
+$visitorInfo->max('id');
+// 最小id
+$visitorInfo->min('id');
+// 平均价格
+$visitorInfo->avg('price');
+// 总价格
+$visitorInfo->sum('price');
+
+```
+
+### 自增或自减
+
+```php
+
+<?php
+// num字段自加4
+$visitorInfo->dataIncrement('num', 4)->update();
+// num字段自减1
+$visitorInfo->dataDecrement('num')->update();
 
 ```
 
@@ -401,6 +436,21 @@ sql = Model\visitorInfoDev::select(['id', 'name', 'phone'])
     })
     ->getAllToSql([':scene_1' => '1']);
 ```
+
+## 子查询
+
+> 链式操作对象`QueryBuiler`中包含`whereSubquery`方法, 接收 string $field, string $symbol, (string $subquery | QueryBuiler $QueryBuiler | Closure $Closure)
+
+```php
+// 以下是使用`闭包`子查询的一个例子
+// select sum(`id`) from `visitor_info` where `id`in(select `id` from `visitor_info` where `id`in("155","166")) limit 1"
+$res = $visitorInfo->whereSubquery('id','in', function($queryBiler){
+    $queryBiler->select('id')->whereIn('id',[155,166]);
+})->sum('id');
+
+var_dump($res);  // int(321)
+```
+
 ## 预处理语句复用
 
 > 链式操作对象`QueryBuiler`中包含`selectPrepare`,`detelePrepare`,`updatePrepare`,`insertPrepare`,`replacePrepare`五个方法, 他们均返回`QueryPrepare`对象;

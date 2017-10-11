@@ -8,6 +8,37 @@ use Main\Core\Model\QueryBuiler;
 trait Data {
 
     /**
+     * 加入一个不做处理的data
+     * @param string $sql
+     * @return QueryBuiler
+     */
+    public function dataRaw(string $sql): QueryBuiler {
+        return $this->dataPush($sql);
+    }
+    
+    /**
+     * 字段自增
+     * @param string $field 字段
+     * @param int $steps
+     * @return QueryBuiler
+     */
+    public function dataIncrement(string $field, int $steps = 1): QueryBuiler {
+        $sql = $this->fieldFormat($field) . '=' . $this->fieldFormat($field).'+'.$steps;
+        return $this->dataPush($sql);
+    }
+    
+    /**
+     * 字段自减
+     * @param string $field 字段
+     * @param int $steps
+     * @return QueryBuiler
+     */
+    public function dataDecrement(string $field, int $steps = 1): QueryBuiler {
+        $sql = $this->fieldFormat($field) . '=' . $this->fieldFormat($field).'-'.$steps;
+        return $this->dataPush($sql);
+    }
+    
+    /**
      * 字段$field赋值$value
      * @param string $str
      * @return QueryBuiler

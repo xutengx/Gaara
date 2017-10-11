@@ -26,6 +26,7 @@ class QueryBuiler {
 
     use QueryBuiler\Execute;
     use QueryBuiler\Debug;
+    use QueryBuiler\Aggregates;
 
     // 绑定的表名
     private $table;
@@ -181,6 +182,27 @@ class QueryBuiler {
                         }
                     case 'string':
                         return $this->whereNotExistsRaw($obj);
+                }
+        }
+    }
+    
+    /**
+     * where 子查询
+     * @return QueryBuiler
+     */
+    public function whereSubquery(): QueryBuiler {
+        $params = func_get_args();
+        switch (func_num_args()) {
+            case 3:
+                switch (gettype($obj = end($params))) {
+                    case 'object':
+                        if($obj instanceof \Closure){
+                            return $this->whereSubqueryClosure(...$params);
+                        }elseif($obj instanceof QueryBuiler){
+                            return $this->whereSubqueryQueryBuiler(...$params);
+                        }
+                    case 'string':
+                        return $this->whereSubqueryRaw(...$params);
                 }
         }
     }

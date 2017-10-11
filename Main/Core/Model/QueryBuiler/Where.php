@@ -146,6 +146,50 @@ trait Where {
     }
     
     /**
+     * 子查询 一句完整的sql
+     * @param string $field
+     * @param string $symbol
+     * @param string $subquery
+     */
+    public function whereSubqueryRaw(string $field, string $symbol, string $subquery): QueryBuiler {
+        $sql = $this->fieldFormat($field) . $symbol . $this->bracketFormat($subquery);
+        return $this->wherePush($sql);
+    }
+    
+    /**
+     * 子查询 一个QueryBuiler对象
+     * @param string $field
+     * @param string $symbol
+     * @param QueryBuiler $queryBuiler
+     */
+    public function whereSubqueryQueryBuiler(string $field, string $symbol, QueryBuiler $queryBuiler): QueryBuiler {
+        $sql = $queryBuiler->getAllToSql();
+        return $this->whereSubqueryRaw($field, $symbol, $sql);
+    }
+    
+    /**
+     * 子查询 一个闭包
+     * @param string $field
+     * @param string $symbol
+     * @param Closure $callback
+     */
+    public function whereSubqueryClosure(string $field, string $symbol, Closure $callback): QueryBuiler {
+        $res = $callback($queryBuiler = $this->getSelf());
+        // 调用方未调用return
+        if (is_null($res)) {
+            $sql = $queryBuiler->getAllToSql();
+        }
+        // 调用方未调用toSql
+        elseif ($res instanceof QueryBuiler) {
+            $sql = $res->getAllToSql();
+        }
+        // 调用正常
+        else
+            $sql = $res;
+        return $this->whereSubqueryRaw($field, $symbol, $sql);
+    }
+    
+    /**
      * 批量相等条件
      * @param array $arr
      * @return QueryBuiler

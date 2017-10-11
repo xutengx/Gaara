@@ -29,6 +29,8 @@ class index2Contr extends HttpController {
         '链式操作 参数绑定, 以不同的参数重复执行同一语句' => 'test_14',
         '聚合函数' => 'test_15',
         '子查询' => 'test_16',
+        '结果分块' => 'test_17',
+        'exit' => 'test_18',
     ];
 
     public function indexDo() {
@@ -95,7 +97,7 @@ class index2Contr extends HttpController {
       
         $sql = $obj
             ->data(['name' => 'autoUpdate'])
-            ->dataIncrement('is_del', 4)
+            ->dataIncrement('is_del', 1)
             ->where('scene' ,'&', ':scene_1' )
             ->limit(1)
             ->updateToSql([':scene_1' => '1']);
@@ -103,7 +105,7 @@ class index2Contr extends HttpController {
 
         $res = $obj
             ->data(['name' => 'autoUpdate'])
-            ->dataIncrement('is_del', 4)
+            ->dataIncrement('is_del', 1)
             ->where('scene' ,'&', ':scene_1' )
             ->limit(1)
             ->update([':scene_1' => '1']);
@@ -256,12 +258,36 @@ class index2Contr extends HttpController {
         var_dump($p3->insert([':name' => 'prepare']));
         var_dump($p3->insert([':name' => 'prepare']));
         var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
+        var_dump($p3->insert([':name' => 'prepare']));
         
-        $p4 = $visitorInfo->where('name',':name')->limit(1)->deletePrepare();
-        
-        var_dump($p4->delete([':name' => 'prepare']));
-        var_dump($p4->delete([':name' => 'prepare']));
-        var_dump($p4->delete([':name' => 'prepare']));
+//        $p4 = $visitorInfo->where('name',':name')->order('id','desc')->limit(1)->deletePrepare();
+//        
+//        var_dump($p4->delete([':name' => 'prepare']));
+//        var_dump($p4->delete([':name' => 'prepare']));
+//        var_dump($p4->delete([':name' => 'prepare']));
     }
     
     public function test_15(Model\visitorInfoDev $visitorInfo){
@@ -289,10 +315,30 @@ class index2Contr extends HttpController {
     
     public function test_16(Model\visitorInfoDev $visitorInfo){
         $res = $visitorInfo->whereSubquery('id','in', function($queryBiler){
-            $queryBiler->select('id')->whereIn('id',[155,166]);
+            $queryBiler->select('id')->whereIn('id',[1991,1992,1993,166]);
         })->sum('id');
         var_dump($visitorInfo->getLastSql());
         var_dump($res);
+    }
+    
+    public function test_17(Model\visitorInfoDev $visitorInfo){
+        $res = $visitorInfo->whereIn('id',[1991,1992,1993,166]);
+//        var_dump($visitorInfo->getLastSql());
+        
+        foreach($res->getChunk() as $k => $v){
+            var_dump($k);
+            var_export($v);
+        }
+        
+        foreach($res->getChunk() as $k => $v){
+            var_dump($k);
+            var_export($v);
+        }
+        
+//        var_dump($visitorInfo->getAll());
+
+    }
+    public function test_18(Model\visitorInfoDev $visitorInfo){
         exit;
     }
     

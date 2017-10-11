@@ -40,6 +40,7 @@
         * [union](#union)
     * [debug](#debug)
     * [子查询](#子查询)
+    * [分块查询](#分块查询)
     * [预处理语句复用](#预处理语句复用)
     * [原生sql](#原生sql)
 * [缓存](/helper/cache.md)
@@ -449,6 +450,33 @@ $res = $visitorInfo->whereSubquery('id','in', function($queryBiler){
 })->sum('id');
 
 var_dump($res);  // int(321)
+```
+
+## 分块查询
+
+> 链式操作对象`QueryBuiler`中包含`getChunk`方法, 接收参数绑定数组(与getAll()相同), 返回`QueryChunk`对象实现Iterator 接口
+
+```php
+$chunk = $visitorInfo->getChunk();     
+foreach($chunk as $k => $v){
+    var_dump($k);
+    var_export($v);
+}
+```
+**注: getChunk()返回的`QueryChunk`对象只能被遍历一次,采用如下的写法即可遍历多次**
+
+```php
+$chunk = $visitorInfo->where('id','>','200'); 
+// 遍历第一次    
+foreach($res->getChunk() as $k => $v){
+    var_dump($k);
+    var_export($v);
+}
+// 遍历第二次    
+foreach($res->getChunk() as $k => $v){
+    var_dump($k);
+    var_export($v);
+}
 ```
 
 ## 预处理语句复用

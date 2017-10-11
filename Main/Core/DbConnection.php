@@ -202,6 +202,17 @@ class DbConnection {
     }
     
     /**
+     * 
+     * @param string $sql
+     * @param array $pars
+     * @return PDOStatement
+     */
+    public function getChunk(string $sql = '', array $pars = array()): \PDOStatement {
+        $this->type = 'select';
+        return $this->query_prepare_execute($sql, $pars);
+    }
+    
+    /**
      * 查询一行
      * @param type $sql
      * @param array $pars 参数绑定数组

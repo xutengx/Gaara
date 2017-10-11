@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Main\Core\Model\QueryBuiler;
 
 use Main\Core\Exception;
+use Main\Core\Model\QueryChunk;
 
 trait Execute {
 
@@ -29,6 +30,18 @@ trait Execute {
         $sql = $this->toSql($pars);
         return $this->db->getAll($sql, $pars);
         
+    }
+    
+    /**
+     * 块状获取
+     * @param array $pars
+     * @return QueryChunk
+     */
+    public function getChunk(array $pars = []): QueryChunk {
+        $this->sqlType = 'select';
+        $sql = $this->toSql($pars);
+        $PDOStatement = $this->db->getChunk($sql, $pars);
+        return new QueryChunk($PDOStatement);
     }
     
     /**

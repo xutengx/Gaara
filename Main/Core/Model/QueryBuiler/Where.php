@@ -51,6 +51,48 @@ trait Where {
     }
 
     /**
+     * not exists一句完整的sql
+     * @param string $sql
+     * @return QueryBuiler
+     */
+    public function whereNotExistsRaw(string $sql): QueryBuiler {
+        $sql = 'not exists '.$this->bracketFormat($sql);
+        return $this->wherePush($sql);
+    }
+    
+    /**
+     * not exists一个QueryBuiler对象
+     * @param QueryBuiler $queryBuiler
+     * @return QueryBuiler
+     */
+    public function whereNotExistsQueryBuiler(QueryBuiler $queryBuiler): QueryBuiler {
+        $sql = $queryBuiler->getAllToSql();
+        return $this->whereNotExistsRaw($sql);
+        
+    }
+    
+    /**
+     * not exists一个闭包
+     * @param Closure $callback
+     * @return QueryBuiler
+     */
+    public function whereNotExistsClosure(Closure $callback): QueryBuiler {
+        $res = $callback($queryBuiler = $this->getSelf());
+        // 调用方未调用return
+        if (is_null($res)) {
+            $sql = $queryBuiler->getAllToSql();
+        }
+        // 调用方未调用toSql
+        elseif ($res instanceof QueryBuiler) {
+            $sql = $res->getAllToSql();
+        }
+        // 调用正常
+        else
+            $sql = $res;
+        return $this->whereNotExistsRaw($sql); 
+    }
+
+    /**
      * 加入一个不做处理的条件
      * @param string $sql
      * @return QueryBuiler

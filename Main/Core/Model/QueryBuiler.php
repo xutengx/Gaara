@@ -163,6 +163,27 @@ class QueryBuiler {
                 }
         }
     }
+    
+    /**
+     * where not exists
+     * @return QueryBuiler
+     */
+    public function whereNotExists(): QueryBuiler {
+        $params = func_get_args();
+        switch (func_num_args()) {
+            case 1:
+                switch (gettype($obj = reset($params))) {
+                    case 'object':
+                        if($obj instanceof \Closure){
+                            return $this->whereNotExistsClosure($obj);
+                        }elseif($obj instanceof QueryBuiler){
+                            return $this->whereNotExistsQueryBuiler($obj);
+                        }
+                    case 'string':
+                        return $this->whereNotExistsRaw($obj);
+                }
+        }
+    }
 
     /**
      * having条件

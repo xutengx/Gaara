@@ -20,6 +20,14 @@
     * [中间件handle](#中间件handle)
     * [中间件terminate](#中间件terminate)
     * [中间件传参](#中间件传参)
+    * [已存在的中间件](#已存在的中间件)
+        * [CrossDomainAccess](#CrossDomainAccess)
+        * [PerformanceMonitoring](#PerformanceMonitoring)
+        * [ReturnResponse](#ReturnResponse)
+        * [StartSession](#StartSession)
+        * [ThrottleRequests](#ThrottleRequests)
+        * [ValidatePostSize](#ValidatePostSize)
+        * [VerifyCsrfToken](#VerifyCsrfToken)
 * [控制器](/helper/controller.md)
 * [数据库模型](/helper/model.md)
 * [缓存](/helper/cache.md)
@@ -29,7 +37,8 @@
 
 ## 总览
 
-在`App\Kernel`的`$middlewareGlobel`中定义全局中间件, `$middlewareGroups`中定义路由中间件组
+所有中间件,需要在`App\Kernel`中注册才会生效;
+在`App\Kernel`的`$middlewareGlobel`中注册全局中间件, `$middlewareGroups`中注册路由中间件组
 
 ## 执行流程
 
@@ -104,3 +113,47 @@ class SignCheck extends Middleware {
 ## 中间件传参
 
 在`App\Kernel`中定义中间件时可通过`@`区分若干个参数, 这些参数用于实例化中间件
+
+## 已存在的中间件
+
+`gaara`提供一些常用中间件,放置在`Main/Core/Middleware`目录中,可在`App\Kernel`中直接使用;
+
+### CrossDomainAccess
+
+允许跨域访问
+
+复杂跨域请求, 会先发送`options`方法, 此时中间件将会中断并响应`200`
+
+### PerformanceMonitoring
+
+性能监控
+
+借助谷歌浏览器的php-console插件显示,当前http请求的相关性能信息
+
+### ReturnResponse
+
+统一响应处理
+
+移除意外输出, 使用PhpConsole捕获, 保障页面布局与响应格式
+
+### StartSession
+
+开启sesssion
+
+### ThrottleRequests
+
+访问频率限制
+
+加入标准的响应头, 当超过单位时间请求次数后, 此时中间件将会中断并响应`429`
+
+### ValidatePostSize
+
+验证 post 数据大小,避免大于php设定的post_max_size
+
+当post 数据大小超过post_max_size后, 此时中间件将会中断并响应`413`
+
+### VerifyCsrfToken
+
+验证CsrfToken
+
+此中间件,依赖session_start(), (调用StartSession 中间件), 对程序员完全透明;

@@ -1,6 +1,5 @@
 <?php
 
-defined('IN_SYS') || exit('ACC Denied');
 return [
     'default' => env('DB_CONNECTION', '_test'),
     

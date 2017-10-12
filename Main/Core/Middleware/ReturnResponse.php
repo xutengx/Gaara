@@ -8,6 +8,7 @@ use Main\Core\PhpConsole;
 use Response;
 
 /**
+ * 统一响应处理
  * 移除意外输出, 使用PhpConsole调试
  */
 class ReturnResponse extends Middleware {

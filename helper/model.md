@@ -17,6 +17,7 @@
 * [控制器](/helper/controller.md)
 * [数据库模型](/helper/model.md)
     * [总览](#总览)
+    * [数据库配置文件](#数据库配置文件)
     * [一个模型](#一个模型)
     * [参数绑定](#参数绑定)
     * [闭包事务](#闭包事务)
@@ -53,6 +54,45 @@
 
 > 控制器一般继承`Main\Core\Model`
 
+## 数据库配置
+
+配置文件`Config/db.php`;
+其中`default`对应的是所有`model`默认的数据库连接, 其效果可被各个`model`的`$connection`属性所覆盖;
+`connections`的每个子项则为具体的数据库连接属性, 由`write`与`read`两部分组成, 每个部分由一个,或者多个`详细信息数组`构成;
+```php
+<?php
+return [
+    'default' => env('DB_CONNECTION', '_test'),
+    'connections' => [
+        '_test' => [
+            'write' => [
+                [
+                    'weight' => 10,
+                    'type' => 'mysql',
+                    'host' => env('db_host'),
+                    'port' => 3306,
+                    'user' => env('db_user'),
+                    'pwd' => env('db_passwd'),
+                    'char' => 'UTF8',
+                    'db' => env('db_db'),
+                ]
+            ],
+            'read' => [
+                [
+                    'weight' => 1,
+                    'type' => 'mysql',
+                    'host' => env('db_host'),
+                    'port' => 3306,
+                    'user' => env('db_user'),
+                    'pwd' => env('db_passwd'),
+                    'char' => 'UTF8',
+                    'db' => env('db_db'),
+                ]
+            ]
+        ]
+    ]
+]
+```
 ## 一个模型
 
 申明一个模型
@@ -535,7 +575,10 @@ $sql = 'insert into visitor_info set name="原生sql插入"';
 $PDOStatement = $visitorInfo->query($sql, 'insert');
 $res = ($PDOStatement->rowCount());
 
+```
 > Model的`prepare`方法返回`未`执行的`PDOStatement`对象;
+
+```php
 
 $sql = 'insert into visitor_info set name=:name';
 $PDOStatement = $visitorInfo->prepare($sql, 'insert');

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types = 1);
-defined('IN_SYS') || exit('ACC Denied');
 return [
     'mail_Username' => '1771033392@qq.com',
     'mail_Password' => '',

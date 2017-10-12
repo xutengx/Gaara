@@ -6,7 +6,6 @@ namespace Main\Core\Middleware;
 use Main\Core\Middleware;
 use Main\Core\Request;
 use Cache;
-use Route;
 use Response;
 
 /**

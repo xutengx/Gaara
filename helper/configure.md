@@ -11,6 +11,9 @@
     * [nginx](#nginx)
     * [apache](#apache)
     * [目录权限](#目录权限)
+    * [环境变量](#环境变量)
+        * [变量选择](#变量选择)
+        * [变量获取](#变量获取)
     * [其他配置](#其他配置)
 * [目录结构](/helper/catalog.md)
 * [生命周期](/helper/cycle.md)
@@ -50,13 +53,50 @@ location / {
 其中 data 是记录日志, 部分缓存以及上传文件存储的默认目录;
 而 public/open 则是压缩后的 js 存放的位置;
 
+## 环境变量
+
+`env.php` 文件不应该提交到应用程序的源代码控制系统中，因为每个使用你的应用程序的开发人员/服务器可能需要有一个不同的环境配置。
+
+**注: 若env.php不见了, 将env.example.php重名为env.php**
+
+### 变量选择
+
+`gaara`允许并鼓励在`env.php`,定义多个重复变量,并使用`selection`获取正确的那个,摈弃人为操作带来的不便;
+
+```php
+<?php
+return [
+    'db_user' => 'root',
+    'db_host' => '127.0.0.1',
+    'db_passwd' => 'root',
+    'db_db'     => 'yh',
+
+    'db_user__dev' => 'dev',
+    'db_hos__devt' => '127.0.0.2',
+    'db_passwd__dev' => 'dev',
+    'db_db__dev'     => 'yh',
+
+    'selection' => function() {
+        if (isset($_SERVER['HTTP_HOST']) && ( $_SERVER['HTTP_HOST'] === '121.196.222.40')) {
+            return '__yh';
+        }
+        return '__dev';
+    }
+]
+```
+如上,`gaara`将根据`selection`闭包返回的值,找到存在对应后缀的配置
+
+### 变量获取
+
+env('配置名','不存在则使用的默认值');
+建议,仅在`Config/*`配置文件中调用env()方法;
+
+```php
+<?php
+env('DB_CONNECTION', '_test');
+```
+
 ## 其他配置
 
-如同在 env.php 中可以见到的数据库配置 :
-```php
-'db_user' => 'root',
-'db_host' => '127.0.0.1',
-'db_passwd' => 'root',
-'db_db'     => 'yh',
-```
-**注: 若env.php不见了, 将env.example.php重名为env.php**
+配置文件统一放置于`Config`目录下, 在各个地方被调用;
+每个配置文件的内容规则,并不相同,由使用者确定;

@@ -41,9 +41,6 @@
             "php -r \"file_exists('env.php') || copy('env.example.php', 'env.php');\""
         ]
     },
-    "require-dev": {
-        "eaglewu/swoole-ide-helper": "dev-master"
-    },
     "config": {
         "sort-packages": true,
         "optimize-autoloader": true

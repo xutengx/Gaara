@@ -3,7 +3,7 @@
 以下的信息可以帮助你更好的使用这个框架 **gaara**, 更好的使用 **php**
 ****
 #### Author:xuteng
-#### E-mail:1771033392@qq.com
+#### E-mail:68822684@qq.com
 ****
 ## 目录
 * [安装](/helper/install.md)

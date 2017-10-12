@@ -3,7 +3,7 @@
 以下的信息可以帮助你更好的使用这个框架 **gaara**, 更好的使用 **php**
 ****
 #### Author:xuteng
-#### E-mail:1771033392@qq.com
+#### E-mail:68822684@qq.com
 ****
 ## 目录
 * [安装](/helper/install.md)
@@ -47,5 +47,5 @@
 ****
 更多详细内容，请移步查看 [github][github] or [码云][oschina]
 --------------------------------
-[oschina]:http://git.oschina.net/dianlaoshu_xT/php "码云"
+[oschina]:http://git.oschina.net/dianlaoshu_xT/php_ "码云"
 [github]:https://github.com/xutengx/gaara "github"

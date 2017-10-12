@@ -38,6 +38,7 @@
         * [table](#table)
         * [data](#data)
         * [union](#union)
+        * [index](#index)
     * [debug](#debug)
     * [子查询](#子查询)
     * [分块查询](#分块查询)
@@ -405,6 +406,35 @@ $res = Model\visitorInfoDev::select(['id', 'name', 'phone'])
     ->getAll();
 
 ```
+### index
+
+> 当你在调用 getAll() 方法时，它将返回一个以连续的整型数值为索引的数组。 而有时候你可能希望使用一个特定的字段或者表达式的值来作为索引结果集数组。
+
+```php
+
+<?php
+// 返回 [100 => ['id' => 100, 'name' => 'Bob', ...], 101 => [...], 103 => [...], ...]
+$res = $visitorInfo->select(['id', 'name', 'phone'])
+->whereBetween('id','100','104')
+->index('id')
+->getAll();
+
+```      
+> 如需使用表达式的值做为索引，那么只需要传递一个匿名函数给 index() 方法即可：
+
+```php
+<?php
+// 返回 ['100_Bob' => ['id' => 100, 'name' => 'Bob', ...], 101 => [...], 103 => [...], ...]
+$res = $visitorInfo->select(['id', 'name', 'phone'])
+->whereBetween('id','100','104')
+->index(function($row){
+    return $row['id'].'_'.$row['name'];
+})
+->getAll();
+```
+
+**注: index()的键名若发生重复,将会覆盖。index()同样可作用于getChunk()方法返回的`QueryChunk`对象**
+
 ## debug
 
 > 返回已执行的最近sql
@@ -494,10 +524,22 @@ var_dump($p->getRow([':id' => '102']));
 
 ## 原生sql
 
-> Model的db属性对象可理解为\PDO对象,直接使用, 值得注意的是, 原生sql总是使用write链接;
+> Model的`query`方法返回`已`执行的`PDOStatement`对象;
 
 ```php
 $sql = 'select * from visitor_info limit 1';
-$pdo = $visitorInfo->db->query($sql);
-$res = ($pdo->fetchall(\PDO::FETCH_ASSOC));
+$PDOStatement = $visitorInfo->query($sql, 'select');
+$res = ($PDOStatement->fetchall(\PDO::FETCH_ASSOC));
+
+$sql = 'insert into visitor_info set name="原生sql插入"';
+$PDOStatement = $visitorInfo->query($sql, 'insert');
+$res = ($PDOStatement->rowCount());
+
+> Model的`prepare`方法返回`未`执行的`PDOStatement`对象;
+
+$sql = 'insert into visitor_info set name=:name';
+$PDOStatement = $visitorInfo->prepare($sql, 'insert');
+// 手动执行
+PDOStatement->execute([':name' => '手动执行']);
+$res = ($PDOStatement->rowCount());
 ```

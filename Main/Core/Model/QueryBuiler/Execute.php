@@ -5,6 +5,7 @@ namespace Main\Core\Model\QueryBuiler;
 
 use Main\Core\Exception;
 use Main\Core\Model\QueryChunk;
+use Closure;
 
 trait Execute {
 
@@ -19,19 +20,21 @@ trait Execute {
         $sql = $this->toSql($pars);
         return $this->db->getRow($sql, $pars);
     }
-    
+
     /**
      * 查询多行
      * @param array $pars
      * @return array
      */
     public function getAll(array $pars = []): array {
-        $this->sqlType = 'select';
-        $sql = $this->toSql($pars);
-        return $this->db->getAll($sql, $pars);
-        
+        $QueryChunk = $this->getChunk($pars);
+        $data = [];
+        foreach ($QueryChunk as $k => $v) {
+            $data[$k] = $v;
+        }
+        return $data;
     }
-    
+
     /**
      * 块状获取
      * @param array $pars
@@ -41,9 +44,9 @@ trait Execute {
         $this->sqlType = 'select';
         $sql = $this->toSql($pars);
         $PDOStatement = $this->db->getChunk($sql, $pars);
-        return new QueryChunk($PDOStatement);
+        return new QueryChunk($PDOStatement, $this->index);
     }
-    
+
     /**
      * 更新数据, 返回受影响的行数
      * @param array $pars
@@ -57,6 +60,7 @@ trait Execute {
         $sql = $this->toSql($pars);
         return $this->db->update($sql, $pars);
     }
+
     /**
      * 插入数据, 返回插入的主键
      * @param array $pars
@@ -70,7 +74,7 @@ trait Execute {
         $sql = $this->toSql($pars);
         return $this->db->insertGetId($sql, $pars);
     }
-    
+
     /**
      * 插入数据
      * @param array $pars
@@ -84,7 +88,7 @@ trait Execute {
         $sql = $this->toSql($pars);
         return $this->db->insert($sql, $pars);
     }
-    
+
     /**
      * 删除数据, 返回受影响的行数
      * @param array $pars
@@ -98,7 +102,7 @@ trait Execute {
         $sql = $this->toSql($pars);
         return $this->db->update($sql, $pars);
     }
-    
+
     /**
      * 插入or更新数据, 返回受影响的行数
      * @param array $pars
@@ -112,5 +116,4 @@ trait Execute {
         $sql = $this->toSql($pars);
         return $this->db->update($sql, $pars);
     }
-    
 }

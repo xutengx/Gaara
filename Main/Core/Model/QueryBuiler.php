@@ -21,6 +21,7 @@ class QueryBuiler {
     use QueryBuiler\Order;
     use QueryBuiler\Limit;
     use QueryBuiler\Having;
+    use QueryBuiler\Index;
     use QueryBuiler\Union;
     use QueryBuiler\Prepare;
 
@@ -50,6 +51,8 @@ class QueryBuiler {
     private $order;
     private $limit;
     private $union = [];
+    // 预期的查询2维数组的索引
+    private $index = null;
 
     public function __construct(string $table, string $primaryKey, DbConnection $db, $model) {
         $this->table = $table;
@@ -316,7 +319,24 @@ class QueryBuiler {
     public function join(): QueryBuiler {
         $params = func_get_args();
         return $this->joinString(...$params);
-    }    
+    }
+    
+    /**
+     * 自定义二维数组的键
+     * @return QueryBuiler
+     */
+    public function index(): QueryBuiler {
+        $params = func_get_args();
+        switch (func_num_args()) {
+            case 1:
+                switch (gettype(reset($params))) {
+                    case 'string':
+                        return $this->indexString(...$params);
+                    case 'object':
+                        return $this->indexClosure(...$params);
+                }
+        }
+    }
     
     /**
      * 查询字段

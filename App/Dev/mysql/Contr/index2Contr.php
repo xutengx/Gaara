@@ -13,7 +13,7 @@ use \App\Dev\mysql\Model;
 class index2Contr extends HttpController {
 
     private $fun_array = [
-        '多行查询, 参数为数组形式, 非参数绑定' => 'test_1',
+        '多行查询, index自定义索引, 参数为数组形式, 非参数绑定' => 'test_1',
         '单行查询, select参数为string形式, (?)参数绑定' => 'test_2',
         '多条件分组查询, 参数为数组形式, 聚合表达式, 非参数绑定' => 'test_3',
         '简易单行更新, 参数为数组形式, 参数绑定, 返回受影响的行数' => 'test_4',
@@ -30,7 +30,8 @@ class index2Contr extends HttpController {
         '聚合函数' => 'test_15',
         '子查询' => 'test_16',
         '结果分块' => 'test_17',
-        'exit' => 'test_18',
+        'getAll,自定义键名' => 'test_18',
+        'exit' => 'test_19',
     ];
 
     public function indexDo() {
@@ -48,15 +49,17 @@ class index2Contr extends HttpController {
     private function test_1() {
         $obj = obj(Model\visitorInfoDev::class);
         $sql = $obj->select(['id', 'name', 'phone'])
-            ->where( 'id', '>', '101')
-            ->where('id' ,'<', '104')
+            ->where( 'id', '>', '2000')
+            ->where('id' ,'<', '2004')
+            ->index('id')
             ->order('id','desc')
             ->getAllToSql();
         var_dump($sql);
 
         $res = $obj->select(['id', 'name', 'phone'])
-            ->where( 'id', '>', '101')
-            ->where('id' ,'<', '104')
+            ->where( 'id', '>', '2000')
+            ->where('id' ,'<', '2004')
+            ->index('id')
             ->order('id','desc')
             ->getAll();
         var_dump($res);
@@ -213,16 +216,21 @@ class index2Contr extends HttpController {
     
     private function test_12(Model\visitorInfoDev $visitorInfo){
         $sql = 'select * from visitor_info limit 1';
-        $pdo = $visitorInfo->db->query($sql);
-        $res = ($pdo->fetchall(\PDO::FETCH_ASSOC));
+        $PDOStatement = $visitorInfo->query($sql, 'select');
+        $res = ($PDOStatement->fetchall(\PDO::FETCH_ASSOC));
+        var_dump($sql);
+        var_dump($res);
         
+        $sql = 'insert into visitor_info set name="原生sql插入"';
+        $PDOStatement = $visitorInfo->query($sql, 'insert');
+        $res = ($PDOStatement->rowCount ());
         var_dump($sql);
         var_dump($res);
     }
     
     private function test_13(Model\visitorInfoDev $visitorInfo){
         $sql = 'select * from visitor_info limit :number';
-        $PDOStatement = $visitorInfo->db->prepare($sql);
+        $PDOStatement = $visitorInfo->prepare($sql);
         
         $PDOStatement->execute([':number' => 1]);
         $res = ($PDOStatement->fetchall(\PDO::FETCH_ASSOC));
@@ -322,23 +330,29 @@ class index2Contr extends HttpController {
     }
     
     public function test_17(Model\visitorInfoDev $visitorInfo){
-        $res = $visitorInfo->whereIn('id',[1991,1992,1993,166]);
-//        var_dump($visitorInfo->getLastSql());
-        
-        foreach($res->getChunk() as $k => $v){
-            var_dump($k);
-            var_export($v);
-        }
-        
-        foreach($res->getChunk() as $k => $v){
-            var_dump($k);
-            var_export($v);
-        }
-        
-//        var_dump($visitorInfo->getAll());
+        $res = $visitorInfo->whereIn('id',[1991,1992,1993,3625,3627,166]);
 
+        foreach($res->getChunk() as $k => $v){
+            $chunk = $visitorInfo->where('id',$v['id'])->getChunk();
+            foreach($chunk as $v2){
+                var_dump($v2);
+            }
+        }
+        
+        foreach($res->getChunk() as $k => $v){
+            var_dump($k);
+            var_export($v);
+        }
+        
     }
     public function test_18(Model\visitorInfoDev $visitorInfo){
+        $info = $visitorInfo->whereIn('id',[1991,1992,1993,3625,3627,166])->index(function($row){
+            return $row['id'].'--'.$row['name'];
+        })->getAll();
+        var_dump($info);
+    }
+    
+    public function test_19(Model\visitorInfoDev $visitorInfo){
         exit;
     }
     

@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Main\Core;
 
 use PDOException;
+use PDOStatement;
 use Main\Core\Exception\Pdo;
 use \Log;
 
@@ -202,12 +203,12 @@ class DbConnection {
     }
     
     /**
-     * 
+     * 返回PDOStatement, 可做分块解析
      * @param string $sql
      * @param array $pars
      * @return PDOStatement
      */
-    public function getChunk(string $sql = '', array $pars = array()): \PDOStatement {
+    public function getChunk(string $sql = '', array $pars = array()): PDOStatement {
         $this->type = 'select';
         return $this->query_prepare_execute($sql, $pars);
     }
@@ -248,10 +249,6 @@ class DbConnection {
             return $res->rowCount();
     }
 
-//    public function execute(string $sql = '', array $pars = array()) {
-//        return $this->update($sql, $pars);
-//    }
-
     /**
      * 插入数据, 返回插入的主键
      * @param string $sql
@@ -278,25 +275,13 @@ class DbConnection {
     }
 
     /**
-     * 查询数据总数
-     * @param string $sql
-     * @param array $pars 参数绑定数组
-     * @return int
-     */
-    public function count(string $sql = '', array $pars = array()): int {
-        $this->type = 'select';
-        $res = $this->query_prepare_execute($sql, $pars);
-        return $res->fetchColumn();
-    }
-
-    /**
      * 使用PDO->prepare(), 返回的对象可用$res->execute($pars)重复调用
      * @param string $sql
      * @param string $type
      * @return type
      * @throws Exception
      */
-    public function prepare(string $sql = '', string $type = 'update'): \PDOStatement {
+    public function prepare(string $sql = '', string $type = 'update'): PDOStatement {
         if (!in_array($type, ['select', 'update', 'delete', 'insert', 'replace']))
             throw new Exception('$type mast in_array(select update delete insert replace). but '.$type.' given');
         $this->type = $type;

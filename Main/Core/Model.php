@@ -6,6 +6,7 @@ namespace Main\Core;
 use Main\Core\Model\QueryBuiler;
 use Main\Core\Model\Traits;
 use Main\Core\Exception;
+use PDOStatement;
 use \Log;
 
 class Model {
@@ -132,15 +133,26 @@ class Model {
         return obj(static::class)->newQuery()->$method(...$parameters);
     }
     
-    public function query(string $sql){
-        return $this->db->prepare($sql, 'UPDATE');
+    /**
+     * 原生sql支持, 普通执行
+     * @param string $sql
+     * @param string $type 使用的数据库链接类型
+     * @return PDOStatement
+     */
+    public function query(string $sql, string $type = 'update'): PDOStatement{
+        $PDOStatement = $this->db->prepare($sql, $type);
+        $PDOStatement->execute();
+        return $PDOStatement;
     }
-
-    public function __get($attr) {
-        if ($attr === 'db')
-            return $this->db;
-        else
-            throw new Exception;
+    
+    /**
+     * 原生sql支持, 返回`PDOStatement`对象可用PDOStatement::execute($pars)重复调用
+     * @param string $sql
+     * @param string $type 使用的数据库链接类型
+     * @return PDOStatement
+     */
+    public function prepare(string $sql, string $type = 'update'): PDOStatement{
+        return $this->db->prepare($sql, $type);
     }
 
 }

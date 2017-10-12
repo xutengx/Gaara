@@ -59,6 +59,6 @@ trait RequestTrait {
     }
 
     protected function delete($key = null, $rule = null, $msg = null) {
-        return $this->requestFun($key, $rule, $msg, 'post');
+        return $this->requestFun($key, $rule, $msg, 'detele');
     }
 }

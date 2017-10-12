@@ -81,14 +81,14 @@ class index2Contr extends HttpController {
     private function test_3() {
         $obj = obj(Model\visitorInfoDev::class);
       
-        $sql = $obj->select(['id', 'name', 'phone','count(id)','sum(id) as sum'])
+        $sql = $obj->select(['count(id)','sum(id) as sum'])
             ->where('scene' , '&', '1' )
             ->where('name','like', '%t%')
             ->group(['phone'])
             ->getAllToSql();
         var_dump($sql);
 
-        $res = $obj->select(['id', 'name', 'phone','count(id)','sum(id) as sum'])
+        $res = $obj->select(['count(id)','sum(id) as sum'])
             ->where('scene' , '&', '1' )
             ->where('name','like', '%t%')
             ->group(['phone'])
@@ -146,10 +146,11 @@ class index2Contr extends HttpController {
         var_dump($res);
     }
     private function test_7() {
-        $res = Model\visitorInfoDev::select(['id', 'name', 'phone'])
+        $res = Model\visitorInfoDev::select(['id'])
             ->where( 'scene', '&', ':scene_1')
             ->whereBetween('id', ['100','103' ])
             ->havingIn('id',['100','102'])
+            ->group('id')
             ->getAll([':scene_1' => '1']);
         $sql = Model\visitorInfoDev::getLastSql();
         
@@ -157,7 +158,7 @@ class index2Contr extends HttpController {
         var_dump($res);
     }
     private function test_8() {
-        $res = Model\visitorInfoDev::select(['id', 'name', 'phone'])
+        $res = Model\visitorInfoDev::select(['id'])
             ->whereBetween('id','100','103')
             ->whereRaw('id = "106"AND `name` = "xuteng1" OR ( note = "12312312321"AND `name` = "xuteng") OR (id != "103"AND `name` = "xuteng")')
             ->getAll();
@@ -299,7 +300,11 @@ class index2Contr extends HttpController {
     }
     
     public function test_15(Model\visitorInfoDev $visitorInfo){
-        $res = $visitorInfo->where('name',':name')->count('*', [':name'=>'prepare']);
+        $res = $visitorInfo->select('name')->where('name',':name')->group('name,note')->count('note', [':name'=>'prepare']);
+        var_dump($visitorInfo->getLastSql());
+        var_dump($res);
+        
+        $res = $visitorInfo->where('name',':name')->count('note', [':name'=>'prepare']);
         var_dump($visitorInfo->getLastSql());
         var_dump($res);
         

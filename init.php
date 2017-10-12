@@ -1,5 +1,5 @@
 <?php
-// 有问题请联系 QQ 1771033392
+// 有问题请联系 QQ 68822684
 $GLOBALS['statistic'] = array(
     '_beginTime' => microtime(true),
     '_beginMemory' => memory_get_usage()

@@ -9,21 +9,29 @@ namespace Main\Core\Model\QueryBuiler;
 trait Aggregates {
   
     /**
-     * count 条数统计
+     * count 条数统计,兼容 group
      * @param string $field 统计字段
      * @param array $pars
      * @return int
      */
     public function count(string $field = null, array $pars = []): int {
         $this->sqlType = 'select';
-        if(is_null($field) || $field === '*')
-            $this->selectRaw('count(*)');
-        else
-            $this->selectString('count('.$field.')');
-        $res = $this->getRow($pars);
-        return (int)reset($res);
+        if (!is_null($this->group)) {
+            $obj = $this->getSelf();
+            $sql = $this->select($field)->getAllToSql($pars);
+            $obj->fromRaw($this->bracketFormat($sql) . 'as gaara' . md5((string) time()));
+            $obj->selectString('count(' . $field . ')');
+            $res = $obj->getRow();
+        } else {
+            if (is_null($field) || $field === '*')
+                $this->selectRaw('count(*)');
+            else
+                $this->selectString('count(' . $field . ')');
+            $res = $this->getRow($pars);
+        }
+        return (int) reset($res);
     }
-    
+
     /**
      * max 最大值
      * @param string $field 字段

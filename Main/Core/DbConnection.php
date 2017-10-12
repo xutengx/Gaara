@@ -38,7 +38,7 @@ class DbConnection {
     // ------------------------------------------------------------------//
 
     /**
-     * 读取配置信息
+     * 读取&格式化 配置信息
      * @param array $DBconf
      * 如下结构:
       'db'=>[
@@ -117,7 +117,7 @@ class DbConnection {
         // http请求都属于此
         if ($this->single) {
             // 查询操作且不属于事务,使用读连接
-            if ($this->type === 'select' && !$this->transaction) {
+            if ($this->type === 'select' && !$this->transaction && self::$Master_slave) {
                 if (is_object(self::$dbReadSingle) || (self::$dbReadSingle = $this->connect()))
                     return self::$dbReadSingle;
             }
@@ -149,6 +149,7 @@ class DbConnection {
                 self::$dbRead[$key] = new \PDO($dsn, $settings['user'], $settings['pwd'], array(\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . (!empty($settings['char']) ? $settings['char'] : 'utf8')));
                 self::$dbRead[$key]->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
                 self::$dbRead[$key]->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
+                $this->init(self::$dbRead[$key]);
             }
             return self::$dbRead[$key];
         } else {
@@ -166,9 +167,18 @@ class DbConnection {
                 self::$dbWrite[$key] = new \PDO($dsn, $settings['user'], $settings['pwd'], array(\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . (!empty($settings['char']) ? $settings['char'] : 'utf8')));
                 self::$dbWrite[$key]->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
                 self::$dbWrite[$key]->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
+                $this->init(self::$dbWrite[$key]);
             }
             return self::$dbWrite[$key];
         }
+    }
+    
+    /**
+     * 使用严格模式
+     * @param \PDO $pdo
+     */
+    private function init(\PDO $pdo): void{
+        $re = $pdo->query("set session sql_mode='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'");
     }
 
     /**

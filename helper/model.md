@@ -54,6 +54,8 @@
 
 > 控制器一般继承`Main\Core\Model`
 
+`gaara`的数据库模型, 支持几乎所有的链式操作来构建查询语句, 分布式数据库配置支持, 分块数据获取, 预处理语句复用等等
+
 ## 数据库配置
 
 配置文件`Config/db.php`;
@@ -230,6 +232,8 @@ $row = $yourModel::->where('id',12)->delete();
 <?php
 // name=prepare 的行数
 $visitorInfo->where('name',':name')->count('*', [':name'=>'prepare']);
+// 兼容group的count() 
+$visitorInfo->select('name')->where('name',':name')->group('name,note')->count('note', [':name'=>'prepare']);
 // 最大id
 $visitorInfo->max('id');
 // 最小id
@@ -480,6 +484,7 @@ $res = $visitorInfo->select(['id', 'name', 'phone'])
 > 返回已执行的最近sql
 
 ```php
+<?php
 $res = Model\visitorInfoDev::select(['id', 'name', 'phone'])
     ->where( 'scene', '&', ':scene_1')
     ->where( 'phone', '13849494949')
@@ -496,6 +501,7 @@ $sql = Model\visitorInfoDev::getLastSql();
 > 返回未执行的sql
 
 ```php
+<?php
 sql = Model\visitorInfoDev::select(['id', 'name', 'phone'])
     ->where( 'scene', '&', ':scene_1')
     ->where( 'phone', '13849494949')
@@ -513,6 +519,7 @@ sql = Model\visitorInfoDev::select(['id', 'name', 'phone'])
 > 链式操作对象`QueryBuiler`中包含`whereSubquery`方法, 接收 string $field, string $symbol, (string $subquery | QueryBuiler $QueryBuiler | Closure $Closure)
 
 ```php
+<?php
 // 以下是使用`闭包`子查询的一个例子
 // select sum(`id`) from `visitor_info` where `id`in(select `id` from `visitor_info` where `id`in("155","166")) limit 1"
 $res = $visitorInfo->whereSubquery('id','in', function($queryBiler){
@@ -527,6 +534,7 @@ var_dump($res);  // int(321)
 > 链式操作对象`QueryBuiler`中包含`getChunk`方法, 接收参数绑定数组(与getAll()相同), 返回`QueryChunk`对象实现Iterator 接口
 
 ```php
+<?php
 $chunk = $visitorInfo->getChunk();     
 foreach($chunk as $k => $v){
     var_dump($k);
@@ -536,6 +544,7 @@ foreach($chunk as $k => $v){
 **注: getChunk()返回的`QueryChunk`对象只能被遍历一次,采用如下的写法即可遍历多次**
 
 ```php
+<?php
 $chunk = $visitorInfo->where('id','>','200'); 
 // 遍历第一次    
 foreach($res->getChunk() as $k => $v){
@@ -556,6 +565,7 @@ foreach($res->getChunk() as $k => $v){
 > `QueryPrepare`中包含`getRow`,`getAll`,`delete`,`update`,`insert`,`replace`六个方法,可每次接收不同绑定参数重复调用
 
 ```php
+<?php
 $p = $visitorInfo->where('id',':id')->selectPrepare();
 var_dump($p->getRow([':id' => '12']));
 var_dump($p->getRow([':id' => '11']));
@@ -567,6 +577,7 @@ var_dump($p->getRow([':id' => '102']));
 > Model的`query`方法返回`已`执行的`PDOStatement`对象;
 
 ```php
+<?php
 $sql = 'select * from visitor_info limit 1';
 $PDOStatement = $visitorInfo->query($sql, 'select');
 $res = ($PDOStatement->fetchall(\PDO::FETCH_ASSOC));
@@ -580,6 +591,7 @@ $res = ($PDOStatement->rowCount());
 
 ```php
 
+<?php
 $sql = 'insert into visitor_info set name=:name';
 $PDOStatement = $visitorInfo->prepare($sql, 'insert');
 // 手动执行

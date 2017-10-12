@@ -12,9 +12,9 @@ trait Group {
      * @param string $field
      * @return QueryBuiler
      */
-    public function groupString(string $field): QueryBuiler {
-        $sql = $this->fieldFormat($field);
-        return $this->groupPush($sql);
+    public function groupString(string $field, string $delimiter = ','): QueryBuiler {
+        return $this->groupArray(explode($delimiter, $field));
+
     }
 
     /**
@@ -23,10 +23,12 @@ trait Group {
      * @return QueryBuiler
      */
     public function groupArray(array $arr): QueryBuiler {
+        $str = '';
         foreach ($arr as $field) {
-            $this->groupString((string)$field);
+            $str .= $this->fieldFormat($field) . ',';
         }
-        return $this;
+        $sql = rtrim($str, ',');
+        return $this->groupPush($sql);
     }
 
     /**

@@ -6,7 +6,7 @@ defined('IN_SYS') || exit('ACC Denied');
 
 use App\yh\m\MainUser;
 use Main\Core\Secure;
-use Main\Core\Mail;
+use Main\Expand\Mail;
 use Main\Core\Controller\HttpController;
 
 class Reg extends HttpController {

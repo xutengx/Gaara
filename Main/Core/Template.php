@@ -3,6 +3,8 @@
 declare(strict_types = 1);
 namespace Main\Core;
 
+use Main\Expand\JavaScriptPacker;
+
 class Template {
 
     // 跳转中间页面
@@ -99,8 +101,8 @@ class Template {
      * @return string 压缩后js
      */
     private function AutomaticPacking(string $content): string {
-        $packerNormal = (new \Main\Core\JavaScriptPacker($content, 'Normal', false, false))->pack();
-        $packerNone = (new \Main\Core\JavaScriptPacker($content, 'None', false, false))->pack();
+        $packerNormal = (new JavaScriptPacker($content, 'Normal', false, false))->pack();
+        $packerNone = (new JavaScriptPacker($content, 'None', false, false))->pack();
         return strlen($packerNormal) > strlen($packerNone) ? $packerNone : $packerNormal;
     }
 

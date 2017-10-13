@@ -81,7 +81,7 @@
  * # Be careful with the 'High ASCII' Level encoding if you use
  *   UTF-8 in your files... 
 */
-namespace Main\Core;
+namespace Main\Expand;
 class JavaScriptPacker {
 
     // constants

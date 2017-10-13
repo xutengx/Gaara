@@ -84,27 +84,9 @@ class DbConnection {
      */
     public function __construct(array $DBconf, $single = true) {
         $this->single = $single;
-        foreach ($DBconf['write'] as $k => $v) {
-            self::$dbWrite[md5(serialize($v))] = $v;
-            $t = end(self::$dbWriteWeight);
-            if (empty($t))
-                self::$dbWriteWeight[$v['weight']] = md5(serialize($v));
-            else {
-                $weight = array_keys(self::$dbWriteWeight);
-                self::$dbWriteWeight[$v['weight'] + end($weight)] = md5(serialize($v));
-            }
-        }
-        if (isset($DBconf['read'])) {
-            foreach ($DBconf['read'] as $k => $v) {
-                self::$dbRead[md5(serialize($v))] = $v;
-                $t = end(self::$dbReadWeight);
-                if (empty($t))
-                    self::$dbReadWeight[$v['weight']] = md5(serialize($v));
-                else {
-                    $weight = array_keys(self::$dbReadWeight);
-                    self::$dbReadWeight[$v['weight'] + end($weight)] = md5(serialize($v));
-                }
-            }
+        $this->confFormat($DBconf['write'], self::$dbWriteWeight, self::$dbWrite);
+        if (isset($DBconf['read']) && !empty($DBconf['read'])) {
+            $this->confFormat($DBconf['read'], self::$dbReadWeight, self::$dbRead);
         } else
             self::$Master_slave = false;
     }
@@ -135,50 +117,66 @@ class DbConnection {
     private function connect(): \PDO {
         // 查询操作且不属于事务,使用读连接
         if ($this->type === 'select' && !$this->transaction && self::$Master_slave) {
-            $tmp = array_keys(self::$dbReadWeight);
-            $weight = rand(1, end($tmp));
-            foreach (self::$dbReadWeight as $k => $v) {
-                if ($k - $weight >= 0) {
-                    $key = $v;
-                    break;
-                }
-            }
-            if (!is_object(self::$dbRead[$key])) {
-                $settings = self::$dbRead[$key];
-                $dsn = 'mysql:dbname=' . $settings['db'] . ';host=' . $settings['host'] . ';port=' . $settings['port'];
-                self::$dbRead[$key] = new \PDO($dsn, $settings['user'], $settings['pwd'], array(\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . (!empty($settings['char']) ? $settings['char'] : 'utf8')));
-                self::$dbRead[$key]->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-                self::$dbRead[$key]->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
-                $this->init(self::$dbRead[$key]);
-            }
-            return self::$dbRead[$key];
+            return $this->weightSelection(self::$dbReadWeight, self::$dbRead);
         } else {
-            $tmp = array_keys(self::$dbWriteWeight);
-            $weight = rand(1, end($tmp));
-            foreach (self::$dbWriteWeight as $k => $v) {
-                if ($k - $weight >= 0) {
-                    $key = $v;
-                    break;
-                }
-            }
-            if (!is_object(self::$dbWrite[$key])) {
-                $settings = self::$dbWrite[$key];
-                $dsn = 'mysql:dbname=' . $settings['db'] . ';host=' . $settings['host'] . ';port=' . $settings['port'];
-                self::$dbWrite[$key] = new \PDO($dsn, $settings['user'], $settings['pwd'], array(\PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . (!empty($settings['char']) ? $settings['char'] : 'utf8')));
-                self::$dbWrite[$key]->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-                self::$dbWrite[$key]->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
-                $this->init(self::$dbWrite[$key]);
-            }
-            return self::$dbWrite[$key];
+            return $this->weightSelection(self::$dbWriteWeight, self::$dbWrite);
         }
     }
     
     /**
-     * 使用严格模式
-     * @param \PDO $pdo
+     * 格式化配置文件, 引用赋值
+     * @param array $theConf 待格式化的配置数组
+     * @param array &$theDbWeight 权重数组
+     * @param array &$theDb 配置数组
      */
-    private function init(\PDO $pdo): void{
-        $re = $pdo->query("set session sql_mode='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'");
+    private function confFormat(array $theConf, array &$theDbWeight, array &$theDb): void {
+        foreach ($theConf as $k => $v) {
+            $theDb[md5(serialize($v))] = $v;
+            $t = end($theDbWeight);
+            if (empty($t))
+                $theDbWeight[$v['weight']] = md5(serialize($v));
+            else {
+                $weight = array_keys($theDbWeight);
+                $theDbWeight[$v['weight'] + end($weight)] = md5(serialize($v));
+            }
+        }
+    }
+
+    /**
+     * 根据权重, 实例化pdo
+     * @param array $theDbWeight 权重数组
+     * @param array &$theDb 配置数组->pdo数组
+     * @return \PDO
+     */
+    private function weightSelection(array $theDbWeight, array &$theDb): \PDO {
+        $tmp = array_keys($theDbWeight);
+        $weight = rand(1, end($tmp));
+        foreach ($theDbWeight as $k => $v) {
+            if ($k - $weight >= 0) {
+                $key = $v;
+                break;
+            }
+        }
+        if (!is_object($theDb[$key])) {
+            $settings = $theDb[$key];
+            $dsn = 'mysql:dbname=' . $settings['db'] . ';host=' . $settings['host'] . ';port=' . $settings['port'];
+            $theDb[$key] = new \PDO($dsn, $settings['user'], $settings['pwd'], $this->initArray($settings['char'] ?? 'utf8'));
+        }
+        return $theDb[$key];
+    }
+
+    /**
+     * pdo初始化属性
+     * @param string $char 字符编码
+     * @return array
+     */
+    private function initArray(string $char): array {
+        return [
+            \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $char,
+            \PDO::MYSQL_ATTR_INIT_COMMAND => "set session sql_mode='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'",
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+            \PDO::ATTR_EMULATE_PREPARES => false
+        ];
     }
 
     /**

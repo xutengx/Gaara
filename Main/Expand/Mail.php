@@ -1,8 +1,10 @@
 <?php
 
 declare(strict_types = 1);
-namespace Main\Core;
+namespace Main\Expand;
 
+use Main\Core\Conf;
+use PHPMailer;
 /**
  * 邮件发送类
  */
@@ -10,7 +12,7 @@ class Mail {
 
     private $mail = null;
 
-    public function __construct(Conf $conf, \PHPMailer $mail) {
+    public function __construct(Conf $conf, PHPMailer $mail) {
         $this->mail = $mail;
         foreach ($conf->mail as $k => $v) {
             $mail->$k = $v;

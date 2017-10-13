@@ -268,29 +268,6 @@ class index2Contr extends HttpController {
         var_dump($p3->insert([':name' => 'prepare']));
         var_dump($p3->insert([':name' => 'prepare']));
         var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
-        var_dump($p3->insert([':name' => 'prepare']));
         
 //        $p4 = $visitorInfo->where('name',':name')->order('id','desc')->limit(1)->deletePrepare();
 //        
@@ -358,6 +335,10 @@ class index2Contr extends HttpController {
     }
     
     public function test_19(Model\visitorInfoDev $visitorInfo){
+//        $dir = (new \Main\Expand\Image)->newUrl('https://baidu.com');
+//        var_dump($dir);
+//        $data = 'https://www.baidu.com';
+//        echo '<img src="'.(new \chillerlan\QRCode\QRCode($data, new \chillerlan\QRCode\Output\QRImage))->output().'" />';
         exit;
     }
     

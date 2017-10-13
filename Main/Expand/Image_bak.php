@@ -170,6 +170,7 @@ class Image {
             $errorCorrectionLevel = 'L'; //容错级别
             $matrixPointSize = 6; //生成图片大小
             //生成二维码图片
+            require_once ROOT.'Main/Support/Image/Qrcode.php';
             \QRcode::png($url, $dir, $errorCorrectionLevel, $matrixPointSize, 2);
             return $dir;
         }

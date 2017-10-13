@@ -30,6 +30,8 @@ abstract class Container {
             $class = static::class;
             if (class_exists('Main\Core\\' . $class)) {
                 return 'Main\Core\\' . $class;
+            }elseif(class_exists('Main\Expand\\' . $class)) {
+                return 'Main\Expand\\' . $class;
             }
         }
         throw new Exception('别名类: ' . $class . ' 的 $instance 没有被正确定义!');

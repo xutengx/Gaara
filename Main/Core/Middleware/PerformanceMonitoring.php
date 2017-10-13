@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Main\Core\Middleware;
 
 use Main\Core\Middleware;
-use Main\Core\PhpConsole;
+use Main\Expand\PhpConsole;
 
 /**
  * 性能监控

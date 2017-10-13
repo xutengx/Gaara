@@ -83,6 +83,8 @@ return [
         Route::get('/cookie','cookie\cookie@index');
         Route::get('/cookie/cookie/cookie','cookie\cookie@index');
         
+        // 二维码
+        Route::get('/qrcode','qrcode\index@index');
 
         // 新共能开发
         Route::get('/new',['uses' => 'development\Contr\indexContr@indexDo','middleware'=>['api']]);

@@ -1,8 +1,9 @@
 <?php
 
 declare(strict_types = 1);
-namespace Main\Core;
+namespace Main\Expand;
 
+use Main\Core\Conf;
 use PhpConsole\Handler;
 use PhpConsole\Connector;
 

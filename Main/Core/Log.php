@@ -3,6 +3,7 @@
 declare(strict_types = 1);
 namespace Main\Core;
 
+use Tool;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
@@ -19,21 +20,32 @@ use Monolog\Handler\StreamHandler;
  */
 class Log {
     // 文件路径
-    const LOGDIR = 'data/log/';
+    private $path = 'data/log/';
+    private $ext = 'log';
 
     private $handle;
     
-    public function __construct($name = 'php_', array $handlers = array(), array $processors = array()) {
+    public function __construct($name = 'gaara_', array $handlers = array(), array $processors = array()) {
         $this->handle = new Logger($name, $handlers, $processors);
-        $this->handle->pushHandler(new StreamHandler(ROOT.self::LOGDIR.'debug.log', Logger::DEBUG, false));
-        $this->handle->pushHandler(new StreamHandler(ROOT.self::LOGDIR.'info.log', Logger::INFO, false));
-        $this->handle->pushHandler(new StreamHandler(ROOT.self::LOGDIR.'notice.log', Logger::NOTICE, false));
-        $this->handle->pushHandler(new StreamHandler(ROOT.self::LOGDIR.'warning.log', Logger::WARNING, false));
-        $this->handle->pushHandler(new StreamHandler(ROOT.self::LOGDIR.'error.log', Logger::ERROR, false));
-        $this->handle->pushHandler(new StreamHandler(ROOT.self::LOGDIR.'critical.log', Logger::CRITICAL, false));
-        $this->handle->pushHandler(new StreamHandler(ROOT.self::LOGDIR.'emergency.log', Logger::EMERGENCY, false));
+        $this->handle->pushHandler(new StreamHandler($this->makeFilename('debug'), Logger::DEBUG, false));
+        $this->handle->pushHandler(new StreamHandler($this->makeFilename('info'), Logger::INFO, false));
+        $this->handle->pushHandler(new StreamHandler($this->makeFilename('notice'), Logger::NOTICE, false));
+        $this->handle->pushHandler(new StreamHandler($this->makeFilename('warning'), Logger::WARNING, false));
+        $this->handle->pushHandler(new StreamHandler($this->makeFilename('error'), Logger::ERROR, false));
+        $this->handle->pushHandler(new StreamHandler($this->makeFilename('critical'), Logger::CRITICAL, false));
+        $this->handle->pushHandler(new StreamHandler($this->makeFilename('emergency'), Logger::EMERGENCY, false));
     }
   
+
+    /**
+     * 返回文件名
+     * @return string
+     */
+    private function makeFilename(string $level): string{
+        $filename = ROOT.$this->path.date('Y/m/d/').$level.'.'.$this->ext;
+        return $filename;
+    }
+    
     public function __call(string $func, array $params){
         return call_user_func_array([$this->handle, $func], $params);
     }

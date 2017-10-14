@@ -339,7 +339,7 @@ class index2Contr extends HttpController {
 //        var_dump($dir);
 //        $data = 'https://www.baidu.com';
 //        echo '<img src="'.(new \chillerlan\QRCode\QRCode($data, new \chillerlan\QRCode\Output\QRImage))->output().'" />';
-        exit;
+//        exit;
     }
     
     

@@ -84,7 +84,9 @@ return [
         Route::get('/cookie/cookie/cookie','cookie\cookie@index');
         
         // 二维码
-        Route::get('/qrcode','qrcode\index@index');
+        Route::get('/qrcode','QRcode\index@index');
+        // 验证码
+        Route::get('/yzm','Yzm\index@index');
 
         // 新共能开发
         Route::get('/new',['uses' => 'development\Contr\indexContr@indexDo','middleware'=>['api']]);

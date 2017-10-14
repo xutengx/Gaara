@@ -16,4 +16,5 @@ namespace {
     final class PhpConsole extends \Main\Core\Container {}
     final class QRcode extends \Main\Core\Container {}
     final class Mail extends \Main\Core\Container {}
+    final class Image extends \Main\Core\Container {}
 }

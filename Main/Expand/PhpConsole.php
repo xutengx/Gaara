@@ -3,9 +3,11 @@
 declare(strict_types = 1);
 namespace Main\Expand;
 
+use Tool;
 use Main\Core\Conf;
 use PhpConsole\Handler;
 use PhpConsole\Connector;
+use PhpConsole\Storage\File;
 
 /**
  * 借助谷歌浏览器的 php console 插件, 以及 php-console 包, 进行调试
@@ -13,17 +15,30 @@ use PhpConsole\Connector;
  */
 class PhpConsole {
 
+    private $path = 'data/phpconsole/';
+    private $ext = 'log';
     private $handle;
     
     public function __construct() {
         $conf = obj(Conf::class)->phpconsole;
+        Connector::setPostponeStorage(new File($this->makeFilename()));
+        $connector = Connector::getInstance();
         if(!is_null($conf['passwd'])){
-//            Connector::setPostponeStorage(new Session());
-            $connector = Connector::getInstance();
-//            $connector->setHeadersLimit(200000);
             $connector->setPassword($conf['passwd']);
         }
         $this->handle = Handler::getInstance();
+    }
+
+    /**
+     * 返回文件名
+     * @return string
+     */
+    private function makeFilename(): string{
+        $filename = ROOT.$this->path.date('Y/m/d').'.'.$this->ext;
+        if(!file_exists($filename)){
+            Tool::printInFile($filename, '');
+        }
+        return $filename;
     }
   
     public function __call(string $func, array $params){

@@ -24,7 +24,6 @@ class Route {
     private static $urlParam = [];
 
     public static function Start(): void {
-        self::getConf();
         // 得到 $pathInfo
         self::$pathInfo = self::getPathInfo();
         // 得到当前模式 http/cli
@@ -33,20 +32,6 @@ class Route {
         self::$routeRule = self::getRouteRule();
         // 分析路由, 并执行
         self::routeAnalysis();
-    }
-
-    /**
-     * 读取配置 ( 全局设置 )
-     * @return void
-     */
-    private static function getConf(): void {
-        $conf = obj(Conf::class)->app;
-        date_default_timezone_set($conf['timezone']);
-        if ($conf['debug'] === true) {
-            ini_set('display_errors', '1');
-            error_reporting(E_ALL);
-        } else
-            ini_set('display_errors', '0');
     }
 
     /**
@@ -266,7 +251,7 @@ class Route {
 
     // 运行统计
     private static function statistic(): void {
-        $GLOBALS['statistic']['_initTime'] = microtime(true);
-        $GLOBALS['statistic']['_initMemory'] = memory_get_usage();
+        $GLOBALS['statistic']['框架路由执行后时间'] = microtime(true);
+        $GLOBALS['statistic']['框架路由执行后内存'] = memory_get_usage();
     }
 }

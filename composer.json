@@ -32,6 +32,7 @@
         "php": ">=7.1.0",
         "chillerlan/php-qrcode": "^1.1",
         "ezyang/htmlpurifier": "^4.9",
+        "filp/whoops": "^2.1",
         "monolog/monolog": "^1.23",
         "php-console/php-console": "^3.1",
         "phpmailer/phpmailer": "^5.2"

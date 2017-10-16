@@ -87,6 +87,10 @@ return [
         Route::get('/qrcode','QRcode\index@index');
         // 验证码
         Route::get('/yzm','Yzm\index@index');
+        // 共享内存写
+        Route::get('/shmop','Shmop\index@index');
+        // 共享内存读
+        Route::get('/shmop/read','Shmop\index@read');
 
         // 新共能开发
         Route::get('/new',['uses' => 'development\Contr\indexContr@indexDo','middleware'=>['api']]);

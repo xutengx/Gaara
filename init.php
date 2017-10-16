@@ -1,9 +1,9 @@
 <?php
 // 有问题请联系 QQ 68822684
-$GLOBALS['statistic'] = array(
-    '_beginTime' => microtime(true),
-    '_beginMemory' => memory_get_usage()
-);
+$GLOBALS['statistic'] = [
+    '时间初始量' => microtime(true),
+    '内存初始量' => memory_get_usage()
+];
 // 入口文件名, 应该与nginx执行脚本保持一致 eg:index.php 
 defined('IN_SYS') || define('IN_SYS', substr(str_replace('\\','/',__FILE__),strrpos(str_replace('\\','/',__FILE__),'/')+1));
 
@@ -44,4 +44,4 @@ define('DEBUG', obj(Conf::class)->app['debug']);
 /**
  * 执行
  */
-\Main\Core\Route::Start();
+obj(\App\Kernel::class)->Init()->Start();

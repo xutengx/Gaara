@@ -10,7 +10,7 @@ class cookie extends HttpController {
     public function index(Request $request){
 //        $request->cookie['test'] = 'test';
 //        $request->setcookie('te1','1',350);
-        var_dump($request->cookie);exit;
+        return ($request->cookie);
         
     }
 }

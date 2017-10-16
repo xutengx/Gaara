@@ -102,28 +102,28 @@ function env(string $envname, $default = null) {
  */
 function statistic() : array {
     global $statistic;
-    // 框架初始化消耗时间
-    $initTime = ( $statistic['_initTime'] - $statistic['_beginTime'] ) * 1000; //将时间转换为毫秒
-    // 框架初始化消耗内存
-    $initMemory = ( $statistic['_initMemory'] - $statistic['_beginMemory'] ) / 1024;
+    // 框架初始化消耗时间(含路由)
+    $initTime = ( $statistic['框架路由执行后时间'] - $statistic['时间初始量'] ) * 1000; //将时间转换为毫秒
+    // 框架初始化消耗内存(含路由)
+    $initMemory = ( $statistic['框架路由执行后内存'] - $statistic['内存初始量'] ) / 1024;
     // 总体消耗时间
-    $runtime = ( microtime(true) - $statistic['_beginTime'] ) * 1000; //将时间转换为毫秒
+    $runtime = ( microtime(true) - $statistic['框架路由执行后时间'] ) * 1000; //将时间转换为毫秒
     // 程序消耗内存峰值
-    $usedMemory = ( memory_get_peak_usage() - $statistic['_beginMemory'] ) / 1024;
+    $usedMemory = ( memory_get_peak_usage() - $statistic['框架路由执行后内存'] ) / 1024;
     // 总体消耗内存峰值
     $totleMemory = ( memory_get_peak_usage() ) / 1024;
     // 当前总体消耗内存
     $nowMemory = ( memory_get_usage() ) / 1024;
     // 当前程序消耗内存
-    $now2Memory = ( memory_get_usage() - $statistic['_beginMemory']) / 1024;
+    $now2Memory = ( memory_get_usage() - $statistic['内存初始量']) / 1024;
 
     $data = [
-        '框架初始化消耗内存' => round($initMemory,3) . 'K',
-        '框架初始化消耗时间' => round($initTime,3) . '毫秒',
-        '程序消耗内存峰值' => round($usedMemory,3) . 'K',
-        '当前程序消耗内存' => round($now2Memory,3) . 'K',
-        '当前总体消耗内存' => round($nowMemory,3) . 'K',
-        '总体消耗内存峰值' => round($totleMemory,3) . 'K',
+        '框架初始化消耗时间(含路由)' => round($initTime,3) . '毫秒',
+        '框架初始化消耗内存(含路由)' => round($initMemory,3) . 'K',
+        '程序消耗内存(当前)' => round($now2Memory,3) . 'K',
+        '程序消耗内存(峰值)' => round($usedMemory,3) . 'K',
+        '总体消耗内存(当前)' => round($nowMemory,3) . 'K',
+        '总体消耗内存(峰值)' => round($totleMemory,3) . 'K',
         '总体消耗时间' => round($runtime,3) . '毫秒',
     ];
 

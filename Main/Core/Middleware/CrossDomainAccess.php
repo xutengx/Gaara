@@ -33,7 +33,7 @@ class CrossDomainAccess extends Middleware {
      * 允许来访的域名
      * @return string
      */
-    private function allowDomain (): string{
+    protected function allowDomain (): string{
         // 返回$str中第$num次出现$find的位置
         $getI = function (string $str , int $num, string $find = '/') : int{
             $n = 0;
@@ -52,7 +52,7 @@ class CrossDomainAccess extends Middleware {
      * @param Request $request
      * @return string
      */
-    private function allowMothods(Request $request): string {
+    protected function allowMothods(Request $request): string {
         return strtoupper(implode(',', $request->methods));
     }
 }

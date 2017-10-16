@@ -4,8 +4,9 @@ declare(strict_types = 1);
 namespace Main\Core;
 
 use Closure;
+use Main\Core\Route;
 
-class Kernel {
+abstract class Kernel {
 
     // 管道对象
     protected $pipeline = null;
@@ -16,6 +17,22 @@ class Kernel {
 
     public function __construct(Pipeline $pipeline) {
         $this->pipeline = $pipeline;
+    }
+    
+    public function Init(){
+        $conf = obj(Conf::class)->app;
+        date_default_timezone_set($conf['timezone']);
+        if ($conf['debug'] === true) {
+            ini_set('display_errors', '1');
+            error_reporting(E_ALL);
+        } else{
+            ini_set('display_errors', '0');
+        }
+        return $this;
+    }
+    
+    public function Start(){
+        Route::Start();
     }
 
     /**

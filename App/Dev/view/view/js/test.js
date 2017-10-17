@@ -17,3 +17,35 @@ function url(pathInfo, ps) {
     };
     return host + pathInfo + urlEncode(ps);
 }
+
+$.ajaxSetup({
+    beforeSend:function(request){
+        var match = window.document.cookie.match(/(?:^|\s|;)X-XSRF-TOKEN\s*=\s*([^;]+)(?:;|$)/);
+        request.setRequestHeader("X-XSRF-TOKEN", match && match[1]);
+    },
+    error: function(XMLHttpRequest, textStatus, errorThrown) {
+        var data = JSON.parse(XMLHttpRequest.responseText);
+        console.log(data);
+    }
+});
+(function ($) {
+    var _ajax = $.ajax;
+    $.ajax = function (opt) {
+        var fn = {beforeSend: function (request) {}};
+        if (opt.beforeSend)
+            fn.beforeSend = opt.beforeSend;
+        var _opt = $.extend(opt, {
+            beforeSend: function (request) {
+                var match = window.document.cookie.match(/(?:^|\s|;)X-XSRF-TOKEN\s*=\s*([^;]+)(?:;|$)/);
+                request.setRequestHeader("X-XSRF-TOKEN", match && match[1]);
+                fn.beforeSend(request);
+            },
+            beforeSend: function (request) {
+                var match = window.document.cookie.match(/(?:^|\s|;)X-XSRF-TOKEN\s*=\s*([^;]+)(?:;|$)/);
+                request.setRequestHeader("X-XSRF-TOKEN", match && match[1]);
+                fn.beforeSend(request);
+            }
+        });
+        _ajax(_opt);
+    };
+})(jQuery);

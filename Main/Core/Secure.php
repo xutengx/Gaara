@@ -23,7 +23,18 @@ class Secure {
      * @return string
      */
     public function csrfAjax(): string {
-        return '(function($){var _ajax=$.ajax;$.ajax=function(opt){ var fn = {beforeSend: function(request) {}};if(opt.beforeSend) fn.beforeSend=opt.beforeSend; var _opt = $.extend(opt,{beforeSend: function(request) {var match = window.document.cookie.match(/(?:^|\s|;)X-XSRF-TOKEN\s*=\s*([^;]+)(?:;|$)/);request.setRequestHeader("X-XSRF-TOKEN", match && match[1]);fn.beforeSend(request); }});_ajax(_opt);};})(jQuery);';
+        return <<<EOF
+$.ajaxSetup({
+    beforeSend:function(request){
+        var match = window.document.cookie.match(/(?:^|\s|;)X-XSRF-TOKEN\s*=\s*([^;]+)(?:;|$)/);
+        request.setRequestHeader("X-XSRF-TOKEN", match && match[1]);
+    },
+    error: function(XMLHttpRequest, textStatus, errorThrown) {
+        var data = JSON.parse(XMLHttpRequest.responseText);
+        alert(data.error.message);
+    }
+});
+EOF;
     }
 
     /**

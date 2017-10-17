@@ -2,7 +2,6 @@
 
 declare(strict_types = 1);
 namespace App\yh\c\Dev;
-defined('IN_SYS') || exit('ACC Denied');
 
 use Main\Core\Controller\HttpController;
 use Log;

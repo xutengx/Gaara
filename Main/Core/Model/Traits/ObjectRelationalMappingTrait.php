@@ -3,7 +3,7 @@
 declare(strict_types = 1);
 namespace Main\Core\Model\Traits;
 
-use Main\Core\Exception;
+use Exception;
 /**
  * ORM相关
  */

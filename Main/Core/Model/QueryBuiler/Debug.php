@@ -3,7 +3,7 @@
 declare(strict_types = 1);
 namespace Main\Core\Model\QueryBuiler;
 
-use Main\Core\Exception;
+use ErrorException as Exception;
 
 trait Debug {
     /**

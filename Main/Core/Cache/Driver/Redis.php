@@ -3,8 +3,6 @@
 namespace Main\Core\Cache\Driver;
 
 use Main\Core\Cache\DriverInterface;
-use Main\Core\Exception;
-defined('IN_SYS') || exit('ACC Denied');
 
 class Redis implements DriverInterface {
 
@@ -14,8 +12,8 @@ class Redis implements DriverInterface {
 
     public function __construct($options = array()) {
         $this->prefix = isset($options['prefix']) ? $options['prefix'] : $this->prefix;
-        if (!extension_loaded('redis'))
-            throw new Exception('当前php,尚未安装redis拓展!');
+//        if (!extension_loaded('redis'))
+//            throw new Exception('当前php,尚未安装redis拓展!');
         $this->handler = new \redis();
         $connect = (CLI === true) ? 'pconnect' : 'connect';
         $this->handler->$connect(

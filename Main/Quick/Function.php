@@ -118,6 +118,7 @@ function statistic() : array {
     $now2Memory = ( memory_get_usage() - $statistic['内存初始量']) / 1024;
 
     $data = [
+        '原生php初始化消耗内存' => round($statistic['内存初始量']/1000,3) . 'K',
         '框架初始化消耗时间(含路由)' => round($initTime,3) . '毫秒',
         '框架初始化消耗内存(含路由)' => round($initMemory,3) . 'K',
         '程序消耗内存(当前)' => round($now2Memory,3) . 'K',

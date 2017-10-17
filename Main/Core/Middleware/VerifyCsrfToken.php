@@ -5,7 +5,7 @@ namespace Main\Core\Middleware;
 
 use Main\Core\Middleware;
 use Main\Core\Request;
-use Main\Core\Exception;
+use Exception;
 use Secure;
 use Response;
 

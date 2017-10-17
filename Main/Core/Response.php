@@ -229,23 +229,4 @@ class Response {
         return \strtolower($_SERVER['REQUEST_METHOD']);
     }
 
-    /**
-     * 异常中断
-     * @param \Main\Core\Exception $exception
-     */
-    public function doException(Exception $exception): void {
-        $data['msg'] = $exception->getMessage();
-        if (DEBUG)
-            $data['exception'] = $exception->getTraceAsString();
-
-        $this->setStatus(500);
-
-        echo '<pre>';
-        foreach ($data as $v) {
-            echo $v;
-            echo '<br>';
-            echo '<br>';
-        }
-        exit('die');
-    }
 }

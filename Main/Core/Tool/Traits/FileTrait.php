@@ -3,7 +3,7 @@
 declare(strict_types = 1);
 namespace Main\Core\Tool\Traits;
 
-use Main\Core\Exception;
+use Exception;
 
 /**
  * 文件操作

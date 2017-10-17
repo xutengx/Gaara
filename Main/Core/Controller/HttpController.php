@@ -3,12 +3,13 @@
 declare(strict_types = 1);
 namespace Main\Core\Controller;
 
-use \Closure;
-use \PDOException;
-use \Main\Core\Cache;
-use \Main\Core\Template;
-use \Main\Core\Secure;
-use \Response;
+use Closure;
+use PDOException;
+use Main\Core\Cache;
+use Main\Core\Template;
+use Main\Core\Secure;
+use Response;
+use InvalidArgumentException;
 
 abstract class HttpController extends \Main\Core\Controller {
 
@@ -133,7 +134,7 @@ EEE;
         if (file_exists(ROOT . $this->view . $file . '.html'))
             include ROOT . $this->view . $file . '.html';
         else
-            throw new \Main\Core\Exception(ROOT . $this->view . $file . '.html' . '不存在!');
+            throw new InvalidArgumentException(ROOT . $this->view . $file . '.html' . '不存在!');
         echo <<<EEE
 </html>
 EEE;
@@ -168,7 +169,7 @@ EEE;
                 $this->cache .= "var " . $name . "=" . json_encode($val) . ";";
                 break;
             default:
-                throw new \Main\Core\Exception('暂不支持的数据类型!');
+                throw new InvalidArgumentException('暂不支持的数据类型!');
         }
     }
 

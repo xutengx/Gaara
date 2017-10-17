@@ -28,6 +28,7 @@
         * [ThrottleRequests](#ThrottleRequests)
         * [ValidatePostSize](#ValidatePostSize)
         * [VerifyCsrfToken](#VerifyCsrfToken)
+        * [ExceptionHandler](#ExceptionHandler)
 * [控制器](/helper/controller.md)
 * [数据库模型](/helper/model.md)
 * [缓存](/helper/cache.md)
@@ -157,3 +158,9 @@ class SignCheck extends Middleware {
 验证CsrfToken
 
 此中间件,依赖session_start(), (调用StartSession 中间件), 对程序员完全透明;
+
+### ExceptionHandler
+
+顶层异常捕获
+
+友好化输出未捕获的异常信息;

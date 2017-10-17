@@ -198,7 +198,7 @@ class DbConnection {
                 $res->execute($pars);
             }
         } catch (PDOException $pdo) {
-            Log::error($sql, [' sql error ', $pdo->getMessage()]);
+            Log::error($sql, ['sql error' => $pdo->getMessage()]);
             if ($i ++ >= 1) {
                 throw $pdo;  // 抛出异常
             }

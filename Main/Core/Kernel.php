@@ -19,7 +19,11 @@ abstract class Kernel {
         $this->pipeline = $pipeline;
     }
     
-    public function Init(){
+    /**
+     * 初始化时区, 报错
+     * @return Kernel
+     */
+    public function Init(): Kernel{
         $conf = obj(Conf::class)->app;
         date_default_timezone_set($conf['timezone']);
         if ($conf['debug'] === true) {
@@ -31,6 +35,9 @@ abstract class Kernel {
         return $this;
     }
     
+    /**
+     * 执行路由
+     */
     public function Start(){
         Route::Start();
     }
@@ -103,31 +110,25 @@ abstract class Kernel {
                 }
                 return $argument;
             };
-            try {
-                // 形如 'App\index\Contr\IndexContr@indexDo'
-                if (is_string($contr)) {
-                    $temp = explode('@', $contr);
-                    $reflectionClass = new \ReflectionClass($temp[0]);
-                    $methodClass = $reflectionClass->getMethod($temp[1]);
-                    $parameters = $methodClass->getParameters();
+            // 形如 'App\index\Contr\IndexContr@indexDo'
+            if (is_string($contr)) {
+                $temp = explode('@', $contr);
+                $reflectionClass = new \ReflectionClass($temp[0]);
+                $methodClass = $reflectionClass->getMethod($temp[1]);
+                $parameters = $methodClass->getParameters();
 
-                    $argument = $injection($parameters);
-                    $return = call_user_func_array(array(Integrator::getWithoutAlias($temp[0]), $temp[1]), $argument);
-                }
-                // 形如 function($param_1, $param_2 ) {return 'this is a function !';}
-                elseif ($contr instanceof \Closure) {
-                    $reflectionFunction = new \ReflectionFunction($contr);
-                    $parameters = $reflectionFunction->getParameters();
-
-                    $argument = $injection($parameters);
-                    $return = call_user_func_array($contr, $argument);
-                }
-                return $return;
-            } catch (Exception $exc) {
-                obj(Response::class)->doException($exc);
-            } finally {
-                
+                $argument = $injection($parameters);
+                $return = call_user_func_array(array(Integrator::getWithoutAlias($temp[0]), $temp[1]), $argument);
             }
+            // 形如 function($param_1, $param_2 ) {return 'this is a function !';}
+            elseif ($contr instanceof \Closure) {
+                $reflectionFunction = new \ReflectionFunction($contr);
+                $parameters = $reflectionFunction->getParameters();
+
+                $argument = $injection($parameters);
+                $return = call_user_func_array($contr, $argument);
+            }
+            return $return;
         };
     }
 

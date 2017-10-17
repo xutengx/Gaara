@@ -10,6 +10,7 @@ use Whoops\Run;
 use Whoops\Handler\PlainTextHandler;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
+use Log;
 
 /**
  * 异常处理
@@ -37,6 +38,9 @@ class ExceptionHandler extends Middleware {
             }
                 
         }
+        $whoops->pushHandler(function($exception, $inspector, $run){
+            Log::error($inspector->getExceptionMessage(),$exception->getTrace());
+        });
         $whoops->register();
     }
 }

@@ -3,6 +3,7 @@
 declare(strict_types = 1);
 namespace Main\Core\Controller\Traits;
 
+use Exception;
 /**
  * 请求过滤
  */
@@ -24,7 +25,7 @@ trait RequestTrait {
             $arrayKey = array();
             $array = obj('Request')->$fun;
             if ($array === null)
-                throw new \Main\Core\Exception('尝试获取' . $fun . '中的数据没有成功!');
+                throw new Exception('尝试获取' . $fun . '中的数据没有成功!');
             foreach ($array as $k => $v) {
                 if (array_key_exists($k, obj('Request')->getFilterArr()) && !is_array($k)) {
                     $arrayKey[$k] = $this->{$fun}($k, $k);

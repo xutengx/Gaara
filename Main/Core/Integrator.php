@@ -3,6 +3,8 @@
 declare(strict_types = 1);
 namespace Main\Core;
 
+use ReflectionClass;
+use Main\Core\Container;
 /**
  * 享元模式,依赖注入
  */
@@ -43,9 +45,9 @@ class Integrator {
      * @return string
      */
     private static function checkAlias(string $className): string {
-        $test = new \ReflectionClass($className);
+        $test = new ReflectionClass($className);
         $fatherClass = $test->getParentClass();
-        if ($fatherClass !== false && $fatherClass->name === \Main\Core\Container::class) {
+        if ($fatherClass !== false && $fatherClass->name === Container::class) {
             return $className::getInstanceName();
         } else
             return $className;
@@ -56,13 +58,9 @@ class Integrator {
      * @param string $class 完整类名
      * @param array $par new一个对象所需要的参数; 注:只有第一次实例化时,参数才会被使用!
      * @return object
-     * @throws Exception
      */
     private static function getins(string $class, array $par = []) {
-        if (!class_exists($class)) {
-            throw new Exception('实例化类 : ' . $class . ' 不存在!', 99);
-        }
-        return isset(self::$obj_ins[$class]) ? self::$obj_ins[$class] : self::$obj_ins[$class] = self::getInstance($class, $par);
+        return self::$obj_ins[$class] ?? self::$obj_ins[$class] = self::getInstance($class, $par);
     }
 
     /**
@@ -73,7 +71,7 @@ class Integrator {
      */
     private static function getInstance(string $className, array $par = []) {
         $paramArr = self::getMethodParams($className, $par);
-        return (new \ReflectionClass($className))->newInstanceArgs($paramArr);
+        return (new ReflectionClass($className))->newInstanceArgs($paramArr);
     }
 
     /**
@@ -93,7 +91,7 @@ class Integrator {
         // 获取该方法所需要依赖注入的参数
         $paramArr = self::getMethodParams($className, $params, $methodName);
 
-        $reflectionClass = new \ReflectionClass($className);
+        $reflectionClass = new ReflectionClass($className);
         $method = $reflectionClass->getMethod($methodName);
         $closure = $method->getClosure($instance);
         return $closure(...$paramArr);
@@ -108,7 +106,7 @@ class Integrator {
      */
     private static function getMethodParams($className, array $pars = [], string $methodsName = '__construct'): array {
         // 通过反射获得该类
-        $class = new \ReflectionClass($className);
+        $class = new ReflectionClass($className);
         $paramArr = []; // 记录参数，和参数类型
         // 判断该类是否有构造函数
         if ($class->hasMethod($methodsName)) {
@@ -159,13 +157,6 @@ class Integrator {
             }
         }
         return $paramArr;
-    }
-
-    /**
-     * 查看预存的class引用路径
-     */
-    public static function showMap() {
-        var_export(self::$obj_map);
     }
 
     /**

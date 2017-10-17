@@ -3,9 +3,9 @@
 declare(strict_types = 1);
 namespace Main\Core;
 
-use Tool;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use Monolog\Formatter\LineFormatter;
 
 /**
  * 记录日志
@@ -27,13 +27,14 @@ class Log {
     
     public function __construct($name = 'gaara_', array $handlers = array(), array $processors = array()) {
         $this->handle = new Logger($name, $handlers, $processors);
-        $this->handle->pushHandler(new StreamHandler($this->makeFilename('debug'), Logger::DEBUG, false));
-        $this->handle->pushHandler(new StreamHandler($this->makeFilename('info'), Logger::INFO, false));
-        $this->handle->pushHandler(new StreamHandler($this->makeFilename('notice'), Logger::NOTICE, false));
-        $this->handle->pushHandler(new StreamHandler($this->makeFilename('warning'), Logger::WARNING, false));
-        $this->handle->pushHandler(new StreamHandler($this->makeFilename('error'), Logger::ERROR, false));
-        $this->handle->pushHandler(new StreamHandler($this->makeFilename('critical'), Logger::CRITICAL, false));
-        $this->handle->pushHandler(new StreamHandler($this->makeFilename('emergency'), Logger::EMERGENCY, false));
+        $formatter = new LineFormatter(null, null, true, true);
+        $this->handle->pushHandler((new StreamHandler($this->makeFilename('debug'), Logger::DEBUG, false))->setFormatter($formatter));
+        $this->handle->pushHandler((new StreamHandler($this->makeFilename('info'), Logger::INFO, false))->setFormatter($formatter));
+        $this->handle->pushHandler((new StreamHandler($this->makeFilename('notice'), Logger::NOTICE, false))->setFormatter($formatter));
+        $this->handle->pushHandler((new StreamHandler($this->makeFilename('warning'), Logger::WARNING, false))->setFormatter($formatter));
+        $this->handle->pushHandler((new StreamHandler($this->makeFilename('error'), Logger::ERROR, false))->setFormatter($formatter));
+        $this->handle->pushHandler((new StreamHandler($this->makeFilename('critical'), Logger::CRITICAL, false))->setFormatter($formatter));
+        $this->handle->pushHandler((new StreamHandler($this->makeFilename('emergency'), Logger::EMERGENCY, false))->setFormatter($formatter));
     }
   
 

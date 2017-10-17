@@ -5,9 +5,7 @@ namespace Main\Core;
 
 use Main\Core\Model\QueryBuiler;
 use Main\Core\Model\Traits;
-use Main\Core\Exception;
 use PDOStatement;
-use \Log;
 
 class Model {
 

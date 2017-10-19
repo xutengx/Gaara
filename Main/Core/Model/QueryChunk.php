@@ -29,6 +29,7 @@ class QueryChunk implements Iterator {
     
     /**
      * 获取结果集value, 键key自增, 判断is_over
+     * @return void
      */
     private function fetchData(): void {
         $value = $this->PDOStatement->fetch(\PDO::FETCH_ASSOC);

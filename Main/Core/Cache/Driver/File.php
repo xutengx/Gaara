@@ -24,7 +24,7 @@ class File implements DriverInterface {
 
     public function get($key) {
         $filename = $this->makeFilename($key);
-        if (!file_exists($filename))
+        if (!is_file($filename))
             return array('code' => 0);
         $content = file_get_contents($filename);
         if (false !== $content) {
@@ -46,7 +46,7 @@ class File implements DriverInterface {
 
     public function rm($key) {
         $filename = $this->makeFilename($key);
-        if (file_exists($filename))
+        if (is_file($filename))
             return unlink($filename);
         return true;
     }
@@ -59,11 +59,11 @@ class File implements DriverInterface {
 
     public function callget($cachedir, $cacheTime) {
         $return = $this->cacheRoot . $cachedir . '.' . $this->cacheFileExt;
-        if ( file_exists($return)) {
+        if ( is_file($return)) {
             $cTime = $this->getFileCreateTime($return);
             if (($cTime + $cacheTime) > time()) {
                 $data = NULL;
-                if (file_exists($return))
+                if (is_file($return))
                     $data = unserialize(file_get_contents($return));
                 return array(
                     'code' => 200,
@@ -114,7 +114,7 @@ class File implements DriverInterface {
     private function getFileCreateTime($fileName) {
         if (!trim($fileName))
             return 0;
-        if (file_exists($fileName)) {
+        if (is_file($fileName)) {
             return (int) filemtime($fileName);
         } else
             return 0;
@@ -129,7 +129,7 @@ class File implements DriverInterface {
     private function saveFile($fileName, $text) {
         if (!$fileName || !$text)
             return false;
-        if (!file_exists($fileName)) {
+        if (!is_file($fileName)) {
             if (is_dir(dirname($fileName)) || $this->_mkdir(dirname($fileName)))
                 touch($fileName);
         }

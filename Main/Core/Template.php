@@ -78,14 +78,14 @@ class Template {
             $ext = strrchr($v, '.');
             if ($ext === '.js') {
                 $jsname = $newDir . str_replace($originaDir, '', $v);
-                if (!file_exists($jsname) || filemtime($v) > filectime($jsname)) {
+                if (!is_file($jsname) || filemtime($v) > filectime($jsname)) {
                     $content = $this->AutomaticPacking(file_get_contents($v));
                     obj(Tool::class)->printInFile($jsname, $content);
                 }
                 $str .= '<script src="' . HOST . $jsname . '"></script>';
             } elseif ($ext === '.css') {
                 $jsname = $newDir . str_replace($originaDir, '', $v);
-                if (!file_exists($jsname) || filemtime($v) > filectime($jsname)) {
+                if (!is_file($jsname) || filemtime($v) > filectime($jsname)) {
                     $content = $this->compressCss(file_get_contents($v));
                     obj(Tool::class)->printInFile($jsname, $content);
                 }

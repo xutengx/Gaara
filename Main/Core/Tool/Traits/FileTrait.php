@@ -100,7 +100,7 @@ trait FileTrait {
 //        var_dump($fileName);
         if (strripos($fileName, '/') === (strlen($fileName) - 1))
             return false;      // filename 为路径,而不是文件名
-        if (!file_exists($fileName)) {
+        if (!is_file($fileName)) {
             if (is_dir(dirname($fileName)) || $this->__mkdir(dirname($fileName)))
                 touch($fileName);
         }

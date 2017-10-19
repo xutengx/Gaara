@@ -334,7 +334,7 @@ class index2Contr extends HttpController {
         var_dump($info);
     }
     
-    public function test_19(Model\visitorInfoDev $visitorInfo){
+    public function test_19(Model\visitorInfoDev $visitorInfo) {
 //        $dir = (new \Main\Expand\Image)->newUrl('https://baidu.com');
 //        var_dump($dir);
 //        $data = 'https://www.baidu.com';

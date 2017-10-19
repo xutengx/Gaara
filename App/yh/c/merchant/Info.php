@@ -136,9 +136,9 @@ class Info extends HttpController {
      */
     private function clean(array $arr) {
         foreach ($arr as $v) {
-            if (file_exists(ROOT . $v) && !is_dir(ROOT . $v)) {
+            if (is_file(ROOT . $v) && !is_dir(ROOT . $v)) {
                 unlink(ROOT . $v);
-            } elseif (file_exists($v) && !is_dir($v)) {
+            } elseif (is_file($v) && !is_dir($v)) {
                 unlink($v);
             }
         }

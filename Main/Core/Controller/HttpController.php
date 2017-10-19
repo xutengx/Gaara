@@ -131,7 +131,7 @@ EEE;
         echo '<script>' . $ajax, $this->cache . '</script>';
         // 重置
         $this->cache = ';';
-        if (file_exists(ROOT . $this->view . $file . '.html'))
+        if (is_file(ROOT . $this->view . $file . '.html'))
             include ROOT . $this->view . $file . '.html';
         else
             throw new InvalidArgumentException(ROOT . $this->view . $file . '.html' . '不存在!');

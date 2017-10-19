@@ -39,7 +39,7 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "php -r \"file_exists('env.php') || copy('env.example.php', 'env.php');\""
+            "php -r \"is_file('env.php') || copy('env.example.php', 'env.php');\""
         ]
     },
     "config": {

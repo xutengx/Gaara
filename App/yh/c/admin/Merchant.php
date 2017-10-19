@@ -92,9 +92,9 @@ class Merchant extends HttpController {
      */
     private function clean(array $arr){
         foreach ($arr as $v) {
-            if(file_exists(ROOT.$v)){
+            if(is_file(ROOT.$v)){
                 unlink(ROOT.$v);
-            }elseif(file_exists($v)){
+            }elseif(is_file($v)){
                 unlink($v);
             }
         }

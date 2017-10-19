@@ -3,6 +3,7 @@
 declare(strict_types = 1);
 namespace Main\Core;
 
+use Exception;
 /**
  * 快捷类
  */
@@ -28,13 +29,13 @@ abstract class Container {
             return static::$instance;
         else {
             $class = static::class;
-            if (class_exists('Main\Core\\' . $class)) {
+            if (is_file(ROOT.'Main/Core/' . $class.'.php')) {
                 return 'Main\Core\\' . $class;
-            }elseif(class_exists('Main\Expand\\' . $class)) {
+            }elseif(is_file(ROOT.'Main/Expand/' . $class.'.php')) {
                 return 'Main\Expand\\' . $class;
             }
         }
-        throw new Exception('别名类: ' . $class . ' 的 $instance 没有被正确定义!');
+        throw new Exception('Alias class: "' . $class . '" not properly defined!');
     }
 
     final public function __set(string $param, $value) {

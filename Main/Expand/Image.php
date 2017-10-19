@@ -28,8 +28,8 @@ class Image {
             throw new Exception('Image::yzm is dependent on Session');
         }
         $font = ROOT . $this->font;
-        if (!file_exists($font)) {
-            throw new \Exception('The font file "' . $font . '" does not exist');
+        if (!is_file($font)) {
+            throw new Exception('The font file "' . $font . '" does not exist');
         }
         $this->firstMustBeBig($width, $height);
         // imagecreate 创建画布

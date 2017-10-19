@@ -6,7 +6,7 @@ return [
     }),
     Route::get('/data/upload/{yearmonth}/{day}/{name}', function($yearmonth, $day, $name) {
         $filename = ROOT . "data/upload/$yearmonth/$day/$name";
-        if (file_exists($filename)) return \Response::setContentType(substr(strrchr($name, '.'), 1))->returnData(file_get_contents($filename));
+        if (is_file($filename)) return \Response::setContentType(substr(strrchr($name, '.'), 1))->returnData(file_get_contents($filename));
         else return \Response::setStatus(404)->exitData();
     }),
     // yh

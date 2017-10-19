@@ -35,7 +35,7 @@ class PhpConsole {
      */
     private function makeFilename(): string{
         $filename = ROOT.$this->path.date('Y/m/d').'.'.$this->ext;
-        if(!file_exists($filename)){
+        if(!is_file($filename)){
             Tool::printInFile($filename, '');
         }
         return $filename;

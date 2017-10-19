@@ -3,8 +3,9 @@
 declare(strict_types = 1);
 namespace Main\Core;
 
-use \Main\Core\Request\Traits;
-use \Main\Core\Request\UploadFile;
+use Exception;
+use Main\Core\Request\Traits;
+use Main\Core\Request\UploadFile;
 
 class Request {
 
@@ -33,7 +34,7 @@ class Request {
      * @param array $domainPar 域名参数数组
      */
     final public function __construct(array $urlPar = [], array $domainPar = []) {
-        $this->file = obj(UploadFile::class);
+        $this->file = new UploadFile();
         $this->getContentType($urlPar, $domainPar);
     }
 
@@ -232,7 +233,7 @@ class Request {
      */
     public function __set(string $property_name, $value) {
         if (in_array(strtolower($property_name), array('input', 'post', 'get', 'put', 'cookie', 'delete', 'file'), true)) {
-            throw new Exception($property_name . ' 不应该被直接修改');
+            throw new Exception($property_name . ' should not be modified directly');
         } else {
             $this->{$property_name} = $value;
             return true;

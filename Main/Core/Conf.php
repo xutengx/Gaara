@@ -55,7 +55,7 @@ class Conf {
     public function __get(string $configName) {
         if (array_key_exists($configName, self::$data)) {
             return self::$data[$configName];
-        } elseif (file_exists(CONFIG . $configName . '.php')) {
+        } elseif (is_file(CONFIG . $configName . '.php')) {
             $config = require(CONFIG . $configName . '.php');
             self::$data[$configName] = $config;
             return $config;
@@ -75,7 +75,7 @@ class Conf {
         // 存在对应配置文件
         if (isset(self::$data[$name])) {
             return self::$data[$name][reset($arguments)];
-        } elseif (file_exists(CONFIG . $name . '.php')) {
+        } elseif (is_file(CONFIG . $name . '.php')) {
             $config = require(CONFIG . $name . '.php');
             self::$data[$name] = $config;
             return $config[reset($arguments)];

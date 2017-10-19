@@ -3,6 +3,8 @@
 declare(strict_types = 1);
 namespace Main\Core;
 
+use Closure;
+use App\Kernel;
 use Main\Core\Route\Traits;
 
 /**
@@ -69,10 +71,11 @@ class Route {
      */
     private static function routeAnalysis(): void {
         foreach (self::$routeRule as $rule => $info) {
-            // 兼容式路由分组
+            // 兼容式路由
             if (is_int($rule)) {
-                if(is_null($info))
+                if(is_null($info)){
                     break;
+                }
                 foreach($info as $k => $v){
                     $rule = $k;
                     $info = $v;
@@ -150,10 +153,8 @@ class Route {
      * @return bool
      */
     private static function infoAnalysis(string $rule, $info, array $urlParam): bool {
-        // 一致化格式
-        $info = self::unifiedInfo($info);
         // 别名分析
-        $alias = ( isset($info['as']) && !empty($info['as']) ) ? $info['as'] : $rule;
+        $alias = $info['as'] ?? $rule;
         // 域名分析
         if (isset($info['domain'])) {
             if (!is_array($domainParam = self::domainToPreg($info['domain']))) {
@@ -161,7 +162,7 @@ class Route {
             }
         }
         // http方法分析
-        if (!in_array(strtolower($_SERVER['REQUEST_METHOD']), $info['method']))
+        if (!in_array(strtolower($_SERVER['REQUEST_METHOD']), $info['method'], true))
             return false;
 
         // 中间件
@@ -174,7 +175,7 @@ class Route {
         $wholeParam = array_merge($domainParam, $urlParam);
 
         // 初始化 Request
-        $request = \obj(Request::class, $urlParam, $domainParam);
+        $request = obj(Request::class, $urlParam, $domainParam);
         self::$domainParam = $domainParam;
         self::$urlParam = $urlParam;
         $request->alias = $alias;
@@ -190,33 +191,6 @@ class Route {
     }
 
     /**
-     * info 一致化格式
-     * @param \Closure $info
-     * @return void
-     */
-    private static function unifiedInfo($info): array {
-        $arr = [];
-        if (is_string($info) || $info instanceof \Closure) {
-            $arr = [
-                'method' => self::$allowMethod,
-                'middleware' => [],
-                'domain' => $_SERVER['HTTP_HOST'],
-                'as' => [],
-                'uses' => $info
-            ];
-        } elseif (is_array($info)) {
-            $arr = [
-                'method' => $info['method'] ?? self::$allowMethod,
-                'middleware' => $info['middleware'] ?? [],
-                'domain' => $info['domain'] ?? $_SERVER['HTTP_HOST'],
-                'as' => $info['as'] ?? [],
-                'uses' => $info['uses']
-            ];
-        }
-        return $arr;
-    }
-
-    /**
      * 执行中间件, 控制器
      * @param array $middleware
      * @param string|callback|array $contr
@@ -224,15 +198,15 @@ class Route {
      * @return void
      */
     private static function doKernel(array $middleware, $contr, array $wholeParam): void {
-        obj(\App\Kernel::class)->run($middleware, $contr, $wholeParam);
+        obj(Kernel::class)->run($middleware, $contr, $wholeParam);
     }
 
     /**
      * 将域名规则翻译为正则表达式 (不支持问号参数)
-     * @param string    $rule       域名规则    eg: {admin}.{gitxt}.com
+     * @param string $rule 域名规则 eg: {admin}.{gitxt}.com
      * @return array|false
      */
-    private static function domainToPreg($rule = '') {
+    private static function domainToPreg(string $rule = '') {
         $param = [];
         $preg = \preg_replace_callback("/{[^\.]*}/is", function($matches) use (&$param) {
             $param[trim(trim($matches[0], '}'), '{')] = null;

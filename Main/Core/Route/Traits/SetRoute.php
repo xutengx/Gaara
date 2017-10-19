@@ -3,11 +3,13 @@
 declare(strict_types = 1);
 namespace Main\Core\Route\Traits;
 
+use Closure;
+
 /**
  * 设置路由
  */
 trait SetRoute {
-    
+
     // 可用的 http 动作
     private static $allowMethod = [
         'get', 'post', 'put', 'delete', 'head', 'patch', 'options'
@@ -34,7 +36,6 @@ trait SetRoute {
         self::put($url, $controller . '@update');
     }
 
-
     /**
      * options路由
      * @param string $url
@@ -54,7 +55,7 @@ trait SetRoute {
     public static function post(string $url, $action): void {
         self::match(['post', 'options'], $url, $action);
     }
-    
+
     /**
      * get路由
      * @param string $url
@@ -64,7 +65,7 @@ trait SetRoute {
     public static function get(string $url, $action): void {
         self::match(['get', 'options'], $url, $action);
     }
-    
+
     /**
      * put路由
      * @param string $url
@@ -74,17 +75,17 @@ trait SetRoute {
     public static function put(string $url, $action): void {
         self::match(['put', 'options'], $url, $action);
     }
-    
+
     /**
      * delete路由
      * @param string $url
      * @param mix $action
      * @return void
      */
-    public static function delete(string $url, $action) : void{
+    public static function delete(string $url, $action): void {
         self::match(['delete', 'options'], $url, $action);
     }
-    
+
     /**
      * head路由
      * @param string $url
@@ -94,7 +95,7 @@ trait SetRoute {
     public static function head(string $url, $action): void {
         self::match(['head'], $url, $action);
     }
-    
+
     /**
      * patch路由
      * @param string $url
@@ -141,19 +142,17 @@ trait SetRoute {
 
         // 处理得到 完整uses
         {
-            if ($actionInfo['uses'] instanceof \Closure) {
+            if ($actionInfo['uses'] instanceof Closure) {
                 $uses = $actionInfo['uses'];
-            } elseif (!empty(self::$group['namespace'])) {
-                $namespace = '';
+            } else {
+                $group_namespace = '';
                 foreach (self::$group['namespace'] as $v) {
                     if (empty($v))
                         continue;
-                    $namespace .= trim(str_replace('/', '\\', $v), '\\') . '\\';
+                    $group_namespace .= str_replace('/', '\\', $v) . '\\';
                 }
-                $uses = $namespace . $actionInfo['uses'];
-            } else {
-                $namespace = trim(str_replace('/', '\\', $actionInfo['namespace']), '\\') . '\\';
-                $uses = $namespace . $actionInfo['uses'];
+                $namespace = !empty($actionInfo['namespace']) ? str_replace('/', '\\', $actionInfo['namespace']) . '\\' : '';
+                $uses = $group_namespace . $namespace . $actionInfo['uses'];
             }
         }
 
@@ -209,16 +208,16 @@ trait SetRoute {
     /**
      * 路由分组, 无线级嵌套
      * @param array $rule
-     * @param \Closure $callback
+     * @param Closure $callback
      * @return void
      */
-    public static function group(array $rule, \Closure $callback): void {
+    public static function group(array $rule, Closure $callback): void {
         // 当前 group 分组信息填充
-        self::$group['middleware'][] = isset($rule['middleware']) ? $rule['middleware'] : [];
-        self::$group['namespace'][] = isset($rule['namespace']) ? $rule['namespace'] : '';
-        self::$group['prefix'][] = isset($rule['prefix']) ? $rule['prefix'] : '';
-        self::$group['as'][] = isset($rule['as']) ? $rule['as'] : '';
-        self::$group['domain'][] = isset($rule['domain']) ? $rule['domain'] : '';
+        self::$group['middleware'][] = $rule['middleware'] ?? [];
+        self::$group['namespace'][] = $rule['namespace'] ?? '';
+        self::$group['prefix'][] = $rule['prefix'] ?? '';
+        self::$group['as'][] = $rule['as'] ?? '';
+        self::$group['domain'][] = $rule['domain'] ?? '';
 
         // 执行闭包
         $callback();
@@ -237,35 +236,27 @@ trait SetRoute {
     private static function formatAction($action): array {
         $actionInfo = [];
         if (is_array($action)) {
-            if ($action['uses'] instanceof \Closure) {
-                $actionInfo['middleware'] = isset($action['middleware']) ? $action['middleware'] : [];
-                $actionInfo['namespace'] = '';
-                $actionInfo['prefix'] = '';
-                $actionInfo['as'] = isset($action['as']) ? $action['as'] : '';
-                $actionInfo['domain'] = isset($action['domain']) ? $action['domain'] : '';
+            if ($action['uses'] instanceof Closure) {
                 $actionInfo['uses'] = $action['uses'];
             } elseif (is_string($action['uses'])) {
-                $actionInfo['middleware'] = isset($action['middleware']) ? $action['middleware'] : [];
-                $actionInfo['namespace'] = isset($action['namespace']) ? $action['namespace'] : '';
-                $actionInfo['prefix'] = isset($action['prefix']) ? $action['prefix'] : '';
-                $actionInfo['as'] = isset($action['as']) ? $action['as'] : '';
-                $actionInfo['domain'] = isset($action['domain']) ? $action['domain'] : '';
                 $actionInfo['uses'] = trim(str_replace('/', '\\', $action['uses']), '\\');
             }
-        } elseif ($action instanceof \Closure) {
+            $actionInfo['middleware'] = $action['middleware'] ?? [];
+            $actionInfo['namespace'] = $action['namespace'] ?? '';
+            $actionInfo['prefix'] = $action['prefix'] ?? '';
+            $actionInfo['as'] = $action['as'] ?? '';
+            $actionInfo['domain'] = $action['domain'] ?? '';
+        } else {
+            if ($action instanceof Closure) {
+                $actionInfo['uses'] = $action;
+            } elseif (is_string($action)) {
+                $actionInfo['uses'] = trim(str_replace('/', '\\', $action), '\\');
+            }
             $actionInfo['middleware'] = [];
             $actionInfo['namespace'] = '';
             $actionInfo['prefix'] = '';
             $actionInfo['as'] = '';
             $actionInfo['domain'] = '';
-            $actionInfo['uses'] = $action;
-        } elseif (is_string($action)) {
-            $actionInfo['middleware'] = [];
-            $actionInfo['namespace'] = '';
-            $actionInfo['prefix'] = '';
-            $actionInfo['as'] = '';
-            $actionInfo['domain'] = '';
-            $actionInfo['uses'] = trim(str_replace('/', '\\', $action), '\\');
         }
         return $actionInfo;
     }

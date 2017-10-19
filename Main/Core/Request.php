@@ -221,8 +221,6 @@ class Request {
             return $this->$property_name;
         elseif (method_exists($this, $method = 'get' . ucfirst($property_name))) {
             return $this->$method();
-        } elseif (method_exists($this, $property_name)) {
-            return $this->$property_name();
         }
     }
 
@@ -230,10 +228,11 @@ class Request {
      * 后期添加对应属性
      * @param string $property_name
      * @param type $value
+     * @return bool
      */
-    public function __set(string $property_name, $value) {
+    public function __set(string $property_name, $value): bool {
         if (in_array(strtolower($property_name), array('input', 'post', 'get', 'put', 'cookie', 'delete', 'file'), true)) {
-            throw new Exception($property_name . ' should not be modified directly');
+            throw new Exception($property_name . ' should not be modified.');
         } else {
             $this->{$property_name} = $value;
             return true;

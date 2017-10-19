@@ -58,7 +58,7 @@ abstract class Kernel {
     /**
      * 将中间件数组, 加入管道流程 Pipeline::pipesPush(string)
      * @param array $middlewareGroups
-     * @return void
+     * @return array
      */
     protected function addMiddleware(array $middlewareGroups): array {
         $arr = [];
@@ -79,7 +79,7 @@ abstract class Kernel {
      * 方法依赖注入,执行,支持闭包函数
      * @param string|callback|array $contr 将要执行的方法
      * @param array $request 请求参数
-     * @return void
+     * @return Closure
      */
     protected function doController($contr, array $request): Closure {
         return function () use ($contr, $request) {
@@ -131,9 +131,4 @@ abstract class Kernel {
             return $return;
         };
     }
-
-    final public function __get(string $param) {
-        return $this->$param;
-    }
-
 }

@@ -73,7 +73,7 @@ return [
     
     Route::group(['middleware'=>['web','api'], 'namespace'=> 'App\Dev' ], function(){
         // 数据库测试
-        Route::get('/mysql','mysql\Contr\index2Contr@indexDo');
+        Route::get('/mysql',['namespace'=>'', 'uses' =>'mysql\Contr\index2Contr@indexDo']);
         // 数据库测试
         Route::get('/mysql/test','mysql\Contr\indexContr@test');
         // 邮件测试 给 emailAddr 发一份邮件

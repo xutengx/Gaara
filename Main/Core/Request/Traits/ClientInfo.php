@@ -23,7 +23,7 @@ trait ClientInfo {
         } elseif (isset($_SERVER['REMOTE_ADDR']) && !empty($_SERVER["REMOTE_ADDR"])) {
             $cip = $_SERVER["REMOTE_ADDR"];
         } else {
-            throw new Exception('无法获取客户端ip');
+            throw new Exception('Unable to get client IP');
         }
         return $this->ip = $cip;
     }

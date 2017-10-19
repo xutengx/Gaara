@@ -28,7 +28,7 @@ trait RequestInfo {
      * 是否ajax请求
      * @return bool
      */
-    private function isAjax(): bool {
+    public function isAjax(): bool {
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && (strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'))
             return true;
         return false;

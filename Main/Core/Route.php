@@ -69,11 +69,15 @@ class Route {
      */
     private static function routeAnalysis(): void {
         foreach (self::$routeRule as $rule => $info) {
-            // 路由分组
+            // 兼容式路由分组
             if (is_int($rule)) {
-                if (is_null($info))
-                    continue;
-                list($rule, $info) = each($info);
+                if(is_null($info))
+                    break;
+                foreach($info as $k => $v){
+                    $rule = $k;
+                    $info = $v;
+                    break;
+                }
             }
             $parameter = [];
             $pathInfoPreg = self::ruleToPreg($rule, $parameter);
@@ -123,7 +127,7 @@ class Route {
      * @param array $argument 实参数组列表(一维数组)
      * @return array 可调用的参数数组(一维链表)
      */
-    private static function paramAnalysis($parameter, $argument): array {
+    private static function paramAnalysis(array $parameter, array $argument): array {
         $arr = [];
         if (!empty($parameter)) {
             foreach ($parameter as $k => $v) {
@@ -202,10 +206,10 @@ class Route {
             ];
         } elseif (is_array($info)) {
             $arr = [
-                'method' => isset($info['method']) ? $info['method'] : self::$allowMethod,
-                'middleware' => isset($info['middleware']) ? $info['middleware'] : [],
-                'domain' => isset($info['domain']) ? $info['domain'] : $_SERVER['HTTP_HOST'],
-                'as' => isset($info['as']) ? $info['as'] : [],
+                'method' => $info['method'] ?? self::$allowMethod,
+                'middleware' => $info['middleware'] ?? [],
+                'domain' => $info['domain'] ?? $_SERVER['HTTP_HOST'],
+                'as' => $info['as'] ?? [],
                 'uses' => $info['uses']
             ];
         }

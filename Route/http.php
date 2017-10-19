@@ -1,6 +1,9 @@
 <?php
 
 return [
+    '/t' => function(){
+        return 't';
+    },
     Route::get('/',function(){
         return \Response::setContentType('html')->returnData('hello world');
     }),

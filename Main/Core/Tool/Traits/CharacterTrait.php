@@ -39,7 +39,7 @@ trait CharacterTrait {
      * @return string
      */
     public function cutstr(string $string = '', int $length = 9, string $havedot = '', string $charset = 'utf8'): string {
-        if (strtolower($charset) == 'gbk')
+        if (strtolower($charset) === 'gbk')
             $charset = 'gbk';
         else
             $charset = 'utf8';
@@ -53,10 +53,10 @@ trait CharacterTrait {
             $string = str_replace(array('&amp;', '&quot;', '&lt;', '&gt;'), array($pre . '&' . $end, $pre . '"' . $end, $pre . '<' . $end, $pre . '>' . $end), $string);
             $strlen = strlen($string);
             $n = $tn = $noc = 0;
-            if ($charset == 'utf8') {
+            if ($charset === 'utf8') {
                 while ($n < $strlen) {
                     $t = ord($string[$n]);
-                    if ($t == 9 || $t == 10 || (32 <= $t && $t <= 126)) {
+                    if ($t === 9 || $t === 10 || (32 <= $t && $t <= 126)) {
                         $tn = 1;
                         $n++;
                         $noc++;
@@ -76,7 +76,7 @@ trait CharacterTrait {
                         $tn = 5;
                         $n += 5;
                         $noc++;
-                    } elseif ($t == 252 || $t == 253) {
+                    } elseif ($t === 252 || $t === 253) {
                         $tn = 6;
                         $n += 6;
                         $noc++;

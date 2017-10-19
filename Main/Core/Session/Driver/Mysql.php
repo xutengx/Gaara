@@ -156,7 +156,7 @@ EEE;
         for($i=0;$i<count($explodeIt)-1;$i++) {
             $sessGet    = explode("|",$explodeIt[$i]);
             $sessName[$i]    = $sessGet[0];
-            if(substr($sessGet[1],0,2) == 's:') {
+            if(substr($sessGet[1],0,2) === 's:') {
                 $sessData[$i]    = str_replace('"','',strstr($sessGet[1],'"'));
             } else {
                 $sessData[$i]    = substr($sessGet[1],2);

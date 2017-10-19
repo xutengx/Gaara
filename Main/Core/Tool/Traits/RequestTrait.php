@@ -55,18 +55,18 @@ trait RequestTrait {
         $active = null;
         do {
             $mrc = curl_multi_exec($handle, $active);
-        } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+        } while ($mrc === CURLM_CALL_MULTI_PERFORM);
 
-        while ($active && $mrc == CURLM_OK) {
+        while ($active && $mrc === CURLM_OK) {
             if (curl_multi_select($handle) != -1) {
                 do {
                     $mrc = curl_multi_exec($handle, $active);
-                } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+                } while ($mrc === CURLM_CALL_MULTI_PERFORM);
             }
         }
 
         foreach ($curl as $k => $v) {
-            if (curl_error($curl[$k]) == "") {
+            if (curl_error($curl[$k]) === "") {
                 $text[$k] = (string) curl_multi_getcontent($curl[$k]);
             }
             curl_multi_remove_handle($handle, $curl[$k]);

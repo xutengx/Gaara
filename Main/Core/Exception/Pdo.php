@@ -65,7 +65,7 @@ class Pdo extends \Exception{
     private function table_not_exist() {
         $datatables = obj(Conf::class)->datatables;
         $arr = explode(';', trim($datatables));
-        if ($arr[count($arr) - 1] == '')
+        if ($arr[count($arr) - 1] === '')
             unset($arr[count($arr) - 1]);
         foreach ($arr as  $v) {
             $this->db->insert($v);

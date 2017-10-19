@@ -61,7 +61,7 @@ class Image {
             $strData .= $strDatax;
             imagettftext($resData, $fontsize * 0.8, rand(- 30, 30), (int) $x, (int) $y, $color1, $font, (string) $strDatax);
             $x += $fontsize;
-            if ($i == 0 || $i == 1) {
+            if ($i === 0 || $i === 1) {
                 // 画线
                 imageline($resData, rand(0, $width / 2), rand(0, $height / 2), rand($width / 2, $width), rand($height / 2, $height), $color2);
             }

@@ -84,7 +84,7 @@ class Model {
             return $this->db->getAll('SHOW COLUMNS FROM `' . $this->table . '`');
         }, 3600);
         foreach ($this->field as $v) {
-            if ($v['Extra'] == 'auto_increment') {
+            if ($v['Extra'] === 'auto_increment') {
                 $this->primaryKey = $v['Field'];
                 break;
             }

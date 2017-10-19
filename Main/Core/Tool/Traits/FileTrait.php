@@ -75,7 +75,7 @@ trait FileTrait {
 //        $this->absoluteDir($dirName);
         if (is_dir($dirName) && $dir_arr = scandir($dirName)) {
             foreach ($dir_arr as $k => $v) {
-                if ($v == '.' || $v == '..') {
+                if ($v === '.' || $v === '..') {
                     
                 } else {
                     if (is_dir($dirName . '/' . $v)) {
@@ -128,7 +128,7 @@ trait FileTrait {
         $arr = array();
         if (is_dir($dirName) && $dir_arr = scandir($dirName)) {
             foreach ($dir_arr as $k => $v) {
-                if ($v == '.' || $v == '..') {
+                if ($v === '.' || $v === '..') {
                     
                 } else {
                     if (is_dir($dirName . '/' . $v)) {

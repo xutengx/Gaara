@@ -256,9 +256,9 @@ $visitorInfo->dataIncrement('num', 4)->update();
 // num字段自减1
 $visitorInfo->dataDecrement('num')->update();
 
-```#
+```
 
-## 随机获取
+### 随机获取
 
 inRandomOrder
 
@@ -279,16 +279,23 @@ $res = $visitorInfo->inRandomOrder()->limit(5)->getAll();
 <?php
 // 随机返回5条数据
 $res = $visitorInfo->whereSubQuery('id','>=',function($query){
+    // floor转化为int
     $query->select('floor', function($query){
+        // 需要2个初始查询构造器
         $query_b = clone $query;
+        // 查询最大id的sql
         $maxSql = $query->select('max',function(){
             return 'id';
         })->sql();
+        // 查询最小id的sql
         $minSql = $query_b->select('min',function(){
             return 'id';
         })->sql();
+        // sql拼接返回
         return 'rand()*(('.$maxSql.')-('.$minSql.'))+('.$minSql.')';
-    })->noFrom();
+    })
+        // 不拼接from片段
+        ->noFrom();
 })->limit(5)->getAll();
 
 ```

@@ -3,6 +3,7 @@
 declare(strict_types = 1);
 namespace Main\Core\Model\QueryBuiler;
 
+use Closure;
 use Main\Core\Model\QueryBuiler;
 
 trait Select {
@@ -38,6 +39,28 @@ trait Select {
      */
     public function selectString(string $str, string $delimiter = ','): QueryBuiler {
         return $this->selectArray(explode($delimiter, $str));
+    }
+    
+    /**
+     * 将db函数加入select 
+     * eg : count()
+     * @param string $function
+     * @param Closure $callback
+     */
+    public function selectFunction(string $function, Closure $callback): QueryBuiler {
+        $res = $callback($queryBuiler = $this->getSelf());
+        // 调用方未调用return
+        if (is_null($res)) {
+            $sql = $queryBuiler->getAllToSql();
+        }
+        // 调用方未调用toSql
+        elseif ($res instanceof QueryBuiler) {
+            $sql = $res->getAllToSql();
+        }
+        // 调用正常
+        else
+            $sql = $res;
+        return $this->selectRaw($function.$this->bracketFormat($sql));
     }
    
     /**

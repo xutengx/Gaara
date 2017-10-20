@@ -7,7 +7,7 @@ use ErrorException as Exception;
 
 trait Debug {
     /**
-     * 查询一行
+     * 查询一行 的sql
      * @param array $pars
      * @return string
      */
@@ -19,7 +19,7 @@ trait Debug {
     }
     
     /**
-     * 查询多行
+     * 查询多行 的sql
      * @param array $pars
      * @return string
      */
@@ -31,7 +31,7 @@ trait Debug {
     }
     
     /**
-     * 更新数据, 返回受影响的行数
+     * 更新数据, 返回受影响的行数 的sql
      * @param array $pars
      * @return string
      * @throws Exception
@@ -44,7 +44,7 @@ trait Debug {
         return $this->lastSql;
     }
     /**
-     * 插入数据, 返回插入的主键
+     * 插入数据, 返回插入的主键 的sql
      * @param array $pars
      * @return string
      * @throws Exception
@@ -58,7 +58,7 @@ trait Debug {
     }
     
     /**
-     * 插入数据
+     * 插入数据 的sql
      * @param array $pars
      * @return string
      * @throws Exception
@@ -72,7 +72,7 @@ trait Debug {
     }
     
     /**
-     * 删除数据, 返回受影响的行数
+     * 删除数据, 返回受影响的行数 的sql
      * @param array $pars
      * @return string
      * @throws Exception
@@ -86,7 +86,7 @@ trait Debug {
     }
     
     /**
-     * 插入or更新数据, 返回受影响的行数
+     * 插入or更新数据, 返回受影响的行数 的sql
      * @param array $pars
      * @return string
      * @throws Exception
@@ -99,5 +99,18 @@ trait Debug {
         return $this->lastSql;
     }
     
-   
+    /**
+     * 自动识别语句类型 的sql
+     * @param array $pars
+     * @return string
+     * @throws Exception
+     */
+    public function sql(array $pars = []): string {
+        if(!empty($this->data))
+            $this->sqlType = 'update';
+        else
+            $this->sqlType = 'select';
+        $sql = $this->toSql($pars);
+        return $this->lastSql;
+    }
 }

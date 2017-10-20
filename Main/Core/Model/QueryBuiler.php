@@ -353,6 +353,8 @@ class QueryBuiler {
                     case 'string':
                         return $this->selectString(...$params);
                 }
+            case 2:
+                return $this->selectFunction(...$params);
         }
     }
 
@@ -476,5 +478,9 @@ class QueryBuiler {
                         return $this->unionRaw($obj, 'union all');
                 }
         }
+    }
+    
+    public function __call(string $name, array $arguments = []) {
+        ;
     }
 }

@@ -32,7 +32,8 @@ class index2Contr extends HttpController {
         '结果分块' => 'test_17',
         'getAll,自定义键名' => 'test_18',
         'MySQL随机获取数据的方法，支持大数据量' => 'test_19',
-        'exit' => 'test_20',
+        '超级' => 'test_20',
+        'exit' => 'test_21',
     ];
 
     public function indexDo() {
@@ -290,6 +291,12 @@ class index2Contr extends HttpController {
         var_dump($visitorInfo->getLastSql());
         var_dump($res);
         
+        $res = $visitorInfo->select('max',function(){
+            return 'id';
+        })->getRow();
+        var_dump($visitorInfo->getLastSql());
+        var_dump($res);
+        
         $res = $visitorInfo->min('id');
         var_dump($visitorInfo->getLastSql());
         var_dump($res);
@@ -341,6 +348,32 @@ class index2Contr extends HttpController {
     }
     
     public function test_20(Model\visitorInfoDev $visitorInfo) {
+/*
+SELECT * FROM `table` WHERE id >= 
+ (SELECT floor( RAND() * ((SELECT MAX(id) FROM `table`)-(SELECT MIN(id) FROM `table`)) + (SELECT MIN(id) FROM `table`))) 
+    ORDER BY id LIMIT 1;
+        */
+        $res = $visitorInfo->whereSubQuery('id','>=',function($query){
+            $query->noFrom()
+//                    ->selectRaw('floor(RAND()*((select max(`id`) from `visitor_info`)-(select min(`id`) from `visitor_info`))+(select min(`id`) from `visitor_info`))')
+                    ->select('floor', function($query){
+                        $query_b = clone $query;
+                        $maxSql = $query->select('max',function(){
+                            return 'id';
+                        })->sql();
+                        $minSql = $query_b->select('min',function(){
+                            return 'id';
+                        })->sql();
+                        return 'rand()*(('.$maxSql.')-('.$minSql.'))+('.$minSql.')';
+                    });
+            
+        })->order('id')->getRow();
+        var_dump($visitorInfo->getLastSql());
+        var_dump($res);
+    }
+    
+    public function test_21(Model\visitorInfoDev $visitorInfo) {
+
 //        $dir = (new \Main\Expand\Image)->newUrl('https://baidu.com');
 //        var_dump($dir);
 //        $data = 'https://www.baidu.com';

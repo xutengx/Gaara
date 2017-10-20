@@ -270,11 +270,32 @@ inRandomOrder
 // 随机返回5条数据
 $res = $visitorInfo->inRandomOrder()->limit(5)->getAll();
 
-var_dump($res);
+```
+
+**注: 若使用查询生成器同样可以实现**
+
+```php
+
+<?php
+// 随机返回5条数据
+$res = $visitorInfo->whereSubQuery('id','>=',function($query){
+    $query->select('floor', function($query){
+        $query_b = clone $query;
+        $maxSql = $query->select('max',function(){
+            return 'id';
+        })->sql();
+        $minSql = $query_b->select('min',function(){
+            return 'id';
+        })->sql();
+        return 'rand()*(('.$maxSql.')-('.$minSql.'))+('.$minSql.')';
+    })->noFrom();
+})->limit(5)->getAll();
 
 ```
 
 ### select
+
+查询字段
 
 ```php
 <?php
@@ -284,6 +305,22 @@ $row = $yourModel::select('name,age')->select(['sex','height'])->getRow();
 // 以上等价于
 $row = $yourModel::selectString('name,age')->selectArray(['sex','height'])->getRow();
 ```
+
+查询一个数据库函数的结果
+
+```php
+<?php
+// 统计最大的id
+$query->select('max',function(){
+    return 'id';
+})->getRow();
+
+// 以上等价于
+$query->selectFunction('max',function(){
+    return 'id';
+})->getRow();
+```
+
 ### where
 
 字段与值比较

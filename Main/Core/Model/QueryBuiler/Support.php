@@ -8,7 +8,7 @@ use Main\Core\Model\QueryBuiler;
 trait Support {
 
     /**
-     * 获取一个与自己主属性相同的实例, 不同于clone
+     * 获取一个与自己主属性相同的全新实例, 不同于clone
      * @return QueryBuiler
      */
     private function getSelf(): QueryBuiler {
@@ -93,7 +93,7 @@ trait Support {
         $remember = true;
         switch ($this->sqlType) {
             case 'select':
-                $sql = 'select ' . $this->dealSelect() . ' from ' . $this->dealFrom();
+                $sql = 'select ' . $this->dealSelect() . $this->dealFromSelect();
                 break;
             case 'update':
                 $sql = 'update ' . $this->dealFrom() . ' set' . $this->dealData();
@@ -166,6 +166,20 @@ trait Support {
             return '';
         } else {
             return ' ' . $this->data;
+        }
+    }
+
+    /**
+     * 返回from部分 select 专用
+     * @return string
+     */
+    private function dealFromSelect(): string {
+        if($this->noFrom === true)
+            return '';
+        if (empty($this->from)) {
+            return ' from `' . $this->table . '`';
+        } else {
+            return ' from ' . $this->from;
         }
     }
 

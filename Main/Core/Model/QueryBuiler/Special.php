@@ -18,7 +18,7 @@ trait Special {
         $key = $field ?? $this->primaryKey;
         $from = $this->fieldFormat(empty($this->from) ? $this->table : $this->from );
         $sql = <<<EOF
-select floor(RAND()*((select max(`$key`) from $from)-(select min(`$key`) from $from))+(select min(`$key`) from $from))
+select floor(rand()*((select max(`$key`) from $from)-(select min(`$key`) from $from))+(select min(`$key`) from $from))
 EOF;
         return $this->whereSubQueryRaw($key, '>=', $sql);
     }

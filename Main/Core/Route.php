@@ -3,7 +3,6 @@
 declare(strict_types = 1);
 namespace Main\Core;
 
-use Closure;
 use App\Kernel;
 use Main\Core\Route\Traits;
 
@@ -20,10 +19,6 @@ class Route {
     private static $routeType = null;
     // 全部路由规则
     protected static $routeRule = [];
-    // 域名参数
-    private static $domainParam = [];
-    // 路由参数
-    private static $urlParam = [];
 
     public static function Start(): void {
         // 得到 $pathInfo
@@ -145,8 +140,6 @@ class Route {
     /**
      * 执行分析 : 路由别名, 域名分析, 中间件注册, 执行闭包
      * 申明 obj('request');
-     * 申明 self::$domainParam
-     * 申明 self::$urlParam
      * @param string $rule 路由匹配段
      * @param string|array $info 路由执行段 (可能是形如 'App\index\Contr\IndexContr@indexDo' 或者 闭包, 或者 数组包含以上2钟)
      * @param array $urlParam url参数数组
@@ -176,8 +169,6 @@ class Route {
 
         // 初始化 Request
         $request = obj(Request::class, $urlParam, $domainParam);
-        self::$domainParam = $domainParam;
-        self::$urlParam = $urlParam;
         $request->alias = $alias;
         $request->methods = $info['method'];
 

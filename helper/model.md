@@ -29,6 +29,7 @@
         * [删除](#删除)
         * [聚合函数](#聚合函数)
         * [自增或自减](#自增或自减)
+        * [随机获取](#随机获取)
         * [select](#select)
         * [where](#where)
         * [having](#having)
@@ -41,7 +42,7 @@
         * [union](#union)
         * [index](#index)
     * [debug](#debug)
-    * [子查询](#子查询)
+    * [where子查询](#where子查询)
     * [分块查询](#分块查询)
     * [预处理语句复用](#预处理语句复用)
     * [原生sql](#原生sql)
@@ -54,7 +55,7 @@
 
 > 控制器一般继承`Main\Core\Model`
 
-`gaara`的数据库模型, 支持几乎所有的链式操作来构建查询语句, 分布式数据库配置支持, 分块数据获取, 预处理语句复用等等
+`gaara`的数据库模型, 支持链式操作来构建查询语句, 分布式数据库配置支持, 分块数据获取, 预处理语句复用等等
 
 ## 数据库配置
 
@@ -255,6 +256,22 @@ $visitorInfo->dataIncrement('num', 4)->update();
 // num字段自减1
 $visitorInfo->dataDecrement('num')->update();
 
+```#
+
+## 随机获取
+
+inRandomOrder
+
+> inRandomOrder, 接收一个参数,默认为主键字段作为随机依据,当主键非常不均匀时应传入此字段(优先选用连续计数类型字段).此方法大数据下表现良好.
+
+```php
+
+<?php
+// 随机返回5条数据
+$res = $visitorInfo->inRandomOrder()->limit(5)->getAll();
+
+var_dump($res);
+
 ```
 
 ### select
@@ -269,7 +286,7 @@ $row = $yourModel::selectString('name,age')->selectArray(['sex','height'])->getR
 ```
 ### where
 
-> 字段与值比较
+字段与值比较
 
 ```php
 <?php
@@ -285,7 +302,7 @@ $row = $yourModel::whereValue('id','=','12')
 ->getRow();
 ```
 
-> between
+whereBetween whereNotBetween
 
 
 ```php
@@ -306,7 +323,7 @@ $row = $yourModel::whereBetweenArray('id', ['100','103' ])
 ```
 **注: `whereBetweenString`与`whereNotBetweenString`参数必须是string**
 
-> in
+whereIn whereNotIn
 
 ```php
 <?php
@@ -326,7 +343,8 @@ $row = $yourModel::whereInArray('id', ['100','103','26' ])
 ```
 **注: `whereInString`与`whereNotInString`参数必须是string**
 
-> 闭包where orWhere 支持无限嵌套
+闭包where orWhere
+> 支持无限嵌套
 
 ```php
 <?php
@@ -344,7 +362,7 @@ $row = Model\visitorInfoDev::where('id','102')
 
 ```
 
-> whereNotNull whereNull
+whereNotNull whereNull
 
 ```php
 <?php
@@ -356,7 +374,8 @@ $row = Model\visitorInfoDev::whereNull('name')->getAll();
 
 ```
 
-> whereExists 可接收QueryBuiler,Closure,String,3种参数
+whereExists whereNotExists
+> 可接收QueryBuiler,Closure,String,3种参数
 
 ```php
 <?php
@@ -514,7 +533,7 @@ sql = Model\visitorInfoDev::select(['id', 'name', 'phone'])
     ->getAllToSql([':scene_1' => '1']);
 ```
 
-## 子查询
+## where子查询
 
 > 链式操作对象`QueryBuiler`中包含`whereSubquery`方法, 接收 string $field, string $symbol, (string $subquery | QueryBuiler $QueryBuiler | Closure $Closure)
 

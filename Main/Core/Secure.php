@@ -62,7 +62,7 @@ EOF;
         $buffer = $data = '';
         $length = strlen($string);
         for ($i = 0; $i < $length; $i++) {
-            if ($j == 32) {
+            if ($j === 32) {
                 $j = 0;
             }
             $buffer .= $key[$j];
@@ -87,7 +87,7 @@ EOF;
         $buffer = $data = '';
         $length = strlen($string);
         for ($i = 0; $i < $length; $i++) {
-            if ($j == 32) {
+            if ($j === 32) {
                 $j = 0;
             }
             $buffer .= substr($key, $j, 1);

@@ -5,6 +5,8 @@ namespace Main\Core;
 
 use Closure;
 use Main\Core\Route;
+use ReflectionFunction;
+use ReflectionClass;
 
 abstract class Kernel {
 
@@ -113,7 +115,7 @@ abstract class Kernel {
             // 形如 'App\index\Contr\IndexContr@indexDo'
             if (is_string($contr)) {
                 $temp = explode('@', $contr);
-                $reflectionClass = new \ReflectionClass($temp[0]);
+                $reflectionClass = new ReflectionClass($temp[0]);
                 $methodClass = $reflectionClass->getMethod($temp[1]);
                 $parameters = $methodClass->getParameters();
 
@@ -121,8 +123,8 @@ abstract class Kernel {
                 $return = call_user_func_array(array(Integrator::getWithoutAlias($temp[0]), $temp[1]), $argument);
             }
             // 形如 function($param_1, $param_2 ) {return 'this is a function !';}
-            elseif ($contr instanceof \Closure) {
-                $reflectionFunction = new \ReflectionFunction($contr);
+            elseif ($contr instanceof Closure) {
+                $reflectionFunction = new ReflectionFunction($contr);
                 $parameters = $reflectionFunction->getParameters();
 
                 $argument = $injection($parameters);

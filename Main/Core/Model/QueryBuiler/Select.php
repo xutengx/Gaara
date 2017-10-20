@@ -39,7 +39,7 @@ trait Select {
     public function selectString(string $str, string $delimiter = ','): QueryBuiler {
         return $this->selectArray(explode($delimiter, $str));
     }
-
+   
     /**
      * 将select片段加入select, 返回当前对象
      * @param string $part

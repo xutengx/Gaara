@@ -31,7 +31,8 @@ class index2Contr extends HttpController {
         '子查询' => 'test_16',
         '结果分块' => 'test_17',
         'getAll,自定义键名' => 'test_18',
-        'exit' => 'test_19',
+        'MySQL随机获取数据的方法，支持大数据量' => 'test_19',
+        'exit' => 'test_20',
     ];
 
     public function indexDo() {
@@ -333,8 +334,13 @@ class index2Contr extends HttpController {
         })->getAll();
         var_dump($info);
     }
+    public function test_19(Model\visitorInfoDev $visitorInfo){
+        $res = $visitorInfo->inRandomOrder()->limit(5)->getAll();
+        var_dump($visitorInfo->getLastSql());
+        var_dump($res);
+    }
     
-    public function test_19(Model\visitorInfoDev $visitorInfo) {
+    public function test_20(Model\visitorInfoDev $visitorInfo) {
 //        $dir = (new \Main\Expand\Image)->newUrl('https://baidu.com');
 //        var_dump($dir);
 //        $data = 'https://www.baidu.com';

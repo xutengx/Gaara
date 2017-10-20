@@ -9,14 +9,12 @@ use Exception;
  */
 abstract class Container {
 
-    protected static $instance = null;
-
     /**
      * 返回自快捷类对应的实体类的实例
      * @return object
      */
     final public static function getInstance() {
-        return \obj(static::getInstanceName());
+        return obj(static::getInstanceName());
     }
 
     /**
@@ -25,17 +23,12 @@ abstract class Container {
      * @throws Exception
      */
     final public static function getInstanceName(): string {
-        if (!is_null(static::$instance))
-            return static::$instance;
-        else {
-            $class = static::class;
-            if (is_file(ROOT.'Main/Core/' . $class.'.php')) {
-                return 'Main\Core\\' . $class;
-            }elseif(is_file(ROOT.'Main/Expand/' . $class.'.php')) {
-                return 'Main\Expand\\' . $class;
-            }
+        if (is_file(ROOT.'Main/Core/' . static::class.'.php')) {
+            return 'Main\Core\\' . static::class;
+        }elseif(is_file(ROOT.'Main/Expand/' . static::class.'.php')) {
+            return 'Main\Expand\\' . static::class;
         }
-        throw new Exception('Alias class: "' . $class . '" not properly defined!');
+        throw new Exception('Alias class: "' . static::class . '" not properly defined!');
     }
 
     final public function __set(string $param, $value) {

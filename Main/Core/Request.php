@@ -79,16 +79,16 @@ class Request {
      * @param string $domain
      * @param bool $secure
      * @param bool $httponly
-     * @return bool
+     * @return void
      */
-    public function setcookie(string $name, $value = '', int $expire = 0, string $path = "", string $domain = "", bool $secure = false, bool $httponly = true): bool {
+    public function setcookie(string $name, $value = '', int $expire = 0, string $path = '', string $domain = '', bool $secure = false, bool $httponly = true): void {
         $expire += time();
         $this->cookie[$name] = $_COOKIE[$name] = $value;
         if (is_array($value))
             foreach ($value as $k => $v)
-                return setcookie($name . '[' . $k . ']', $v, $expire, $path, $domain, $secure, $httponly);
+                setcookie($name . '[' . $k . ']', $v, $expire, $path, $domain, $secure, $httponly);
         else
-            return setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
+            setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
     }
 
     /**
@@ -227,15 +227,14 @@ class Request {
     /**
      * 后期添加对应属性
      * @param string $property_name
-     * @param type $value
-     * @return bool
+     * @param mixed $value
+     * @return void
      */
-    public function __set(string $property_name, $value): bool {
+    public function __set(string $property_name, $value): void {
         if (in_array(strtolower($property_name), array('input', 'post', 'get', 'put', 'cookie', 'delete', 'file'), true)) {
             throw new Exception($property_name . ' should not be modified.');
         } else {
             $this->{$property_name} = $value;
-            return true;
         }
     }
 

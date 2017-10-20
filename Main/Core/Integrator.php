@@ -5,6 +5,7 @@ namespace Main\Core;
 
 use ReflectionClass;
 use Main\Core\Container;
+use InvalidArgumentException;
 /**
  * 享元模式,依赖注入
  */
@@ -18,7 +19,7 @@ class Integrator {
      * @param array $pars new一个对象所需要的参数; 注:只有第一次实例化时,参数才会被使用!
      * @return object
      */
-    public static function get(string $class = '', array $pars = array()) {
+    public static function get(string $class, array $pars = []) {
         $class = str_replace('/', '\\', $class);
         // 别名修正
         $class = self::checkAlias($class);
@@ -28,11 +29,11 @@ class Integrator {
 
     /**
      * Kernel中实现自动依赖注入, 避免别名干扰
-     * @param type $class 类名(不支持别名)
+     * @param string $class 类名(不支持别名)
      * @param array $pars new一个对象所需要的参数; 注:只有第一次实例化时,参数才会被使用!
      * @return object
      */
-    public static function getWithoutAlias(string $class = '', array $pars = array()) {
+    public static function getWithoutAlias(string $class, array $pars = []) {
         $class = str_replace('/', '\\', $class);
         // 返回对象
         return self::getins($class, $pars);
@@ -45,8 +46,8 @@ class Integrator {
      * @return string
      */
     private static function checkAlias(string $className): string {
-        $test = new ReflectionClass($className);
-        $fatherClass = $test->getParentClass();
+        $ReflectionClass = new ReflectionClass($className);
+        $fatherClass = $ReflectionClass->getParentClass();
         if ($fatherClass !== false && $fatherClass->name === Container::class) {
             return $className::getInstanceName();
         } else
@@ -79,15 +80,16 @@ class Integrator {
      * @param string|object $className  类名|对象
      * @param string $methodName 方法名
      * @param array  $params 实参数组
-     * @return mix
+     * @return mixed
      */
     public static function run($className, string $methodName, array $params = []) {
         if (is_string($className)) {
             // 获取类的实例, 如你所见没有传入构造的自定参数, 也就是说在 $className 第一次实例化,且依赖一个没有默认值的参数时,将会出错, 不过这种情况不常见
-            $instance = self::getins($className, []);
+            $instance = self::getins($className);
         } elseif (is_object($className)) {
             $instance = $className;
-        }
+        } else
+            throw new InvalidArgumentException();
         // 获取该方法所需要依赖注入的参数
         $paramArr = self::getMethodParams($className, $params, $methodName);
 

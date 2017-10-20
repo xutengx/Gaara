@@ -62,16 +62,6 @@ function delobj() {
     return \Main\Core\Integrator::unsetAllObj();
 }
 
-/**
- * 依赖 template.php 指向 template::show()
- * @param string $template 引入模板名
- */
-function template(string $template) {
-    if ($template)
-        Template::show($template);
-    else
-        throw new \Exception('引入模板名有误!');
-}
 
 /**
  * 重定向到指定路由

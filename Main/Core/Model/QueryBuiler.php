@@ -28,6 +28,7 @@ class QueryBuiler {
     use QueryBuiler\Execute;
     use QueryBuiler\Debug;
     use QueryBuiler\Aggregates;
+    use QueryBuiler\Special;
 
     // 绑定的表名
     private $table;

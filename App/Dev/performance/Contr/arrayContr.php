@@ -31,7 +31,6 @@ class arrayContr extends Controller\HttpController {
             $spl_arr[$i] = $i;
         }
         $time_spent = microtime(true) - $start_time;
-        \Log::info('1111');
         printf($format, "splFixedArray", $size, $time_spent);exit;
     }
     

@@ -69,7 +69,7 @@ class Route {
             // 兼容式路由
             if (is_int($rule)) {
                 if(is_null($info)){
-                    break;
+                    continue;
                 }
                 foreach($info as $k => $v){
                     $rule = $k;
@@ -77,6 +77,7 @@ class Route {
                     break;
                 }
             }
+            // 形参数组
             $parameter = [];
             $pathInfoPreg = self::ruleToPreg($rule, $parameter);
             // 确定路由匹配
@@ -145,7 +146,9 @@ class Route {
      * @param array $urlParam url参数数组
      * @return bool
      */
-    private static function infoAnalysis(string $rule, $info, array $urlParam): bool {
+    private static function infoAnalysis(string $rule, $info, array $urlParam = []): bool {
+        // 一致化格式
+        $info = self::unifiedInfo($info);
         // 别名分析
         $alias = $info['as'] ?? $rule;
         // 域名分析
@@ -191,7 +194,33 @@ class Route {
     private static function doKernel(array $middleware, $contr, array $wholeParam): void {
         obj(Kernel::class)->run($middleware, $contr, $wholeParam);
     }
-
+    
+    /**
+     * info 一致化格式
+     * @param \Closure $info
+     * @return void
+     */
+    private static function unifiedInfo($info): array {
+        $arr = [];
+        if (is_string($info) || $info instanceof \Closure) {
+            $arr = [
+                'method' => self::$allowMethod,
+                'middleware' => [],
+                'domain' => $_SERVER['HTTP_HOST'],
+                'as' => [],
+                'uses' => $info
+            ];
+        } elseif (is_array($info)) {
+            $arr = [
+                'method' => $info['method'] ?? self::$allowMethod,
+                'middleware' => $info['middleware'] ?? [],
+                'domain' => $info['domain'] ?? $_SERVER['HTTP_HOST'],
+                'as' => $info['as'] ?? [],
+                'uses' => $info['uses']
+            ];
+        }
+        return $arr;
+    }
     /**
      * 将域名规则翻译为正则表达式 (不支持问号参数)
      * @param string $rule 域名规则 eg: {admin}.{gitxt}.com

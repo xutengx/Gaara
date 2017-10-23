@@ -132,9 +132,8 @@ trait SetRoute {
             if (!empty(self::$group['prefix'])) {
                 $prefix = '';
                 foreach (self::$group['prefix'] as $v) {
-                    if (empty($v))
-                        continue;
-                    $prefix .= $v;
+                    if (!empty($v))
+                        $prefix .= '/'.$v;
                 }
                 $url = $prefix . $url;
             }
@@ -147,9 +146,8 @@ trait SetRoute {
             } else {
                 $group_namespace = '';
                 foreach (self::$group['namespace'] as $v) {
-                    if (empty($v))
-                        continue;
-                    $group_namespace .= str_replace('/', '\\', $v) . '\\';
+                    if (!empty($v))
+                        $group_namespace .= str_replace('/', '\\', $v) . '\\';
                 }
                 $namespace = !empty($actionInfo['namespace']) ? str_replace('/', '\\', $actionInfo['namespace']) . '\\' : '';
                 $uses = $group_namespace . $namespace . $actionInfo['uses'];

@@ -25,12 +25,12 @@ class indexContr extends Controller\HttpController {
     }
 
     private function test_1() {
-        obj('queueContr')->indexDo();
+        obj(queueContr::class)->indexDo();
     }    
     private function test_2() {
-        obj('stackContr')->indexDo();
+        obj(stackContr::class)->indexDo();
     }    
     private function test_3() {
-        obj('arrayContr')->indexDo();
+        obj(arrayContr::class)->indexDo();
     }
 }

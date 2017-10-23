@@ -134,7 +134,7 @@ EEE;
         if (is_file(ROOT . $this->view . $file . '.html'))
             include ROOT . $this->view . $file . '.html';
         else
-            throw new InvalidArgumentException(ROOT . $this->view . $file . '.html' . '不存在!');
+            throw new InvalidArgumentException(ROOT . $this->view . $file . '.html not found.');
         echo <<<EEE
 </html>
 EEE;
@@ -156,7 +156,7 @@ EEE;
             case 'boolean':
                 if ($val === true)
                     $this->cache .= 'var ' . $name . '=true;';
-                else if ($val === false)
+                elseif ($val === false)
                     $this->cache .= 'var ' . $name . '=false;';
                 break;
             case 'integer':
@@ -169,7 +169,7 @@ EEE;
                 $this->cache .= "var " . $name . "=" . json_encode($val) . ";";
                 break;
             default:
-                throw new InvalidArgumentException('暂不支持的数据类型!');
+                throw new InvalidArgumentException('Unsupported data types.');
         }
     }
 

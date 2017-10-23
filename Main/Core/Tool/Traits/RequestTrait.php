@@ -39,10 +39,9 @@ trait RequestTrait {
      * @return array 每个请求的响应体
      */
     function parallelExe(array $urls) {
-        if (!is_array($urls) or count($urls) === 0) {
+        if (!is_array($urls) || count($urls) === 0) {
             return false;
         }
-
         $curl = $text = array();
         $handle = curl_multi_init();
         foreach ($urls as $k => $v) {
@@ -51,22 +50,21 @@ trait RequestTrait {
             curl_setopt($curl[$k], CURLOPT_HEADER, 0);
             curl_multi_add_handle($handle, $curl[$k]);
         }
-
         $active = null;
-        do {
-            $mrc = curl_multi_exec($handle, $active);
-        } while ($mrc === CURLM_CALL_MULTI_PERFORM);
-
-        while ($active && $mrc === CURLM_OK) {
-            if (curl_multi_select($handle) != -1) {
-                do {
-                    $mrc = curl_multi_exec($handle, $active);
-                } while ($mrc === CURLM_CALL_MULTI_PERFORM);
-            }
-        }
-
+        
+        do { $mrc=curl_multi_exec($handle,$active); } while ($active);
+//        do {
+//            $mrc = curl_multi_exec($handle, $active);
+//        } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+//        while ($active && $mrc == CURLM_OK) {
+//            if (curl_multi_select($handle) != -1) {
+//                do {
+//                    $mrc = curl_multi_exec($handle, $active);
+//                } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+//            }
+//        }
         foreach ($curl as $k => $v) {
-            if (curl_error($curl[$k]) === "") {
+            if (curl_error($curl[$k]) == "") {
                 $text[$k] = (string) curl_multi_getcontent($curl[$k]);
             }
             curl_multi_remove_handle($handle, $curl[$k]);

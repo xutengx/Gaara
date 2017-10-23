@@ -17,7 +17,7 @@ return [
         // 接口开发调试页面
         Route::get('/dev','Dev\Dev@index');
         // 不检测 token
-        Route::group(['prefix'=>'/user','namespace' => 'user'],function(){
+        Route::group(['prefix'=>'user','namespace' => 'user'],function(){
             // 邮箱检测
             Route::get('/email','Reg@email');
             // 注册( 邮件发送 )
@@ -44,12 +44,12 @@ return [
           
         });
         // 不检测 token
-        Route::group(['prefix'=>'/admin','namespace' => 'admin'],function(){
+        Route::group(['prefix'=>'admin','namespace' => 'admin'],function(){
             // 管理员登入
             Route::post('/login','Login@index');
         });
         // 检测 管理员登入令牌
-        Route::group(['middleware' => ['admin'],'prefix'=>'/admin'], function() {
+        Route::group(['middleware' => ['admin'],'prefix'=>'admin'], function() {
             // 令牌以旧换新( 重置有效期 )
             Route::post('/token', 'admin\Login@changeToken');
             // 管理员新增管理员
@@ -65,7 +65,7 @@ return [
         });
 
                 // 检测 api调用令牌
-        Route::group(['middleware'=>['payment'],'prefix'=>'/api'],function(){
+        Route::group(['middleware'=>['payment'],'prefix'=>'api'],function(){
             Route::post('/create', 'UnifiedOrderRequest@index');
         });
            
@@ -94,6 +94,14 @@ return [
         Route::get('/shmop','Shmop\index@index');
         // 共享内存读
         Route::get('/shmop/read','Shmop\index@read');
+        // 性能对比
+        Route::group(['prefix' => 'performance','namespace' => 'performance\Contr'], function(){
+            Route::get('/index','indexContr@indexDo');
+            Route::group(['prefix' => 'array'], function(){
+                Route::get('/phpArray','arrayContr@phpArray');
+                Route::get('/splFixedArray','arrayContr@splFixedArray');
+            });
+        });
 
         // 新共能开发
         Route::get('/new',['uses' => 'development\Contr\indexContr@indexDo','middleware'=>['api']]);

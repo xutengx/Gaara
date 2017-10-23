@@ -2,8 +2,8 @@
 
 namespace App\Dev\performance\Contr;
 
-use \Main\Core\Controller;
-defined('IN_SYS') || exit('ACC Denied');
+use Tool;
+use Main\Core\Controller;
 /**
  * php 数组与定长数组
  */
@@ -13,12 +13,12 @@ class arrayContr extends Controller\HttpController {
     private $format = 'Time spent of %s(%d) is : %f seconds.</br>';
     public function indexDo() {
         $test_arr = [
-            'http://127.0.0.1/git/php_/project/index.php?path=performance/array/phpArray/',
-            'http://127.0.0.1/git/php_/project/index.php?path=performance/array/splFixedArray/',
+            'http://gaara.com/performance/array/phpArray',
+            'http://gaara.com/performance/array/splFixedArray',
         ];
 
-        $res = obj('tool')->parallelExe($test_arr);
-        var_dump($res);
+        $res = obj(Tool::class)->parallelExe($test_arr);
+        var_dump($res);exit;
     }
 
     public function splFixedArray() {
@@ -31,7 +31,8 @@ class arrayContr extends Controller\HttpController {
             $spl_arr[$i] = $i;
         }
         $time_spent = microtime(true) - $start_time;
-        printf($format, "splFixedArray", $size, $time_spent);
+        \Log::info('1111');
+        printf($format, "splFixedArray", $size, $time_spent);exit;
     }
     
     public function phpArray() {
@@ -44,7 +45,7 @@ class arrayContr extends Controller\HttpController {
             $php_arr[$i] = $i;
         }
         $time_spent = microtime(true) - $start_time;
-        printf($format, "PHP array", $size, $time_spent);
+        printf($format, "PHP array", $size, $time_spent);exit;
     }    
 
     public function __destruct() {

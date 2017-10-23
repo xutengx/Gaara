@@ -29,6 +29,9 @@
 默认的 http 路由文件是 Route/http.php , 可以在 init.php 中重新定义
 所有风格的路由都可以依赖注入`类`以及`形参`
 ## 快捷路由
+
+所有http方法都可访问
+
 ```php
 <?php
 return [
@@ -41,7 +44,13 @@ return [
 ];
 ```
 ## 静态路由
-静态 Route 类申明路由, 以及传参
+Route 静态方法包含`get`,`post`,`put`,`delete`,`patch`,`head`,`option`;
+
+接收2个参数,第一个为`匹配路由`,第二个为`匹配后的执行`;
+
+其中第二个参数`匹配后的执行`,可以为string, 如`App/Contr/index@action`; 可以为Closure,如`function(){return "hello world";}`;可以为array;
+
+
 ```php
 <?php
 // get请求的域名 http://eg.com/, 响应 hello world
@@ -62,17 +71,28 @@ Route::put('/art/{id}/name/{name}',function($name, $id){
 Route::delete('/id/{id}',function($id, App\Model\User $user){
     $user->detele($id);
 });
+// 数组形式
+Route::delete('/id/{id}',[
+    'middleware'=>'web',
+    'namespace'=>'App/dev',
+    'prefix'=>'',
+    'as'=>'',
+    'domain'=>'',
+    'uses' => 'index@delete'
+]);
 ```
+**注:`匹配路由`信息应以'/'开头**
+
 ## 路由分组
 无限级路由分组, 下面是一个相对复杂的例子
 ```php
 <?php
 // 设定一个路由组, 以/group开头, 并使用 web 中件间组
 // 限制 192.168.43.128 域名可访问, 组内成员都在 App\index 命名空间下
-Route::group(['prefix'=>'/group','middleware'=>['web'],'domain'=> '192.168.43.128','namespace'=> 'App\index' ], function(){
-        // 设定一个路由组, 以/group开头(加上父类便是/group/group开头)
+Route::group(['prefix'=>'group','middleware'=>['web'],'domain'=> '192.168.43.128','namespace'=> 'App\index' ], function(){
+        // 设定一个路由组, 以group开头(加上父类便是group/group开头)
         // 组内成员都在 group 命名空间下(加上父类便是App\index\group命名空间下)
-        Route::group(['prefix'=>'/group','namespace'=> 'group'], function(){
+        Route::group(['prefix'=>'group','namespace'=> 'group'], function(){
             // 以任何请求访问/group/group/hello1 ,都不会进入这条路由
             // 因为域名总是无法同时为 192.168.43.128 与 192.168.43.1281
             Route::any('/hello1 ,',['as' => 'hello','middleware'=>['web3'],'domain'=> '192.168.43.1281', 'uses' =>  'Contr\IndexContr@indexDo']);
@@ -90,6 +110,7 @@ Route::group(['prefix'=>'/group','middleware'=>['web'],'domain'=> '192.168.43.12
             Route::get('/contr/{id}',['uses' => 'index@index']);
     })
 ```
+**注:`prefix`,`namespace`两个信息均不应以'/'or'\\'开头结尾**
 ## restful
 一句话申明restful
 ```php

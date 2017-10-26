@@ -20,6 +20,9 @@ return [
     'db_passwd' => 'root',
     'db_db'     => 'yh',
     
+    'route_file' => function(){
+        return CLI ? 'cli.php' : 'http.php';
+    },
     /*
       |--------------------------------------------------------------------------
       | 多环境变量的选择

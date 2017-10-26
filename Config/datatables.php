@@ -1,6 +1,5 @@
 <?php
 
-defined('IN_SYS') || exit('ACC Denied');
 return <<<EEE
 set names utf8;
 SET FOREIGN_KEY_CHECKS=0;

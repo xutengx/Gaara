@@ -14,15 +14,15 @@ use \Log;
 class DbConnection {
 
     // 是否主从数据库
-    static $Master_slave = true;
+    private $Master_slave = true;
     // 数据库 读 连接集合
-    static $dbRead = array();
+    private $dbRead = array();
     // 数据库 读 权重
-    static $dbReadWeight = array();
+    private $dbReadWeight = array();
     // 数据库 写 连接集合
-    static $dbWrite = array();
+    private $dbWrite = array();
     // 数据库 写 权重
-    static $dbWriteWeight = array();
+    private $dbWriteWeight = array();
     // 当前操作类型 select update delate insert
     private $type = 'select';
     // 是否事务过程中 不进行数据库更换
@@ -31,9 +31,9 @@ class DbConnection {
     // 单进程不进行数据库更换
     private $single = true;
     // 当前数据库 读 连接
-    static $dbReadSingle;
+    private $dbReadSingle;
     // 当前数据库 写 连接
-    static $dbWriteSingle;
+    private $dbWriteSingle;
 
     // ------------------------------------------------------------------//
 
@@ -84,43 +84,11 @@ class DbConnection {
      */
     public function __construct(array $DBconf, $single = true) {
         $this->single = $single;
-        $this->confFormat($DBconf['write'], self::$dbWriteWeight, self::$dbWrite);
+        $this->confFormat($DBconf['write'], $this->dbWriteWeight, $this->dbWrite);
         if (isset($DBconf['read']) && !empty($DBconf['read'])) {
-            $this->confFormat($DBconf['read'], self::$dbReadWeight, self::$dbRead);
+            $this->confFormat($DBconf['read'], $this->dbReadWeight, $this->dbRead);
         } else
-            self::$Master_slave = false;
-    }
-
-    /**
-     * 由操作类型(读/写), 返回已存在的PDO实现
-     * @return PDO
-     */
-    private function PDO(): \PDO {
-        // http请求都属于此
-        if ($this->single) {
-            // 查询操作且不属于事务,使用读连接
-            if ($this->type === 'select' && !$this->transaction && self::$Master_slave) {
-                if (is_object(self::$dbReadSingle) || (self::$dbReadSingle = $this->connect()))
-                    return self::$dbReadSingle;
-            }
-            // 写连接
-            elseif (is_object(self::$dbWriteSingle) || (self::$dbWriteSingle = $this->connect()))
-                return self::$dbWriteSingle;
-        } else
-            return $this->connect();
-    }
-
-    /**
-     * 由操作类型(读/写)和权重(weight), 创建并返回PDO数据库连接
-     * @return PDO
-     */
-    private function connect(): \PDO {
-        // 查询操作且不属于事务,使用读连接
-        if ($this->type === 'select' && !$this->transaction && self::$Master_slave) {
-            return $this->weightSelection(self::$dbReadWeight, self::$dbRead);
-        } else {
-            return $this->weightSelection(self::$dbWriteWeight, self::$dbWrite);
-        }
+            $this->Master_slave = false;
     }
     
     /**
@@ -139,6 +107,38 @@ class DbConnection {
                 $weight = array_keys($theDbWeight);
                 $theDbWeight[$v['weight'] + end($weight)] = md5(serialize($v));
             }
+        }
+    }
+
+    /**
+     * 由操作类型(读/写), 返回已存在的PDO实现
+     * @return PDO
+     */
+    private function PDO(): \PDO {
+        // http请求都属于此
+        if ($this->single) {
+            // 查询操作且不属于事务,使用读连接
+            if ($this->type === 'select' && !$this->transaction && $this->Master_slave) {
+                if (is_object($this->dbReadSingle) || ($this->dbReadSingle = $this->connect()))
+                    return $this->dbReadSingle;
+            }
+            // 写连接
+            elseif (is_object($this->dbWriteSingle) || ($this->dbWriteSingle = $this->connect()))
+                return $this->dbWriteSingle;
+        } else
+            return $this->connect();
+    }
+
+    /**
+     * 由操作类型(读/写)和权重(weight), 创建并返回PDO数据库连接
+     * @return PDO
+     */
+    private function connect(): \PDO {
+        // 查询操作且不属于事务,使用读连接
+        if ($this->type === 'select' && !$this->transaction && $this->Master_slave) {
+            return $this->weightSelection($this->dbReadWeight, $this->dbRead);
+        } else {
+            return $this->weightSelection($this->dbWriteWeight, $this->dbWrite);
         }
     }
 
@@ -189,22 +189,22 @@ class DbConnection {
     private function query_prepare_execute(string $sql = '', array $pars = array()) {
         $PDO = $this->PDO();
         $i = 0;
-        loop :
-        try {
+//        loop :
+//        try {
             if (empty($pars)) {
                 $res = $PDO->query($sql);
             } else {
                 $res = $PDO->prepare($sql);
                 $res->execute($pars);
             }
-        } catch (PDOException $pdo) {
-            Log::error($sql, ['sql error' => $pdo->getMessage()]);
-            if ($i ++ >= 1) {
-                throw $pdo;  // 抛出异常
-            }
-            new Pdo($pdo, $this);       // 尝试解决
-            goto loop;
-        }
+//        } catch (PDOException $pdo) {
+//            Log::error($sql, ['sql error' => $pdo->getMessage()]);
+//            if ($i ++ >= 1) {
+//                throw $pdo;  // 抛出异常
+//            }
+//            new Pdo($pdo, $this);       // 尝试解决
+//            goto loop;
+//        }
         if ($this->type === 'insert')
             return $PDO;
         return $res;

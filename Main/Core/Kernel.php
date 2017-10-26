@@ -52,6 +52,7 @@ abstract class Kernel {
      * @return void
      */
     public function run(array $middlewareGroups, $contr, array $request): void {
+        $this->statistic();
         $this->pipeline->setPipes($this->addMiddleware($middlewareGroups));
         $this->pipeline->setDefaultClosure($this->doController($contr, $request));
         $this->pipeline->then();
@@ -132,5 +133,11 @@ abstract class Kernel {
             }
             return $return;
         };
+    }
+
+    // 运行统计
+    private function statistic(): void {
+        $GLOBALS['statistic']['框架路由执行后时间'] = microtime(true);
+        $GLOBALS['statistic']['框架路由执行后内存'] = memory_get_usage();
     }
 }

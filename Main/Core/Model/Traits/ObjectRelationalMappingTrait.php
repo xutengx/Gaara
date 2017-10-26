@@ -43,7 +43,7 @@ trait ObjectRelationalMappingTrait {
         if(is_null($key) && isset($this->orm[$this->primaryKey])){
             $key = $this->orm[$this->primaryKey];
         }elseif(is_null($key))
-            throw new Exception ('model ORM save without key');
+            throw new Exception ('model ORM save without the key');
         return $this->data($param)
                 ->where($this->primaryKey, $key)
                 ->update($bind);

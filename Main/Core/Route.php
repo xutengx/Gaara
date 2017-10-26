@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Main\Core;
 
 use App\Kernel;
+use Closure;
 use Main\Core\Route\Traits;
 
 /**
@@ -15,16 +16,12 @@ class Route {
     
     // 当前 $pathInfo
     private static $pathInfo = null;
-    // 路由模式 http/cli
-    private static $routeType = null;
     // 全部路由规则
     protected static $routeRule = [];
 
     public static function Start(): void {
         // 得到 $pathInfo
         self::$pathInfo = self::getPathInfo();
-        // 得到当前模式 http/cli
-        self::$routeType = self::getRouteType();
         // 引入route规则
         self::$routeRule = self::getRouteRule();
         // 分析路由, 并执行
@@ -42,20 +39,13 @@ class Route {
     }
 
     /**
-     * 分析当前执行环境 CLI/http
-     * @return string
-     */
-    private static function getRouteType(): string {
-        return CLI ? 'cli' : 'http';
-    }
-
-    /**
      * 得到当前应该使用的route配置
      * 可以接收直接返回的数组格式, 也可以直接执行
      * @return array
      */
     private static function getRouteRule(): array {
-        $fileRule = require(ROUTE . self::$routeType . '.php');
+        $file = obj(Conf::class)->route['file'];
+        $fileRule = require(ROUTE . $file);
         return is_array($fileRule) ? array_merge(self::$routeRule, $fileRule) : self::$routeRule;
     }
 
@@ -175,9 +165,8 @@ class Route {
         $request->alias = $alias;
         $request->methods = $info['method'];
 
-        // 框架性能
-        self::statistic();
-
+        self::$routeRule = null;
+        
         // 核心执行,管道模式中间件,以及控制器
         self::doKernel($middleware, $contr, $wholeParam);
 
@@ -202,7 +191,7 @@ class Route {
      */
     private static function unifiedInfo($info): array {
         $arr = [];
-        if (is_string($info) || $info instanceof \Closure) {
+        if (is_string($info) || $info instanceof Closure) {
             $arr = [
                 'method' => self::$allowMethod,
                 'middleware' => [],
@@ -245,11 +234,5 @@ class Route {
             return false;
         }
         return $param;
-    }
-
-    // 运行统计
-    private static function statistic(): void {
-        $GLOBALS['statistic']['框架路由执行后时间'] = microtime(true);
-        $GLOBALS['statistic']['框架路由执行后内存'] = memory_get_usage();
     }
 }

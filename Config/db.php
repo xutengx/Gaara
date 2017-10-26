@@ -40,6 +40,20 @@ return [
                 ]
             ]
         ],
+        '_best' => [
+            'write' => [
+                [
+                    'weight' => 10,
+                    'type' => 'mysql',
+                    'host' => '47.90.124.253',
+                    'port' => 21406,
+                    'user' => 'cdr',
+                    'pwd' => env('db_best_passwd'),
+                    'char' => 'UTF8',
+                    'db' => 'cdr_report',
+                ]
+            ]
+        ],
         '_dev' => [
             'write' => [
                 [

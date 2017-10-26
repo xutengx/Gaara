@@ -30,9 +30,9 @@ class Conf {
         }
         foreach ($data as $k => $v) {
             if (strpos($k, $this->key)) {
-                self::$env[str_replace($this->key, '', $k)] = $v;
+                self::$env[str_replace($this->key, '', $k)] = $v instanceof Closure ? $v() : $v;
             } elseif (!isset(self::$env[$k])) {
-                self::$env[$k] = $v;
+                self::$env[$k] = $v instanceof Closure ? $v() : $v;
             }
         }
     }

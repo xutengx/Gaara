@@ -5,8 +5,6 @@ namespace Main\Core;
 
 use PDOException;
 use PDOStatement;
-use Main\Core\Exception\Pdo;
-use \Log;
 
 /**
  * 数据库连接类，依赖 PDO_MYSQL 扩展
@@ -188,23 +186,12 @@ class DbConnection {
      */
     private function query_prepare_execute(string $sql = '', array $pars = array()) {
         $PDO = $this->PDO();
-        $i = 0;
-//        loop :
-//        try {
-            if (empty($pars)) {
-                $res = $PDO->query($sql);
-            } else {
-                $res = $PDO->prepare($sql);
-                $res->execute($pars);
-            }
-//        } catch (PDOException $pdo) {
-//            Log::error($sql, ['sql error' => $pdo->getMessage()]);
-//            if ($i ++ >= 1) {
-//                throw $pdo;  // 抛出异常
-//            }
-//            new Pdo($pdo, $this);       // 尝试解决
-//            goto loop;
-//        }
+        if (empty($pars)) {
+            $res = $PDO->query($sql);
+        } else {
+            $res = $PDO->prepare($sql);
+            $res->execute($pars);
+        }
         if ($this->type === 'insert')
             return $PDO;
         return $res;

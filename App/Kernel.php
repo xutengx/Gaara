@@ -62,10 +62,5 @@ class Kernel extends HttpKernel {
         ]
     ];
     
-    // 数据库异常处理
-    protected $pdo = [
-        // pdo错误码
-        1146 => \App\yh\Exception\createTable::class,
-    ];
     
 }

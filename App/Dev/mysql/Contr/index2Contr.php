@@ -218,21 +218,21 @@ class index2Contr extends HttpController {
     }
     
     private function test_12(Model\visitorInfoDev $visitorInfo, Model\Best $best){
-        $sql = <<<SQL
-select currency, sum(price) AS sum_price, date_format(create_time, "%Y-%m-%d %H") as "hour", count(*) as count_num from `cdr_file` where (`cdr_file`.`operator_id` in ('1', '2', '3', '4', '5', '19', '21', '31', '32', '6', '8', '15', '16', '24', '22', '25', '26', '27', '28', '29', '35', '33', '34', '36', '38', '40', '7', '10', '11', '13', '12', '14', '18', '23', '37', '39', '17', '20') or `cdr_file`.`operator_id` is null) and (`cdr_file`.`actiontype` in ('1', '2', '4', '5', '6', '7', '8', '9', '10', '11', '13', '14', '16', '17', '18', '12', '15') or `cdr_file`.`actiontype` is null) and (`cdr_file`.`currency` in ('THB', 'VND', 'IDR', 'USD', 'MYR') or `cdr_file`.`currency` is null) and (`cdr_file`.`telco_name` in ('TRUE', 'AIS', 'dtac', 'TrueMoney', 'OneTwoCall', 'Line', 'bank', 'bluewallet', 'BlueCoins', 'Ais', 'True', 'Telkomsel', 'xl', 'indosat', 'unipin', 'smartfren', 'otc', 'indomog', 'hutchison', 'lytoCard', 'atm', 'bank', 'viettel', 'mobifone', 'vinaphone', 'vtc', 'vietnamMobile', 'bank', 'CC', 'UM', 'DG', 'MX', 'Telenor') or `cdr_file`.`telco_name` is null) and `actiontype` in ('2', '4', '5', '8', '11', '13', '14') and `status` = '200' and `create_time` >= '2017-10-25 00:00:00' and `create_time` <= '2017-10-25 23:59:59' group by date_format(create_time, "%Y-%m-%d %H"), `currency`  
-SQL;
-        $PDOStatement = $best->query($sql, 'select');
-        $res = ($PDOStatement->fetchall(\PDO::FETCH_ASSOC));
-        var_dump($sql);
-        var_dump($res);
-        
-        $sql = <<<SQL
-select currency, sum(price) AS sum_price, date_format(create_time, "%Y-%m-%d %H") as "hour", count(*) as count_num from `cdr_file` where (`cdr_file`.`operator_id` in ('1', '2', '3', '4', '5', '19', '21', '31', '32', '6', '8', '15', '16', '24', '22', '25', '26', '27', '28', '29', '35', '33', '34', '36', '38', '40', '7', '10', '11', '13', '12', '14', '18', '23', '37', '39', '17', '20') or `cdr_file`.`operator_id` is null) and (`cdr_file`.`actiontype` in ('1', '2', '4', '5', '6', '7', '8', '9', '10', '11', '13', '14', '16', '17', '18', '12', '15') or `cdr_file`.`actiontype` is null) and (`cdr_file`.`currency` in ('THB', 'VND', 'IDR', 'USD', 'MYR') or `cdr_file`.`currency` is null) and (`cdr_file`.`telco_name` in ('TRUE', 'AIS', 'dtac', 'TrueMoney', 'OneTwoCall', 'Line', 'bank', 'bluewallet', 'BlueCoins', 'Ais', 'True', 'Telkomsel', 'xl', 'indosat', 'unipin', 'smartfren', 'otc', 'indomog', 'hutchison', 'lytoCard', 'atm', 'bank', 'viettel', 'mobifone', 'vinaphone', 'vtc', 'vietnamMobile', 'bank', 'CC', 'UM', 'DG', 'MX', 'Telenor') or `cdr_file`.`telco_name` is null) and `actiontype` in ('2', '4', '5', '8', '11', '13', '14') and `status` = '200' and `create_time` >= '2017-10-24 00:00:00' and `create_time` <= '2017-10-24 23:59:59' group by date_format(create_time, "%Y-%m-%d %H"), `currency`  
-SQL;
-        $PDOStatement = $best->query($sql, 'select');
-        $res = ($PDOStatement->fetchall(\PDO::FETCH_ASSOC));
-        var_dump($sql);
-        var_dump($res);
+//        $sql = <<<SQL
+//select currency, sum(price) AS sum_price, date_format(create_time, "%Y-%m-%d %H") as "hour", count(*) as count_num from `cdr_file` where (`cdr_file`.`operator_id` in ('1', '2', '3', '4', '5', '19', '21', '31', '32', '6', '8', '15', '16', '24', '22', '25', '26', '27', '28', '29', '35', '33', '34', '36', '38', '40', '7', '10', '11', '13', '12', '14', '18', '23', '37', '39', '17', '20') or `cdr_file`.`operator_id` is null) and (`cdr_file`.`actiontype` in ('1', '2', '4', '5', '6', '7', '8', '9', '10', '11', '13', '14', '16', '17', '18', '12', '15') or `cdr_file`.`actiontype` is null) and (`cdr_file`.`currency` in ('THB', 'VND', 'IDR', 'USD', 'MYR') or `cdr_file`.`currency` is null) and (`cdr_file`.`telco_name` in ('TRUE', 'AIS', 'dtac', 'TrueMoney', 'OneTwoCall', 'Line', 'bank', 'bluewallet', 'BlueCoins', 'Ais', 'True', 'Telkomsel', 'xl', 'indosat', 'unipin', 'smartfren', 'otc', 'indomog', 'hutchison', 'lytoCard', 'atm', 'bank', 'viettel', 'mobifone', 'vinaphone', 'vtc', 'vietnamMobile', 'bank', 'CC', 'UM', 'DG', 'MX', 'Telenor') or `cdr_file`.`telco_name` is null) and `actiontype` in ('2', '4', '5', '8', '11', '13', '14') and `status` = '200' and `create_time` >= '2017-10-25 00:00:00' and `create_time` <= '2017-10-25 23:59:59' group by date_format(create_time, "%Y-%m-%d %H"), `currency`  
+//SQL;
+//        $PDOStatement = $best->query($sql, 'select');
+//        $res = ($PDOStatement->fetchall(\PDO::FETCH_ASSOC));
+//        var_dump($sql);
+//        var_dump($res);
+//        
+//        $sql = <<<SQL
+//select currency, sum(price) AS sum_price, date_format(create_time, "%Y-%m-%d %H") as "hour", count(*) as count_num from `cdr_file` where (`cdr_file`.`operator_id` in ('1', '2', '3', '4', '5', '19', '21', '31', '32', '6', '8', '15', '16', '24', '22', '25', '26', '27', '28', '29', '35', '33', '34', '36', '38', '40', '7', '10', '11', '13', '12', '14', '18', '23', '37', '39', '17', '20') or `cdr_file`.`operator_id` is null) and (`cdr_file`.`actiontype` in ('1', '2', '4', '5', '6', '7', '8', '9', '10', '11', '13', '14', '16', '17', '18', '12', '15') or `cdr_file`.`actiontype` is null) and (`cdr_file`.`currency` in ('THB', 'VND', 'IDR', 'USD', 'MYR') or `cdr_file`.`currency` is null) and (`cdr_file`.`telco_name` in ('TRUE', 'AIS', 'dtac', 'TrueMoney', 'OneTwoCall', 'Line', 'bank', 'bluewallet', 'BlueCoins', 'Ais', 'True', 'Telkomsel', 'xl', 'indosat', 'unipin', 'smartfren', 'otc', 'indomog', 'hutchison', 'lytoCard', 'atm', 'bank', 'viettel', 'mobifone', 'vinaphone', 'vtc', 'vietnamMobile', 'bank', 'CC', 'UM', 'DG', 'MX', 'Telenor') or `cdr_file`.`telco_name` is null) and `actiontype` in ('2', '4', '5', '8', '11', '13', '14') and `status` = '200' and `create_time` >= '2017-10-24 00:00:00' and `create_time` <= '2017-10-24 23:59:59' group by date_format(create_time, "%Y-%m-%d %H"), `currency`  
+//SQL;
+//        $PDOStatement = $best->query($sql, 'select');
+//        $res = ($PDOStatement->fetchall(\PDO::FETCH_ASSOC));
+//        var_dump($sql);
+//        var_dump($res);
         
         $sql = 'insert into visitor_info set name="原生sql插入"';
         $PDOStatement = $visitorInfo->query($sql, 'insert');

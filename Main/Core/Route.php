@@ -5,6 +5,7 @@ namespace Main\Core;
 
 use App\Kernel;
 use Closure;
+use Generator;
 use Main\Core\Route\Traits;
 
 /**
@@ -55,18 +56,7 @@ class Route {
      * @return void
      */
     private static function routeAnalysis(): void {
-        foreach (self::$routeRule as $rule => $info) {
-            // 兼容式路由
-            if (is_int($rule)) {
-                if(is_null($info)){
-                    continue;
-                }
-                foreach($info as $k => $v){
-                    $rule = $k;
-                    $info = $v;
-                    break;
-                }
-            }
+        foreach (self::pretreatment() as $rule => $info) {
             // 形参数组
             $parameter = [];
             $pathInfoPreg = self::ruleToPreg($rule, $parameter);
@@ -82,6 +72,24 @@ class Route {
             }
         }
         obj(Response::class)->setStatus(404)->exitData('Not Found ..');
+    }
+    
+    /**
+     * 预处理路由数组信息
+     * @return Generator
+     */
+    private static function pretreatment(): Generator {
+        foreach (self::$routeRule as $rule => $info) {
+            // 兼容式路由
+            if (is_int($rule)) {
+                if (is_null($info)) {
+                    continue;
+                }
+                $rule = key($info);
+                $info = reset($info);
+            }
+            yield $rule => $info;
+        }
     }
 
     /**
@@ -118,12 +126,10 @@ class Route {
      */
     private static function paramAnalysis(array $parameter, array $argument): array {
         $arr = [];
-        if (!empty($parameter)) {
-            foreach ($parameter as $k => $v) {
-                // 当实参不全时, 填充为 null
-                $argument[$k + 1] = !isset($argument[$k + 1]) ? '' : $argument[$k + 1];
-                $arr[$v] = ($argument[$k + 1] === '') ? \null : ltrim($argument[$k + 1], '/');
-            }
+        foreach ($parameter as $k => $v) {
+            // 当实参不全时, 填充为 null
+            $argument[$k + 1] = !isset($argument[$k + 1]) ? '' : $argument[$k + 1];
+            $arr[$v] = ($argument[$k + 1] === '') ? \null : ltrim($argument[$k + 1], '/');
         }
         return $arr;
     }
@@ -139,13 +145,10 @@ class Route {
     private static function infoAnalysis(string $rule, $info, array $urlParam = []): bool {
         // 一致化格式
         $info = self::unifiedInfo($info);
-        // 别名分析
-        $alias = $info['as'] ?? $rule;
+
         // 域名分析
-        if (isset($info['domain'])) {
-            if (!is_array($domainParam = self::domainToPreg($info['domain']))) {
-                return false;
-            }
+        if (!is_array($domainParam = self::domainToPreg($info['domain']))) {
+            return false;
         }
         // http方法分析
         if (!in_array(strtolower($_SERVER['REQUEST_METHOD']), $info['method'], true))
@@ -162,7 +165,6 @@ class Route {
 
         // 初始化 Request
         $request = obj(Request::class, $urlParam, $domainParam);
-        $request->alias = $alias;
         $request->methods = $info['method'];
 
         self::$routeRule = null;
@@ -196,7 +198,6 @@ class Route {
                 'method' => self::$allowMethod,
                 'middleware' => [],
                 'domain' => $_SERVER['HTTP_HOST'],
-                'as' => [],
                 'uses' => $info
             ];
         } elseif (is_array($info)) {
@@ -204,7 +205,6 @@ class Route {
                 'method' => $info['method'] ?? self::$allowMethod,
                 'middleware' => $info['middleware'] ?? [],
                 'domain' => $info['domain'] ?? $_SERVER['HTTP_HOST'],
-                'as' => $info['as'] ?? [],
                 'uses' => $info['uses']
             ];
         }

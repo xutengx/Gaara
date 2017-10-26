@@ -19,7 +19,6 @@ trait SetRoute {
         'domain' => [],
         'prefix' => [],
         'namespace' => [],
-        'as' => [],
         'middleware' => [],
     ];
 
@@ -154,19 +153,6 @@ trait SetRoute {
             }
         }
 
-        // 处理得到 完整 as 别名
-        {
-            $prefix = '';
-            if (!empty(self::$group['as'])) {
-                foreach (self::$group['as'] as $v) {
-                    if (empty($v))
-                        continue;
-                    $prefix .= $v;
-                }
-            }
-            $as = $prefix . $actionInfo['as'];
-        }
-
         // 处理得到 最终 domain 
         {
             $domain = $_SERVER['HTTP_HOST'];
@@ -197,7 +183,6 @@ trait SetRoute {
                 'method' => $method,
                 'middleware' => $middleware,
                 'domain' => $domain,
-                'as' => $as,
                 'uses' => $uses
             ]
         ];
@@ -214,7 +199,6 @@ trait SetRoute {
         self::$group['middleware'][] = $rule['middleware'] ?? [];
         self::$group['namespace'][] = $rule['namespace'] ?? '';
         self::$group['prefix'][] = $rule['prefix'] ?? '';
-        self::$group['as'][] = $rule['as'] ?? '';
         self::$group['domain'][] = $rule['domain'] ?? '';
 
         // 执行闭包
@@ -242,7 +226,6 @@ trait SetRoute {
             $actionInfo['middleware'] = $action['middleware'] ?? [];
             $actionInfo['namespace'] = $action['namespace'] ?? '';
             $actionInfo['prefix'] = $action['prefix'] ?? '';
-            $actionInfo['as'] = $action['as'] ?? '';
             $actionInfo['domain'] = $action['domain'] ?? '';
         } else {
             if ($action instanceof Closure) {
@@ -253,7 +236,6 @@ trait SetRoute {
             $actionInfo['middleware'] = [];
             $actionInfo['namespace'] = '';
             $actionInfo['prefix'] = '';
-            $actionInfo['as'] = '';
             $actionInfo['domain'] = '';
         }
         return $actionInfo;

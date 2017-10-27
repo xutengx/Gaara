@@ -170,8 +170,6 @@ class Route {
         $request->alias = $alias;
         $request->methods = $info['method'];
         
-        self::$routeRule = null;
-        
         // 核心执行,管道模式中间件,以及控制器
         self::doKernel($middleware, $contr, $wholeParam);
 

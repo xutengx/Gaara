@@ -13,13 +13,16 @@ class Request {
     use Traits\RequestInfo;
     use Traits\Filter;
 
-    private $domain = array();
-    private $post = array();
-    private $get = array();
-    private $put = array();
-    private $delete = array();
-    private $cookie = array();
-    private $input = array();
+    private $domain = [];
+    private $get = [];
+    private $post = [];
+    private $put = [];
+    private $delete = [];
+    private $options = [];
+    private $head = [];
+    private $patch = [];
+    private $input = [];
+    private $cookie = [];
     private $file = null;
     // 当前http方法
     public $method;
@@ -182,11 +185,11 @@ class Request {
      * @return array
      */
     private function _addslashes(array $arr): array {
-        $q = array();
+        $q = [];
         foreach ($arr as $k => $v) {
             if (is_string($v)) {
                 $q[addslashes($k)] = addslashes($v);
-            } else if (is_array($v)) {
+            } elseif (is_array($v)) {
                 $q[addslashes($k)] = $this->_addslashes($v);
             }
         }
@@ -199,15 +202,24 @@ class Request {
      * @return array
      */
     private function _htmlspecialchars(array $arr): array {
-        $q = array();
+        $q = [];
         foreach ($arr as $k => $v) {
             if (is_string($v)) {
-                $q[($k)] = htmlspecialchars($v);
+                $q[$k] = htmlspecialchars($v);
             } else if (is_array($v)) {
-                $q[($k)] = $this->_htmlspecialchars($v);
+                $q[$k] = $this->_htmlspecialchars($v);
             }
         }
         return $q;
+    }
+
+    /**
+     * 获取请求头中的内容
+     * @param string $key
+     * @return string|null
+     */
+    public function header(string $key){
+        return $_SERVER[$key] ?? null;
     }
 
     /**

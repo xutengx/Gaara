@@ -35,7 +35,7 @@ class Info extends HttpController {
      */
     public function create(Request $request, UserMerchant $merchant) {
         $userinfo = $request->userinfo;
-        $merchantInfo = $request->input;
+        $merchantInfo = $this->input();
 
         $merchant->orm = $merchantInfo;
         $merchant->orm['id'] = $userinfo['id'];

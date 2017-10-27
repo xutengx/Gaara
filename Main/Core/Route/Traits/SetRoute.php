@@ -153,6 +153,11 @@ trait SetRoute {
             }
         }
 
+        // 得到 as 别名
+        {
+            $as = $actionInfo['as'];
+        }
+
         // 处理得到 最终 domain 
         {
             $domain = $_SERVER['HTTP_HOST'];
@@ -183,6 +188,7 @@ trait SetRoute {
                 'method' => $method,
                 'middleware' => $middleware,
                 'domain' => $domain,
+                'as' => $as,
                 'uses' => $uses
             ]
         ];
@@ -226,6 +232,7 @@ trait SetRoute {
             $actionInfo['middleware'] = $action['middleware'] ?? [];
             $actionInfo['namespace'] = $action['namespace'] ?? '';
             $actionInfo['prefix'] = $action['prefix'] ?? '';
+            $actionInfo['as'] = $action['as'] ?? null;
             $actionInfo['domain'] = $action['domain'] ?? '';
         } else {
             if ($action instanceof Closure) {
@@ -236,6 +243,7 @@ trait SetRoute {
             $actionInfo['middleware'] = [];
             $actionInfo['namespace'] = '';
             $actionInfo['prefix'] = '';
+            $actionInfo['as'] = null;
             $actionInfo['domain'] = '';
         }
         return $actionInfo;

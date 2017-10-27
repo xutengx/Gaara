@@ -146,6 +146,8 @@ class Route {
         // 一致化格式
         $info = self::unifiedInfo($info);
 
+        // 别名分析
+        $alias = $info['as'] ?? $rule;
         // 域名分析
         if (!is_array($domainParam = self::domainToPreg($info['domain']))) {
             return false;
@@ -165,8 +167,9 @@ class Route {
 
         // 初始化 Request
         $request = obj(Request::class, $urlParam, $domainParam);
+        $request->alias = $alias;
         $request->methods = $info['method'];
-
+        
         self::$routeRule = null;
         
         // 核心执行,管道模式中间件,以及控制器
@@ -198,6 +201,7 @@ class Route {
                 'method' => self::$allowMethod,
                 'middleware' => [],
                 'domain' => $_SERVER['HTTP_HOST'],
+                'as' => null,
                 'uses' => $info
             ];
         } elseif (is_array($info)) {
@@ -205,6 +209,7 @@ class Route {
                 'method' => $info['method'] ?? self::$allowMethod,
                 'middleware' => $info['middleware'] ?? [],
                 'domain' => $info['domain'] ?? $_SERVER['HTTP_HOST'],
+                'as' => $info['as'] ?? null,
                 'uses' => $info['uses']
             ];
         }

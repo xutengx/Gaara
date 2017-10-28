@@ -12,13 +12,21 @@ use \PhpConsole;
  */
 class Dev extends HttpController {
     
-    protected $viewOverTime = 3;
+    use \Main\Core\Controller\Traits\RequestTrait;
+
+    protected $view = 'App/yh/c/Dev/view/';
     
-    protected $view = 'App/yh/c/Dev/';
-    
-    protected $language = 1;
+    protected $language = 0;
 
     public function index() {
+        
+        $this->js('js/test.js');
+        
+        $this->js('http://cdn.bootcss.com/blueimp-md5/1.1.0/js/md5.min.js');
+        
+        $this->title('dev');
+        
+        
 //        return obj(\App\yh\m\UserMerchant::class)->getRow();
         $this->assignPhp('url', url(''));
         $this->assign('test', 'this is test string !');

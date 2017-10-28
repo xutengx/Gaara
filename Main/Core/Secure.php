@@ -24,16 +24,7 @@ class Secure {
      */
     public function csrfAjax(): string {
         return <<<EOF
-$.ajaxSetup({
-    beforeSend:function(request){
-        var match = window.document.cookie.match(/(?:^|\s|;)X-XSRF-TOKEN\s*=\s*([^;]+)(?:;|$)/);
-        request.setRequestHeader("X-XSRF-TOKEN", match && match[1]);
-    },
-    error: function(XMLHttpRequest, textStatus, errorThrown) {
-        var data = JSON.parse(XMLHttpRequest.responseText);
-        alert(data.error.message);
-    }
-});
+$.ajaxSetup({beforeSend:function(a){var b=window.document.cookie.match(/(?:^|\s|;)X-XSRF-TOKEN\s*=\s*([^;]+)(?:;|$)/);a.setRequestHeader("X-XSRF-TOKEN",b&&b[1])},error:function(a,b,c){a=JSON.parse(a.responseText);void 0!==a.msg?alert(a.msg):void 0!==a.error.message&&alert(a.error.message)}});
 EOF;
     }
 

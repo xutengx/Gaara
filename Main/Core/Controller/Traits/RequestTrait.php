@@ -61,16 +61,4 @@ trait RequestTrait {
     protected function delete($key = null, $rule = null, $msg = null) {
         return $this->requestFun($key, $rule, $msg, 'detele');
     }
-
-    protected function head($key = null, $rule = null, $msg = null) {
-        return $this->requestFun($key, $rule, $msg, 'head');
-    }
-
-    protected function options($key = null, $rule = null, $msg = null) {
-        return $this->requestFun($key, $rule, $msg, 'options');
-    }
-
-    protected function patch($key = null, $rule = null, $msg = null) {
-        return $this->requestFun($key, $rule, $msg, 'patch');
-    }
 }

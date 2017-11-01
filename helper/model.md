@@ -53,7 +53,7 @@
 
 ## 总览
 
-> 控制器一般继承`Main\Core\Model`
+> 控制器一般继承`Gaara\Core\Model`
 
 `gaara`的数据库模型, 支持链式操作来构建查询语句, 分布式数据库配置支持, 分块数据获取, 预处理语句复用等等
 
@@ -105,7 +105,7 @@ return [
 
 namespace App\yh\m;
 
-class UserApplication extends \Main\Core\Model {
+class UserApplication extends \Gaara\Core\Model {
     // 主键的字段
     protected $primaryKey = 'id';
     // 表名
@@ -127,7 +127,7 @@ class UserApplication extends \Main\Core\Model {
 
 namespace App\yh\m;
 
-class UserApplication extends \Main\Core\Model {
+class UserApplication extends \Gaara\Core\Model {
 
     public function getInfoByIdWithMerchant(int $id, int $merchant_id): array {
         return $this->where('id', ':id')
@@ -143,7 +143,7 @@ class UserApplication extends \Main\Core\Model {
 <?php
 namespace App;
 use App\Model;
-class Dev extends \Main\Core\Controller\HttpController {
+class Dev extends \Gaara\Core\Controller\HttpController {
     public function index(Model\visitorInfoModel $visitorInfo){
     
         $res = $visitorInfo->transaction(function($obj){
@@ -166,7 +166,7 @@ class Dev extends \Main\Core\Controller\HttpController {
 <?php
 namespace App;
 use App\Model;
-class Dev extends \Main\Core\Controller\HttpController {
+class Dev extends \Gaara\Core\Controller\HttpController {
     // orm新增
     public function index(Model\visitorInfoModel $visitorInfo){
         $data = $this->post();

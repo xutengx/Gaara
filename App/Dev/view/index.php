@@ -4,9 +4,9 @@ namespace App\Dev\view;
 defined('IN_SYS') || exit('ACC Denied');
 
 use App\yh\s\Sign;
-use Main\Core\Request;
+use Gaara\Core\Request;
 
-class index extends \Main\Core\Controller\HttpController {
+class index extends \Gaara\Core\Controller\HttpController {
 
     protected $view = 'App/Dev/view//view/html/';
     protected $language = 1;

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\index\Contr;
-use \Main\Core\Controller;
+use \Gaara\Core\Controller;
 defined('IN_SYS') || exit('ACC Denied');
 
 class DemoContr extends Controller\HttpController {

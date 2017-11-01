@@ -4,8 +4,8 @@ declare(strict_types = 1);
 namespace App\yh\Exception;
 defined('IN_SYS') || exit('ACC Denied');
 
-use Main\Core\DbConnection;
-use Main\Core\Conf;
+use Gaara\Core\DbConnection;
+use Gaara\Core\Conf;
 
 class createTable {
 

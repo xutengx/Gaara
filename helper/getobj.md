@@ -26,7 +26,7 @@
 
 ## 总览
 
-> 通过`\Main\Core\Integrator::get(string $class_name, array $param_arr)`获取一个对象。
+> 通过`\Gaara\Core\Integrator::get(string $class_name, array $param_arr)`获取一个对象。
 > 快捷方式 `obj(string $class_name, mix $param_1)`
 > 将会自动解决富依赖问题
 > 获取一次后, 类将被缓存, 下次将直接返回。
@@ -37,15 +37,15 @@
 <?php
 namespace App\yh\c\merchant;
 
-use Main\Core\Cache;
+use Gaara\Core\Cache;
 use \Cache as AilasCahce;
-use Main\Core\Controller\HttpController;
+use Gaara\Core\Controller\HttpController;
 
 class Test extends HttpController {
-    public function Index(Main\Core\Cache $c0) {
-        $c1 = obj(Main\Core\Cache::class);
+    public function Index(Gaara\Core\Cache $c0) {
+        $c1 = obj(Gaara\Core\Cache::class);
         $c2 = obj(AilasCahce::class);
-        $c3 = obj('Main\Core\Cache');
+        $c3 = obj('Gaara\Core\Cache');
         $c4 = obj('Cache');
         $c5 = AilasCahce::getInstance();
         $c6 = obj(Cache::class);
@@ -53,7 +53,7 @@ class Test extends HttpController {
         // 以上的7个对象全部 ===
     }
 ```
-**注 : 哪些类有别名可以参看\Main\Quick\ClassAilas.php**
+**注 : 哪些类有别名可以参看\Gaara\Quick\ClassAilas.php**
 
 ## 通常获取
 

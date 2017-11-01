@@ -29,7 +29,7 @@
 
 ## 总览
 
-> 直接用`Main\Core\Cache`默认驱动为redis
+> 直接用`Gaara\Core\Cache`默认驱动为redis
 
 > 快捷方式\Cache
 
@@ -38,7 +38,7 @@
 ### 最简缓存
 
 ```php
-(new Main\Core\Cache)->set('key', 'value', 3600);
+(new Gaara\Core\Cache)->set('key', 'value', 3600);
 
 \Cache::set('key', 'value', 3600);
 ```
@@ -46,7 +46,7 @@
 ### 闭包缓存
 
 ```php
-(new Main\Core\Cache)->set('key', function() {
+(new Gaara\Core\Cache)->set('key', function() {
     return 'value';
 }, 3600);
 
@@ -57,7 +57,7 @@
 ## 获取缓存
 
 ```php
-(new Main\Core\Cache)->get('key');
+(new Gaara\Core\Cache)->get('key');
 
 \Cache::get('key');
 ```
@@ -67,7 +67,7 @@
 当传入的get的第一的参数是闭包时, 将会依据当前的代码上下文, 命名空间等特征, 生成缓存键名, 当缓存键名不存在时, 则执行闭包行数, 缓存并返回
 
 ```php
-(new Main\Core\Cache)->get(function(){
+(new Gaara\Core\Cache)->get(function(){
     return $this->foo();
 }, 3600);
 
@@ -89,7 +89,7 @@
  * @param bool|true $cacheTime 缓存过期时间
  * @param $par 非限定参数 
  */
-(new Main\Core\Cache)->call($obj, 'function_name_in_obj', 3600, $param_1, $param_2);
+(new Gaara\Core\Cache)->call($obj, 'function_name_in_obj', 3600, $param_1, $param_2);
 
 \Cache::call($obj, 'function_name_in_obj', 3600, $param_1, $param_2);
 ```
@@ -100,7 +100,7 @@
 为了方便调试提供`dget`, `dcall`, 他们不会检测缓存是否存在, 而总是直接`执行闭包`or`执行方法`后返回
 
 ```php
-(new Main\Core\Cache)->dcall($obj, 'function_name_in_obj', 3600, $param_1, $param_2);
+(new Gaara\Core\Cache)->dcall($obj, 'function_name_in_obj', 3600, $param_1, $param_2);
 
 \Cache::dget(function(){
     return 'no cache '. time();

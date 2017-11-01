@@ -2,7 +2,7 @@
 
 namespace App\Dev\performance\Contr;
 
-use \Main\Core\Controller;
+use \Gaara\Core\Controller;
 defined('IN_SYS') || exit('ACC Denied');
 /**
  * 栈的实现与比较

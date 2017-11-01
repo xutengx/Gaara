@@ -4,8 +4,8 @@ declare(strict_types = 1);
 namespace App\yh\Middleware;
 defined('IN_SYS') || exit('ACC Denied');
 
-use Main\Core\Middleware;
-use \Main\Core\Request;
+use Gaara\Core\Middleware;
+use \Gaara\Core\Request;
 use App\yh\s\Token;
 use App\yh\s\Sign;
 use Response;

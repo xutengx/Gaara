@@ -3,7 +3,7 @@
 namespace App\Dev\performance\Contr;
 
 use Tool;
-use Main\Core\Controller;
+use Gaara\Core\Controller;
 /**
  * php 数组与定长数组
  */

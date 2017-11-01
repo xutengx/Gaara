@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace App\yh\m;
 defined('IN_SYS') || exit('ACC Denied');
 
-class UserApplication extends \Main\Core\Model {
+class UserApplication extends \Gaara\Core\Model {
 
     /**
      * 获取应用信息

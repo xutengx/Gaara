@@ -31,5 +31,5 @@
 
 ## 方法列表
 
-**注 : 详情查看`Main\Views\Include\js\_autoload.js`**
+**注 : 详情查看`Gaara\Views\Include\js\_autoload.js`**
 

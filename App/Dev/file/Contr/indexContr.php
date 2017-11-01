@@ -2,7 +2,7 @@
 
 namespace App\Dev\file\Contr;
 
-use \Main\Core\Controller;
+use \Gaara\Core\Controller;
 defined('IN_SYS') || exit('ACC Denied');
 /*
  * 文件服务, 路由类

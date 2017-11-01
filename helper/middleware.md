@@ -53,11 +53,11 @@
 
 ## 中间件申明
 
-申明一个中间件, 需要继承`Main\Core\Middleware`
+申明一个中间件, 需要继承`Gaara\Core\Middleware`
 ```php
 <?php
 namespace App\yh\Middleware;
-use Main\Core\Middleware;
+use Gaara\Core\Middleware;
 class SignCheck extends Middleware {
     
 }
@@ -69,7 +69,7 @@ class SignCheck extends Middleware {
 ```php
 <?php
 namespace App\yh\Middleware;
-use Main\Core\Middleware;
+use Gaara\Core\Middleware;
 class SignCheck extends Middleware {
 
     public function handle() {
@@ -81,7 +81,7 @@ class SignCheck extends Middleware {
 ```php
 <?php
 namespace App\yh\Middleware;
-use Main\Core\Middleware;
+use Gaara\Core\Middleware;
 use Mian\Core\Request;
 class SignCheck extends Middleware {
 
@@ -98,7 +98,7 @@ class SignCheck extends Middleware {
 ```php
 <?php
 namespace App\yh\Middleware;
-use Main\Core\Middleware;
+use Gaara\Core\Middleware;
 class SignCheck extends Middleware {
 
     public function terminate($response) {
@@ -117,7 +117,7 @@ class SignCheck extends Middleware {
 
 ## 已存在的中间件
 
-`gaara`提供一些常用中间件,放置在`Main/Core/Middleware`目录中,可在`App\Kernel`中直接使用;
+`gaara`提供一些常用中间件,放置在`Gaara/Core/Middleware`目录中,可在`App\Kernel`中直接使用;
 
 ### CrossDomainAccess
 

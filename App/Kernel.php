@@ -3,15 +3,15 @@
 declare(strict_types = 1);
 namespace App;
 
-use Main\Core\Kernel as HttpKernel;
-use Main\Core\Middleware\ReturnResponse;
-use Main\Core\Middleware\ValidatePostSize;
-use Main\Core\Middleware\StartSession;
-use Main\Core\Middleware\VerifyCsrfToken;
-use Main\Core\Middleware\CrossDomainAccess;
-use Main\Core\Middleware\ThrottleRequests;
-use Main\Core\Middleware\PerformanceMonitoring;
-use Main\Core\Middleware\ExceptionHandler;
+use Gaara\Core\Kernel as HttpKernel;
+use Gaara\Core\Middleware\ReturnResponse;
+use Gaara\Core\Middleware\ValidatePostSize;
+use Gaara\Core\Middleware\StartSession;
+use Gaara\Core\Middleware\VerifyCsrfToken;
+use Gaara\Core\Middleware\CrossDomainAccess;
+use Gaara\Core\Middleware\ThrottleRequests;
+use Gaara\Core\Middleware\PerformanceMonitoring;
+use Gaara\Core\Middleware\ExceptionHandler;
 
 class Kernel extends HttpKernel {
     // 全局中间件
@@ -41,10 +41,10 @@ class Kernel extends HttpKernel {
         ],
 //        'sendMail' => [
 //            // 访问频率控制  1次 / 30s
-//            \Main\Core\Middleware\ThrottleRequests::class.'@1@30',
+//            \Gaara\Core\Middleware\ThrottleRequests::class.'@1@30',
 //        ],
 //        'testMiddleware' =>[
-//            \Main\Core\Middleware\ThrottleRequests::class.'@30@60',
+//            \Gaara\Core\Middleware\ThrottleRequests::class.'@30@60',
 //            \App\Middleware\test1::class,
 //            \App\Middleware\test2::class,
 //        ],

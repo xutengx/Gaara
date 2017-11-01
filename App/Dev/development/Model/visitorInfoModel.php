@@ -4,7 +4,7 @@ namespace App\development\Model;
 
 defined('IN_SYS') || exit('ACC Denied');
 
-class visitorInfoModel extends \Main\Core\Model {
+class visitorInfoModel extends \Gaara\Core\Model {
 
     protected $table = 'visitor_info';
     

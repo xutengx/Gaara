@@ -3,7 +3,7 @@
 declare(strict_types = 1);
 namespace App\Dev\mysql\Contr;
 
-use \Main\Core\Controller\HttpController;
+use \Gaara\Core\Controller\HttpController;
 use \App\Dev\mysql\Model;
 
 /*
@@ -384,7 +384,7 @@ SELECT * FROM `table` WHERE id >=
     
     public function test_21(Model\visitorInfoDev $visitorInfo) {
 
-//        $dir = (new \Main\Expand\Image)->newUrl('https://baidu.com');
+//        $dir = (new \Gaara\Expand\Image)->newUrl('https://baidu.com');
 //        var_dump($dir);
 //        $data = 'https://www.baidu.com';
 //        echo '<img src="'.(new \chillerlan\QRCode\QRCode($data, new \chillerlan\QRCode\Output\QRImage))->output().'" />';

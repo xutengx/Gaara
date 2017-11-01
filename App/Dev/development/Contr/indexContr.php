@@ -3,7 +3,7 @@
 // 开发, 测试, demo 功能3合1
 namespace App\Dev\development\Contr;
 
-use \Main\Core\Controller\HttpController;
+use \Gaara\Core\Controller\HttpController;
 use App\development\Dev\test;
 use App\development\Dev\asyncDev;
 use App\development\Model;
@@ -13,7 +13,7 @@ use Request;
 defined('IN_SYS') || exit('ACC Denied');
 class indexContr extends HttpController {
 
-    public function indexDo(Request $request, $test, \Main\Core\Cache $c , \HTMLPurifier $htmlpurifier) {
+    public function indexDo(Request $request, $test, \Gaara\Core\Cache $c , \HTMLPurifier $htmlpurifier) {
 
         $passwd = password_hash('123123',PASSWORD_DEFAULT);
         var_dump($passwd);

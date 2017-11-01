@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace App\yh\m;
 defined('IN_SYS') || exit('ACC Denied');
 
-class MainAdmin extends \Main\Core\Model {
+class MainAdmin extends \Gaara\Core\Model {
 
     // 密码加密算法
     const encryption = PASSWORD_BCRYPT;

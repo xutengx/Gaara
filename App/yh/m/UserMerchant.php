@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace App\yh\m;
 defined('IN_SYS') || exit('ACC Denied');
 
-class UserMerchant extends \Main\Core\Model {
+class UserMerchant extends \Gaara\Core\Model {
 
     /**
      * 获取商户信息

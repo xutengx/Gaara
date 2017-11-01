@@ -2,7 +2,7 @@
 
 namespace App\Dev\performance\Contr;
 
-use \Main\Core\Controller;
+use \Gaara\Core\Controller;
 defined('IN_SYS') || exit('ACC Denied');
 /**
  * 3类队列比较 10万条数据随机入队、出队，使用SplQueue与Array模拟的队列与redisList的比较

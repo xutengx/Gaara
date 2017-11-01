@@ -4,7 +4,7 @@ namespace App\Dev\mysql\Model;
 
 defined('IN_SYS') || exit('ACC Denied');
 
-class Non extends \Main\Core\Model {
+class Non extends \Gaara\Core\Model {
     
     public function construct() {
     }

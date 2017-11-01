@@ -26,7 +26,7 @@
 ```
 graph TD
 index.php[public\index.php]-->init.php[init.php]
-init.php-->Route.php[Main\Core\Route.php]
+init.php-->Route.php[Gaara\Core\Route.php]
 Route.php-->校验路由{路由匹配}
 校验路由-->|成功|Kernel[App\Kernel.php]
 校验路由-->|失败|路由匹配完结{路由匹配完结}

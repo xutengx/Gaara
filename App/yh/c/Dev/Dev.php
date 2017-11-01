@@ -3,16 +3,16 @@
 declare(strict_types = 1);
 namespace App\yh\c\Dev;
 
-use Main\Core\Controller\HttpController;
+use Gaara\Core\Controller\HttpController;
 use Log;
-//use Main\Core\PhpConsole;
+//use Gaara\Core\PhpConsole;
 use \PhpConsole;
 /**
  * 调试接口用
  */
 class Dev extends HttpController {
     
-    use \Main\Core\Controller\Traits\RequestTrait;
+    use \Gaara\Core\Controller\Traits\RequestTrait;
 
     protected $view = 'App/yh/c/Dev/view/';
     

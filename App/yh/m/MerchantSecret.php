@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace App\yh\m;
 defined('IN_SYS') || exit('ACC Denied');
 
-class MerchantSecret extends \Main\Core\Model {
+class MerchantSecret extends \Gaara\Core\Model {
     
     /**
      * 查询商户的密钥信息

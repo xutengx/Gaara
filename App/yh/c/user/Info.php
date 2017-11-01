@@ -5,7 +5,7 @@ namespace App\yh\c\user;
 defined('IN_SYS') || exit('ACC Denied');
 
 use App\yh\m;
-use Main\Core\Controller\HttpController;
+use Gaara\Core\Controller\HttpController;
 
 class Info extends HttpController {
 

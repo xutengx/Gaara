@@ -2,8 +2,8 @@
 
 namespace App\Middleware;
 
-use Main\Core\Middleware;
-use \Main\Core\Request;
+use Gaara\Core\Middleware;
+use \Gaara\Core\Request;
 defined('IN_SYS') || exit('ACC Denied');
 
 /**

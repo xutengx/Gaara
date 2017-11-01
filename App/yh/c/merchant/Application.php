@@ -5,8 +5,8 @@ namespace App\yh\c\merchant;
 defined('IN_SYS') || exit('ACC Denied');
 
 use App\yh\m\UserApplication;
-use Main\Core\Request;
-use Main\Core\Controller\HttpController;
+use Gaara\Core\Request;
+use Gaara\Core\Controller\HttpController;
 use PDOException;
 
 /**

@@ -4,10 +4,10 @@ declare(strict_types = 1);
 namespace App\yh\c\user;
 defined('IN_SYS') || exit('ACC Denied');
 
-use App\yh\m\MainUser;
-use Main\Core\Secure;
-use Main\Expand\Mail;
-use Main\Core\Controller\HttpController;
+use App\yh\m\MainUser as GaaraUser;
+use Gaara\Core\Secure;
+use Gaara\Expand\Mail;
+use Gaara\Core\Controller\HttpController;
 use App\yh\s\Token;
 
 class ForgetPasswd extends HttpController {
@@ -26,7 +26,7 @@ class ForgetPasswd extends HttpController {
      * @param Mail      $mail      邮件发送对象
      * @param mainUser  $user      数据库操作对象
      */
-    public function index(Secure $secure, Mail $mail, MainUser $user) {
+    public function index(Secure $secure, Mail $mail, GaaraUser $user) {
         $email = $this->post('email', 'email');
         $url = $this->post('url', 'url');
 
@@ -45,9 +45,9 @@ class ForgetPasswd extends HttpController {
     /**
      * 修改用户, 设置密码
      * @param Secure $secure
-     * @param MainUser $user
+     * @param GaaraUser $user
      */
-    public function setPasswd(Secure $secure, MainUser $user) {
+    public function setPasswd(Secure $secure, GaaraUser $user) {
         $email = $this->post('email', 'email');
         $token = $this->post('token');
         $passwd = $this->post('passwd', 'passwd');
@@ -89,7 +89,7 @@ class ForgetPasswd extends HttpController {
     /**
      * 检测邮箱是否已经被注册
      */
-    private function checkEmail(string $email, MainUser $user): bool {
+    private function checkEmail(string $email, GaaraUser $user): bool {
         $has = $user->getEmail($email);
         if($has){
             $this->uid = (int)$has['id'];

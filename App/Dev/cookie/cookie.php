@@ -2,8 +2,8 @@
 
 namespace App\Dev\cookie;
 
-use Main\Core\Request;
-use \Main\Core\Controller\HttpController;
+use Gaara\Core\Request;
+use \Gaara\Core\Controller\HttpController;
 
 class cookie extends HttpController {
 

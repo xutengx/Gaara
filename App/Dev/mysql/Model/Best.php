@@ -2,7 +2,7 @@
 
 namespace App\Dev\mysql\Model;
 
-class Best extends \Main\Core\Model {
+class Best extends \Gaara\Core\Model {
     
     protected $connection = '_best';
     

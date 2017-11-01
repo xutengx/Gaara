@@ -19,13 +19,13 @@
     "autoload": {
         "psr-4": {
             "App\\": "App/",
-            "Main\\": "Main/"
+            "Gaara\\": "Gaara/"
         },
         "classmap":[
         ],
          "files": [
-             "Main/Quick/Function.php",
-             "Main/Quick/ClassAilas.php"
+             "Gaara/Quick/Function.php",
+             "Gaara/Quick/ClassAilas.php"
         ]
     },
     "require": {

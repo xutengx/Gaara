@@ -41,13 +41,13 @@
 
 namespace App\yh\c\Dev;
 
-class Dev extends \Main\Core\Controller\HttpController {
+class Dev extends \Gaara\Core\Controller\HttpController {
     // 视图构件,页面相关函数引入
-    use \Main\Core\Controller\Traits\RequestTrait;
+    use \Gaara\Core\Controller\Traits\RequestTrait;
 }
 
 ```
-**注 : 若`\Main\Core\Controller\HttpController`已经引入视图构件`\Main\Core\Controller\Traits\RequestTrait`,则可以省略手动**
+**注 : 若`\Gaara\Core\Controller\HttpController`已经引入视图构件`\Gaara\Core\Controller\Traits\RequestTrait`,则可以省略手动**
 
 
 
@@ -61,9 +61,9 @@ class Dev extends \Main\Core\Controller\HttpController {
 
 namespace App\yh\c\Dev;
 
-class Dev extends \Main\Core\Controller\HttpController {
+class Dev extends \Gaara\Core\Controller\HttpController {
     // 视图构件,页面相关函数引入
-    use \Main\Core\Controller\Traits\RequestTrait;
+    use \Gaara\Core\Controller\Traits\RequestTrait;
     
     protected $view = 'App/yh/c/Dev/';
     
@@ -94,9 +94,9 @@ class Dev extends \Main\Core\Controller\HttpController {
 
 namespace App\yh\c\Dev;
 
-class Dev extends \Main\Core\Controller\HttpController {
+class Dev extends \Gaara\Core\Controller\HttpController {
     // 视图构件,页面相关函数引入
-    use \Main\Core\Controller\Traits\RequestTrait;
+    use \Gaara\Core\Controller\Traits\RequestTrait;
     
     public function index(){
         /**
@@ -136,9 +136,9 @@ class Dev extends \Main\Core\Controller\HttpController {
 
 namespace App\yh\c\Dev;
 
-class Dev extends \Main\Core\Controller\HttpController {
+class Dev extends \Gaara\Core\Controller\HttpController {
     // 视图构件,页面相关函数引入
-    use \Main\Core\Controller\Traits\RequestTrait;
+    use \Gaara\Core\Controller\Traits\RequestTrait;
     
     public function index(){
 
@@ -173,9 +173,9 @@ class Dev extends \Main\Core\Controller\HttpController {
 
 namespace App\yh\c\Dev;
 
-class Dev extends \Main\Core\Controller\HttpController {
+class Dev extends \Gaara\Core\Controller\HttpController {
     // 视图构件,页面相关函数引入
-    use \Main\Core\Controller\Traits\RequestTrait;
+    use \Gaara\Core\Controller\Traits\RequestTrait;
     
     protected $js = [
         'http://cdn.bootcss.com/blueimp-md5/1.1.0/js/md5.min.js'
@@ -213,9 +213,9 @@ class Dev extends \Main\Core\Controller\HttpController {
 
 namespace App\yh\c\Dev;
 
-class Dev extends \Main\Core\Controller\HttpController {
+class Dev extends \Gaara\Core\Controller\HttpController {
     // 视图构件,页面相关函数引入
-    use \Main\Core\Controller\Traits\RequestTrait;
+    use \Gaara\Core\Controller\Traits\RequestTrait;
     // 选择语种
     protected $language = 4;
     // 语种
@@ -257,9 +257,9 @@ class Dev extends \Main\Core\Controller\HttpController {
 
 namespace App\yh\c\Dev;
 
-class Dev extends \Main\Core\Controller\HttpController {
+class Dev extends \Gaara\Core\Controller\HttpController {
     // 视图构件,页面相关函数引入
-    use \Main\Core\Controller\Traits\RequestTrait;
+    use \Gaara\Core\Controller\Traits\RequestTrait;
     // 选择语种
     protected $language = 4;
     // 语种
@@ -298,9 +298,9 @@ hello world !
 
 namespace App\yh\c\Dev;
 
-class Dev extends \Main\Core\Controller\HttpController {
+class Dev extends \Gaara\Core\Controller\HttpController {
     // 视图构件,页面相关函数引入
-    use \Main\Core\Controller\Traits\RequestTrait;
+    use \Gaara\Core\Controller\Traits\RequestTrait;
     // 选择语种
     protected $language = 4;
     // 语种

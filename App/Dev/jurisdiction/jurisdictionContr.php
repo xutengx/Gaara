@@ -1,7 +1,7 @@
 <?php
 
 namespace App\jurisdiction;
-use \Main\Core\Controller\HttpController;
+use \Gaara\Core\Controller\HttpController;
 defined('IN_SYS') || exit('ACC Denied');
 
 class jurisdictionContr extends HttpController {

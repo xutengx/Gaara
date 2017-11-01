@@ -5,9 +5,9 @@ namespace App\yh\c\user;
 defined('IN_SYS') || exit('ACC Denied');
 
 use App\yh\m\MainUser;
-use Main\Core\Secure;
-use Main\Expand\Mail;
-use Main\Core\Controller\HttpController;
+use Gaara\Core\Secure;
+use Gaara\Expand\Mail;
+use Gaara\Core\Controller\HttpController;
 
 class Reg extends HttpController {
     // 生成邮箱注册, 所需的盐
@@ -40,7 +40,7 @@ class Reg extends HttpController {
     /**
      * 新增用户, 设置密码
      * @param Secure $secure
-     * @param MainUser $user
+     * @param GaaraUser $user
      */
     public function setPasswd(Secure $secure, MainUser $user) {
         $email = $this->post('email', 'email');
@@ -79,11 +79,11 @@ class Reg extends HttpController {
                 if($strArr[1] > \time() - self::overtime){
                     return true;
                 }
-                else return $this->returnMsg(0, '链接已经过期.');
+                else exit($this->returnMsg(0, '链接已经过期.'));
             }
-            else return $this->returnMsg(0, '链接与邮箱不匹配.');
+            else exit($this->returnMsg(0, '链接与邮箱不匹配.'));
         }
-        else return $this->returnMsg(0, '无效的链接.');
+        else exit($this->returnMsg(0, '无效的链接.'));
         
     }
     

@@ -4,9 +4,9 @@ declare(strict_types = 1);
 namespace App\yh\c\admin;
 defined('IN_SYS') || exit('ACC Denied');
 
-use App\yh\m\MainUser;
-use Main\Core\Request;
-use Main\Core\Controller\HttpController;
+use App\yh\m\MainUser as GaaraUser;
+use Gaara\Core\Request;
+use Gaara\Core\Controller\HttpController;
 use PDOException;
 use App\yh\s\Token;
 
@@ -21,9 +21,9 @@ class User extends HttpController {
      * @param UserMerchant $merchant
      * @return type
      */
-    public function select(MainUser $MainUser) {
-        return $this->returnData(function() use ($MainUser){
-            return $MainUser->getAll();
+    public function select(GaaraUser $GaaraUser) {
+        return $this->returnData(function() use ($GaaraUser){
+            return $GaaraUser->getAll();
         });
     }
 
@@ -39,21 +39,21 @@ class User extends HttpController {
     /**
      * 更新用户信息
      * @param Request $request
-     * @param MainUser $MainUser
+     * @param GaaraUser $GaaraUser
      */
-    public function update(Request $request, MainUser $MainUser) {
+    public function update(Request $request, GaaraUser $GaaraUser) {
         $user_id = (int)$this->input('id');
         $userInfo = $request->input;
         // 原数据
-        $userOldInfo = $MainUser->getId( $user_id );
+        $userOldInfo = $GaaraUser->getId( $user_id );
         if(empty($userOldInfo))
             return $this->returnMsg(0, '要修改的用户不存在');
     
-        $MainUser->orm = $userInfo;
+        $GaaraUser->orm = $userInfo;
        
         // 写入数据库, 若失败则删除已保存的文件
         try{
-            $res = $MainUser->save($userOldInfo['id']);
+            $res = $GaaraUser->save($userOldInfo['id']);
             Token::removeToken($user_id);
             return $this->returnData($res);
         }catch(PDOException $pdo){

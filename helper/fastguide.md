@@ -109,7 +109,7 @@ Route::get('/showdb', 'App\showdb@index');
 ``` php
 <?php
 namespace App\m;
-class db extends \Main\Core\Model {
+class db extends \Gaara\Core\Model {
     protected $table = '你的数据表';
 }
 ```

@@ -15,7 +15,7 @@ define('ROOT', str_replace('\\', '/', dirname(__FILE__)) . '/');
 
 /**
  * 是否命令模式 eg:true 
- * 已知使用者: \Main\Core\Route::getRouteType()
+ * 已知使用者: \Gaara\Core\Route::getRouteType()
  */
 define('CLI', php_sapi_name() === 'cli');
 
@@ -30,7 +30,7 @@ define('CONFIG', ROOT . 'Config/');
 
 /**
  * 路由文件存放路径 eg:/mnt/hgfs/www/git/php_/project/Route/
- * 已知使用者: \Main\Core\Route::getRouteRule()
+ * 已知使用者: \Gaara\Core\Route::getRouteRule()
  */
 define('ROUTE', ROOT . 'Route/');
 

@@ -4,19 +4,19 @@ declare(strict_types = 1);
 namespace App\yh\c\user;
 defined('IN_SYS') || exit('ACC Denied');
 
-use App\yh\m\MainUser;
-use Main\Core\Controller\HttpController;
-use Main\Core\Request;
+use App\yh\m\MainUser as GaaraUser;
+use Gaara\Core\Controller\HttpController;
+use Gaara\Core\Request;
 use App\yh\s\Token;
 
 class Login extends HttpController {
 
     /**
      * 用户登录
-     * @param MainUser $user
+     * @param GaaraUser $user
      * @return type
      */
-    public function index(MainUser $user, Request $request) {
+    public function index(GaaraUser $user, Request $request) {
         $email = $this->post('email', 'email');
         $passwd = $this->post('passwd', 'passwd');
         // 查询用户信息
@@ -38,7 +38,7 @@ class Login extends HttpController {
      * 更换 token 令牌
      * @param string $token 原令牌
      */
-    public function changeToken(MainUser $user, Request $request) {
+    public function changeToken(GaaraUser $user, Request $request) {
         $token = $request->post('token','token');
         $tokenInfo = Token::decryptToken($token);
         if (is_array($tokenInfo) && isset($tokenInfo['email'])) {
@@ -68,12 +68,12 @@ class Login extends HttpController {
     /**
      * 更新登入状态(数据库 , 缓存)
      * @param int $id           用户主键
-     * @param MainUser $user    userModel
+     * @param GaaraUser $user    userModel
      * @param Request $request  当前请求
      * @param array $tokenInfo  用户信息
      * @return array
      */
-    private function userLogin(int $id, MainUser $user, Request $request, array $tokenInfo): array {
+    private function userLogin(int $id, GaaraUser $user, Request $request, array $tokenInfo): array {
         $tokenInfo['last_login_ip'] = \ip2long($request->ip);
         $tokenInfo['last_login_at'] = \date('Y-m-d H:i:s');
         $user->login($id, $tokenInfo['last_login_ip'], $tokenInfo['last_login_at']);

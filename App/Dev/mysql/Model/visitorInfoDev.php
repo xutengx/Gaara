@@ -2,7 +2,7 @@
 
 namespace App\Dev\mysql\Model;
 
-class visitorInfoDev extends \Main\Core\Model {
+class visitorInfoDev extends \Gaara\Core\Model {
     
     protected $table = 'visitor_info';
 

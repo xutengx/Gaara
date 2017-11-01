@@ -3,7 +3,6 @@
 declare(strict_types = 1);
 namespace Main\Core\Controller\Traits;
 
-use Exception;
 use Main\Core\Request;
 
 /**
@@ -24,11 +23,9 @@ trait RequestTrait {
         if(!is_null($key)){
             $res = $request->{$fun}($key, $rule);
             if ($res === false) {
-                $msg = $msg ?? 'Invalid request argument : '.$key.' ['.$fun.']';
-                exit($this->returnMsg(0, $msg));
+                return $this->requestArgumentInvalid($key, $fun, $msg);
             } elseif ($res === null) {
-                $msg = $msg ?? 'Not found request argument : '.$key.' ['.$fun.']';
-                exit($this->returnMsg(0, $msg));
+                return $this->requestArgumentNotFound($key, $fun, $msg);
             } else
                 return $res;
         }else{
@@ -60,5 +57,27 @@ trait RequestTrait {
 
     protected function delete($key = null, $rule = null, $msg = null) {
         return $this->requestFun($key, $rule, $msg, 'detele');
+    }
+    
+    /**
+     * 定义当参数不合法时的响应
+     * @param string $key
+     * @param string $fun
+     * @param string $msg
+     */
+    protected function requestArgumentInvalid(string $key, string $fun, string $msg = null) {
+        $msg = $msg ?? 'Invalid request argument : '.$key.' ['.$fun.']';
+        exit($this->returnMsg(0, $msg));
+    }
+
+    /**
+     * 定义当参数不存在时的响应
+     * @param string $key
+     * @param string $fun
+     * @param string $msg
+     */
+    protected function requestArgumentNotFound(string $key, string $fun, string $msg = null){
+        $msg = $msg ?? 'Not found request argument : '.$key.' ['.$fun.']';
+        exit($this->returnMsg(0, $msg));
     }
 }

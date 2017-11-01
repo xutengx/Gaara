@@ -15,6 +15,9 @@
     * [总览](#总览)
     * [获取参数](#获取参数)
     * [过滤参数](#过滤参数)
+        * [request对象过滤](#request对象过滤)
+        * [控制器过滤](#控制器过滤)
+        * [预定义正则](#控制器过滤)
     * [文件参数](#文件参数)
     * [其他方法](#其他方法)
 * [响应](/helper/response.md)
@@ -45,23 +48,35 @@ Route::put('/', function(Main\Core\Reuqest $request){
 ```php
 <?php
 // 获取put请求下的get参数
-// put请求域名 http://eg.com/?name=gaara&age=18, 响应 {'name':'gaara','age':'18'}
+// put请求域名 http://eg.com/?name=gaara&age=18
 Route::put('/', function(Main\Core\Reuqest $request){
-    return $request->get;
+    return $request->get;           // 返回 ['name'=>'gaara','age'=>'18']
+    
+    return $request->get('name');   // 返回 'gaara'
+    
+    return $request->get('sex');    // 返回 ''
 });
 ```
 
 ```php
 <?php
 // 获取put请求下的全部参数
-// put请求域名 http://eg.com/?name=gaara&age=18, 响应 '';
+// put请求域名 http://eg.com/?name=gaara&age=18
 Route::put('/', function(Main\Core\Reuqest $request){
     // input会返回当前http请求方法put
     // 请求体为空, $request->input返回 []
     return $request->input;
 });
 ```
+**注: `input`方法将会返回当前`http方法`的请求体内容, 若当前`http方法`为`get`,则视`query_string`为请求体**
+
 ## 过滤参数
+
+**注: 所有参数类型均为`string`, 有键无值时,值为''(空字符, 而非null)**
+
+### request对象过滤
+
+> 以`值`的形式返回结果, 参数不存在返回 null, 验证不通过返回 false
 
 ```php
 <?php
@@ -69,10 +84,107 @@ Route::put('/', function(Main\Core\Reuqest $request){
 // put请求域名 http://eg.com/?name=18, 响应 ''
 Route::put('/', function(Main\Core\Reuqest $request){
     // 允许5-32字节，允许字母数字下划线
-    // 正则不通过，返回\null
+    // 过滤请求参数, 参数不存在返回 null, 验证不通过返回 false
     return $request->get('name','/^[\w]{5,32}$/');
 });
 ```
+
+### 控制器过滤
+
+> 以`响应`的形式返回结果, 响应形式在父类中有实现, 可在子类中重载
+
+```php
+<?php
+
+namespace App\yh\c\Dev;
+
+class Dev extends \Main\Core\Controller\HttpController {
+
+    public function index(){
+        // 使用正则
+        return $this->get('name','/^[\w]{5,32}$/','自定义的响应文本'););
+    }
+
+/********************* 以下方法在父类中已存在,可重载 **********************/    
+    
+    /**
+     * 定义当参数不合法时的响应
+     * @param string $key
+     * @param string $fun
+     * @param string $msg
+     */
+    protected function requestArgumentInvalid(string $key, string $fun, string $msg = null) {
+        $msg = $msg ?? 'Invalid request argument : '.$key.' ['.$fun.']';
+        exit($this->returnMsg(0, $msg));
+    }
+
+    /**
+     * 定义当参数不存在时的响应
+     * @param string $key
+     * @param string $fun
+     * @param string $msg
+     */
+    protected function requestArgumentNotFound(string $key, string $fun, string $msg = null){
+        $msg = $msg ?? 'Not found request argument : '.$key.' ['.$fun.']';
+        exit($this->returnMsg(0, $msg));
+    }
+    
+    /**
+     * 返回一个msg响应
+     * @param int $code 状态标记
+     * @param string $msg 状态描述
+     * @return string
+     */
+    protected function returnMsg(int $code = 0, string $msg = 'fail !'): string {
+        $data = ['code' => $code, 'msg' => $msg];
+        return Response::returnData($data);
+    }
+}
+
+```
+
+### 预定义正则
+
+以上的校验都需要手动编写正则, 以下给出部分可用正则
+
+| 预定义键      | 正则表达式    | 描述  |
+| :-------------: |:-------------:|:-----:|
+| `email`      | `/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/` | $1600 |
+| `url`      | `/\b(([\w-]+:\/\/?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/)))/`      |   $12 |
+| `int` | `/^-?\d+$/`      |    `正负数字` |
+| `passwd` | `/^[\w]{5,32}$/`      |    `允许5-32字节，允许字母数字下划线` |
+| `account` | `/^[a-zA-Z][a-zA-Z0-9_]{5,16}$/`      |    `字母开头，允许5-16字节，允许字母数字下划线` |
+| `idcard` | `/^\d{15}|\d{18}$/`      |    `中国的身份证为15位或18位` |
+| `mail` | `/^[1-9]\d{5}(?!\d)$/`      |    `中国邮政编码` |
+| `qq` | `/^[1-9][0-9]{4,}$/`      |    `腾讯QQ号 腾讯QQ号从10000开始` |
+| `telephone` | `/^\d{3}-\d{8}|\d{4}-\d{7}$/`      |    `国内电话号码 匹配形式如 0511-4405222 或 021-87888822` |
+| `tel` | `/^1[3|4|5|7|8][0-9]\d{8}$/`      |   `中国手机号码` |
+| `string` | `/^\w+$/`      |    `大小写字母,数字,下划线` |
+| `token` | `/^[\w-]+$/`      |   `大小写字母,数字,下划线,减号'-'` |
+| `sign` | `/^[\w]{32}$/`      |   `大小写字母,数字,下划线 32位` |
+| `name` | `/^[_\w\d\x{4e00}-\x{9fa5}]{2,8}$/iu`      |    `2-8位中文` |
+
+使用以上正则
+
+```php
+<?php
+
+\Request::get('age','int'); // 使用 /^-?\d+$/ 验证 get 中的 age 字段
+
+```
+**注: `\Request::get()`等价于`obj(Request::class)->get()`**
+
+拓展预定义正则
+
+> 在任何一个通用入口处拓展`Request`对象的`filterArr`, 因为`Request`对象保持单例
+
+```php
+<?php
+
+obj(Request::class)->filterArr['test_1_2_3'] => '/^[1,2,3]{1,}$/';
+
+```
+
 ## 文件参数
 Main\Core\Reuqest->file 即 Main\Core\Request\UploadFile，实现迭代器接口
 下面这个例子可以快速验证文件类型后保存

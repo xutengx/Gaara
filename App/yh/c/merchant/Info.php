@@ -35,8 +35,8 @@ class Info extends HttpController {
      */
     public function create(Request $request, UserMerchant $merchant) {
         $userinfo = $request->userinfo;
-        $merchantInfo = $this->input();
-
+        $merchantInfo = $this->post();
+        
         $merchant->orm = $merchantInfo;
         $merchant->orm['id'] = $userinfo['id'];
 
@@ -68,7 +68,8 @@ class Info extends HttpController {
      */
     public function update(Request $request, UserMerchant $merchant) {
         $userid = $request->userinfo['id'];
-        $merchantInfo = $request->input;
+        $merchantInfo = $this->put();
+
         // 原数据
         $merchantOldInfo = $merchant->getInfo($userid);
         if (empty($merchantOldInfo))

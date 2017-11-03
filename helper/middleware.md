@@ -137,6 +137,8 @@ class SignCheck extends Middleware {
 
 移除意外输出, 使用PhpConsole捕获, 保障页面布局与响应格式
 
+**注: 使用`terminate`,若程序中中断响应,比如文件下载,则不会生效**
+
 ### StartSession
 
 开启sesssion

@@ -6,6 +6,8 @@ namespace Gaara\Core\Middleware;
 use Gaara\Core\Middleware;
 use Gaara\Expand\PhpConsole;
 use Response;
+use Iterator;
+use Generator;
 
 /**
  * 统一响应处理
@@ -27,15 +29,47 @@ class ReturnResponse extends Middleware {
     }
 
     /**
-     * 特殊处理 true/false
+     * 特殊处理 true/false/Iterator/Generator
      * @param type $response
      */
     public function terminate($response) {
-        if($response === true){
+        if ($response instanceof Generator) {
+            return $this->generatorDecode($response);
+        } elseif ($response === true) {
             Response::setStatus(200)->exitData();
-        }elseif($response === false){
+        } elseif ($response === false) {
             Response::setStatus(400)->exitData();
+        } elseif ($response instanceof Iterator) {
+            $response = $this->iteratorDecode($response);
         }
         Response::exitData($response);
+    }
+
+    /**
+     * 解码Iterator对象到数组
+     * @param Iterator $obj
+     * @return array
+     */
+    private function iteratorDecode(Iterator $obj): array {
+        $arr = [];
+        foreach ($obj as $k => $v) {
+            $arr[$k] = $v;
+        }
+        return $arr;
+    }
+
+    /**
+     * 解码Generator对象并直接输出
+     * 一般用于大文件下载
+     * @param Generator $obj
+     * @return void
+     */
+    private function generatorDecode(Generator $obj): void {
+        foreach ($obj as $v) {
+            echo $v;
+            ob_flush();
+            flush();
+        }
+        exit;
     }
 }

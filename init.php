@@ -11,7 +11,7 @@ $GLOBALS['statistic'] = [
 defined('IN_SYS') || define('IN_SYS', substr(str_replace('\\', '/', __FILE__), strrpos(str_replace('\\', '/', __FILE__), '/') + 1));
 
 // 入口文件目录在服务器的绝对路径 eg:/mnt/hgfs/www/git/php_/project/ 
-define('ROOT', str_replace('\\', '/', dirname(__FILE__)) . '/');
+define('ROOT', str_replace('\\', '/', __DIR__) . '/');
 
 /**
  * 是否命令模式 eg:true 

@@ -5,39 +5,33 @@ declare(strict_types = 1);
 /**
  * 单例 实例化对象
  * 依赖 Integrator.class.php 指向 obj::get()
- * @param $class
- * @param 其他参数, 注:单例模式下,显然只有第一次实例化时,参数才会被使用!
+ * @param string $obj
+ * @param mixed ...$params 其他参数, 注:单例模式下,显然只有第一次实例化时,参数才会被使用!
  * @return mixed 对象
  */
-function obj(string $obj) {
-    $arr = func_get_args();
-    unset($arr[0]);
-    return \Gaara\Core\Integrator::get($obj, $arr);
+function obj(string $obj, ...$params) {
+    return \Gaara\Core\Integrator::get($obj, $params);
 }
 
 /**
  * 依赖执行方法
  * @param string|object $obj 类|对象
  * @param string $methodName
+ * @param mixed ...$params
  * @return type
  */
-function run($obj, string $methodName) {
-    $param = func_get_args();
-    unset($param[0]);
-    unset($param[1]);
-    return \Gaara\Core\Integrator::run($obj, $methodName, $param);
+function run($obj, string $methodName, ...$params) {
+    return \Gaara\Core\Integrator::run($obj, $methodName, $params);
 }
 
 /**
  * 普通 实例化对象
  * @param string $obj
- * @param 其他参数
+ * @param mixed ...$params
  * @return mixed 对象
  */
-function dobj(string $obj) {
-    $arr = func_get_args();
-    unset($arr[0]);
-    return new $obj(...$arr);
+function dobj(string $obj, ...$params) {
+    return new $obj(...$params);
 }
 
 /**

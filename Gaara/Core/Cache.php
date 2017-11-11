@@ -31,24 +31,18 @@ class Cache {
      * @param object $obj 执行对象
      * @param string $func 执行方法
      * @param bool|true $cacheTime 缓存过期时间
-     * @param $par 非限定参数 
-     *
+     * @param mixed ...$params 非限定参数 
      * @return mixed
      */
-    public function call($obj, string $func, $cacheTime = true) {
+    public function call($obj, string $func, $cacheTime = true, ...$params) {
         $cacheTime = is_numeric($cacheTime) ? (int) $cacheTime : $this->cacheLimitTime;
-        $pars = func_get_args();
-        unset($pars[0]);
-        unset($pars[1]);
-        unset($pars[2]);
-        $par = array_values($pars);
-        $key = $this->autoKey($obj, $func, $par);
+        $key = $this->autoKey($obj, $func, $params);
         foreach ($this->Drivers as $v) {
             $re = $v->callget($key, $cacheTime);
             if ($re['code'] === 200)
                 return $re['data'];
         }
-        $return = $this->runFunc($obj, $func, $par);
+        $return = $this->runFunc($obj, $func, $params);
         foreach ($this->Drivers as $v) {
             $re = $v->callset($key, $return, $cacheTime);
             if ($re['code'] === 200)
@@ -62,20 +56,14 @@ class Cache {
      * @param object  $obj 执行对象
      * @param string  $func 执行方法
      * @param bool|true $cacheTime 缓存过期时间
-     * @param $par 非限定参数 
-     *
+     * @param mixed ...$params 非限定参数 
      * @return mixed
      */
-    public function dcall($obj, $func, $cacheTime = true) {
+    public function dcall($obj, $func, $cacheTime = true, ...$params) {
         $cacheTime = is_numeric($cacheTime) ? (int) $cacheTime : $this->cacheLimitTime;
-        $pars = func_get_args();
-        unset($pars[0]);
-        unset($pars[1]);
-        unset($pars[2]);
-        $par = array_values($pars);
-        $key = $this->autoKey($obj, $func, $par);
+        $key = $this->autoKey($obj, $func, $params);
 
-        $return = $this->runFunc($obj, $func, $par);
+        $return = $this->runFunc($obj, $func, $params);
         foreach ($this->Drivers as $v) {
             $re = $v->callset($key, $return, $cacheTime);
             if ($re['code'] === 200)
@@ -84,12 +72,8 @@ class Cache {
         return $return;
     }
 
-    public function clear($obj, $func) {
-        $pars = func_get_args();
-        unset($pars[0]);
-        unset($pars[1]);
-        $par = array_values($pars);
-        $key = $this->autoKey($obj, $func, $par);
+    public function clear($obj, $func, ...$params) {
+        $key = $this->autoKey($obj, $func, $params);
         foreach ($this->Drivers as $v) {
             $v->clear($key);
         }

@@ -39,9 +39,8 @@ abstract class Container {
         return static::getInstance()->$name;
     }
 
-    final public function __invoke() {
-        $param = func_get_args();
-        return static::getInstance()(...$param);
+    final public function __invoke(...$params) {
+        return static::getInstance()(...$params);
     }
 
     final public function __call(string $method, array $args) {

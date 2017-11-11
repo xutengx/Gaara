@@ -64,10 +64,10 @@ class QueryBuiler {
 
     /**
      * 查询条件
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function where(): QueryBuiler {
-        $params = func_get_args();
+    public function where(...$params): QueryBuiler {
         switch (func_num_args()) {
             case 1:
                 switch (gettype($params[0])) {
@@ -88,10 +88,10 @@ class QueryBuiler {
 
     /**
      * 字段值在范围内
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function whereIn(): QueryBuiler {
-        $params = func_get_args();
+    public function whereIn(...$params): QueryBuiler {
         switch (func_num_args()) {
             case 2:
                 switch (gettype($params[1])) {
@@ -105,10 +105,10 @@ class QueryBuiler {
 
     /**
      * 字段值不在范围内
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function whereNotIn(): QueryBuiler {
-        $params = func_get_args();
+    public function whereNotIn(...$params): QueryBuiler {
         switch (func_num_args()) {
             case 2:
                 switch (gettype($params[1])) {
@@ -122,10 +122,10 @@ class QueryBuiler {
 
     /**
      * 字段值在2值之间
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function whereBetween(): QueryBuiler {
-        $params = func_get_args();
+    public function whereBetween(...$params): QueryBuiler {
         switch (func_num_args()) {
             case 2:
                 return $this->whereBetweenArray(...$params);
@@ -136,10 +136,10 @@ class QueryBuiler {
 
     /**
      * 字段值不在2值之间
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function whereNotBetween(): QueryBuiler {
-        $params = func_get_args();
+    public function whereNotBetween(...$params): QueryBuiler {
         switch (func_num_args()) {
             case 2:
                 return $this->whereNotBetweenArray(...$params);
@@ -150,10 +150,10 @@ class QueryBuiler {
     
     /**
      * where exists
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function whereExists(): QueryBuiler {
-        $params = func_get_args();
+    public function whereExists(...$params): QueryBuiler {
         switch (func_num_args()) {
             case 1:
                 switch (gettype($obj = reset($params))) {
@@ -171,10 +171,10 @@ class QueryBuiler {
     
     /**
      * where not exists
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function whereNotExists(): QueryBuiler {
-        $params = func_get_args();
+    public function whereNotExists(...$params): QueryBuiler {
         switch (func_num_args()) {
             case 1:
                 switch (gettype($obj = reset($params))) {
@@ -192,10 +192,10 @@ class QueryBuiler {
     
     /**
      * where 子查询
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function whereSubquery(): QueryBuiler {
-        $params = func_get_args();
+    public function whereSubquery(...$params): QueryBuiler {
         switch (func_num_args()) {
             case 3:
                 switch (gettype($obj = end($params))) {
@@ -213,10 +213,10 @@ class QueryBuiler {
 
     /**
      * having条件
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function having(): QueryBuiler {
-        $params = func_get_args();
+    public function having(...$params): QueryBuiler {
         switch (func_num_args()) {
             case 1:
                 switch (gettype($params[0])) {
@@ -237,10 +237,10 @@ class QueryBuiler {
 
     /**
      * having字段值在范围内
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function havingIn(): QueryBuiler {
-        $params = func_get_args();
+    public function havingIn(...$params): QueryBuiler {
         switch (func_num_args()) {
             case 2:
                 switch (gettype($params[1])) {
@@ -254,10 +254,10 @@ class QueryBuiler {
 
     /**
      * having字段值不在范围内
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function havingNotIn(): QueryBuiler {
-        $params = func_get_args();
+    public function havingNotIn(...$params): QueryBuiler {
         switch (func_num_args()) {
             case 2:
                 switch (gettype($params[1])) {
@@ -271,10 +271,10 @@ class QueryBuiler {
 
     /**
      * having字段值在2值之间
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function havingBetween(): QueryBuiler {
-        $params = func_get_args();
+    public function havingBetween(...$params): QueryBuiler {
         switch (func_num_args()) {
             case 2:
                 return $this->havingBetweenArray(...$params);
@@ -285,10 +285,10 @@ class QueryBuiler {
 
     /**
      * having字段值不在2值之间
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function havingNotBetween(): QueryBuiler {
-        $params = func_get_args();
+    public function havingNotBetween(...$params): QueryBuiler {
         switch (func_num_args()) {
             case 2:
                 return $this->havingNotBetweenArray(...$params);
@@ -296,9 +296,13 @@ class QueryBuiler {
                 return $this->havingNotBetweenString((string)$params[0], (string)$params[1], (string)$params[2]);
         }
     }
-    
+
     /**
      * 左链接
+     * @param string $table
+     * @param string $fieldOne
+     * @param string $symbol
+     * @param string $fieldTwo
      * @return QueryBuiler
      */
     public function leftJoin(string $table, string $fieldOne, string $symbol, string $fieldTwo): QueryBuiler {
@@ -307,6 +311,10 @@ class QueryBuiler {
     
     /**
      * 右链接
+     * @param string $table
+     * @param string $fieldOne
+     * @param string $symbol
+     * @param string $fieldTwo
      * @return QueryBuiler
      */
     public function rightJoin(string $table, string $fieldOne, string $symbol, string $fieldTwo): QueryBuiler {
@@ -315,19 +323,19 @@ class QueryBuiler {
     
     /**
      * 内链接
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function join(): QueryBuiler {
-        $params = func_get_args();
+    public function join(...$params): QueryBuiler {
         return $this->joinString(...$params);
     }
     
     /**
      * 自定义二维数组的键
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function index(): QueryBuiler {
-        $params = func_get_args();
+    public function index(...$params): QueryBuiler {
         switch (func_num_args()) {
             case 1:
                 switch (gettype(reset($params))) {
@@ -341,10 +349,10 @@ class QueryBuiler {
     
     /**
      * 查询字段
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function select(): QueryBuiler {
-        $params = func_get_args();
+    public function select(...$params): QueryBuiler {
         switch (func_num_args()) {
             case 1:
                 switch (gettype(reset($params))) {
@@ -360,10 +368,10 @@ class QueryBuiler {
 
     /**
      * 更新字段
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function data(): QueryBuiler {
-        $params = func_get_args();
+    public function data(...$params): QueryBuiler {
         switch (func_num_args()) {
             case 1:
                 return $this->dataArray(...$params);
@@ -374,10 +382,10 @@ class QueryBuiler {
 
     /**
      * from数据表
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function from(): QueryBuiler {
-        $params = func_get_args();
+    public function from(...$params): QueryBuiler {
         switch (func_num_args()) {
             case 1:
                 return $this->fromString(...$params);
@@ -386,6 +394,7 @@ class QueryBuiler {
 
     /**
      * 设置数据表
+     * @param string $table
      * @return QueryBuiler
      */
     public function table(string $table): QueryBuiler {
@@ -395,10 +404,10 @@ class QueryBuiler {
 
     /**
      * 分组
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function group(): QueryBuiler {
-        $params = func_get_args();
+    public function group(...$params): QueryBuiler {
         switch (func_num_args()) {
             case 1:
                 switch (gettype(reset($params))) {
@@ -412,10 +421,10 @@ class QueryBuiler {
 
     /**
      * 排序
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function order(): QueryBuiler {
-        $params = func_get_args();
+    public function order(...$params): QueryBuiler {
         switch (func_num_args()) {
             case 1:
                 return $this->orderString(...$params);
@@ -426,10 +435,10 @@ class QueryBuiler {
 
     /**
      * 限制
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function limit(): QueryBuiler {
-        $params = func_get_args();
+    public function limit(...$params): QueryBuiler {
         switch (func_num_args()) {
             case 1:
                 return $this->limitTake(...$params);
@@ -440,10 +449,10 @@ class QueryBuiler {
 
     /**
      * union 联合查询
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function union(): QueryBuiler {
-        $params = func_get_args();
+    public function union(...$params): QueryBuiler {
         switch (func_num_args()) {
             case 1:
                 switch (gettype($obj = reset($params))) {
@@ -461,10 +470,10 @@ class QueryBuiler {
 
     /**
      * union all 联合查询
+     * @param mixed ...$params
      * @return QueryBuiler
      */
-    public function unionAll(): QueryBuiler {
-        $params = func_get_args();
+    public function unionAll(...$params): QueryBuiler {
         switch (func_num_args()) {
             case 1:
                 switch (gettype($obj = reset($params))) {

@@ -7,6 +7,7 @@ use Gaara\Core\Controller\HttpController;
 use App\Dev\download\Model\Best;
 use Iterator;
 use Generator;
+use Gaara\Core\Response;
 
 /*
  * 数据库开发测试类
@@ -14,13 +15,17 @@ use Generator;
 
 class index extends HttpController{
     
-    public function index(Best $Best){
+    public function index(Best $Best, Response $Response){
         $data = $Best->limit(4000)->getChunk();
         
         $filename = 'TransactionDaily_.csv';
         $mimetype = 'mime/type';
-        header('Content-Type: ' . $mimetype);
-        header('Content-Disposition: attachment; filename="' . $filename . '"');  //下载后的新文件名
+        
+        $Response->setHeaders([
+            'Content-Type' => $mimetype,
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"'
+        ]);
+        
         echo '"time","t_id","provider","price","type","currency"' . "\n";
         
         return $this->download($data);

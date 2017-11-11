@@ -69,6 +69,7 @@ class Route {
                 // 域名不匹配, 则继续 foreach
                 if ($check === false)
                     continue;
+                obj(Response::class)->setStatus(200)->exitData();
             }
         }
         obj(Response::class)->setStatus(404)->exitData('Not Found ..');

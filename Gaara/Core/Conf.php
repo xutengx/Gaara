@@ -11,8 +11,6 @@ class Conf {
     private static $data = [];
     // 环境变量
     private static $env = [];
-    // 环境变量选取关键字
-    protected $key = '_test';
 
     final public function __construct() {
         $this->setEnv();
@@ -24,17 +22,9 @@ class Conf {
      * @return void
      */
     private function setEnv(): void {
-        $data = require(ROOT . 'env.php');
-        if (isset($data['selection'])) {
-            $this->key = $data['selection'] instanceof Closure ? $data['selection']() : $data['selection'];
-        }
-        foreach ($data as $k => $v) {
-            if (strpos($k, $this->key)) {
-                self::$env[str_replace($this->key, '', $k)] = $v instanceof Closure ? $v() : $v;
-            } elseif (!isset(self::$env[$k])) {
-                self::$env[$k] = $v instanceof Closure ? $v() : $v;
-            }
-        }
+        $data = parse_ini_file(ROOT.".env", true);
+        $env = $data['ENV'];
+        self::$env = array_merge($data, $data[$env]);
     }
 
     /**

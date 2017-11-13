@@ -38,6 +38,7 @@ class Model {
     final public function __construct() {
         $this->db = $this->getDB();
         $this->get_thisTable();
+        $this->getTableInfo();
         $this->construct();
     }
     
@@ -65,7 +66,6 @@ class Model {
             $classname = substr($classname, strrpos($classname, '\\') + 1);
             $this->table = $uncamelize(strtr($classname, array('Model' => '')));
         }
-        $this->getTableInfo();
     }
 
     /**
@@ -80,7 +80,7 @@ class Model {
      * 获取表字段信息, 填充主键
      */
     protected function getTableInfo(): void {
-        $this->field = obj(Cache::class)->dget(function() {
+        $this->field = obj(Cache::class)->get(function() {
             return $this->db->getAll('SHOW COLUMNS FROM `' . $this->table . '`');
         }, 3600);
         foreach ($this->field as $v) {

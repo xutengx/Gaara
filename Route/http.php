@@ -72,6 +72,8 @@ return [
     }),
     
     Route::group(['middleware'=>['web','api'], 'namespace'=> 'App\Dev' ], function(){
+        // ini文件
+        Route::get('/ini',['namespace'=>'', 'uses' =>'inifile\index@index']);
         // 数据库测试
         Route::get('/mysql',['namespace'=>'', 'uses' =>'mysql\Contr\index2Contr@indexDo']);
         // 大文件下载

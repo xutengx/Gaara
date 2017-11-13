@@ -28,7 +28,7 @@ abstract class Kernel {
     public function Init(): Kernel{
         $conf = obj(Conf::class)->app;
         date_default_timezone_set($conf['timezone']);
-        if ($conf['debug'] === true) {
+        if ($conf['debug'] === '1') {
             ini_set('display_errors', '1');
             error_reporting(E_ALL);
         } else{

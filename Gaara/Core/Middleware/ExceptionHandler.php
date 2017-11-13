@@ -35,6 +35,10 @@ class ExceptionHandler extends Middleware {
                 $whoops->pushHandler(new JsonResponseHandler);
             else {
                 $whoops->pushHandler(function($exception, $inspector, $run) {
+                    $level = ob_get_level();
+                    for ($i = 0; $i <= $level; $i++) {
+                        ob_end_clean();
+                    }
                     exit(Response::setStatus(500)->view('500'));
                 });
             }

@@ -16,8 +16,8 @@ return [
       | connection. You may also set the "password" value below this one.
       |
      */
-    'Username' => env('mail_Username'),
-    'Password' => env('mail_Password'),
+    'Username' => env('MAIL_USERNAMAE'),
+    'Password' => env('MAIL_PASSWORD'),
     /*
       |--------------------------------------------------------------------------
       | 显示在邮件列表上的发件人是谁
@@ -27,7 +27,7 @@ return [
       |
      */
     'FromName' => '测试邮箱~',
-    'From' => env('mail_From'),
+    'From' => env('MAIL_FROM'),
     /*
       |--------------------------------------------------------------------------
       | Mail Driver
@@ -52,7 +52,7 @@ return [
       | the Mailgun mail service which will provide reliable deliveries.
       |
      */
-    'Host' => env('mail_Host'),
+    'Host' => env('MAIL_HOST'),
     /*
       |--------------------------------------------------------------------------
       | SMTP Host Port

@@ -234,11 +234,11 @@ class index2Contr extends HttpController {
 //        var_dump($sql);
 //        var_dump($res);
         
-        $sql = 'insert into visitor_info set name="原生sql插入"';
-        $PDOStatement = $visitorInfo->query($sql, 'insert');
-        $res = ($PDOStatement->rowCount ());
-        var_dump($sql);
-        var_dump($res);
+//        $sql = 'insert into visitor_info set name="原生sql插入"';
+//        $PDOStatement = $visitorInfo->query($sql, 'insert');
+//        $res = ($PDOStatement->rowCount ());
+//        var_dump($sql);
+//        var_dump($res);
     }
     
     private function test_13(Model\visitorInfoDev $visitorInfo){

@@ -6,7 +6,7 @@ defined('IN_SYS') || exit('ACC Denied');
 use App\yh\s\Sign;
 use Gaara\Core\Request;
 
-class index extends \Gaara\Core\Controller\HttpController {
+class index extends \Gaara\Core\Controller {
 
     protected $view = 'App/Dev/view//view/html/';
     protected $language = 1;

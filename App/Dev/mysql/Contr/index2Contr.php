@@ -3,14 +3,14 @@
 declare(strict_types = 1);
 namespace App\Dev\mysql\Contr;
 
-use \Gaara\Core\Controller\HttpController;
+use \Gaara\Core\Controller;
 use \App\Dev\mysql\Model;
 
 /*
  * 数据库开发测试类
  */
 
-class index2Contr extends HttpController {
+class index2Contr extends Controller {
 
     private $fun_array = [
         '多行查询, index自定义索引, 参数为数组形式, 非参数绑定' => 'test_1',

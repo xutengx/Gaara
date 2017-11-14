@@ -7,9 +7,9 @@ defined('IN_SYS') || exit('ACC Denied');
 use App\yh\m\MainUser;
 use Gaara\Core\Secure;
 use Gaara\Expand\Mail;
-use Gaara\Core\Controller\HttpController;
+use Gaara\Core\Controller;
 
-class Reg extends HttpController {
+class Reg extends Controller {
     // 生成邮箱注册, 所需的盐
     const key = 'yhreg'; 
     // 激活邮件的有效时间 (s)

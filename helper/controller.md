@@ -27,7 +27,7 @@
 
 ## 总览
 
-> 控制器一般继承`Gaara\Core\Controller\HttpController`
+> 控制器一般继承`Gaara\Core\Controller`
 > 路由执行的第一个方法(入口方法)是可以依赖注入的
 
 ## 一个控制器
@@ -37,11 +37,11 @@
 
 namespace App\yh\c\merchant;
 
-use Gaara\Core\Controller\HttpController;
+use Gaara\Core\Controller;
 use Gaara\Core\Request;
 use App\yh\m\UserApplication;
 
-class Application extends HttpController {
+class Application extends Controller {
     
     /**
      * 查询商户下所有应用信息
@@ -67,9 +67,9 @@ class Application extends HttpController {
 
 namespace App\yh\c\merchant;
 
-use Gaara\Core\Controller\HttpController;
+use Gaara\Core\Controller;
 
-class Application extends HttpController {
+class Application extends Controller {
 
     public function index() {
         // 获取全部post中的name
@@ -89,7 +89,7 @@ class Application extends HttpController {
 
 <?php
 namespace App;
-class Dev extends \Gaara\Core\Controller\HttpController {
+class Dev extends \Gaara\Core\Controller {
     // 页面文件路径
     protected $view = 'App/yh/c/Dev/';
     // 中英文 0 中文 , 1 英文

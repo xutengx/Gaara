@@ -3,10 +3,9 @@
 declare(strict_types = 1);
 namespace App\yh\c\Dev;
 
-use Gaara\Core\Controller\HttpController;
+use Gaara\Core\Controller;
 
-
-class Date extends HttpController {
+class Date extends Controller {
         
     protected $view = 'App/yh/c/Dev/';
     

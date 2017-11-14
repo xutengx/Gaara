@@ -8,7 +8,7 @@ defined('IN_SYS') || exit('ACC Denied');
  * 文件服务, 测试类, 可做调用方法参考
  */
 
-class demoContr extends Controller\HttpController {
+class demoContr extends Controller\Controller {
 
     private $upload_url = 'http://192.168.43.128/git/php_/project/index.php?path=file/index/upload';
 

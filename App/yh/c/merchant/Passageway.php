@@ -6,12 +6,12 @@ defined('IN_SYS') || exit('ACC Denied');
 
 use App\yh\m\UserMerchant;
 use Gaara\Core\Request;
-use Gaara\Core\Controller\HttpController;
+use Gaara\Core\Controller;
 use PDOException;
 
 /**
  * 通道信息相关
  */
-class Passageway extends HttpController {
+class Passageway extends Controller {
     
 }

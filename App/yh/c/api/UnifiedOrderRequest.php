@@ -6,13 +6,13 @@ defined('IN_SYS') || exit('ACC Denied');
 
 use App\yh\m\UserApplication;
 use Gaara\Core\Request;
-use Gaara\Core\Controller\HttpController;
+use Gaara\Core\Controller;
 use PDOException;
 
 /**
  * 统一下单接口
  */
-class UnifiedOrderRequest extends HttpController {
+class UnifiedOrderRequest extends Controller {
     // 请求的过来的参数
     private $param = [];
     // 使用的支付场景

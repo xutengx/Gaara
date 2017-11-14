@@ -1,10 +1,10 @@
 <?php
 
 namespace App\jurisdiction;
-use \Gaara\Core\Controller\HttpController;
+use \Gaara\Core\Controller;
 defined('IN_SYS') || exit('ACC Denied');
 
-class jurisdictionContr extends HttpController {
+class jurisdictionContr extends Controller {
     protected static $contrRule= [
         'test_admin' => [
             'App\jurisdiction\Contr\enable',

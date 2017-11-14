@@ -3,7 +3,7 @@
 // 开发, 测试, demo 功能3合1
 namespace App\Dev\development\Contr;
 
-use \Gaara\Core\Controller\HttpController;
+use \Gaara\Core\Controller;
 use App\development\Dev\test;
 use App\development\Dev\asyncDev;
 use App\development\Model;
@@ -11,7 +11,7 @@ use Cache;
 use Request;
 
 defined('IN_SYS') || exit('ACC Denied');
-class indexContr extends HttpController {
+class indexContr extends Controller {
 
     public function indexDo(Request $request, $test, \Gaara\Core\Cache $c , \HTMLPurifier $htmlpurifier) {
 

@@ -6,14 +6,14 @@ defined('IN_SYS') || exit('ACC Denied');
 
 use App\yh\m\MainUser as GaaraUser;
 use Gaara\Core\Request;
-use Gaara\Core\Controller\HttpController;
+use Gaara\Core\Controller;
 use PDOException;
 use App\yh\s\Token;
 
 /**
  * 管理员, 对用户的权限管理 (登入的启用/禁用, 支付的启用/禁用)
  */
-class User extends HttpController {
+class User extends Controller {
     
     /**
      * 查询用户信息

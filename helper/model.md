@@ -143,7 +143,7 @@ class UserApplication extends \Gaara\Core\Model {
 <?php
 namespace App;
 use App\Model;
-class Dev extends \Gaara\Core\Controller\HttpController {
+class Dev extends \Gaara\Core\Controller {
     public function index(Model\visitorInfoModel $visitorInfo){
     
         $res = $visitorInfo->transaction(function($obj){
@@ -166,7 +166,7 @@ class Dev extends \Gaara\Core\Controller\HttpController {
 <?php
 namespace App;
 use App\Model;
-class Dev extends \Gaara\Core\Controller\HttpController {
+class Dev extends \Gaara\Core\Controller {
     // orm新增
     public function index(Model\visitorInfoModel $visitorInfo){
         $data = $this->post();

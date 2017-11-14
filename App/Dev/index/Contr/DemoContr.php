@@ -4,7 +4,7 @@ namespace App\index\Contr;
 use \Gaara\Core\Controller;
 defined('IN_SYS') || exit('ACC Denied');
 
-class DemoContr extends Controller\HttpController {
+class DemoContr extends Controller\Controller {
 
     private $upload_url = 'http://192.168.43.128/git/php_/project/index.php?path=file/index/upload';
 

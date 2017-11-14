@@ -6,13 +6,13 @@ defined('IN_SYS') || exit('ACC Denied');
 
 use App\yh\m\UserApplication;
 use Gaara\Core\Request;
-use Gaara\Core\Controller\HttpController;
+use Gaara\Core\Controller;
 use PDOException;
 
 /**
  * 应用操作
  */
-class Application extends HttpController {
+class Application extends Controller {
     
     /**
      * 查询商户下所有应用信息

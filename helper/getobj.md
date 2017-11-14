@@ -39,9 +39,9 @@ namespace App\yh\c\merchant;
 
 use Gaara\Core\Cache;
 use \Cache as AilasCahce;
-use Gaara\Core\Controller\HttpController;
+use Gaara\Core\Controller;
 
-class Test extends HttpController {
+class Test extends Controller {
     public function Index(Gaara\Core\Cache $c0) {
         $c1 = obj(Gaara\Core\Cache::class);
         $c2 = obj(AilasCahce::class);

@@ -5,7 +5,7 @@ namespace App\Dev\performance\Contr;
 use \Gaara\Core\Controller;
 defined('IN_SYS') || exit('ACC Denied');
 
-class indexContr extends Controller\HttpController {
+class indexContr extends Controller\Controller {
 
     private $fun_array = [
 //        '10万条数据随机入队、出队，使用Spl与Array模拟与redis的比较' => 'test_1',

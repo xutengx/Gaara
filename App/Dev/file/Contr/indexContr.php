@@ -7,7 +7,7 @@ defined('IN_SYS') || exit('ACC Denied');
 /*
  * 文件服务, 路由类
  */
-class indexContr extends Controller\HttpController {
+class indexContr extends Controller\Controller {
 
     public function upload() {
         $version = $this->post('version');

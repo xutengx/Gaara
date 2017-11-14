@@ -2,7 +2,7 @@
 
 namespace App\Dev\inifile;
 use Gaara\Core\Request;
-class index extends \Gaara\Core\Controller\HttpController{
+class index extends \Gaara\Core\Controller{
     
     public function index(Request $request){
         // 值为 null，no 和 false 等效于 ""，值为 yes 和 true 等效于 "1"。

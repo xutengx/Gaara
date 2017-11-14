@@ -6,13 +6,13 @@ defined('IN_SYS') || exit('ACC Denied');
 
 use App\yh\m\UserMerchant;
 use Gaara\Core\Request;
-use Gaara\Core\Controller\HttpController;
+use Gaara\Core\Controller;
 use PDOException;
 
 /**
  * 管理员, 对商户的权限管理
  */
-class Merchant extends HttpController {
+class Merchant extends Controller {
     
     /**
      * 查询商户信息

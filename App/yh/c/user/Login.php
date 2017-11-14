@@ -5,11 +5,11 @@ namespace App\yh\c\user;
 defined('IN_SYS') || exit('ACC Denied');
 
 use App\yh\m\MainUser as GaaraUser;
-use Gaara\Core\Controller\HttpController;
+use Gaara\Core\Controller;
 use Gaara\Core\Request;
 use App\yh\s\Token;
 
-class Login extends HttpController {
+class Login extends Controller {
 
     /**
      * 用户登录

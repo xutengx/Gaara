@@ -5,13 +5,13 @@ namespace App\yh\c\admin;
 
 use App\yh\m\UserMerchant;
 use Gaara\Core\Request;
-use Gaara\Core\Controller\HttpController;
+use Gaara\Core\Controller;
 use PDOException;
 
 /**
  * 通道信息相关
  */
-class Passageway extends HttpController {
+class Passageway extends Controller {
 
     /**
      * 查询所有通道信息

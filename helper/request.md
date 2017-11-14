@@ -98,7 +98,7 @@ Route::put('/', function(Gaara\Core\Reuqest $request){
 
 namespace App\yh\c\Dev;
 
-class Dev extends \Gaara\Core\Controller\HttpController {
+class Dev extends \Gaara\Core\Controller {
 
     public function index(){
         // 使用正则

@@ -51,7 +51,7 @@ class Template {
     }
 
     /**
-     * 自动加载静态文件 , 目前仅在控制器父类 HttpController->display() 中调用并缓存
+     * 自动加载静态文件 , 目前仅在控制器父类 Controller->display() 中调用并缓存
      * @return string JS引入语句 (直接echo即可使用)
      */
     public function includeFiles(): string {

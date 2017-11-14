@@ -6,11 +6,11 @@ defined('IN_SYS') || exit('ACC Denied');
 
 use App\yh\m\MainAdmin as GaaraAdmin;
 use Gaara\Core\Request;
-use Gaara\Core\Controller\HttpController;
+use Gaara\Core\Controller;
 use PDOException;
 use App\yh\s\Token;
 
-class Reg extends HttpController {
+class Reg extends Controller {
 
     /**
      * 新增管理员 ( 由管理员新增 )

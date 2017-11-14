@@ -3,7 +3,7 @@
 declare(strict_types = 1);
 namespace App\Dev\yieldtest;
 
-use Gaara\Core\Controller\HttpController;
+use Gaara\Core\Controller;
 use Iterator;
 use Generator;
 use Gaara\Core\Response;
@@ -11,7 +11,7 @@ use Gaara\Core\Response;
  * 数据库开发测试类
  */
 
-class index extends HttpController {
+class index extends Controller {
 
     public function index() {
         $this->middleware([$this->a(),$this->b(),$this->o()]);

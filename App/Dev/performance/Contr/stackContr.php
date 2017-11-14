@@ -7,7 +7,7 @@ defined('IN_SYS') || exit('ACC Denied');
 /**
  * 栈的实现与比较
  */
-class stackContr extends Controller\HttpController {
+class stackContr extends Controller\Controller {
 
     public function indexDo() {
         $test_arr = [

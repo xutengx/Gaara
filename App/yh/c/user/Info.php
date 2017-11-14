@@ -5,9 +5,9 @@ namespace App\yh\c\user;
 defined('IN_SYS') || exit('ACC Denied');
 
 use App\yh\m;
-use Gaara\Core\Controller\HttpController;
+use Gaara\Core\Controller;
 
-class Info extends HttpController {
+class Info extends Controller {
 
     public function select() {
         echo 'this is select';

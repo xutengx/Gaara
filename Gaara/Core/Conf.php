@@ -22,7 +22,7 @@ class Conf {
      * @return void
      */
     private function setEnv(): void {
-        $data = parse_ini_file(ROOT.".env", true);
+        $data = parse_ini_file(ROOT . ".env", true);
         $env = $data['ENV'];
         self::$env = array_merge($data, $data[$env]);
     }
@@ -47,11 +47,7 @@ class Conf {
             return self::$data[$configName];
         } elseif (is_file(CONFIG . $configName . '.php')) {
             return self::$data[$configName] = require(CONFIG . $configName . '.php');
-        } 
-    }
-
-    public function __set(string $key, $value): void {
-        $this->data[$key] = $value;
+        }
     }
 
 }

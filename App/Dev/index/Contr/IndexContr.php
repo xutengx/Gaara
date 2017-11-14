@@ -4,7 +4,7 @@ namespace App\index\Contr;
 use \Gaara\Core\Controller;
 defined('IN_SYS') || exit('ACC Denied');
 
-class IndexContr extends Controller\HttpController {
+class IndexContr extends Controller\Controller {
     private $save_url = 'data/upload/';
 
     public function construct() {

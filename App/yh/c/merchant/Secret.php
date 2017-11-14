@@ -6,12 +6,12 @@ defined('IN_SYS') || exit('ACC Denied');
 
 use App\yh\m\MerchantSecret;
 use Gaara\Core\Request;
-use Gaara\Core\Controller\HttpController;
+use Gaara\Core\Controller;
 
 /**
  * 商户公私钥资料
  */
-class Secret extends HttpController {
+class Secret extends Controller {
     
     /**
      * 查询商户的密钥信息

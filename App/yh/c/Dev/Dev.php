@@ -3,14 +3,14 @@
 declare(strict_types = 1);
 namespace App\yh\c\Dev;
 
-use Gaara\Core\Controller\HttpController;
+use Gaara\Core\Controller;
 use Log;
 //use Gaara\Core\PhpConsole;
 use \PhpConsole;
 /**
  * 调试接口用
  */
-class Dev extends HttpController {
+class Dev extends Controller {
     
     use \Gaara\Core\Controller\Traits\RequestTrait;
 

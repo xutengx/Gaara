@@ -41,13 +41,13 @@
 
 namespace App\yh\c\Dev;
 
-class Dev extends \Gaara\Core\Controller\HttpController {
+class Dev extends \Gaara\Core\Controller {
     // 视图构件,页面相关函数引入
     use \Gaara\Core\Controller\Traits\RequestTrait;
 }
 
 ```
-**注 : 若`\Gaara\Core\Controller\HttpController`已经引入视图构件`\Gaara\Core\Controller\Traits\RequestTrait`,则可以省略手动**
+**注 : 若`\Gaara\Core\Controller`已经引入视图构件`\Gaara\Core\Controller\Traits\RequestTrait`,则可以省略手动**
 
 
 
@@ -61,7 +61,7 @@ class Dev extends \Gaara\Core\Controller\HttpController {
 
 namespace App\yh\c\Dev;
 
-class Dev extends \Gaara\Core\Controller\HttpController {
+class Dev extends \Gaara\Core\Controller {
     // 视图构件,页面相关函数引入
     use \Gaara\Core\Controller\Traits\RequestTrait;
     
@@ -94,7 +94,7 @@ class Dev extends \Gaara\Core\Controller\HttpController {
 
 namespace App\yh\c\Dev;
 
-class Dev extends \Gaara\Core\Controller\HttpController {
+class Dev extends \Gaara\Core\Controller {
     // 视图构件,页面相关函数引入
     use \Gaara\Core\Controller\Traits\RequestTrait;
     
@@ -136,7 +136,7 @@ class Dev extends \Gaara\Core\Controller\HttpController {
 
 namespace App\yh\c\Dev;
 
-class Dev extends \Gaara\Core\Controller\HttpController {
+class Dev extends \Gaara\Core\Controller {
     // 视图构件,页面相关函数引入
     use \Gaara\Core\Controller\Traits\RequestTrait;
     
@@ -173,7 +173,7 @@ class Dev extends \Gaara\Core\Controller\HttpController {
 
 namespace App\yh\c\Dev;
 
-class Dev extends \Gaara\Core\Controller\HttpController {
+class Dev extends \Gaara\Core\Controller {
     // 视图构件,页面相关函数引入
     use \Gaara\Core\Controller\Traits\RequestTrait;
     
@@ -213,7 +213,7 @@ class Dev extends \Gaara\Core\Controller\HttpController {
 
 namespace App\yh\c\Dev;
 
-class Dev extends \Gaara\Core\Controller\HttpController {
+class Dev extends \Gaara\Core\Controller {
     // 视图构件,页面相关函数引入
     use \Gaara\Core\Controller\Traits\RequestTrait;
     // 选择语种
@@ -257,7 +257,7 @@ class Dev extends \Gaara\Core\Controller\HttpController {
 
 namespace App\yh\c\Dev;
 
-class Dev extends \Gaara\Core\Controller\HttpController {
+class Dev extends \Gaara\Core\Controller {
     // 视图构件,页面相关函数引入
     use \Gaara\Core\Controller\Traits\RequestTrait;
     // 选择语种
@@ -298,7 +298,7 @@ hello world !
 
 namespace App\yh\c\Dev;
 
-class Dev extends \Gaara\Core\Controller\HttpController {
+class Dev extends \Gaara\Core\Controller {
     // 视图构件,页面相关函数引入
     use \Gaara\Core\Controller\Traits\RequestTrait;
     // 选择语种

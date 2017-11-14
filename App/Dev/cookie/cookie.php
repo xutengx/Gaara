@@ -3,9 +3,9 @@
 namespace App\Dev\cookie;
 
 use Gaara\Core\Request;
-use \Gaara\Core\Controller\HttpController;
+use \Gaara\Core\Controller;
 
-class cookie extends HttpController {
+class cookie extends Controller {
 
     public function index(Request $request){
 //        $request->cookie['test'] = 'test';

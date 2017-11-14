@@ -5,7 +5,7 @@ use \Gaara\Core\Controller;
 //use \Gaara\Core\F;
 defined('IN_SYS') || exit('ACC Denied');
     
-class testContr extends Controller\HttpController {
+class testContr extends Controller\Controller {
     
     public function route(){
         echo 'this is route';

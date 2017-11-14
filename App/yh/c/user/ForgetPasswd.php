@@ -7,10 +7,10 @@ defined('IN_SYS') || exit('ACC Denied');
 use App\yh\m\MainUser as GaaraUser;
 use Gaara\Core\Secure;
 use Gaara\Expand\Mail;
-use Gaara\Core\Controller\HttpController;
+use Gaara\Core\Controller;
 use App\yh\s\Token;
 
-class ForgetPasswd extends HttpController {
+class ForgetPasswd extends Controller {
 
     // 生成忘记密码, 所需的盐
     const key = 'yhforgetpasswd';

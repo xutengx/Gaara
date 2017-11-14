@@ -7,7 +7,7 @@ use Gaara\Core\Controller;
 /**
  * php 数组与定长数组
  */
-class arrayContr extends Controller\HttpController {
+class arrayContr extends Controller\Controller {
 
     private $size = 1900000;
     private $format = 'Time spent of %s(%d) is : %f seconds.</br>';

@@ -3,7 +3,7 @@
 declare(strict_types = 1);
 namespace App\Dev\download\Contr;
 
-use Gaara\Core\Controller\HttpController;
+use Gaara\Core\Controller;
 use App\Dev\download\Model\Best;
 use Iterator;
 use Generator;
@@ -13,7 +13,7 @@ use Gaara\Core\Response;
  * 数据库开发测试类
  */
 
-class index extends HttpController{
+class index extends Controller{
     
     public function index(Best $Best, Response $Response){
         $data = $Best->limit(4000)->getChunk();

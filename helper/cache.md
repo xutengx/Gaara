@@ -52,7 +52,7 @@
 ```php
 <?php
 // 切换到 file, 并设置一个缓存
-obj(Cache:class)->store('file')->set('key', 'value', 3600);
+obj(Cache::class)->store('file')->set('key', 'value', 3600);
 
 // 上面切换到 file, 将继续保持
 \Cache::set('key2', 'value', 3600);
@@ -71,7 +71,7 @@ obj(Cache:class)->store('file')->set('key', 'value', 3600);
 ```php
 <?php
 
-obj(Cache:class)->set('key', 'value', 3600);
+obj(Cache::class)->set('key', 'value', 3600);
 
 \Cache::set('key', 'value', 3600);
 
@@ -91,7 +91,7 @@ obj(Cache:class)->set('key', 'value', 3600);
 
 ```php
 <?php
-obj(Cache:class)->set('key', function() {
+obj(Cache::class)->set('key', function() {
     return 'value';
 }, 3600);
 
@@ -105,7 +105,7 @@ obj(Cache:class)->set('key', function() {
 
 ```php
 <?php
-obj(Cache:class)->get('key');
+obj(Cache::class)->get('key');
 
 \Cache::get('key');
 ```
@@ -128,7 +128,7 @@ return int
 
 ```php
 <?php
-obj(Cache:class)->remember('user', function(){
+obj(Cache::class)->remember('user', function(){
     return $this->foo();
 }, 3600);
 
@@ -143,7 +143,7 @@ obj(Cache:class)->remember('user', function(){
 
 ```php
 <?php
-obj(Cache:class)->remember(function(){
+obj(Cache::class)->remember(function(){
     return $this->foo();
 }, 3600);
 
@@ -166,7 +166,7 @@ obj(Cache:class)->remember(function(){
  * @param int|null $cacheTime 缓存过期时间
  * @param mixed ...$par 非限定参数 
  */
-obj(Cache:class)->call($obj, 'function_name_in_obj', 3600, $param_1, $param_2);
+obj(Cache::class)->call($obj, 'function_name_in_obj', 3600, $param_1, $param_2);
 
 \Cache::call($obj, 'function_name_in_obj', 3600, $param_1, $param_2);
 ```
@@ -178,7 +178,7 @@ obj(Cache:class)->call($obj, 'function_name_in_obj', 3600, $param_1, $param_2);
 
 ```php
 <?php
-obj(Cache:class)->dcall($obj, 'function_name_in_obj', 3600, $param_1, $param_2);
+obj(Cache::class)->dcall($obj, 'function_name_in_obj', 3600, $param_1, $param_2);
 
 \Cache::dremember(function(){
     return 'no cache '. time();

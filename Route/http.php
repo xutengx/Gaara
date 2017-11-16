@@ -82,6 +82,8 @@ return [
         Route::get('/yield',['namespace'=>'', 'uses' =>'yieldtest\index@index']);
         // 数据库测试
         Route::get('/mysql/test','mysql\Contr\indexContr@test');
+        // 缓存测试
+        Route::get('/cache',['namespace'=>'', 'uses' =>'cache\index@indexDo']);
         // 邮件测试 给 emailAddr 发一份邮件
         Route::get('/mail/{emailAddr}',['middleware'=>['sendMail'], 'uses'=>'mail\index@send']);
         // 视图相关

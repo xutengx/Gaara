@@ -67,12 +67,10 @@ trait FileTrait {
 
     /**
      * 递归删除 目录(绝对路径)下的所有文件,不包括自身
-     * @param string $dirName 目录
-     *
+     * @param string $dirName 目录(绝对)
      * @return void
      */
     public function delDirAndFile(string $dirName = '') {
-//        $this->absoluteDir($dirName);
         if (is_dir($dirName) && $dir_arr = scandir($dirName)) {
             foreach ($dir_arr as $k => $v) {
                 if ($v === '.' || $v === '..') {
@@ -90,36 +88,21 @@ trait FileTrait {
 
     /**
      * 将任意内容写进文件
-     * @param string $fileName  文件名
-     * @param string $text  内容
+     * @param string $filename 文件名(绝对)
+     * @param string $text 内容
      * @return bool
      */
-    public function printInFile(string $fileName = '', string $text = ''): bool {
-        //if( ! $fileName || ! $text ) return false;
-//        $this->absoluteDir($fileName);
-//        var_dump($fileName);
-        if (strripos($fileName, '/') === (strlen($fileName) - 1))
-            return false;      // filename 为路径,而不是文件名
-        if (!is_file($fileName)) {
-            if (is_dir(dirname($fileName)) || $this->__mkdir(dirname($fileName)))
-                touch($fileName);
+    public function printInFile(string $filename, string $text): bool {       
+        if (!is_file($filename)) {
+            if (is_dir(dirname($filename)) || $this->_mkdir(dirname($filename)))
+                touch($filename);
         }
-        if ($fp = fopen($fileName, "wb")) {
-            flock($fp, LOCK_EX | LOCK_NB);
-            if (fwrite($fp, $text)) {
-                fclose($fp);
-                return true;
-            } else {
-                fclose($fp);
-                return false;
-            }
-        }
-        return false;
+        return file_put_contents($filename, $text, LOCK_EX) === false ? false : true;
     }
 
     /**
      * 返回文件夹下的所有文件 组成的一维数组
-     * @param string $dirName 文件夹路径
+     * @param string $dirName 文件夹路径(绝对)
      * @return array 一维数组
      * @throws Exception
      */
@@ -145,14 +128,14 @@ trait FileTrait {
 
     /**
      * 生成随机文件名
-     * @param string $dir 文件所在的目录(相对,绝对)
+     * @param string $dir 文件所在的目录(绝对)
      * @param string $ext 文件后缀
      * @param string $uni 唯一标识
      * @return string
      */
-    final public function makeFilename(string $dir = '', string $ext = '', string $uni = 'def'): string {
+    final public function makeFilename(string $dir, string $ext, string $uni = 'def'): string {
         $ext = trim($ext, '.');
-        $dir = $dir ? rtrim($dir, '/') . '/' : './';
+        $dir = rtrim($dir, '/') . '/';
         $dir .= uniqid($uni);
         $dir .= '.' . $ext;
         return $dir;
@@ -160,12 +143,11 @@ trait FileTrait {
 
     /**
      * 递归创建目录
-     * @param string $dir 目录名(相对or绝对路径)
-     * @param int    $mode 目录权限
+     * @param string $dir 目录名(绝对路径)
+     * @param int $mode 目录权限
      * @return bool
      */
-    final public function __mkdir(string $dir = '', $mode = 0777): bool {
-//        $this->absoluteDir($dir);
+    final public function __mkdir(string $dir, $mode = 0777): bool {
         if (is_dir(dirname($dir)) || $this->__mkdir(dirname($dir)))
             return mkdir($dir, $mode);
     }

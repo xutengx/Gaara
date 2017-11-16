@@ -31,10 +31,6 @@ class Model {
     // 主动指定配置文件
     protected $connection = null;
 
-    /**
-     * 构造方法, 连接对象
-     * @param object $DbConnection db连接对象 如 obj('Mysql',false);
-     */
     final public function __construct() {
         $this->db = $this->getDB();
         $this->get_thisTable();
@@ -55,6 +51,7 @@ class Model {
 
     /**
      * 得到当前模型对应的数据表名
+     * @return void
      */
     final protected function get_thisTable(): void {
         // 驼峰转下划线
@@ -80,7 +77,7 @@ class Model {
      * 获取表字段信息, 填充主键
      */
     protected function getTableInfo(): void {
-        $this->field = obj(Cache::class)->get(function() {
+        $this->field = obj(Cache::class)->remember(function() {
             return $this->db->getAll('SHOW COLUMNS FROM `' . $this->table . '`');
         }, 3600);
         foreach ($this->field as $v) {

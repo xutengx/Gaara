@@ -2,6 +2,7 @@
 
 return [
     'driver' => 'redis',
+    'expire'  => 300,
     
     'redis' => [
         'host'  => env('REDIS_HOST'),

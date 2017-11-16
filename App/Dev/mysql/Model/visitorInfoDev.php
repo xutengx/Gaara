@@ -2,7 +2,7 @@
 
 namespace App\Dev\mysql\Model;
 
-class visitorInfoDev extends \Gaara\Core\Model {
+class test extends \Gaara\Core\Model {
     
     protected $table = 'visitor_info';
 
@@ -26,5 +26,9 @@ CREATE TABLE `visitor_info` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=23630 DEFAULT CHARSET=utf8 COMMENT='访客登记表';
 SQL;
+    
+}
+
+class visitorInfoDev extends test{
     
 }

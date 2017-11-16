@@ -8,49 +8,37 @@ interface DriverInterface {
     /**
      * 读取缓存
      * @param string $key 键
-     * @return array ['code'=> 200,'data'=>$content] or ['code'=>0]
+     * @return string|false
      */
-    public function get($key);
+    public function get(string $key);
 
     /**
      * 设置缓存
      * @param string $key 键
-     * @param string $velue 值
-     * @param int $cacheTime 缓存有效时间
+     * @param string $value 值
+     * @param int $expire 缓存有效时间 , -1表示无过期时间
      * @return bool
      */
-    public function set($key, $velue, $cacheTime);
+    public function set(string $key, string $value, int $expire): bool;
 
     /**
      * 删除单一缓存
      * @param string $key 键
      * @return bool
      */
-    public function rm($key);
+    public function rm(string $key): bool;
 
     /**
-     * 清除缓存
-     * @param $key
-     * @return mixed
+     * 批量清除缓存
+     * @param string $key
+     * @return bool
      */
-    public function clear($key);
-
+    public function clear(string $key): bool;
+    
     /**
-     * 获取缓存
-     * @param string    $cachedir 缓存文件地址
-     * @param int|false $cacheTime 缓存过期时间
-     *
-     * @echo string
-     * @return array ['code'=> 200,'data'=>$content] or ['code'=>0]
+     * 得到一个key的剩余有效时间
+     * @param string $key
+     * @return int 0表示过期, -1表示无过期时间, -2表示未找到key
      */
-    public function callget($key, $cacheTime);
-
-    /**
-     * 设置缓存
-     * @param $cachedir
-     * @param string $return 函数返回
-     * @param int|false $cacheTime 缓存过期时间
-     * @return array ['code'=> 200,'data'=>$content] or ['code'=>0]
-     */
-    public function callset($cachedir, $return, $cacheTime);
+    public function ttl(string $key): int;
 }

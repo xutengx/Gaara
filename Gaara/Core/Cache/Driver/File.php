@@ -1,95 +1,125 @@
 <?php
 
+declare(strict_types = 1);
 namespace Gaara\Core\Cache\Driver;
 
 use Gaara\Core\Cache\DriverInterface;
-defined('IN_SYS') || exit('ACC Denied');
 
 class File implements DriverInterface {
 
     // 缓存目录
     private $cacheRoot;
     // 缓存扩展名
-    private $cacheFileExt = "php";
+    private $cacheFileExt = '.php';
 
     final public function __construct($options = array()) {
         $this->cacheRoot = isset($options['dir']) ? ROOT . $options['dir'] : ROOT . 'data/Cache/';
     }
-   
-    public function set($key, $velue, $cacheTime) {
+
+    /**
+     * 读取缓存
+     * @param string $key 键
+     * @return string|false
+     */
+    public function get(string $key) {
         $filename = $this->makeFilename($key);
-        $data = "<?php\n//" . sprintf('%012d', $cacheTime) . serialize($velue) . "\n?>";
+        if (is_file($filename) && $content = file_get_contents($filename)) {
+            $expire = (int) substr($content, 8, 12);
+            $filemtime = (int) substr($content, 20, 12);
+            $time = $this->getExpire($filemtime, $expire);
+            if ($time === 0) {
+                //缓存过期删除缓存文件
+                unlink($filename);
+                return false;
+            }
+            return substr($content, 32, -3);
+        } else
+            return false;
+    }
+
+    /**
+     * 设置缓存
+     * @param string $key 键
+     * @param string $value 值
+     * @param int $expire 缓存有效时间 , -1表示无过期时间
+     * @return bool
+     */
+    public function set(string $key, string $value, int $expire): bool {
+        $filename = $this->makeFilename($key);
+        $data = "<?php\n//" . sprintf('%012d', $expire) . sprintf('%012d', time()) . $value . "\n?>";
         return $this->saveFile($filename, $data);
     }
 
-    public function get($key) {
+    /**
+     * 删除单一缓存
+     * @param string $key 键
+     * @return bool
+     */
+    public function rm(string $key): bool {
         $filename = $this->makeFilename($key);
-        if (!is_file($filename))
-            return array('code' => 0);
-        $content = file_get_contents($filename);
-        if (false !== $content) {
-            $expire = (int) substr($content, 8, 12);
-            if (time() > filemtime($filename) + $expire) {
-                //缓存过期删除缓存文件
-                unlink($filename);
-                return array('code' => 0);
-            }
-            $content = substr($content, 20, -3);
-            $content = unserialize($content);
-            return array(
-                'code' => 200,
-                'data' => $content
-            );
-        } else
-            return array('code' => 0);
+        return is_file($filename) && unlink($filename);
     }
 
-    public function rm($key) {
-        $filename = $this->makeFilename($key);
-        if (is_file($filename))
-            return unlink($filename);
-        return true;
-    }
-
-    public function clear($cachedir) {
-        $cachedir = $this->cacheRoot . $cachedir;
+    /**
+     * 批量清除缓存
+     * @param string $key
+     * @return bool
+     */
+    public function clear(string $key): bool {
+        $cachedir = $this->cacheRoot . $key;
         $this->del_DirAndFile($cachedir);
         return rmdir($cachedir);
     }
 
-    public function callget($cachedir, $cacheTime) {
-        $return = $this->cacheRoot . $cachedir . '.' . $this->cacheFileExt;
-        if ( is_file($return)) {
-            $cTime = $this->getFileCreateTime($return);
-            if (($cTime + $cacheTime) > time()) {
-                $data = NULL;
-                if (is_file($return))
-                    $data = unserialize(file_get_contents($return));
-                return array(
-                    'code' => 200,
-                    'data' => $data
-                );
+    /**
+     * 得到一个key的剩余有效时间
+     * @param string $key
+     * @return int 0表示过期, -1表示无过期时间, -2表示未找到key
+     */
+    public function ttl(string $key): int {
+        $filename = $this->makeFilename($key);
+        if (is_file($filename) && $content = file_get_contents($filename)) {
+            $expire = (int) substr($content, 8, 12);
+            $filemtime = (int) substr($content, 20, 12);
+            $time = $this->getExpire($filemtime, $expire);
+            if ($time === 0) {
+                //缓存过期删除缓存文件
+                unlink($filename);
+                return -2;
             }
-        }
-        return false;
+            return $time;
+        } else
+            return -2;
     }
 
-    public function callset($cachedir, $return, $cacheTime) {
-        $this->saveFile($this->cacheRoot . $cachedir . '.' . $this->cacheFileExt, serialize($return));
-        clearstatcache();
-        return array(
-            'code' => 200,
-            'data' => $return
-        );
+    /**
+     * 返回过期剩余时间, -1表示无过期时间
+     * @param int $filemtime
+     * @param int $expir
+     * @return int
+     */
+    private function getExpire(int $filemtime, int $expir): int {
+        if ($expir === -1)
+            return -1;
+        $time = $filemtime + $expir - time();
+        return ( $time > 0 ) ? $time : 0;
     }
 
-    private function makeFilename($key) {
-//        return $this->cacheRoot . 'serialize/' . md5($key) . '.'. $this->cacheFileExt;
-        return $this->cacheRoot  . $key . '.'. $this->cacheFileExt;
+    /**
+     * 将key转化为目录
+     * @param string $key
+     * @return string
+     */
+    private function makeFilename(string $key): string {
+        return $this->cacheRoot . $key . $this->cacheFileExt;
     }
 
-    // 递归删除 目录(绝对路径)下的所有文件,包括自身
-    private function del_DirAndFile($dirName) {
+    /**
+     * 递归删除 目录(绝对路径)下的所有文件,bu包括自身
+     * @param string $dirName
+     * @return void
+     */
+    private function del_DirAndFile(string $dirName): void {
         if (is_dir($dirName) && $dir_arr = scandir($dirName)) {
             foreach ($dir_arr as $k => $v) {
                 if ($v === '.' || $v === '..') {
@@ -102,51 +132,32 @@ class File implements DriverInterface {
                         unlink($dirName . '/' . $v);
                 }
             }
-//            return rmdir($dirName);
         }
     }
-    /*
-     * 缓存文件建立时间
-     * string $fileName   缓存文件名（绝对路径）
-     * 返回：文件生成时间秒数，文件不存在返回0
-     */
 
-    private function getFileCreateTime($fileName) {
-        if (!trim($fileName))
-            return 0;
-        if (is_file($fileName)) {
-            return (int) filemtime($fileName);
-        } else
-            return 0;
-    }
-    /*
-     * 保存文件
-     * string $fileName  文件名（含相对路径）
-     * string $text      文件内容
-     * 返回：成功返回ture，失败返回false
+    /**
+     * 写入文件
+     * @param string $filename 文件名(绝对路径)
+     * @param string $text
+     * @return bool
      */
-
-    private function saveFile($fileName, $text) {
-        if (!$fileName || !$text)
-            return false;
-        if (!is_file($fileName)) {
-            if (is_dir(dirname($fileName)) || $this->_mkdir(dirname($fileName)))
-                touch($fileName);
+    private function saveFile(string $filename, string $text): bool {
+        if (!is_file($filename)) {
+            if (is_dir(dirname($filename)) || $this->_mkdir(dirname($filename)))
+                touch($filename);
         }
-        if ($fp = fopen($fileName, "wb")) {
-            flock($fp, LOCK_EX | LOCK_NB);
-            if (fwrite($fp, $text)) {
-                fclose($fp);
-                return true;
-            } else {
-                fclose($fp);
-                return false;
-            }
-        }return false;
+        return file_put_contents($filename, $text, LOCK_EX) === false ? false : true;
     }
 
-    private function _mkdir($dir, $mode = 0777) {
+    /**
+     * 递归生成目录
+     * @param type $dir
+     * @param type $mode
+     * @return type
+     */
+    private function _mkdir(string $dir, int $mode = 0777): bool {
         if (is_dir(dirname($dir)) || $this->_mkdir(dirname($dir)))
             return mkdir($dir, $mode);
     }
+
 }

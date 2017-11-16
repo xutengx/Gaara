@@ -2,6 +2,7 @@
 
 namespace App\Dev\inifile;
 use Gaara\Core\Request;
+use Cache;
 class index extends \Gaara\Core\Controller{
     
     public function index(Request $request){
@@ -10,9 +11,9 @@ class index extends \Gaara\Core\Controller{
         $tmp = parse_ini_file(ROOT.".env", true);
 //        var_dump($tmp);exit;
         $env = $tmp['ENV'];
-        
-        $tmp = array_merge($tmp, $tmp[$env]);
+        $tmp = array_merge($tmp, $tmp[$env]);        
         var_dump($tmp);exit;
     }
     
+
 }

@@ -18,7 +18,7 @@ class ThrottleRequests extends Middleware {
     // 指纹
     protected $key = '';
     // 单位时间内的请求次数
-    protected $maxAttempts = 1000;
+    protected $maxAttempts = 100;
     // 单位时间 (秒)
     protected $decaySecond = 60;
 
@@ -54,7 +54,7 @@ class ThrottleRequests extends Middleware {
      * @return int
      */
     protected function getValue(int $times = 0): int {
-        return Cache::get($this->key, $times, $this->decaySecond);
+        return Cache::remember($this->key, $times, $this->decaySecond);
     }
 
     /**
@@ -66,7 +66,8 @@ class ThrottleRequests extends Middleware {
         if (($this->getValue()) >= $this->maxAttempts) {
             return true;
         } else {
-            // "访问计数器"自增 ,高并发下 会自增一个没有过期时间的值, 不过后面的流程会解决这种情况
+            // "访问计数器"自增 ,高并发下"redis驱动"会自增一个没有过期时间的值, 不过后面的流程会解决这种情况
+            // 2017-11-15 重写缓存驱动时, 将"file驱动"也加上这个逻辑:"自增一个不存在的键,将从0自增,没有过期时间"
             $this->accessTimes = $this->increment($this->decaySecond);
             return false;
         }
@@ -96,7 +97,7 @@ class ThrottleRequests extends Middleware {
      * @return int 返回自增后的值
      */
     protected function increment(): int {
-        return \Cache::incrby($this->key, 1);
+        return Cache::increment($this->key);
     }
 
     /**
@@ -114,11 +115,11 @@ class ThrottleRequests extends Middleware {
             $headers['Retry-After'] = $retryAfter;
             $headers['X-RateLimit-Reset'] = time() + $retryAfter;
         }
-        \Response::setHeaders($headers);
+        Response::setHeaders($headers);
     }
 
     /**
-     * 计算当前请求的指纹(key), 需要区分用户则请重载次方法
+     * 计算当前请求的指纹(key), 需要区分用户则请重载此方法
      * @param Request $request
      * @return string
      */

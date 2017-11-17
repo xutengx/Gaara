@@ -35,7 +35,7 @@
         </script>
     </head>
     <body>
-        <div><script>$.lw(['测试','test']);</script><?php echo '控制器赋值到页面php : '.$DATA['test']; ?></div>
+        <div><script>$.lw(['测试','test']);</script><?php echo '控制器赋值到页面php : '.$test; ?></div>
         <form action="action">
             <input type="text" id='date' name="tt" />
             <input type="file" name="rr" />
@@ -90,7 +90,7 @@ var token = 'QhpYXENcCQRUTRQDVFdcWxtfGwhSUwIBBlUFAFdwEkQXW15VQ0oaRAUSRRFdFA8VHVd
             };
             $.ajax({
 //                url:$.url('user/token'),
-                url:'http://git.gitxT.com/git/php_/user/reg',
+                url:'http://gaara.com/user/reg',
 //                url:'http://121.196.222.40/yh/user/login',
                 type:'post',
                 data:makeSign(data),

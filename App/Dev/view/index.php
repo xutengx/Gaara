@@ -17,11 +17,11 @@ class index extends \Gaara\Core\Controller {
         $this->assignPhp('test', url('teet/tete/e', ['name' => 'as', 'age' => 12]));
         $this->assign('test', 'this is test string !');
 
-        $this->display('demo');
+        return $this->display('demo');
     }
 
     public function getAjax(Request $request) {
-       $a = \Tool::asynExe('\test\fun');
+        $a = \Tool::asynExe('\test\fun');
         var_dump($a);
         exit;
         

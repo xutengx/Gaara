@@ -159,7 +159,7 @@ class Dev extends \Gaara\Core\Controller {
 视图文件内容
 ```html
 <div>
-    name = <?php echo $DATA['name']; ?> & age = <?php echo $DATA['age']; ?>
+    name = <?php echo $name; ?> & age = <?php echo $age; ?>
 <div>
 ```
 页面显示`name : gaara & age : 18`
@@ -333,7 +333,7 @@ class Dev extends \Gaara\Core\Controller {
 视图文件`dev`内容
 ```html
 <div>
-    <?php echo $DATA['php']; ?>
+    <?php echo $php; ?>
 <div>
 ```
 视图响应`php content = php content`

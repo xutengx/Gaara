@@ -298,12 +298,14 @@ EEE;
      * @return void
      */
     protected function bodyFile(string $filename = null): void {
-        $DATA = $this->view_data_php;
-        $t = explode('\\', static::class);
-        $file = ROOT . $this->view . ( $filename ?? end($t)) . '.html';
-        if (is_file($file))
-            include $file;
-        else
+        $file = ROOT . $this->view . ( $filename ?? substr(static::class, strrpos(static::class, '\\') + 1)) . '.html';
+        if (is_file($file)) {
+            extract($this->view_data_php);
+            $this->view_data_php = [];
+            unset($file);
+            include ROOT . $this->view . ( $filename ?? substr(static::class, strrpos(static::class, '\\') + 1)) . '.html';
+        } else
             throw new InvalidArgumentException($file . ' not found.');
     }
+
 }

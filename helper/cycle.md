@@ -23,20 +23,24 @@
 * [惰性js](/helper/inertjs.md)
 ## 总览
 
+![图](/helper/img/cycle.png)
+
 ```
 graph TD
 index.php[public\index.php]-->init.php[init.php]
-init.php-->Route.php[Gaara\Core\Route.php]
-Route.php-->校验路由{路由匹配}
-校验路由-->|成功|Kernel[App\Kernel.php]
+init.php-->校验路由{路由}
+校验路由-->|成功|Middlewarehandle[中间件 handle]
 校验路由-->|失败|路由匹配完结{路由匹配完结}
 路由匹配完结-->|否|校验路由
-路由匹配完结-->|是|Response404
-Kernel-->Middlewarehandle[中间件 handle 顺序执行]
-Middlewarehandle-->|未执行完毕|Middlewarehandle
-Middlewarehandle-->|执行完毕|main[业务执行]
-main-->Middlewareterminate[中间件 terminate 倒序执行]
-Middlewareterminate-->|未执行完毕 传递Response|Middlewareterminate
-Middlewareterminate-->|执行完毕|Response
+路由匹配完结-->|是|Response
+Middlewarehandle-->|顺序执行|Middlewarehandle
+Middlewarehandle-->main[业务执行]
+main-->Middlewareterminate[中间件 terminate]
+main-->缓存
+缓存-->数据
+数据-->缓存
+缓存-->main
+Middlewareterminate-->|倒序执行 传递Response|Middlewareterminate
+Middlewareterminate-->Response
 
 ```

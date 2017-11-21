@@ -46,6 +46,7 @@
     * [分块查询](#分块查询)
     * [预处理语句复用](#预处理语句复用)
     * [原生sql](#原生sql)
+    * [注册查询方法](#注册查询方法)
 * [缓存](/helper/cache.md)
 * [视图](/helper/view.md)
 * [获取对象](/helper/getobj.md)
@@ -661,3 +662,39 @@ $PDOStatement = $visitorInfo->prepare($sql, 'insert');
 PDOStatement->execute([':name' => '手动执行']);
 $res = ($PDOStatement->rowCount());
 ```
+## 注册查询方法
+
+`gaara`提供可拓展的接口, 以便增加制定的查询方法
+
+首先, 重载`Model`中的`registerMethodForQueryBuiler()`,以下的例子将注册`ID_is_bigger_than_1770()`以及`ID_rule()`两个方法.
+```php
+<?php
+class visitorInfoDev extends \Gaara\Core\Model{
+    
+    public function registerMethodForQueryBuiler():array{
+        return [
+            'ID_is_bigger_than_1770' => function(QueryBuiler $queryBuiler): QueryBuiler{
+                return $queryBuiler->where('id','>','1770');
+            },
+            'ID_rule' => function(QueryBuiler $queryBuiler, $id = 1800): QueryBuiler{
+                return $queryBuiler->ID_is_bigger_than_1770()->where('id','<',$id);
+            },
+        ];
+    }
+    
+}
+```
+**注 : `注册查询方法`是可以相互依赖的, 比如`ID_rule()`是依赖`ID_is_bigger_than_1770()`, 但需要注意注册顺序**
+
+然后, 便可以使用它
+```php
+<?php
+// 注册查询方法 ID_rule(),可以接受一个参数
+$chunk = $visitorInfo->ID_rule(2100)->limit(10000); 
+ 
+foreach($res->getChunk() as $k => $v){
+    var_dump($k);
+    var_export($v);
+}
+```
+**注 : `注册查询方法`属于`Model`隔离, 若希望提高生效范围, 可以重载父类**

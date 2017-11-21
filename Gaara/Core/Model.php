@@ -95,6 +95,8 @@ class Model {
         
     }
     
+    
+    
     /**
      * 返回一个查询构造器
      * @param string $table 绑定表名
@@ -128,6 +130,15 @@ class Model {
         return obj(static::class)->newQuery()->$method(...$parameters);
     }
     
+    /**
+     * 在 Model 中为 QueryBuiler 注册自定义链式方法
+     * 重载此方法
+     * @return array
+     */
+    public function registerMethodForQueryBuiler(): array {
+        return [];
+    }
+
     /**
      * 原生sql支持, 普通执行
      * @param string $sql

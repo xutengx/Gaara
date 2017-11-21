@@ -4,7 +4,11 @@ declare(strict_types = 1);
 namespace Gaara\Core\Model;
 
 use Gaara\Core\Model\QueryBuiler;
+use Gaara\Core\Model;
 use Gaara\Core\DbConnection;
+use InvalidArgumentException;
+use Exception;
+use Closure;
 
 /**
  * 链式操作
@@ -55,11 +59,30 @@ class QueryBuiler {
     // 预期的查询2维数组的索引
     private $index = null;
 
-    public function __construct(string $table, string $primaryKey, DbConnection $db, $model) {
+    public function __construct(string $table, string $primaryKey, DbConnection $db, Model $model) {
         $this->table = $table;
         $this->primaryKey = $primaryKey;
         $this->db = $db;
         $this->model = $model;
+        
+        $this->registerMethod();
+    }
+    
+    /**
+     * 在 Model 中为 QueryBuiler 注册自定义链式方法
+     * @throws InvalidArgumentException
+     */
+    private function registerMethod() {
+        foreach ($this->model->registerMethodForQueryBuiler() as $methodName => $func) {
+            if (isset($this->$methodName) || method_exists($this, $methodName))
+                throw new InvalidArgumentException('The method name [ ' . $methodName . ' ] is already used .');
+            elseif($func instanceof Closure){
+                $this->$methodName = function(...$params)use($func) {
+                     return $func($this, ...$params);
+                };
+            }else
+                throw new InvalidArgumentException('The method [ ' . $methodName . ' ] mast instanceof Closure .');
+        }
     }
 
     /**
@@ -489,7 +512,12 @@ class QueryBuiler {
         }
     }
     
-    public function __call(string $name, array $arguments = []) {
-        ;
+    public function __call(string $method, array $args = []) {
+        if (isset($this->$method) && $this->$method instanceof Closure) {
+            $func = $this->$method;
+            return $func(...$args);
+        } else
+            throw new Exception('Undefined method [ ' . $method . ' ].');
     }
+
 }

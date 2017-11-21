@@ -32,8 +32,9 @@ class index2Contr extends Controller {
         '结果分块' => 'test_17',
         'getAll,自定义键名' => 'test_18',
         'MySQL随机获取数据的方法，支持大数据量' => 'test_19',
-        '超级' => 'test_20',
-        'exit' => 'test_21',
+        '聚合子查询' => 'test_20',
+        '自定义的模型连贯操作' => 'test_21',
+        'exit' => 'test_22',
     ];
 
     public function indexDo() {
@@ -383,6 +384,31 @@ SELECT * FROM `table` WHERE id >=
     }
     
     public function test_21(Model\visitorInfoDev $visitorInfo) {
+        
+//        var_dump($visitorInfo->ID_is_bigger_than_1770());exit;
+        
+        $res = $visitorInfo->whereSubQuery('id','>=',function($query){
+            $query->noFrom()
+//                    ->selectRaw('floor(RAND()*((select max(`id`) from `visitor_info`)-(select min(`id`) from `visitor_info`))+(select min(`id`) from `visitor_info`))')
+                    ->select('floor', function($query){
+                        $query_b = clone $query;
+                        $maxSql = $query->select('max',function(){
+                            return 'id';
+                        })->sql();
+                        $minSql = $query_b->select('min',function(){
+                            return 'id';
+                        })->sql();
+                        return 'rand()*(('.$maxSql.')-('.$minSql.'))+('.$minSql.')';
+                    });
+            
+        })
+                ->ID_rule(2330)
+                ->order('id')->getRow();
+        var_dump($visitorInfo->getLastSql());
+        var_dump($res);
+    }
+    
+    public function test_22(Model\visitorInfoDev $visitorInfo) {
 
 //        $dir = (new \Gaara\Expand\Image)->newUrl('https://baidu.com');
 //        var_dump($dir);

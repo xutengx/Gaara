@@ -3,21 +3,24 @@
 namespace App\Dev\performance\Contr;
 
 use \Gaara\Core\Controller;
-defined('IN_SYS') || exit('ACC Denied');
+use Tool;
 /**
  * 3类队列比较 10万条数据随机入队、出队，使用SplQueue与Array模拟的队列与redisList的比较
  */
-class queueContr extends Controller\Controller {
+class queueContr extends Controller {
 
+    private $type;
+    private $popN;
+    
     public function indexDo() {
         $test_arr = [
-            'http://127.0.0.1/git/php_/project/index.php?path=performance/queue/arrayQueue/',
-            'http://127.0.0.1/git/php_/project/index.php?path=performance/queue/redisQueue/',
-            'http://127.0.0.1/git/php_/project/index.php?path=performance/queue/splQueue/',
+            'http://127.0.0.1/performance/queue/arrayQueue',
+            'http://127.0.0.1/performance/queue/redisQueue',
+            'http://127.0.0.1/performance/queue/splQueue',
         ];
 
-        $res = obj('tool')->parallelExe($test_arr);
-        var_dump($res);
+        $res = obj(Tool::class)->parallelExe($test_arr);
+        var_dump($res);exit;
     }
 
     public function splQueue() {
@@ -38,7 +41,10 @@ class queueContr extends Controller\Controller {
         for ($j = 0; $j < $popN; $j++) {
             $splq->shift();
         }
-        echo '我是spl' . ' 最大长度 ' . $popN;
+//        echo '我是spl' . ' 最大长度 ' . $this->popN = $popN;
+        $this->popN = $popN;
+        $this->type = 'spl';
+        
     }
 
     public function arrayQueue() {
@@ -58,7 +64,10 @@ class queueContr extends Controller\Controller {
         for ($j = 0; $j < $popN; $j++) {
             array_shift($arrq);
         }
-        echo '我是array' . ' 最大长度 ' . $popN;
+//        echo '我是array' . ' 最大长度 ' . $this->popN = $popN;
+        
+        $this->popN = $popN;
+        $this->type = 'array';
     }
 
     public function redisQueue() {
@@ -78,13 +87,17 @@ class queueContr extends Controller\Controller {
         }
 
         $popN = $redisq->lSize($queue_name);
-        echo '我是redis' . ' 最大长度 ' . $popN;
+        $this->popN = $popN;
+        $this->type = 'redis';
         for ($j = 0; $j < $popN; $j++) {
             $redisq->rpop($queue_name);
         }
     }
 
     public function __destruct() {
-        \statistic();
+        if(!is_null($this->type)){
+            echo '我是 '. $this->type . ' 最大长度 ' . $this->popN. '<br>';
+            var_dump(\statistic());exit;
+        }
     }
 }

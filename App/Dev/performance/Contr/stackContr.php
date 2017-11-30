@@ -2,22 +2,28 @@
 
 namespace App\Dev\performance\Contr;
 
-use \Gaara\Core\Controller;
-defined('IN_SYS') || exit('ACC Denied');
+use Gaara\Core\Controller;
+use Tool;
 /**
  * 栈的实现与比较
  */
-class stackContr extends Controller\Controller {
-
+class stackContr extends Controller {
+    private $type;
+    private $popN;
     public function indexDo() {
+//        $test_arr = [
+//            'http://127.0.0.1/git/php_/project/index.php?path=performance/stack/arrayStack/',
+//            'http://127.0.0.1/git/php_/project/index.php?path=performance/stack/redisStack/',
+//            'http://127.0.0.1/git/php_/project/index.php?path=performance/stack/splStack/',
+//        ];
         $test_arr = [
-            'http://127.0.0.1/git/php_/project/index.php?path=performance/stack/arrayStack/',
-            'http://127.0.0.1/git/php_/project/index.php?path=performance/stack/redisStack/',
-            'http://127.0.0.1/git/php_/project/index.php?path=performance/stack/splStack/',
+            'http://127.0.0.1/performance/stack/arrayStack',
+            'http://127.0.0.1/performance/stack/redisStack',
+            'http://127.0.0.1/performance/stack/splStack',
         ];
 
-        $res = obj('tool')->parallelExe($test_arr);
-        var_dump($res);
+        $res = Tool::parallelExe($test_arr);
+        var_dump($res);exit;
     }
 
     public function splStack() {
@@ -38,7 +44,9 @@ class stackContr extends Controller\Controller {
         for ($j = 0; $j < $popN; $j++) {
             $splq->pop();
         }
-        echo '我是spl' . ' 最大长度 ' . $popN;
+//        echo '我是spl' . ' 最大长度 ' . $popN;
+        $this->popN = $popN;
+        $this->type = 'sql';
     }
     
     public function arrayStack() {
@@ -57,7 +65,9 @@ class stackContr extends Controller\Controller {
         for ($j = 0; $j < $popN; $j++) {
             array_pop($arrq);
         }
-        echo '我是array' . ' 最大长度 ' . $popN;
+//        echo '我是array' . ' 最大长度 ' . $popN;
+        $this->popN = $popN;
+        $this->type = 'array';
     }    
 
     public function redisStack() {
@@ -77,7 +87,8 @@ class stackContr extends Controller\Controller {
         }
 
         $popN = $redisq->lSize($queue_name);
-        echo '我是redis' . ' 最大长度 ' . $popN;
+        $this->popN = $popN;
+        $this->type = 'redis';
         for ($j = 0; $j < $popN; $j++) {
             $redisq->lpop($queue_name);
         }
@@ -85,6 +96,11 @@ class stackContr extends Controller\Controller {
 
 
     public function __destruct() {
-        \statistic();
+        if (!is_null($this->type)) {
+            echo '我是 ' . $this->type . ' 最大长度 ' . $this->popN . '<br>';
+            var_dump(\statistic());
+            exit;
+        }
     }
+
 }

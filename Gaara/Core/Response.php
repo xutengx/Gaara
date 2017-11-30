@@ -211,10 +211,12 @@ class Response {
      * @return string
      */
     private function getAcceptType(): string {
-        foreach (self::$httpType as $key => $val) {
-            foreach ($val as $v) {
-                if (stristr($_SERVER['HTTP_ACCEPT'], $v)) {
-                    return $key;
+        if(isset($_SERVER['HTTP_ACCEPT'])){
+            foreach (self::$httpType as $key => $val) {
+                foreach ($val as $v) {
+                    if (stristr($_SERVER['HTTP_ACCEPT'], $v)) {
+                        return $key;
+                    }
                 }
             }
         }

@@ -7,14 +7,14 @@ use Gaara\Core\Controller;
 /**
  * php 数组与定长数组
  */
-class arrayContr extends Controller\Controller {
+class arrayContr extends Controller {
 
     private $size = 1900000;
     private $format = 'Time spent of %s(%d) is : %f seconds.</br>';
     public function indexDo() {
         $test_arr = [
-            'http://gaara.com/performance/array/phpArray',
-            'http://gaara.com/performance/array/splFixedArray',
+            'http://127.0.0.1/performance/array/phpArray',
+            'http://127.0.0.1/performance/array/splFixedArray',
         ];
 
         $res = obj(Tool::class)->parallelExe($test_arr);
@@ -46,8 +46,4 @@ class arrayContr extends Controller\Controller {
         $time_spent = microtime(true) - $start_time;
         printf($format, "PHP array", $size, $time_spent);exit;
     }    
-
-    public function __destruct() {
-        \statistic();
-    }
 }

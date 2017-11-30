@@ -105,9 +105,8 @@ return [
         // 性能对比
         Route::group(['prefix' => 'performance','namespace' => 'performance\Contr'], function(){
             Route::get('/index','indexContr@indexDo');
-            Route::group(['prefix' => 'array'], function(){
-                Route::get('/phpArray','arrayContr@phpArray');
-                Route::get('/splFixedArray','arrayContr@splFixedArray');
+            Route::get('/{class}/{func}',function($class, $func){
+                return obj('App\Dev\performance\Contr\\'.$class.'Contr')->$func();
             });
         });
 

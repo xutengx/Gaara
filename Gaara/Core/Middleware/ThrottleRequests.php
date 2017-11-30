@@ -54,7 +54,7 @@ class ThrottleRequests extends Middleware {
      * @return int
      */
     protected function getValue(int $times = 0): int {
-        return Cache::remember($this->key, $times, $this->decaySecond);
+        return (int)Cache::remember($this->key, $times, $this->decaySecond);
     }
 
     /**

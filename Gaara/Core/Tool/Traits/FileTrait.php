@@ -94,7 +94,7 @@ trait FileTrait {
      */
     public function printInFile(string $filename, string $text): bool {       
         if (!is_file($filename)) {
-            if (is_dir(dirname($filename)) || $this->_mkdir(dirname($filename)))
+            if (is_dir(dirname($filename)) || $this->__mkdir(dirname($filename)))
                 touch($filename);
         }
         return file_put_contents($filename, $text, LOCK_EX) === false ? false : true;

@@ -2,12 +2,12 @@
 
 declare(strict_types = 1);
 namespace App\yh\c\user;
-defined('IN_SYS') || exit('ACC Denied');
 
 use App\yh\m\MainUser;
 use Gaara\Core\Secure;
 use Gaara\Expand\Mail;
 use Gaara\Core\Controller;
+use Gaara\Core\Exception\MessageException;
 
 class Reg extends Controller {
     // 生成邮箱注册, 所需的盐
@@ -61,6 +61,7 @@ class Reg extends Controller {
      * @return json
      */
     public function email(MainUser $user){
+//        throw new MessageException('test exception');
         $email = $this->get('email','email');
         return $this->returnData($this->checkEmail($email, $user));
     }

@@ -10,6 +10,7 @@ use Whoops\Run;
 use Whoops\Handler\PlainTextHandler;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
+use Gaara\Core\Exception\MessageException;
 use Log;
 
 /**
@@ -45,6 +46,13 @@ class ExceptionHandler extends Middleware {
         }
         $whoops->pushHandler(function($exception, $inspector, $run) {
             Log::error($inspector->getExceptionMessage(), $exception->getTrace());
+            if($exception instanceof MessageException){
+                $msg = $exception->getMessage();
+                Response::setStatus(500)->exitData([
+                    'code' => '500',
+                    'msg' => $msg
+                ]);
+            }
         });
         $whoops->register();
     }

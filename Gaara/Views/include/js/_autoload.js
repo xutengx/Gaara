@@ -1,4 +1,19 @@
-;String.prototype.temp = function(obj){return this.replace(/\$\w+\$/gi,function(matchs){var returns = obj[matchs.replace(/\$/g, "")];return (returns + "") === "undefined"? "": returns;});};
+$(document).ajaxStart(function () {
+}).ajaxStop(function () {
+}).ajaxComplete(function () {
+}).ajaxError(function (e, xhr, opt) {
+    try {
+        if (xhr.code === 500) {
+            try {
+                var data = JSON.parse(xhr.responseText);
+                alert(data.msg);
+            } catch (e) {
+                alert('Request Failure !');
+            }
+        }
+    } catch (e) {
+    }
+});
 jQuery.extend({
     urls : [],
     getScriptWithCache:function(url,callback){
@@ -58,7 +73,7 @@ jQuery.extend({
             temp = $.url_base(pathinfo, param);
         });
         return temp;
-    },
+    }
 });
 $.fn.extend({
     submitData:function(method, callback, httpmethod) {
@@ -72,5 +87,5 @@ $.fn.extend({
         $.getScriptWithCache("ZeroClipboard.min.js", function(){
             $this.copy_base(obj, callback);
         });
-    },
+    }
 });

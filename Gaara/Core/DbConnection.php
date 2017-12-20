@@ -184,7 +184,7 @@ class DbConnection {
      * @return PDOStatement or PDO
      * @throws PDOException
      */
-    private function query_prepare_execute(string $sql = '', array $pars = array()) {
+    private function query_prepare_execute(string $sql, array $pars = array()) {
         $PDO = $this->PDO();
         if (empty($pars)) {
             $res = $PDO->query($sql);
@@ -203,7 +203,7 @@ class DbConnection {
      * @param array $pars
      * @return PDOStatement
      */
-    public function getChunk(string $sql = '', array $pars = array()): PDOStatement {
+    public function getChunk(string $sql, array $pars = array()): PDOStatement {
         $this->type = 'select';
         return $this->query_prepare_execute($sql, $pars);
     }
@@ -214,7 +214,7 @@ class DbConnection {
      * @param array $pars 参数绑定数组
      * @return array 一维数组
      */
-    public function getRow(string $sql = '', array $pars = array()): array {
+    public function getRow(string $sql, array $pars = array()): array {
         $this->type = 'select';
         $re = $this->query_prepare_execute($sql, $pars)->fetch(\PDO::FETCH_ASSOC);
         return $re ? $re : [];
@@ -226,7 +226,7 @@ class DbConnection {
      * @param array $pars 参数绑定数组
      * @return array 二维数组
      */
-    public function getAll($sql = '', array $pars = array()): array {
+    public function getAll($sql, array $pars = array()): array {
         $this->type = 'select';
         return $this->query_prepare_execute($sql, $pars)->fetchall(\PDO::FETCH_ASSOC);
     }
@@ -237,7 +237,7 @@ class DbConnection {
      * @param array $pars 参数绑定数组
      * @return int 受影响的行数
      */
-    public function update(string $sql = '', array $pars = array()): int {
+    public function update(string $sql, array $pars = array()): int {
         $this->type = 'update';
         $res = $this->query_prepare_execute($sql, $pars);
         if ($res)
@@ -250,7 +250,7 @@ class DbConnection {
      * @param array $pars 参数绑定数组
      * @return int 插入的主键
      */
-    public function insertGetId(string $sql = '', array $pars = array()): int {
+    public function insertGetId(string $sql, array $pars = array()): int {
         $this->type = 'insert';
         $res = $this->query_prepare_execute($sql, $pars);
         if ($res)
@@ -263,7 +263,7 @@ class DbConnection {
      * @param array $pars 参数绑定数组
      * @return bool
      */
-    public function insert(string $sql = '', array $pars = array()): bool {
+    public function insert(string $sql, array $pars = array()): bool {
         $this->type = 'insert';
         $res = $this->query_prepare_execute($sql, $pars);
         return $res ? true : false;
@@ -276,7 +276,7 @@ class DbConnection {
      * @return type
      * @throws Exception
      */
-    public function prepare(string $sql = '', string $type = 'update'): PDOStatement {
+    public function prepare(string $sql, string $type = 'update'): PDOStatement {
         if (!in_array($type, ['select', 'update', 'delete', 'insert', 'replace']))
             throw new Exception('$type mast in_array(select update delete insert replace). but '.$type.' given');
         $this->type = $type;
@@ -328,7 +328,7 @@ class DbConnection {
      * 关闭连接
      */
     public function close() {
-        $this->pdo = NULL;
+        $this->pdo = null;
     }
     
     public function __call(string $method, array $parameters = []) {

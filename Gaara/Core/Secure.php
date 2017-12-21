@@ -18,17 +18,6 @@ class Secure {
     }
 
     /**
-     * 返回带有header的ajax方法,依赖jquery, 应用于Controller->display();
-     * 将cookie中的X-CSRF-TOKEN加入ajax请求头
-     * @return string
-     */
-    public function csrfAjax(): string {
-        return <<<EOF
-$.ajaxSetup({beforeSend:function(a){var b=window.document.cookie.match(/(?:^|\s|;)X-XSRF-TOKEN\s*=\s*([^;]+)(?:;|$)/);a.setRequestHeader("X-XSRF-TOKEN",b&&b[1])},error:function(a,b,c){a=JSON.parse(a.responseText);void 0!==a.msg?alert(a.msg):void 0!==a.error.message&&alert(a.error.message)}});
-EOF;
-    }
-
-    /**
      * 过滤特殊(删除)字符
      * @param string $string
      * @param bool $is_strict   严格模式下, 将过滤更多

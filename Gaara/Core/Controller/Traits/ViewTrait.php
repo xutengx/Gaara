@@ -227,7 +227,6 @@ EEE;
         // gaara js 引入
         echo DEBUG ? obj(Template::class)->includeFiles() : obj(Cache::class)->call(obj(Template::class), 'includeFiles', 30);
         // gaara js 定义
-        $this->script(obj(Secure::class)->csrfAjax());
         $this->assign('HOST', HOST);
         $this->assign('contr', static::class);
         $this->script('$.extend({language:' . $this->language . '});');

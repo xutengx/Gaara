@@ -1,17 +1,15 @@
-$(document).ajaxStart(function () {
-}).ajaxStop(function () {
-}).ajaxComplete(function () {
-}).ajaxError(function (e, xhr, opt) {
-    try {
-        if (xhr.code === 500) {
-            try {
-                var data = JSON.parse(xhr.responseText);
-                alert(data.msg);
-            } catch (e) {
-                alert('Request Failure !');
-            }
+$.ajaxSetup({
+    beforeSend: function (a) {
+        // 将cookie中的X-CSRF-TOKEN加入ajax请求头
+        var b = window.document.cookie.match(/(?:^|\s|;)X-XSRF-TOKEN\s*=\s*([^;]+)(?:;|$)/);
+        a.setRequestHeader("X-XSRF-TOKEN", b && b[1]);
+    }, error: function (a, b, c) {
+        try{
+            a = JSON.parse(a.responseText);
+            void 0 !== a.msg ? alert(a.msg) : void 0 !== a.error.message && alert(a.error.message);
+        }catch(e){
+            
         }
-    } catch (e) {
     }
 });
 jQuery.extend({

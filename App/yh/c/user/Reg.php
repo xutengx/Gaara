@@ -62,6 +62,7 @@ class Reg extends Controller {
      */
     public function email(MainUser $user){
 //        throw new MessageException('test exception');
+//        throw new \Exception('test exception eee');
         $email = $this->get('email','email');
         return $this->returnData($this->checkEmail($email, $user));
     }

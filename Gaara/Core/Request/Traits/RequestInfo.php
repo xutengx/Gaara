@@ -7,7 +7,7 @@ namespace Gaara\Core\Request\Traits;
  * 请求相关信息获取
  */
 trait RequestInfo {
-
+    
     /**
      * 获取当前完整url请就方法
      * @return string

@@ -51,6 +51,7 @@ class index2Contr extends Controller {
     }
     
     private function test_1() {
+//        throw new \InvalidArgumentException('wwwwww');
         $obj = obj(Model\visitorInfoDev::class);
         $sql = $obj->select(['id', 'name', 'phone'])
             ->where( 'id', '>', '2000')

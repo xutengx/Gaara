@@ -45,7 +45,9 @@ class ExceptionHandler extends Middleware {
             }
         }
         $whoops->pushHandler(function($exception, $inspector, $run) {
-            Log::error($inspector->getExceptionMessage(), $exception->getTrace());
+            // 记录异常
+            Log::error($inspector->getException());
+            
             if($exception instanceof MessageException){
                 $msg = $exception->getMessage();
                 Response::setStatus(500)->exitData([

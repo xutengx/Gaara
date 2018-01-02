@@ -25,7 +25,8 @@ class Log {
 
     private $handle;
     
-    public function __construct($name = 'gaara_', array $handlers = array(), array $processors = array()) {
+    public function __construct(Conf $Conf, array $handlers = array(), array $processors = array()) {
+        $name = $Conf->getEnv('ENV', 'local');
         $this->handle = new Logger($name, $handlers, $processors);
         $formatter = new LineFormatter(null, null, true, true);
         $this->handle->pushHandler((new StreamHandler($this->makeFilename('debug'), Logger::DEBUG, false))->setFormatter($formatter));

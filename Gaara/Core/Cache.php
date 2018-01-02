@@ -8,6 +8,7 @@ use Gaara\Core\Cache\Driver;
 use Gaara\Core\Cache\Traits;
 use Closure;
 use InvalidArgumentException;
+use Exception;
 
 class Cache {
 

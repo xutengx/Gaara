@@ -7,7 +7,6 @@ use Response;
 use Closure;
 use Gaara\Core\Cache;
 use Gaara\Core\Template;
-use Gaara\Core\Secure;
 use InvalidArgumentException;
 
 /**

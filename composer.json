@@ -30,7 +30,7 @@
     },
     "require": {
         "php": ">=7.1.0",
-        "chillerlan/php-qrcode": "^1.1",
+        "chillerlan/php-qrcode": "^2.0",
         "ezyang/htmlpurifier": "^4.9",
         "filp/whoops": "^2.1",
         "guzzlehttp/guzzle": "^6.3",

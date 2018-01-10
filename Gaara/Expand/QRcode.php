@@ -5,12 +5,11 @@ namespace Gaara\Expand;
 
 use Gaara\Core\Conf;
 use chillerlan\QRCode\QRCode as C_QRCode;
-use chillerlan\QRCode\Output\QRImage;
-use chillerlan\QRCode\Output\QRImageOptions;
+use chillerlan\QRCode\QROptions;
 
 /**
  * 二维码相关
- * https://packagist.org/packages/chillerlan/php-qrcode#1.1.1
+ * https://packagist.org/packages/chillerlan/php-qrcode#2.0.1
  */
 class QRcode {
 
@@ -29,27 +28,16 @@ class QRcode {
      * @return string
      */
     public function base64(string $data): string{
-        return (new C_QRCode($data, $this->getQRImage()))->output();
-    }
-    
-    /**
-     * 获取QRImage对象
-     * @return QRImage
-     */
-    private function getQRImage(): QRImage{
-        return new QRImage($this->getQRImageOptions());
+        return (new C_QRCode($this->getQROptions()))->render($data);
     }
     
     /**
      * 获取QRImageOptions对象,并赋值配置
-     * @return QRImageOptions
+     * @return QROptions
      */
-    private function getQRImageOptions(): QRImageOptions{
-        $QRImageOptions = new QRImageOptions();
+    private function getQROptions(): QROptions{
         $options = (get_object_vars($this));
-        foreach($options as $k => $v){
-            $QRImageOptions->$k = $v;
-        }
-        return $QRImageOptions;
+
+        return new QROptions($options);
     }
 }

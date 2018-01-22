@@ -415,7 +415,8 @@ SELECT * FROM `table` WHERE id >=
 //        $dir = (new \Gaara\Expand\Image)->newUrl('https://baidu.com');
 //        var_dump($dir);
 //        $data = 'https://www.baidu.com';
-//        echo '<img src="'.(new \chillerlan\QRCode\QRCode($data, new \chillerlan\QRCode\Output\QRImage))->output().'" />';
+//        $qrOptions = new \chillerlan\QRCode\QROptions($yourQRCodeOptionsArray);
+//        echo '<img src="'.(new \chillerlan\QRCode\QRCode($qrOptions))->render($data).'" />';
         exit;
     }
     

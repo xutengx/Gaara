@@ -19,36 +19,36 @@ use Monolog\Formatter\LineFormatter;
  * @methor emergency    600     (string, array());
  */
 class Log {
-    // 文件路径
-    private $path = 'data/log/';
-    private $ext = 'log';
 
-    private $handle;
-    
-    public function __construct(Conf $Conf, array $handlers = array(), array $processors = array()) {
-        $name = $Conf->getEnv('ENV', 'local');
-        $this->handle = new Logger($name, $handlers, $processors);
-        $formatter = new LineFormatter(null, null, true, true);
-        $this->handle->pushHandler((new StreamHandler($this->makeFilename('debug'), Logger::DEBUG, false))->setFormatter($formatter));
-        $this->handle->pushHandler((new StreamHandler($this->makeFilename('info'), Logger::INFO, false))->setFormatter($formatter));
-        $this->handle->pushHandler((new StreamHandler($this->makeFilename('notice'), Logger::NOTICE, false))->setFormatter($formatter));
-        $this->handle->pushHandler((new StreamHandler($this->makeFilename('warning'), Logger::WARNING, false))->setFormatter($formatter));
-        $this->handle->pushHandler((new StreamHandler($this->makeFilename('error'), Logger::ERROR, false))->setFormatter($formatter));
-        $this->handle->pushHandler((new StreamHandler($this->makeFilename('critical'), Logger::CRITICAL, false))->setFormatter($formatter));
-        $this->handle->pushHandler((new StreamHandler($this->makeFilename('emergency'), Logger::EMERGENCY, false))->setFormatter($formatter));
-    }
-  
+	// 文件路径
+	private $path	 = 'data/log/';
+	private $ext	 = 'log';
+	private $handle;
 
-    /**
-     * 返回文件名
-     * @return string
-     */
-    private function makeFilename(string $level): string{
-        $filename = ROOT.$this->path.date('Y/m/d/').$level.'.'.$this->ext;
-        return $filename;
-    }
-    
-    public function __call(string $func, array $params){
-        return call_user_func_array([$this->handle, $func], $params);
-    }
+	public function __construct(Conf $Conf, array $handlers = array(), array $processors = array()) {
+		$name			 = $Conf->getEnv('ENV', 'local');
+		$this->handle	 = new Logger($name, $handlers, $processors);
+		$formatter		 = new LineFormatter(null, null, true, true);
+		$this->handle->pushHandler((new StreamHandler($this->makeFilename('debug'), Logger::DEBUG, false))->setFormatter($formatter));
+		$this->handle->pushHandler((new StreamHandler($this->makeFilename('info'), Logger::INFO, false))->setFormatter($formatter));
+		$this->handle->pushHandler((new StreamHandler($this->makeFilename('notice'), Logger::NOTICE, false))->setFormatter($formatter));
+		$this->handle->pushHandler((new StreamHandler($this->makeFilename('warning'), Logger::WARNING, false))->setFormatter($formatter));
+		$this->handle->pushHandler((new StreamHandler($this->makeFilename('error'), Logger::ERROR, false))->setFormatter($formatter));
+		$this->handle->pushHandler((new StreamHandler($this->makeFilename('critical'), Logger::CRITICAL, false))->setFormatter($formatter));
+		$this->handle->pushHandler((new StreamHandler($this->makeFilename('emergency'), Logger::EMERGENCY, false))->setFormatter($formatter));
+	}
+
+	/**
+	 * 返回文件名
+	 * @return string
+	 */
+	private function makeFilename(string $level): string {
+		$filename = ROOT . $this->path . date('Y/m/d/') . $level . '.' . $this->ext;
+		return $filename;
+	}
+
+	public function __call(string $func, array $params) {
+		return call_user_func_array([$this->handle, $func], $params);
+	}
+
 }

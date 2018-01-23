@@ -10,21 +10,22 @@ use Exception;
  */
 trait ClientInfo {
 
-    /**
-     * 获取客户端ip
-     * @return string
-     * @throws Exception
-     */
-    private function getIp(): string {
-        if (isset($_SERVER['HTTP_CLIENT_IP']) && !empty($_SERVER["HTTP_CLIENT_IP"])) {
-            $cip = $_SERVER["HTTP_CLIENT_IP"];
-        } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && !empty($_SERVER["HTTP_X_FORWARDED_FOR"])) {
-            $cip = $_SERVER["HTTP_X_FORWARDED_FOR"];
-        } elseif (isset($_SERVER['REMOTE_ADDR']) && !empty($_SERVER["REMOTE_ADDR"])) {
-            $cip = $_SERVER["REMOTE_ADDR"];
-        } else {
-            throw new Exception('Unable to get client IP');
-        }
-        return $this->ip = $cip;
-    }
+	/**
+	 * 获取客户端ip
+	 * @return string
+	 * @throws Exception
+	 */
+	private function getIp(): string {
+		if (isset($_SERVER['HTTP_CLIENT_IP']) && !empty($_SERVER["HTTP_CLIENT_IP"])) {
+			$cip = $_SERVER["HTTP_CLIENT_IP"];
+		} elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && !empty($_SERVER["HTTP_X_FORWARDED_FOR"])) {
+			$cip = $_SERVER["HTTP_X_FORWARDED_FOR"];
+		} elseif (isset($_SERVER['REMOTE_ADDR']) && !empty($_SERVER["REMOTE_ADDR"])) {
+			$cip = $_SERVER["REMOTE_ADDR"];
+		} else {
+			throw new Exception('Unable to get client IP');
+		}
+		return $this->ip = $cip;
+	}
+
 }

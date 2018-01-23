@@ -5,9 +5,11 @@ namespace Gaara\Expand;
 
 use Tool;
 use Gaara\Core\Conf;
-use PhpConsole\Handler;
-use PhpConsole\Connector;
-use PhpConsole\Storage\File;
+use PhpConsole\{
+	Handler,
+	Connector,
+	Storage\File
+};
 
 /**
  * 借助谷歌浏览器的 php console 插件, 以及 php-console 包, 进行调试
@@ -15,33 +17,34 @@ use PhpConsole\Storage\File;
  */
 class PhpConsole {
 
-    private $path = 'data/phpconsole/';
-    private $ext = 'log';
-    private $handle;
-    
-    public function __construct() {
-        $conf = obj(Conf::class)->phpconsole;
-        Connector::setPostponeStorage(new File($this->makeFilename()));
-        $connector = Connector::getInstance();
-        if(!is_null($conf['passwd'])){
-            $connector->setPassword($conf['passwd']);
-        }
-        $this->handle = Handler::getInstance();
-    }
+	private $path	 = 'data/phpconsole/';
+	private $ext	 = 'log';
+	private $handle;
 
-    /**
-     * 返回文件名
-     * @return string
-     */
-    private function makeFilename(): string{
-        $filename = ROOT.$this->path.date('Y/m/d').'.'.$this->ext;
-        if(!is_file($filename)){
-            Tool::printInFile($filename, '');
-        }
-        return $filename;
-    }
-  
-    public function __call(string $func, array $params){
-        return call_user_func_array([$this->handle, $func], $params);
-    }
+	public function __construct() {
+		$conf		 = obj(Conf::class)->phpconsole;
+		Connector::setPostponeStorage(new File($this->makeFilename()));
+		$connector	 = Connector::getInstance();
+		if (!is_null($conf['passwd'])) {
+			$connector->setPassword($conf['passwd']);
+		}
+		$this->handle = Handler::getInstance();
+	}
+
+	/**
+	 * 返回文件名
+	 * @return string
+	 */
+	private function makeFilename(): string {
+		$filename = ROOT . $this->path . date('Y/m/d') . '.' . $this->ext;
+		if (!is_file($filename)) {
+			Tool::printInFile($filename, '');
+		}
+		return $filename;
+	}
+
+	public function __call(string $func, array $params) {
+		return call_user_func_array([$this->handle, $func], $params);
+	}
+
 }

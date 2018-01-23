@@ -1,49 +1,49 @@
 {
-    "name": "xutengx/gaara",
-    "description": "Framework For PHPer.",
-    "keywords": ["framework", "xuteng", "gaara"],
-    "license": "MIT",
-    "type": "project",
-    "authors": [
-        {
-            "name": "xuteng",
-            "email": "68822684@qq.com"
-        }
-    ],
-    "repositories": {
-        "packagist": {
-            "type": "composer",
-            "url": "https://packagist.phpcomposer.com"
-        }
-    },
-    "autoload": {
-        "psr-4": {
-            "App\\": "App/",
-            "Gaara\\": "Gaara/"
-        },
-        "classmap":[
-        ],
-         "files": [
-             "Gaara/Quick/Function.php",
-             "Gaara/Quick/ClassAilas.php"
-        ]
-    },
-    "require": {
-        "php": ">=7.1.0",
-        "chillerlan/php-qrcode": "^2.0",
-        "ezyang/htmlpurifier": "^4.9",
-        "filp/whoops": "^2.1",
-        "guzzlehttp/guzzle": "^6.3",
-        "monolog/monolog": "^1.23",
-        "php-console/php-console": "^3.1",
-        "phpmailer/phpmailer": "^5.2"
-    },
-    "scripts": {
-        "post-install-cmd": [
-            "php -r \"is_file('.env') || copy('.env.example', '.env');\""
-        ]
-    },
-    "config": {
-        "sort-packages": true
-    }
+	"name": "xutengx/gaara",
+	"description": "Framework For PHPer.",
+	"keywords": ["framework", "xuteng", "gaara"],
+	"license": "MIT",
+	"type": "project",
+	"authors": [
+		{
+			"name": "xuteng",
+			"email": "68822684@qq.com"
+		}
+	],
+	"repositories": {
+		"packagist": {
+			"type": "composer",
+			"url": "https://packagist.phpcomposer.com"
+		}
+	},
+	"autoload": {
+		"psr-4": {
+			"App\\": "App/",
+			"Gaara\\": "Gaara/"
+		},
+		"classmap": [
+		],
+		"files": [
+			"Gaara/Quick/Function.php",
+			"Gaara/Quick/ClassAilas.php"
+		]
+	},
+	"require": {
+		"php": ">=7.1.0",
+		"chillerlan/php-qrcode": "^2.0",
+		"ezyang/htmlpurifier": "^4.9",
+		"filp/whoops": "^2.1",
+		"guzzlehttp/guzzle": "^6.3",
+		"monolog/monolog": "^1.23",
+		"php-console/php-console": "^3.1",
+		"phpmailer/phpmailer": "^5.2"
+	},
+	"scripts": {
+		"post-install-cmd": [
+			"php -r \"is_file('.env') || copy('.env.example', '.env');\""
+		]
+	},
+	"config": {
+		"sort-packages": true
+	}
 }

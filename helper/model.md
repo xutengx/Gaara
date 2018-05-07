@@ -146,16 +146,16 @@ namespace App;
 use App\Model;
 class Dev extends \Gaara\Core\Controller {
     public function index(Model\visitorInfoModel $visitorInfo){
-    
+
         $res = $visitorInfo->transaction(function($obj){
-        
+
             $obj->data(['name' => ':autoInsertName'])
                 ->insert([':autoInsertName' => 'autoInsertName transaction']);
             $obj->data(['name' => ':autoInsertName'])
                 ->insert([':autoInsertName' => 'autoInsertName transaction2']);
             $obj->data(['id' => ':autoInsertNam'])
                 ->insert([':autoInsertNam' => '432']);
-                
+
         },3);
         var_dump($res);
     }
@@ -234,7 +234,7 @@ $row = $yourModel::->where('id',12)->delete();
 <?php
 // name=prepare 的行数
 $visitorInfo->where('name',':name')->count('*', [':name'=>'prepare']);
-// 兼容group的count() 
+// 兼容group的count()
 $visitorInfo->select('name')->where('name',':name')->group('name,note')->count('note', [':name'=>'prepare']);
 // 最大id
 $visitorInfo->max('id');
@@ -313,6 +313,7 @@ $row = $yourModel::select('name,age')->select(['sex','height'])->getRow();
 // 以上等价于
 $row = $yourModel::selectString('name,age')->selectArray(['sex','height'])->getRow();
 ```
+**注:此种用法下,每个select仅接受一个string或者一个array作为参数**
 
 查询一个数据库函数的结果
 
@@ -327,6 +328,12 @@ $query->select('max',function(){
 $query->selectFunction('max',function(){
     return 'id';
 })->getRow();
+
+// 使用别名
+$query->select('max',function(){
+    return 'id';
+},'max_id')->getRow();
+
 ```
 
 ### where
@@ -346,6 +353,17 @@ $row = $yourModel::whereValue('id','=','12')
 ->whereArray(['name' => 'Bob', 'sex'=>'2'])
 ->getRow();
 ```
+
+字段与字段比较
+
+```php
+<?php
+// 返回一行, age字段大于其id字段
+$row = $yourModel::whereColumn('age','>=','id')
+->getRow();
+
+```
+**注:whereValue,whereColumn必须接收3个string参数**
 
 whereBetween whereNotBetween
 
@@ -397,13 +415,13 @@ $row = $yourModel::whereInArray('id', ['100','103','26' ])
 $row = Model\visitorInfoDev::where(function($queryBuiler){
         $queryBuiler->where('id', '102');
     })->getAll();
-    
+
 // where `id`="102" or (`id`="103")
 $row = Model\visitorInfoDev::where('id','102')
     ->orWhere(function($queryBuiler){
         $queryBuiler->where('id', '103');
     })->getAll();
-    
+
 
 ```
 
@@ -413,8 +431,8 @@ whereNotNull whereNull
 <?php
 // where `name`is not null
 $row = Model\visitorInfoDev::whereNotNull('name')->getAll();
-  
-// where `name`is null  
+
+// where `name`is null
 $row = Model\visitorInfoDev::whereNull('name')->getAll();
 
 ```
@@ -499,7 +517,7 @@ $row = $yourModel::data('name','bob')->data([
 ```php
 <?php
 $first = $visitorInfo->select(['id', 'name', 'phone'])->whereBetween('id','100','103');
-        
+
 $res = Model\visitorInfoDev::select(['id', 'name', 'phone'])
     ->whereBetween('id','100','103')
     // 接收QueryBuiler
@@ -527,7 +545,7 @@ $res = $visitorInfo->select(['id', 'name', 'phone'])
 ->index('id')
 ->getAll();
 
-```      
+```
 > 如需使用表达式的值做为索引，那么只需要传递一个匿名函数给 index() 方法即可：
 
 ```php
@@ -559,7 +577,7 @@ $res = Model\visitorInfoDev::select(['id', 'name', 'phone'])
                 });
     })
     ->getAll([':scene_1' => '1']);
-            
+
 $sql = Model\visitorInfoDev::getLastSql();
 ```
 > 返回未执行的sql
@@ -599,7 +617,7 @@ var_dump($res);  // int(321)
 
 ```php
 <?php
-$chunk = $visitorInfo->getChunk();     
+$chunk = $visitorInfo->getChunk();
 foreach($chunk as $k => $v){
     var_dump($k);
     var_export($v);
@@ -609,13 +627,13 @@ foreach($chunk as $k => $v){
 
 ```php
 <?php
-$chunk = $visitorInfo->where('id','>','200'); 
-// 遍历第一次    
+$chunk = $visitorInfo->where('id','>','200');
+// 遍历第一次
 foreach($res->getChunk() as $k => $v){
     var_dump($k);
     var_export($v);
 }
-// 遍历第二次    
+// 遍历第二次
 foreach($res->getChunk() as $k => $v){
     var_dump($k);
     var_export($v);
@@ -670,7 +688,7 @@ $res = ($PDOStatement->rowCount());
 ```php
 <?php
 class visitorInfoDev extends \Gaara\Core\Model{
-    
+
     public function registerMethodForQueryBuiler():array{
         return [
             'ID_is_bigger_than_1770' => function(QueryBuiler $queryBuiler): QueryBuiler{
@@ -681,7 +699,7 @@ class visitorInfoDev extends \Gaara\Core\Model{
             },
         ];
     }
-    
+
 }
 ```
 **注 : `注册查询方法`是可以相互依赖的, 比如`ID_rule()`是依赖`ID_is_bigger_than_1770()`, 但需要注意注册顺序**
@@ -690,8 +708,8 @@ class visitorInfoDev extends \Gaara\Core\Model{
 ```php
 <?php
 // 注册查询方法 ID_rule(),可以接受一个参数
-$chunk = $visitorInfo->ID_rule(2100)->limit(10000); 
- 
+$chunk = $visitorInfo->ID_rule(2100)->limit(10000);
+
 foreach($res->getChunk() as $k => $v){
     var_dump($k);
     var_export($v);

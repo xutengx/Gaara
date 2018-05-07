@@ -5,6 +5,7 @@ namespace Gaara\Core;
 
 use PDOException;
 use PDOStatement;
+use Log;
 
 /**
  * 数据库连接类，依赖 PDO_MYSQL 扩展
@@ -187,12 +188,20 @@ class DbConnection {
 	 */
 	private function query_prepare_execute(string $sql, array $pars = array()) {
 		$PDO = $this->PDO();
-		if (empty($pars)) {
-			$res = $PDO->query($sql);
-		} else {
-			$res = $PDO->prepare($sql);
-			$res->execute($pars);
-		}
+        try {
+            if (empty($pars)) {
+                $res = $PDO->query($sql);
+            } else {
+                $res = $PDO->prepare($sql);
+                $res->execute($pars);
+            }
+        } catch (PDOException $pdo) {
+			// 错误记录
+            Log::critical('sql error:'.$pdo->getMessage(), ['sql' => $sql , 'pars' => $pars]);
+			// 异常抛出
+			throw $pdo;
+        }
+
 		if ($this->type === 'insert')
 			return $PDO;
 		return $res;

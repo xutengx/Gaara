@@ -22,6 +22,10 @@ trait SetRoute {
 		'middleware' => [],
 	];
 
+//	public static function set404($action): void{
+//
+//	}
+
 	/**
 	 * restful风格申明post,delete,get,put四条路由分别对应controller中的create,destroy,select,update方法
 	 * @param string $url

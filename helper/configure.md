@@ -57,34 +57,28 @@ location / {
 
 `env.php` 文件不应该提交到应用程序的源代码控制系统中，因为每个使用你的应用程序的开发人员/服务器可能需要有一个不同的环境配置。
 
-**注: 若env.php不见了, 将env.example.php重名为env.php**
+**注: 若.env不见了, 将.env.example重名为.env**
 
 ### 变量选择
 
-`gaara`允许并鼓励在`env.php`,定义多个重复变量,并使用`selection`获取正确的那个,摈弃人为操作带来的不便;
+`gaara`允许并鼓励在`.env`,定义多个重复变量,并使用`section`获取正确的那个,摈弃人为操作带来的不便;
 
-```php
-<?php
-return [
-    'db_user' => 'root',
-    'db_host' => '127.0.0.1',
-    'db_passwd' => 'root',
-    'db_db'     => 'yh',
-
-    'db_user__dev' => 'dev',
-    'db_hos__devt' => '127.0.0.2',
-    'db_passwd__dev' => 'dev',
-    'db_db__dev'     => 'yh',
-
-    'selection' => function() {
-        if (isset($_SERVER['HTTP_HOST']) && ( $_SERVER['HTTP_HOST'] === '121.196.222.40')) {
-            return '__yh';
-        }
-        return '__dev';
-    }
-]
 ```
-如上,`gaara`将根据`selection`闭包返回的值,找到存在对应后缀的配置
+;Choose the section
+ENV=local
+
+[local]
+MAIL_USERNAMAE=1771033392@qq.com
+MAIL_PASSWORD=
+MAIL_FROM=1771033392@qq.com
+MAIL_HOST=smtp.qq.com
+
+[yh]
+MAIL_USERNAMAE=mailserver@shinehua.cn
+MAIL_PASSWORD=
+MAIL_FROM=mailserver@shinehua.cn
+MAIL_HOST=smtp.mxhichina.com
+```
 
 ### 变量获取
 

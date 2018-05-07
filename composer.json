@@ -36,7 +36,8 @@
 		"guzzlehttp/guzzle": "^6.3",
 		"monolog/monolog": "^1.23",
 		"php-console/php-console": "^3.1",
-		"phpmailer/phpmailer": "^5.2"
+		"phpmailer/phpmailer": "^5.2",
+		"xutengx/excel": "^1.0"
 	},
 	"scripts": {
 		"post-install-cmd": [

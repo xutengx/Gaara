@@ -18,6 +18,7 @@
     * [总览](#总览)
     * [一个控制器](#一个控制器)
     * [参数过滤](#参数过滤)
+        * [过滤结果响应](#过滤结果响应)
     * [视图赋值](#视图赋值)
 * [数据库模型](/helper/model.md)
 * [缓存](/helper/cache.md)
@@ -42,7 +43,7 @@ use Gaara\Core\Request;
 use App\yh\m\UserApplication;
 
 class Application extends Controller {
-    
+
     /**
      * 查询商户下所有应用信息
      * @param Request $request
@@ -51,7 +52,7 @@ class Application extends Controller {
      */
     public function select(Request $request, UserApplication $application) {
         $merchant_id = (int)$request->userinfo['id'];
-        
+
         return $this->returnData(function() use ($application, $merchant_id){
             return $application->getAllByMerchantId( $merchant_id );
         });
@@ -72,7 +73,7 @@ use Gaara\Core\Controller;
 class Application extends Controller {
 
     public function index() {
-        // 获取全部post中的name
+        // 获取post中的name
         $name = $this->post('name','name','name字段不合法');
         // 获取全部post
         $post = $this->post();
@@ -82,6 +83,43 @@ class Application extends Controller {
 ```
 
 **注: `$this->post('name','name','name字段不合法')`的第2个参数为正则校验规则的键, 也可以直接传入正则公式**
+
+### 过滤结果响应
+
+通过合理的重载父类方法可以做到统一的响应
+
+```php
+<?php
+
+namespace App\yh\c\merchant;
+
+use Gaara\Core\Controller;
+
+class Application extends Controller {
+
+	/**
+	 * 定义当参数不合法时的响应
+	 * @param string $key
+	 * @param string $fun
+	 * @param string $msg
+	 */
+	protected function requestArgumentInvalid(string $key, string $fun, string $msg = null) {
+		$msg = $msg ?? 'Invalid request argument : ' . $key . ' [' . $fun . ']';
+		exit($this->returnMsg(0, $msg));
+	}
+
+	/**
+	 * 定义当参数不存在时的响应
+	 * @param string $key
+	 * @param string $fun
+	 * @param string $msg
+	 */
+	protected function requestArgumentNotFound(string $key, string $fun, string $msg = null) {
+		$msg = $msg ?? 'Not found request argument : ' . $key . ' [' . $fun . ']';
+		exit($this->returnMsg(0, $msg));
+	}
+}
+```
 
 ## 视图赋值
 
@@ -111,11 +149,11 @@ class Dev extends \Gaara\Core\Controller {
 
 ```php
 
-<?php echo $DATA['url']; ?>
+<?php echo $url; ?>
 
 ```
 
-也可以使用
+同时也可以使用
 
 ```javascript
 

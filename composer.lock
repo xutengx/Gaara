@@ -4,14 +4,14 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "2c90778db2f69dd1953148db0e67fa3c",
+    "content-hash": "30a9623f1c3fc338943a80e2fd177856",
     "packages": [
         {
             "name": "chillerlan/php-qrcode",
             "version": "2.0.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/codemasher/php-qrcode.git",
+                "url": "https://github.com/chillerlan/php-qrcode.git",
                 "reference": "b3f16091029432afdf432b7835879d8bd5a8cc9a"
             },
             "dist": {
@@ -65,7 +65,7 @@
             "version": "1.1.6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/codemasher/php-traits.git",
+                "url": "https://github.com/chillerlan/php-traits.git",
                 "reference": "b8591536c160a05846e17d2db8651f22d28bf66e"
             },
             "dist": {
@@ -600,6 +600,63 @@
             "time": "2017-11-04T09:26:05+00:00"
         },
         {
+            "name": "phpoffice/phpexcel",
+            "version": "1.8.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PHPOffice/PHPExcel.git",
+                "reference": "372c7cbb695a6f6f1e62649381aeaa37e7e70b32"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://files.phpcomposer.com/files/PHPOffice/PHPExcel/372c7cbb695a6f6f1e62649381aeaa37e7e70b32.zip",
+                "reference": "372c7cbb695a6f6f1e62649381aeaa37e7e70b32",
+                "shasum": ""
+            },
+            "require": {
+                "ext-xml": "*",
+                "ext-xmlwriter": "*",
+                "php": ">=5.2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PHPExcel": "Classes/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL"
+            ],
+            "authors": [
+                {
+                    "name": "Maarten Balliauw",
+                    "homepage": "http://blog.maartenballiauw.be"
+                },
+                {
+                    "name": "Mark Baker"
+                },
+                {
+                    "name": "Franck Lefevre",
+                    "homepage": "http://blog.rootslabs.net"
+                },
+                {
+                    "name": "Erik Tilt"
+                }
+            ],
+            "description": "PHPExcel - OpenXML - Read, Create and Write Spreadsheet documents in PHP - Spreadsheet engine",
+            "homepage": "http://phpexcel.codeplex.com",
+            "keywords": [
+                "OpenXML",
+                "excel",
+                "php",
+                "spreadsheet",
+                "xls",
+                "xlsx"
+            ],
+            "time": "2015-05-01T07:00:55+00:00"
+        },
+        {
             "name": "psr/http-message",
             "version": "1.0.1",
             "source": {
@@ -695,6 +752,55 @@
                 "psr-3"
             ],
             "time": "2016-10-10T12:19:37+00:00"
+        },
+        {
+            "name": "xutengx/excel",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/xutengx/excel.git",
+                "reference": "63d71adaea97c71dfb3795b78ce5c775650ebd39"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://files.phpcomposer.com/files/xutengx/excel/63d71adaea97c71dfb3795b78ce5c775650ebd39.zip",
+                "reference": "63d71adaea97c71dfb3795b78ce5c775650ebd39",
+                "shasum": ""
+            },
+            "require": {
+                "ext-xml": "*",
+                "ext-xmlwriter": "*",
+                "php": ">=7.1.0",
+                "phpoffice/phpexcel": "*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Xutengx\\Excel\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "xuteng",
+                    "email": "68822684@qq.com"
+                }
+            ],
+            "description": "An eloquent way of importing and exporting Excel and CSV files with the power of PHPOffice's PHPExcel.",
+            "keywords": [
+                "excel",
+                "gaara",
+                "xuteng"
+            ],
+            "time": "2018-01-23T08:29:42+00:00"
         }
     ],
     "packages-dev": [],

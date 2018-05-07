@@ -39,23 +39,23 @@ trait RequestTrait {
 		}
 	}
 
-	protected function input($key = null, $rule = null, $msg = null) {
+	protected function input(string $key = null, string $rule = null, string $msg = null) {
 		return $this->requestFun($key, $rule, $msg, 'input');
 	}
 
-	protected function get($key = null, $rule = null, $msg = null) {
+	protected function get(string $key = null, string $rule = null, string $msg = null) {
 		return $this->requestFun($key, $rule, $msg, 'get');
 	}
 
-	protected function put($key = null, $rule = null, $msg = null) {
+	protected function put(string $key = null, string $rule = null, string $msg = null) {
 		return $this->requestFun($key, $rule, $msg, 'put');
 	}
 
-	protected function post($key = null, $rule = null, $msg = null) {
+	protected function post(string $key = null, string $rule = null, string $msg = null) {
 		return $this->requestFun($key, $rule, $msg, 'post');
 	}
 
-	protected function delete($key = null, $rule = null, $msg = null) {
+	protected function delete(string $key = null, string $rule = null, string $msg = null) {
 		return $this->requestFun($key, $rule, $msg, 'detele');
 	}
 

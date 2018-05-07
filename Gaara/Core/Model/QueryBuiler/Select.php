@@ -46,8 +46,10 @@ trait Select {
 	 * eg : count()
 	 * @param string $function
 	 * @param Closure $callback
+	 * @param string $alias
+	 * @return QueryBuiler
 	 */
-	public function selectFunction(string $function, Closure $callback): QueryBuiler {
+	public function selectFunction(string $function, Closure $callback, string $alias = null): QueryBuiler {
 		$res		 = $callback($queryBuiler = $this->getSelf());
 		// 调用方未调用return
 		if (is_null($res)) {
@@ -59,8 +61,9 @@ trait Select {
 		}
 		// 调用正常
 		else
-			$sql = $res;
-		return $this->selectRaw($function . $this->bracketFormat($sql));
+			$sql		 = $res;
+		$aliasString = is_null($alias) ? '' : " as '$alias'";
+		return $this->selectRaw($function . $this->bracketFormat($sql) . $aliasString);
 	}
 
 	/**

@@ -388,6 +388,8 @@ class QueryBuiler {
 				}
 			case 2:
 				return $this->selectFunction(...$params);
+			case 3:
+				return $this->selectFunction(...$params);
 		}
 	}
 

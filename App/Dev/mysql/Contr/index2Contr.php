@@ -35,7 +35,9 @@ class index2Contr extends Controller {
         'MySQL随机获取数据的方法，支持大数据量' => 'test_19',
         '聚合子查询' => 'test_20',
         '自定义的模型连贯操作' => 'test_21',
-        'exit' => 'test_22',
+        '调用mysql中的函数' => 'test_22',
+        'where字段之间比较' => 'test_23',
+        'exit' => 'test_99',
     ];
 
     public function indexDo() {
@@ -49,7 +51,7 @@ class index2Contr extends Controller {
             $i++;
         }
     }
-    
+
     private function test_1() {
 //        throw new \InvalidArgumentException('wwwwww');
         $obj = obj(Model\visitorInfoDev::class);
@@ -72,7 +74,7 @@ class index2Contr extends Controller {
 
     private function test_2() {
         $obj = obj(Model\visitorInfoDev::class);
-      
+
         $sql = $obj->select('id,name,phone')
             ->where( 'scene', '&', '?' )
             ->getRowToSql(['1']);
@@ -85,7 +87,7 @@ class index2Contr extends Controller {
     }
     private function test_3() {
         $obj = obj(Model\visitorInfoDev::class);
-      
+
         $sql = $obj->select(['count(id)','sum(id) as sum'])
             ->where('scene' , '&', '1' )
             ->where('name','like', '%t%')
@@ -102,7 +104,7 @@ class index2Contr extends Controller {
     }
     private function test_4() {
         $obj = obj(Model\visitorInfoDev::class);
-      
+
         $sql = $obj
             ->data(['name' => 'autoUpdate'])
             ->dataIncrement('is_del', 1)
@@ -121,7 +123,7 @@ class index2Contr extends Controller {
     }
     private function test_5() {
         $obj = obj(Model\visitorInfoDev::class);
-      
+
         $sql = $obj
             ->data(['name' => ':autoUpdate'])
             ->insertToSql([':autoUpdate' => 'autoInsertName']);
@@ -146,7 +148,7 @@ class index2Contr extends Controller {
             })
             ->getAll([':scene_1' => '1']);
         $sql = Model\visitorInfoDev::getLastSql();
-        
+
         var_dump($sql);
         var_dump($res);
     }
@@ -158,7 +160,7 @@ class index2Contr extends Controller {
             ->group('id')
             ->getAll([':scene_1' => '1']);
         $sql = Model\visitorInfoDev::getLastSql();
-        
+
         var_dump($sql);
         var_dump($res);
     }
@@ -168,7 +170,7 @@ class index2Contr extends Controller {
             ->whereRaw('id = "106"AND `name` = "xuteng1" OR ( note = "12312312321"AND `name` = "xuteng") OR (id != "103"AND `name` = "xuteng")')
             ->getAll();
         $sql = Model\visitorInfoDev::getLastSql();
-        
+
         var_dump($sql);
         var_dump($res);
     }
@@ -186,7 +188,7 @@ class index2Contr extends Controller {
     private function test_10(Model\visitorInfoDev $visitorInfo){
         $first = $visitorInfo->select(['id', 'name', 'phone'])
             ->whereBetween('id','100','103');
-        
+
         $res = Model\visitorInfoDev::select(['id', 'name', 'phone'])
             ->whereBetween('id','100','103')
             ->union($first)
@@ -197,14 +199,14 @@ class index2Contr extends Controller {
             ->unionAll($first->getAllToSql())
             ->getAll();
         $sql = Model\visitorInfoDev::getLastSql();
-        
+
         var_dump($sql);
         var_dump($res);
     }
     private function test_11(Model\visitorInfoDev $visitorInfo){
         $first = $visitorInfo->select(['id', 'name', 'phone'])
             ->whereBetween('id','100','103');
-        
+
         $res = Model\visitorInfoDev::select(['id', 'name', 'phone'])
             ->whereBetween('id','100','103')
             ->whereExists($first)
@@ -215,115 +217,115 @@ class index2Contr extends Controller {
             ->whereExists($first->getAllToSql())
             ->getAll();
         $sql = Model\visitorInfoDev::getLastSql();
-        
+
         var_dump($sql);
         var_dump($res);
     }
-    
+
     private function test_12(Model\visitorInfoDev $visitorInfo, Model\Best $best){
 //        $sql = <<<SQL
-//select currency, sum(price) AS sum_price, date_format(create_time, "%Y-%m-%d %H") as "hour", count(*) as count_num from `cdr_file` where (`cdr_file`.`operator_id` in ('1', '2', '3', '4', '5', '19', '21', '31', '32', '6', '8', '15', '16', '24', '22', '25', '26', '27', '28', '29', '35', '33', '34', '36', '38', '40', '7', '10', '11', '13', '12', '14', '18', '23', '37', '39', '17', '20') or `cdr_file`.`operator_id` is null) and (`cdr_file`.`actiontype` in ('1', '2', '4', '5', '6', '7', '8', '9', '10', '11', '13', '14', '16', '17', '18', '12', '15') or `cdr_file`.`actiontype` is null) and (`cdr_file`.`currency` in ('THB', 'VND', 'IDR', 'USD', 'MYR') or `cdr_file`.`currency` is null) and (`cdr_file`.`telco_name` in ('TRUE', 'AIS', 'dtac', 'TrueMoney', 'OneTwoCall', 'Line', 'bank', 'bluewallet', 'BlueCoins', 'Ais', 'True', 'Telkomsel', 'xl', 'indosat', 'unipin', 'smartfren', 'otc', 'indomog', 'hutchison', 'lytoCard', 'atm', 'bank', 'viettel', 'mobifone', 'vinaphone', 'vtc', 'vietnamMobile', 'bank', 'CC', 'UM', 'DG', 'MX', 'Telenor') or `cdr_file`.`telco_name` is null) and `actiontype` in ('2', '4', '5', '8', '11', '13', '14') and `status` = '200' and `create_time` >= '2017-10-25 00:00:00' and `create_time` <= '2017-10-25 23:59:59' group by date_format(create_time, "%Y-%m-%d %H"), `currency`  
+//select currency, sum(price) AS sum_price, date_format(create_time, "%Y-%m-%d %H") as "hour", count(*) as count_num from `cdr_file` where (`cdr_file`.`operator_id` in ('1', '2', '3', '4', '5', '19', '21', '31', '32', '6', '8', '15', '16', '24', '22', '25', '26', '27', '28', '29', '35', '33', '34', '36', '38', '40', '7', '10', '11', '13', '12', '14', '18', '23', '37', '39', '17', '20') or `cdr_file`.`operator_id` is null) and (`cdr_file`.`actiontype` in ('1', '2', '4', '5', '6', '7', '8', '9', '10', '11', '13', '14', '16', '17', '18', '12', '15') or `cdr_file`.`actiontype` is null) and (`cdr_file`.`currency` in ('THB', 'VND', 'IDR', 'USD', 'MYR') or `cdr_file`.`currency` is null) and (`cdr_file`.`telco_name` in ('TRUE', 'AIS', 'dtac', 'TrueMoney', 'OneTwoCall', 'Line', 'bank', 'bluewallet', 'BlueCoins', 'Ais', 'True', 'Telkomsel', 'xl', 'indosat', 'unipin', 'smartfren', 'otc', 'indomog', 'hutchison', 'lytoCard', 'atm', 'bank', 'viettel', 'mobifone', 'vinaphone', 'vtc', 'vietnamMobile', 'bank', 'CC', 'UM', 'DG', 'MX', 'Telenor') or `cdr_file`.`telco_name` is null) and `actiontype` in ('2', '4', '5', '8', '11', '13', '14') and `status` = '200' and `create_time` >= '2017-10-25 00:00:00' and `create_time` <= '2017-10-25 23:59:59' group by date_format(create_time, "%Y-%m-%d %H"), `currency`
 //SQL;
 //        $PDOStatement = $best->query($sql, 'select');
 //        $res = ($PDOStatement->fetchall(\PDO::FETCH_ASSOC));
 //        var_dump($sql);
 //        var_dump($res);
-//        
+//
 //        $sql = <<<SQL
-//select currency, sum(price) AS sum_price, date_format(create_time, "%Y-%m-%d %H") as "hour", count(*) as count_num from `cdr_file` where (`cdr_file`.`operator_id` in ('1', '2', '3', '4', '5', '19', '21', '31', '32', '6', '8', '15', '16', '24', '22', '25', '26', '27', '28', '29', '35', '33', '34', '36', '38', '40', '7', '10', '11', '13', '12', '14', '18', '23', '37', '39', '17', '20') or `cdr_file`.`operator_id` is null) and (`cdr_file`.`actiontype` in ('1', '2', '4', '5', '6', '7', '8', '9', '10', '11', '13', '14', '16', '17', '18', '12', '15') or `cdr_file`.`actiontype` is null) and (`cdr_file`.`currency` in ('THB', 'VND', 'IDR', 'USD', 'MYR') or `cdr_file`.`currency` is null) and (`cdr_file`.`telco_name` in ('TRUE', 'AIS', 'dtac', 'TrueMoney', 'OneTwoCall', 'Line', 'bank', 'bluewallet', 'BlueCoins', 'Ais', 'True', 'Telkomsel', 'xl', 'indosat', 'unipin', 'smartfren', 'otc', 'indomog', 'hutchison', 'lytoCard', 'atm', 'bank', 'viettel', 'mobifone', 'vinaphone', 'vtc', 'vietnamMobile', 'bank', 'CC', 'UM', 'DG', 'MX', 'Telenor') or `cdr_file`.`telco_name` is null) and `actiontype` in ('2', '4', '5', '8', '11', '13', '14') and `status` = '200' and `create_time` >= '2017-10-24 00:00:00' and `create_time` <= '2017-10-24 23:59:59' group by date_format(create_time, "%Y-%m-%d %H"), `currency`  
+//select currency, sum(price) AS sum_price, date_format(create_time, "%Y-%m-%d %H") as "hour", count(*) as count_num from `cdr_file` where (`cdr_file`.`operator_id` in ('1', '2', '3', '4', '5', '19', '21', '31', '32', '6', '8', '15', '16', '24', '22', '25', '26', '27', '28', '29', '35', '33', '34', '36', '38', '40', '7', '10', '11', '13', '12', '14', '18', '23', '37', '39', '17', '20') or `cdr_file`.`operator_id` is null) and (`cdr_file`.`actiontype` in ('1', '2', '4', '5', '6', '7', '8', '9', '10', '11', '13', '14', '16', '17', '18', '12', '15') or `cdr_file`.`actiontype` is null) and (`cdr_file`.`currency` in ('THB', 'VND', 'IDR', 'USD', 'MYR') or `cdr_file`.`currency` is null) and (`cdr_file`.`telco_name` in ('TRUE', 'AIS', 'dtac', 'TrueMoney', 'OneTwoCall', 'Line', 'bank', 'bluewallet', 'BlueCoins', 'Ais', 'True', 'Telkomsel', 'xl', 'indosat', 'unipin', 'smartfren', 'otc', 'indomog', 'hutchison', 'lytoCard', 'atm', 'bank', 'viettel', 'mobifone', 'vinaphone', 'vtc', 'vietnamMobile', 'bank', 'CC', 'UM', 'DG', 'MX', 'Telenor') or `cdr_file`.`telco_name` is null) and `actiontype` in ('2', '4', '5', '8', '11', '13', '14') and `status` = '200' and `create_time` >= '2017-10-24 00:00:00' and `create_time` <= '2017-10-24 23:59:59' group by date_format(create_time, "%Y-%m-%d %H"), `currency`
 //SQL;
 //        $PDOStatement = $best->query($sql, 'select');
 //        $res = ($PDOStatement->fetchall(\PDO::FETCH_ASSOC));
 //        var_dump($sql);
 //        var_dump($res);
-        
+
 //        $sql = 'insert into visitor_info set name="原生sql插入"';
 //        $PDOStatement = $visitorInfo->query($sql, 'insert');
 //        $res = ($PDOStatement->rowCount ());
 //        var_dump($sql);
 //        var_dump($res);
     }
-    
+
     private function test_13(Model\visitorInfoDev $visitorInfo){
         $sql = 'select * from visitor_info limit :number';
         $PDOStatement = $visitorInfo->prepare($sql);
-        
+
         $PDOStatement->execute([':number' => 1]);
         $res = ($PDOStatement->fetchall(\PDO::FETCH_ASSOC));
-        
+
         $PDOStatement->execute([':number' => 2]);
         $res2 = ($PDOStatement->fetchall(\PDO::FETCH_ASSOC));
-        
+
         $PDOStatement->execute([':number' => 3]);
         $res3 = ($PDOStatement->fetchall(\PDO::FETCH_ASSOC));
-        
+
         var_dump($sql);
         var_dump($res);
         var_dump($res2);
         var_dump($res3);
 
     }
-    
+
     private function test_14(Model\visitorInfoDev $visitorInfo){
         $p = $visitorInfo->where('id',':id')->selectPrepare();
-        
+
         var_dump($p->getRow([':id' => '12']));
         var_dump($p->getRow([':id' => '11']));
         var_dump($p->getRow([':id' => '102']));
-        
+
         $p2 = $visitorInfo->where('id',':id')->data('name','prepare')->updatePrepare();
-        
+
         var_dump($p2->update([':id' => '12']));
         var_dump($p2->update([':id' => '11']));
         var_dump($p2->update([':id' => '102']));
-        
+
         $p3 = $visitorInfo->data('name',':name')->insertPrepare();
-        
+
         var_dump($p3->insert([':name' => 'prepare']));
         var_dump($p3->insert([':name' => 'prepare']));
         var_dump($p3->insert([':name' => 'prepare']));
         var_dump($p3->insert([':name' => 'prepare']));
-        
+
 //        $p4 = $visitorInfo->where('name',':name')->order('id','desc')->limit(1)->deletePrepare();
-//        
+//
 //        var_dump($p4->delete([':name' => 'prepare']));
 //        var_dump($p4->delete([':name' => 'prepare']));
 //        var_dump($p4->delete([':name' => 'prepare']));
     }
-    
+
     public function test_15(Model\visitorInfoDev $visitorInfo){
         $res = $visitorInfo->select('name')->where('name',':name')->group('name,note')->count('note', [':name'=>'prepare']);
         var_dump($visitorInfo->getLastSql());
         var_dump($res);
-        
+
         $res = $visitorInfo->where('name',':name')->count('note', [':name'=>'prepare']);
         var_dump($visitorInfo->getLastSql());
         var_dump($res);
-        
+
         $res = $visitorInfo->max('id');
         var_dump($visitorInfo->getLastSql());
         var_dump($res);
-        
+
         $res = $visitorInfo->select('max',function(){
             return 'id';
         })->getRow();
         var_dump($visitorInfo->getLastSql());
         var_dump($res);
-        
+
         $res = $visitorInfo->min('id');
         var_dump($visitorInfo->getLastSql());
         var_dump($res);
-        
+
         $res = $visitorInfo->avg('id');
         var_dump($visitorInfo->getLastSql());
         var_dump($res);
-        
+
         $res = $visitorInfo->sum('id');
         var_dump($visitorInfo->getLastSql());
         var_dump($res);
-        
+
     }
-    
+
     public function test_16(Model\visitorInfoDev $visitorInfo){
         $res = $visitorInfo->whereSubquery('id','in', function($queryBiler){
             $queryBiler->select('id')->whereIn('id',[1991,1992,1993,166]);
@@ -331,7 +333,7 @@ class index2Contr extends Controller {
         var_dump($visitorInfo->getLastSql());
         var_dump($res);
     }
-    
+
     public function test_17(Model\visitorInfoDev $visitorInfo){
         $res = $visitorInfo->whereIn('id',[1991,1992,1993,3625,3627,166]);
 
@@ -341,12 +343,12 @@ class index2Contr extends Controller {
                 var_dump($v2);
             }
         }
-        
+
         foreach($res->getChunk() as $k => $v){
             var_dump($k);
             var_export($v);
         }
-        
+
     }
     public function test_18(Model\visitorInfoDev $visitorInfo){
         $info = $visitorInfo->whereIn('id',[1991,1992,1993,3625,3627,166])->index(function($row){
@@ -359,11 +361,11 @@ class index2Contr extends Controller {
         var_dump($visitorInfo->getLastSql());
         var_dump($res);
     }
-    
+
     public function test_20(Model\visitorInfoDev $visitorInfo) {
 /*
-SELECT * FROM `table` WHERE id >= 
- (SELECT floor( RAND() * ((SELECT MAX(id) FROM `table`)-(SELECT MIN(id) FROM `table`)) + (SELECT MIN(id) FROM `table`))) 
+SELECT * FROM `table` WHERE id >=
+ (SELECT floor( RAND() * ((SELECT MAX(id) FROM `table`)-(SELECT MIN(id) FROM `table`)) + (SELECT MIN(id) FROM `table`)))
     ORDER BY id LIMIT 1;
         */
         $res = $visitorInfo->whereSubQuery('id','>=',function($query){
@@ -379,16 +381,16 @@ SELECT * FROM `table` WHERE id >=
                         })->sql();
                         return 'rand()*(('.$maxSql.')-('.$minSql.'))+('.$minSql.')';
                     });
-            
+
         })->order('id')->getRow();
         var_dump($visitorInfo->getLastSql());
         var_dump($res);
     }
-    
+
     public function test_21(Model\visitorInfoDev $visitorInfo) {
-        
+
 //        var_dump($visitorInfo->ID_is_bigger_than_1770());exit;
-        
+
         $res = $visitorInfo->whereSubQuery('id','>=',function($query){
             $query->noFrom()
 //                    ->selectRaw('floor(RAND()*((select max(`id`) from `visitor_info`)-(select min(`id`) from `visitor_info`))+(select min(`id`) from `visitor_info`))')
@@ -402,47 +404,57 @@ SELECT * FROM `table` WHERE id >=
                         })->sql();
                         return 'rand()*(('.$maxSql.')-('.$minSql.'))+('.$minSql.')';
                     });
-            
+
         })
                 ->ID_rule(2330)
                 ->order('id')->getRow();
         var_dump($visitorInfo->getLastSql());
         var_dump($res);
     }
-    
-    public function test_22(Model\visitorInfoDev $visitorInfo) {
 
-//        $dir = (new \Gaara\Expand\Image)->newUrl('https://baidu.com');
-//        var_dump($dir);
-//        $data = 'https://www.baidu.com';
-//        $qrOptions = new \chillerlan\QRCode\QROptions($yourQRCodeOptionsArray);
-//        echo '<img src="'.(new \chillerlan\QRCode\QRCode($qrOptions))->render($data).'" />';
+    public function test_22(Model\visitorInfoDev $visitorInfo) {
+		$da = $visitorInfo->select('concat_ws', function(){
+			return '"-",`name`,`id`';
+		})->getRow();
+        var_dump($visitorInfo->getLastSql());
+		var_dump($da);
+    }
+
+    public function test_23(Model\visitorInfoDev $visitorInfo) {
+		$da = $visitorInfo->select('concat_ws', function(){
+			return '"-",`name`,`id`';
+		})->whereColumn('scene','<','is_del')->getAll();
+        var_dump($visitorInfo->getLastSql());
+		var_dump($da);
+    }
+
+    public function test_99(Model\visitorInfoDev $visitorInfo) {
         exit;
     }
-    
-    
-    
+
+
+
     public function __destruct() {
-        
+
         var_export(statistic());
     }
-    
+
     public function test(Model\visitorInfoDev $visitorInfo){
         echo '<pre>';
-        
+
         $res = $visitorInfo->transaction(function($obj){
 
-            
+
             $obj->data(['name' => ':autoInsertName'])
                 ->insert([':autoInsertName' => 'autoInsertName transaction']);
-            
-            
+
+
             $obj->data(['name' => ':autoInsertName'])
                 ->insert([':autoInsertName' => 'autoInsertName transaction2']);
             $obj->data(['id' => ':autoInsertNam'])
                 ->insert([':autoInsertNam' => '432']);
         },3);
-        
+
         var_dump($res);
         exit('ok');
     }

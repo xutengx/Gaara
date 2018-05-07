@@ -101,6 +101,16 @@ return [
 		Route::get('/shmop', 'Shmop\index@index');
 		// 共享内存读
 		Route::get('/shmop/read', 'Shmop\index@read');
+		// 共享内存读
+		Route::get('/img/{t?}', function(){
+			return 'ttttt';
+		});
+
+		Route::get('/swoole', function(){
+			phpinfo();
+			exit;
+		});
+
 		// 性能对比
 		Route::group(['prefix' => 'performance', 'namespace' => 'performance\Contr'], function() {
 			Route::get('/index', 'indexContr@indexDo');
@@ -109,10 +119,15 @@ return [
 			});
 		});
 
+		// Xutengx\Excel
+		Route::get('/excel', 'excel\index@indexDo');
 		// 新共能开发
 		Route::get('/new', ['uses' => 'development\Contr\indexContr@indexDo', 'middleware' => ['api']]);
 
 		Route::any('/route1', ['as' => 'tt1', 'uses' => 'development\Contr\indexContr@indexDo']);
+	}),
+	Route::get('/add/{num-1}/{num2}', function($num1 = 0, $num2){
+		return $num1 + $num2;
 	}),
 	// 管道模式
 	Route::get('/p', ['middleware' => ['web', 'testMiddleware'], 'namespace' => 'App\Dev', 'uses' => 'Pipeline\index@index']),

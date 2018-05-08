@@ -20,6 +20,8 @@ class Route {
 	private static $pathInfo	 = null;
 	// 全部路由规则
 	protected static $routeRule	 = [];
+	// 404
+	protected static $rule404	 = null;
 
 	public static function Start(): void {
 		// 得到 $pathInfo
@@ -73,7 +75,10 @@ class Route {
 				obj(Response::class)->setStatus(200)->exitData();
 			}
 		}
-		obj(Response::class)->setStatus(404)->exitData('Not Found ..');
+		if(is_null($rule404 = self::$rule404))
+			obj(Response::class)->setStatus(404)->exitData('Not Found ..');
+		else
+			self::doKernel([], $rule404, ['pathinfo' => self::$pathInfo]);
 	}
 
 	/**

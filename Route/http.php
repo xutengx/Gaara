@@ -1,5 +1,11 @@
 <?php
 
+
+//Route::set404('App\Dev\mysql\Contr\index2Contr@indexDo');
+Route::set404(function($pathinfo){
+	obj(Response::class)->setStatus(404)->exitData('Not Found .. ' . $pathinfo);
+});
+
 return [
 	'/t' => function() {
 		return 't';

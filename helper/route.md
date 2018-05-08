@@ -19,6 +19,7 @@
         * [可选参数](#可选参数)
     * [路由分组](#路由分组)
     * [restful](#restful)
+    * [设置404](#设置404)
 * [请求参数](/helper/request.md)
 * [响应](/helper/response.md)
 * [中间件](/helper/middleware.md)
@@ -157,6 +158,8 @@ Route::delete('/id/{id}',[
 **注:`匹配路由`信息应以'/'开头**
 
 ## 路由分组
+路由组允许你在大量路由之间共享路由属性，例如中间件或命名空间，而不需要为每个路由单独定义这些属性。共享属性应该以数组的形式传入 `Route::group` 方法的第一个参数中。
+
 无限级路由分组, 下面是一个相对复杂的例子
 ```php
 <?php
@@ -194,3 +197,16 @@ Route::group(['prefix'=>'group','middleware'=>['web'],'domain'=> '192.168.43.128
 // delete 请求的域名 http://eg.com/merchant, 响应 App\merchant\Info::destroy()
 Route::restful('/merchant','App\merchant\Info');
 ```
+## 设置404
+`gaara`拥有默认的`404`响应, 在全部路由匹配均失败后出发, 同样你也是可以通过`Route::set404()`设置;
+
+目前传参为`$pathinfo`(当前url的pathinfo)
+```php
+<?php
+//Route::set404('App\errorPage\indexContr@indexDo');
+Route::set404(function($pathinfo){
+	obj(Response::class)->setStatus(404)->exitData('Not Found .. ' . $pathinfo);
+});
+```
+**注:`gaara`默认的404响应, 会给出http状态404, 而自主设置需要手动给出**
+**注:404响应会使用全局中间件,而不会使用路由中间件**

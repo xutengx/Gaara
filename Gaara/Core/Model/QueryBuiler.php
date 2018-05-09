@@ -45,16 +45,16 @@ class QueryBuiler {
 	// 所属模型
 	private $model;
 	// 最近次执行的sql
-	private $lastSql;
-	private $select;
-	private $data;
-	private $from;
-	private $where;
-	private $join;
-	private $group;
-	private $having;
-	private $order;
-	private $limit;
+	private $lastSql = null;
+	private $select = null;
+	private $data = null;
+	private $from = null;
+	private $where = null;
+	private $join = null;
+	private $group = null;
+	private $having = null;
+	private $order = null;
+	private $limit = null;
 	private $union					 = [];
 	// 预期的查询2维数组的索引
 	private $index					 = null;
@@ -101,7 +101,7 @@ class QueryBuiler {
 					case 'array':
 						return $this->whereArray(...$params);
 					default :
-						return $this->whereRaw('1');
+						return $this->whereRaw((string) $params[0]);
 				}
 			case 2:
 				return $this->whereValue((string) $params[0], '=', (string) $params[1]);

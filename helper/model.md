@@ -312,8 +312,11 @@ $row = $yourModel::select('name,age')->select(['sex','height'])->getRow();
 
 // 以上等价于
 $row = $yourModel::selectString('name,age')->selectArray(['sex','height'])->getRow();
+
+// 以上不完全等价于
+$row = $yourModel::selectRaw('name,age,sex,height')->getRow();
 ```
-**注:此种用法下,每个select仅接受一个string或者一个array作为参数**
+**注:每个select仅接受一个string或者一个array作为参数**
 
 查询一个数据库函数的结果
 
@@ -337,6 +340,16 @@ $query->select('max',function(){
 ```
 
 ### where
+
+原生where
+
+```php
+<?php
+$row = $yourModel::where('id=12')->getRow();
+
+// 以上等价于
+$row = $yourModel::whereRaw('id=12')->getRow();
+```
 
 字段与值比较
 

@@ -201,7 +201,7 @@ trait Having {
 	 * @return QueryBuiler
 	 */
 	private function havingPush(string $part, string $relationship = 'and'): QueryBuiler {
-		if (empty($this->having)) {
+		if (is_null($this->having)) {
 			$this->having = $part;
 		} else
 			$this->having .= ' ' . $relationship . ' ' . $part;

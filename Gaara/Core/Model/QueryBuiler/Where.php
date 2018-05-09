@@ -339,7 +339,7 @@ trait Where {
 	 * @return QueryBuiler
 	 */
 	private function wherePush(string $part, string $relationship = 'and'): QueryBuiler {
-		if (empty($this->where)) {
+		if (is_null($this->where)) {
 			$this->where = $part;
 		} else
 			$this->where .= ' ' . $relationship . ' ' . $part;

@@ -36,7 +36,7 @@ trait Group {
 	 * @return QueryBuiler
 	 */
 	private function groupPush(string $part): QueryBuiler {
-		if (empty($this->group)) {
+		if (is_null($this->group)) {
 			$this->group = $part;
 		} else
 			$this->group .= ',' . $part;

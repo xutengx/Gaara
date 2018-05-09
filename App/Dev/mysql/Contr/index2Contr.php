@@ -423,7 +423,7 @@ SELECT * FROM `table` WHERE id >=
     public function test_23(Model\visitorInfoDev $visitorInfo) {
 		$da = $visitorInfo->select('concat_ws', function(){
 			return '"-",`name`,`id`';
-		})->whereColumn('scene','<','is_del')->getAll();
+		},'alias')->select(['scene','is_del'])->where('0')->whereColumn('scene','<','is_del')->getAll();
         var_dump($visitorInfo->getLastSql());
 		var_dump($da);
     }

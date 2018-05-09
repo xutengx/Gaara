@@ -36,7 +36,7 @@ trait Join {
 	 * @return QueryBuiler
 	 */
 	private function joinPush(string $part): QueryBuiler {
-		if (empty($this->join)) {
+		if (is_null($this->join)) {
 			$this->join = $part;
 		} else
 			$this->join .= ' ' . $part;

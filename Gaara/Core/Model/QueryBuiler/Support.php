@@ -149,7 +149,7 @@ trait Support {
 	 * @return string
 	 */
 	private function dealSelect(): string {
-		if (empty($this->select)) {
+		if (is_null($this->select)) {
 			return '*';
 		} else {
 			return $this->select;
@@ -161,7 +161,7 @@ trait Support {
 	 * @return string
 	 */
 	private function dealData(): string {
-		if (empty($this->data)) {
+		if (is_null($this->data)) {
 			return '';
 		} else {
 			return ' ' . $this->data;
@@ -175,7 +175,7 @@ trait Support {
 	private function dealFromSelect(): string {
 		if ($this->noFrom === true)
 			return '';
-		if (empty($this->from)) {
+		if (is_null($this->from)) {
 			return ' from `' . $this->table . '`';
 		} else {
 			return ' from ' . $this->from;
@@ -187,7 +187,7 @@ trait Support {
 	 * @return string
 	 */
 	private function dealFrom(): string {
-		if (empty($this->from)) {
+		if (is_null($this->from)) {
 			return '`' . $this->table . '`';
 		} else {
 			return $this->from;
@@ -199,7 +199,7 @@ trait Support {
 	 * @return string
 	 */
 	private function dealJoin(): string {
-		if (empty($this->join)) {
+		if (is_null($this->join)) {
 			return '';
 		} else
 			return ' ' . $this->join;
@@ -210,7 +210,7 @@ trait Support {
 	 * @return string
 	 */
 	private function dealWhere(): string {
-		if (empty($this->where)) {
+		if (is_null($this->where)) {
 			return '';
 		} else {
 			if (is_null($this->sqlType)) {
@@ -226,7 +226,7 @@ trait Support {
 	 * @return string
 	 */
 	private function dealGroup(): string {
-		if (empty($this->group)) {
+		if (is_null($this->group)) {
 			return '';
 		} else {
 			return ' group by ' . $this->group;
@@ -238,7 +238,7 @@ trait Support {
 	 * @return string
 	 */
 	private function dealHaving(): string {
-		if (empty($this->having)) {
+		if (is_null($this->having)) {
 			return '';
 		} else {
 			return ' having ' . $this->having;
@@ -250,7 +250,7 @@ trait Support {
 	 * @return string
 	 */
 	private function dealOrder(): string {
-		if (empty($this->order)) {
+		if (is_null($this->order)) {
 			return '';
 		} else {
 			return ' order by ' . $this->order;
@@ -262,7 +262,7 @@ trait Support {
 	 * @return string
 	 */
 	private function dealLimit(): string {
-		if (empty($this->limit)) {
+		if (is_null($this->limit)) {
 			return '';
 		} else {
 			return ' limit ' . $this->limit;

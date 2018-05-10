@@ -480,25 +480,19 @@ $res = Model\visitorInfoDev::select(['id', 'name', 'phone'])
 
 ```php
 <?php
-$row = $yourModel::order('id')->order('name', 'desc')
-->getAll();
-
+$row = $yourModel::order('id')->order('name', 'desc')->getAll();
 ```
 ### group
 
 ```php
 <?php
-$row = $yourModel::group('time')->group(['name', 'desc'])
-->getAll();
-
+$row = $yourModel::group('time')->group(['name', 'age'])->getAll();
 ```
 ### join
 
 ```php
 <?php
-$row = $yourModel::join('表名','字段一','=','字段二','inner join')
-->getAll();
-
+$row = $yourModel::join('表名','字段一','=','字段二','inner join')->getAll();
 ```
 ### limit
 
@@ -519,8 +513,7 @@ $row = $yourModel::table('表名')->getAll();
 
 ```php
 <?php
-$row = $yourModel::data('name','bob')->data([
-'age'=> '12'])->update();
+$row = $yourModel::data('name','bob')->data(['age'=> '12'])->update();
 
 ```
 ### union

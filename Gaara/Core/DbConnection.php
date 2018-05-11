@@ -204,9 +204,19 @@ class DbConnection {
                 $res = $PDO->prepare($sql);
                 $res->execute($pars);
             }
+			// 普通 sql 记录
+			Log::dbinfo('', [
+				'sql' => $sql ,
+				'pars' => $pars,
+				'connection' => $this->connection,
+				'master_slave' => $this->Master_slave,
+				'type' => $this->type,
+				'transaction' => $this->transaction,
+				'single' => $this->single
+			]);
         } catch (PDOException $pdo) {
-			// 错误记录
-            Log::critical('sql error:'.$pdo->getMessage(), [
+			// 错误 sql 记录
+            Log::dberror($pdo->getMessage(), [
 				'sql' => $sql ,
 				'pars' => $pars,
 				'connection' => $this->connection,

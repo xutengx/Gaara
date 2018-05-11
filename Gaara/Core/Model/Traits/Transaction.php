@@ -51,7 +51,7 @@ trait Transaction {
 	 * @return boolean
 	 * @throws PDOException
 	 */
-	public function transaction(Closure $callback, int $attempts = 1, bool $throwException = false) {
+	public function transaction(Closure $callback, int $attempts = 1, bool $throwException = false): bool {
 		for ($currentAttempt = 1; $currentAttempt <= $attempts; $currentAttempt++) {
 			$this->begin();
 			try {

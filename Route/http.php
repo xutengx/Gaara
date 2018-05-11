@@ -127,6 +127,7 @@ return [
 			});
 		});
 
+		Route::get('/c/{num1}/{num2}', 'C\index@indexDo');
 		// Xutengx\Excel
 		Route::get('/excel', 'excel\index@indexDo');
 		// 新共能开发

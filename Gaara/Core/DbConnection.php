@@ -14,6 +14,8 @@ class DbConnection {
 
 	// 是否主从数据库
 	private $Master_slave	 = true;
+	// 数据库链接名称, 当抛出异常时帮助定位数据库链接
+	private $connection		 = null;
 	// 数据库 读 连接集合
 	private $dbRead			 = array();
 	// 数据库 读 权重
@@ -81,7 +83,14 @@ class DbConnection {
 	 * @param string $pwd           // 密码
 	 * @param string $db            // 数据库
 	 */
-	public function __construct(array $DBconf, $single = true) {
+	/**
+	 *
+	 * @param array $DBconf	 配置数组
+	 * @param string $connection 数据库链接名
+	 * @param bool $single 单进程模式
+	 */
+	public function __construct(array $DBconf, string $connection, bool $single = true) {
+		$this->connection = $connection;
 		$this->single = $single;
 		$this->confFormat($DBconf['write'], $this->dbWriteWeight, $this->dbWrite);
 		if (isset($DBconf['read']) && !empty($DBconf['read'])) {
@@ -197,7 +206,15 @@ class DbConnection {
             }
         } catch (PDOException $pdo) {
 			// 错误记录
-            Log::critical('sql error:'.$pdo->getMessage(), ['sql' => $sql , 'pars' => $pars]);
+            Log::critical('sql error:'.$pdo->getMessage(), [
+				'sql' => $sql ,
+				'pars' => $pars,
+				'connection' => $this->connection,
+				'master_slave' => $this->Master_slave,
+				'type' => $this->type,
+				'transaction' => $this->transaction,
+				'single' => $this->single
+			]);
 			// 异常抛出
 			throw $pdo;
         }

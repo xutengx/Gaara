@@ -49,7 +49,7 @@ class Model {
 		$conf							 = obj(Conf::class)->db;
 		$this->connection				 = $this->connection ?? $conf['default'];
 		$connectionConf					 = $conf['connections'][$this->connection];
-		return self::$dbs[$this->connection] ?? self::$dbs[$this->connection]	 = dobj(DbConnection::class, $connectionConf);
+		return self::$dbs[$this->connection] ?? self::$dbs[$this->connection]	 = dobj(DbConnection::class, $connectionConf, $this->connection);
 	}
 
 	/**

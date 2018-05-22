@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Gaara\Core\Model\Traits;
 
 use Closure;
-use PDOException;
+use Exception;
 
 /**
  * 数据库事务
@@ -49,7 +49,7 @@ trait Transaction {
 	 * @param int $attempts             重试次数
 	 * @param bool $throwException      事务失败后是否抛出异常
 	 * @return boolean
-	 * @throws PDOException
+	 * @throws Exception
 	 */
 	public function transaction(Closure $callback, int $attempts = 1, bool $throwException = false): bool {
 		for ($currentAttempt = 1; $currentAttempt <= $attempts; $currentAttempt++) {
@@ -57,7 +57,7 @@ trait Transaction {
 			try {
 				$callback($this);
 				return $this->commit();
-			} catch (PDOException $e) {
+			} catch (Exception $e) {
 				$this->rollBack();
 				if ($currentAttempt >= $attempts) {
 					if ($throwException)

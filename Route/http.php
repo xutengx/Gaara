@@ -11,8 +11,6 @@ return [
 		return 't';
 	},
 	Route::get('/', function() {
-		ini_set('zend.assertions' , '1');
-		phpinfo();exit;
 		return \Response::setContentType('html')->returnData('hello world');
 	}),
 	Route::get('/data/upload/{yearmonth}/{day}/{name}', function($yearmonth, $day, $name) {

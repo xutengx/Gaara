@@ -32,7 +32,7 @@ class ForgetPasswd extends Controller {
 
         // 检测邮箱 
         if ($this->checkEmail($email, $user)) {
-            return $this->returnMsg(0, '邮箱尚未注册!!');
+            return $this->fail( '邮箱尚未注册!!');
         }
 
         // 生成激活链接
@@ -79,11 +79,11 @@ class ForgetPasswd extends Controller {
                     $this->uid = (int)$strArr[0];
                     return true;
                 } else
-                    return $this->returnMsg(0, '链接已经过期.');
+                    return $this->fail( '链接已经过期.');
             } else
-                return $this->returnMsg(0, '链接与邮箱不匹配.');
+                return $this->fail( '链接与邮箱不匹配.');
         } else
-            return $this->returnMsg(0, '无效的链接.');
+            return $this->fail( '无效的链接.');
     }
 
     /**

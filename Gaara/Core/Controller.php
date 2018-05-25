@@ -5,6 +5,7 @@ namespace Gaara\Core;
 
 use Closure;
 use PDOException;
+use Exception;
 use Response;
 use Gaara\Core\Controller\Traits\{
 	RequestTrait, ViewTrait
@@ -26,10 +27,10 @@ abstract class Controller {
 	 * @param string $msg 状态描述
 	 * @return string
 	 */
-	protected function returnMsg(int $code = 0, string $msg = 'fail !'): string {
-		$data = ['code' => $code, 'msg' => $msg];
-		return Response::returnData($data);
-	}
+//	protected function returnMsg(int $code = 0, string $msg = 'fail !'): string {
+//		$data = ['code' => $code, 'msg' => $msg];
+//		return Response::returnData($data);
+//	}
 
 	/**
 	 * 返回一个data响应,当接收的参数是Closure时,会捕获PDOException异常,一旦捕获成功,将返回msg响应
@@ -41,13 +42,22 @@ abstract class Controller {
 			try {
 				$content = call_user_func($content);
 			} catch (PDOException $pdo) {
-				return $this->returnMsg(0, $pdo->getMessage());
+				return $this->fail($pdo->getMessage());
+			} catch (Exception $e) {
+				return $this->fail($e->getMessage());
 			}
 		}
 		if ($content === false || $content === null || $content === 0 || $content === -1)
-			return $this->returnMsg(0);
-		$data = ['code' => 1, 'data' => $content];
-		return Response::returnData($data);
+			return $this->fail();
+		return $this->success($content);
+	}
+
+	protected function fail(string $msg = 'Fail'): string {
+		return Response::setStatus(400)->returnData(['msg' => $msg]);
+	}
+
+	protected function success($data = [], string $msg = 'Success'): string {
+		return Response::setStatus(200)->returnData(['data' => $data, 'msg' => $msg]);
 	}
 
 }

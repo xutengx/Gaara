@@ -45,12 +45,12 @@ class Reg extends Controller {
                     $this->resetToken($request->userinfo['id']);
                     return $this->returnData($res);
                 }catch(PDOException $pdo){
-                    return $this->returnMsg(0, $pdo->getMessage());
+                    return $this->fail( $pdo->getMessage());
                 }
             } else
-                return $this->returnMsg(0, '原密码错误');
+                return $this->fail( '原密码错误');
         } else
-            return $this->returnMsg(0, '此管理员账户不存在');
+            return $this->fail( '此管理员账户不存在');
     }
     
     private function resetToken(int $id):bool{

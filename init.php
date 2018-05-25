@@ -24,7 +24,6 @@ define('HOST', ($_SERVER['HTTP_HTTPS'] ?? $_SERVER['REQUEST_SCHEME']) . '://' . 
 
 /**
  * 配置文件存放路径 eg:/mnt/hgfs/www/git/php_/project/Config/
- * 已知使用文件: config.inc.php
  */
 define('CONFIG', ROOT . 'Config/');
 

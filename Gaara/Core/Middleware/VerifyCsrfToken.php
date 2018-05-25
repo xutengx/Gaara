@@ -39,7 +39,7 @@ class VerifyCsrfToken extends Middleware {
 		if ($this->isReturnHtml($request) && $this->isReading($request) || $this->tokensMatch($request)) {
 
 		} else {
-			Response::setStatus(403)->exitData('csrf token error');
+			Response::setStatus(403, 'csrf token error')->exitData();
 		}
 	}
 

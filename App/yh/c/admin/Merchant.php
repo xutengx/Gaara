@@ -32,7 +32,7 @@ class Merchant extends Controller {
      * @param UserMerchant $merchant
      */
     public function create() {
-        return $this->returnMsg(0, '管理员不可以新增商户');
+        return $this->fail( '管理员不可以新增商户');
     }
 
     /**
@@ -47,7 +47,7 @@ class Merchant extends Controller {
         // 原数据
         $merchantOldInfo = $merchant->getInfo( $merchant_id );
         if(empty($merchantOldInfo))
-            return $this->returnMsg(0, '要修改的商户不存在');
+            return $this->fail( '要修改的商户不存在');
         // 将要被替换的文件
         $oldFileArr = [];
         
@@ -63,7 +63,7 @@ class Merchant extends Controller {
                 }
             } else {
                 $request->file->cleanAll();
-                return $this->returnMsg(0, '上传类型不为图片, 或者大于8m');
+                return $this->fail( '上传类型不为图片, 或者大于8m');
             }
         }
         
@@ -74,7 +74,7 @@ class Merchant extends Controller {
             return $this->returnData($res);
         }catch(PDOException $pdo){
             $request->file->cleanAll();
-            return $this->returnMsg(0, $pdo->getMessage());
+            return $this->fail( $pdo->getMessage());
         }
     }
 
@@ -83,7 +83,7 @@ class Merchant extends Controller {
      * @return type
      */
     public function destroy() {
-        return $this->returnMsg(0, '管理员不可以删除商户');
+        return $this->fail( '管理员不可以删除商户');
     }
     
     /**

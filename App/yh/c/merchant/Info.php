@@ -47,7 +47,7 @@ class Info extends Controller {
                     $merchant->orm[$k] = $file->saveFilename;
             }else {
                 $request->file->cleanAll();
-                return $this->returnMsg(0, '上传类型不为图片, 或者大于8m');
+                return $this->fail( '上传类型不为图片, 或者大于8m');
             }
         }
 
@@ -57,7 +57,7 @@ class Info extends Controller {
             return $this->returnData($res);
         } catch (PDOException $pdo) {
             $request->file->cleanAll();
-            return $this->returnMsg(0, $pdo->getMessage());
+            return $this->fail( $pdo->getMessage());
         }
     }
 
@@ -73,7 +73,7 @@ class Info extends Controller {
         // 原数据
         $merchantOldInfo = $merchant->getInfo($userid);
         if (empty($merchantOldInfo))
-            return $this->returnMsg(0, '要修改的商户不存在');
+            return $this->fail( '要修改的商户不存在');
         // 将要被替换的文件
         $oldFileArr = [];
 
@@ -88,7 +88,7 @@ class Info extends Controller {
                 }
             } else {
                 $request->file->cleanAll();
-                return $this->returnMsg(0, '上传类型不为图片, 或者大于8m');
+                return $this->fail( '上传类型不为图片, 或者大于8m');
             }
         }
 
@@ -99,7 +99,7 @@ class Info extends Controller {
             return $this->returnData($res);
         } catch (PDOException $pdo) {
             $request->file->cleanAll();
-            return $this->returnMsg(0, $pdo->getMessage());
+            return $this->fail( $pdo->getMessage());
         }
     }
 
@@ -127,7 +127,7 @@ class Info extends Controller {
             $this->clean($oldFileArr);
             return $this->returnData($res);
         } catch (PDOException $pdo) {
-            return $this->returnMsg(0, $pdo->getMessage());
+            return $this->fail( $pdo->getMessage());
         }
     }
 

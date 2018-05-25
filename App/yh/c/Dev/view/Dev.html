@@ -167,11 +167,9 @@
     <script>
         $('#adminlogin').submitData('/admin/login', function (re) {
             console.log(re);
-            if (re.code === 1) {
-                token = re.data;
-                $('#role').html('管理员');
-                console.log('token设置为' + re.data);
-            }
+			token = re.data;
+			$('#role').html('管理员');
+			console.log('token设置为' + re.data);
         }, 'post');
     </script>
 </form>
@@ -193,10 +191,8 @@
                 contentType: false,
                 success: function (re) {
                     console.log(re);
-                    if (re.code === 1) {
-                        token = re.data;
-                        console.log('token重新设置为' + re.data);
-                    }
+					token = re.data;
+					console.log('token重新设置为' + re.data);
                 }
             });
         });
@@ -259,11 +255,9 @@
     <script>
         $('#userlogin').submitData('/user/login', function (re) {
             console.log(re);
-            if (re.code === 1) {
-                token = re.data;
-                $('#role').html('商户');
-                console.log('token设置为' + re.data);
-            }
+			token = re.data;
+			$('#role').html('商户');
+			console.log('token设置为' + re.data);
         }, 'post');
     </script>
 </form>
@@ -285,10 +279,8 @@
                 contentType: false,
                 success: function (re) {
                     console.log(re);
-                    if (re.code === 1) {
-                        token = re.data;
-                        console.log('token重新设置为' + re.data);
-                    }
+					token = re.data;
+					console.log('token重新设置为' + re.data);
                 }
             });
         });

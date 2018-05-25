@@ -47,7 +47,7 @@ class Application extends Controller {
                     $application->orm[$k] = $file->saveFilename;
             }else {
                 $request->file->cleanAll();
-                return $this->returnMsg(0, '上传类型不为图片, 或者大于8m');
+                return $this->fail( '上传类型不为图片, 或者大于8m');
             }
         }
         
@@ -57,7 +57,7 @@ class Application extends Controller {
             return $this->returnData($res);
         }catch(PDOException $pdo){
             $request->file->cleanAll();
-            return $this->returnMsg(0, $pdo->getMessage());
+            return $this->fail( $pdo->getMessage());
         }
     }
 
@@ -73,7 +73,7 @@ class Application extends Controller {
         // 原数据
         $applicationOldInfo = $application->getInfoByIdWithMerchant($app_id, $userid );
         if(empty($applicationOldInfo))
-            return $this->returnMsg(0, '要修改的应用不存在');
+            return $this->fail( '要修改的应用不存在');
         // 将要被替换的文件
         $oldFileArr = [];
         $application->orm = $applicationInfo;
@@ -87,7 +87,7 @@ class Application extends Controller {
                 }
             } else {
                 $request->file->cleanAll();
-                return $this->returnMsg(0, '上传类型不为图片, 或者大于8m');
+                return $this->fail( '上传类型不为图片, 或者大于8m');
             }
         }
         
@@ -98,7 +98,7 @@ class Application extends Controller {
             return $this->returnData($res);
         }catch(PDOException $pdo){
             $request->file->cleanAll();
-            return $this->returnMsg(0, $pdo->getMessage());
+            return $this->fail( $pdo->getMessage());
         }
     }
 
@@ -112,7 +112,7 @@ class Application extends Controller {
         // 原数据
         $applicationOldInfo = $application->getInfoByIdWithMerchant($app_id, $userid );
         if(empty($applicationOldInfo))
-            return $this->returnMsg(0, '要删除的应用不存在');
+            return $this->fail( '要删除的应用不存在');
         //数据库中的文件字段,都以 _file 结尾 eg : organization_file
         $end_string = '_file';
         // 将要被替换的文件
@@ -128,7 +128,7 @@ class Application extends Controller {
             $this->clean($oldFileArr);
             return $this->returnData($res);
         }catch(PDOException $pdo){
-            return $this->returnMsg(0, $pdo->getMessage());
+            return $this->fail( $pdo->getMessage());
         }
     }
     

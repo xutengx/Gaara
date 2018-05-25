@@ -27,7 +27,7 @@ class Reg extends Controller {
         
         // 检测邮箱 
         if(!$this->checkEmail($email, $user)){
-            return $this->returnMsg(0, '邮箱已被注册!!');
+            return $this->fail( '邮箱已被注册!!');
         }
         
         // 生成激活链接
@@ -81,11 +81,11 @@ class Reg extends Controller {
                 if($strArr[1] > \time() - self::overtime){
                     return true;
                 }
-                else exit($this->returnMsg(0, '链接已经过期.'));
+                else exit($this->fail( '链接已经过期.'));
             }
-            else exit($this->returnMsg(0, '链接与邮箱不匹配.'));
+            else exit($this->fail( '链接与邮箱不匹配.'));
         }
-        else exit($this->returnMsg(0, '无效的链接.'));
+        else exit($this->fail( '无效的链接.'));
         
     }
     

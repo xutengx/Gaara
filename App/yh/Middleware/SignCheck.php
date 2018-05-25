@@ -17,11 +17,11 @@ class SignCheck extends Middleware {
 
     private $token = null;
     private $sign = null;
-    
+
     public function handle(Request $request) {
         if ($this->getToken($request)) {
             if ($this->checkToken($this->token)) {
-                // 赋值 $request 
+                // 赋值 $request
                 $request->userinfo = $this->analysisToken($this->token);
                 if ($this->getSign($request)) {
                     if ($this->checkSign($request)) {
@@ -38,7 +38,7 @@ class SignCheck extends Middleware {
         } else
             return $this->error('未携带token');
     }
-    
+
     /**
      * 确定当前身份,是否为商户
      * @param Request $request
@@ -83,7 +83,7 @@ class SignCheck extends Middleware {
     private function checkToken(string $token) : bool{
         return Token::checkToken($token);
     }
-    
+
     /**
      * 检测sign
      * @param Request $request  当前请求
@@ -96,7 +96,7 @@ class SignCheck extends Middleware {
         $sign = $this->sign;
         return Sign::checkLoginSign($param, $token, (int)$timestamp, $sign);
     }
-    
+
     /**
      * 解析token
      * @param string $token
@@ -105,14 +105,13 @@ class SignCheck extends Middleware {
     private function analysisToken(string $token):array{
         return Token::decryptToken($token);
     }
-    
+
     /**
      * 返回错误信息以及响应
      * @param string $msg
      * @param int $code
      */
-    private function error(string $msg, int $code = 0){
-        $data = ['code'=> $code, 'msg' => $msg];
-        Response::setStatus(403)->exitData($data);
+    private function error(string $msg){
+        Response::setStatus(403)->exitData(['msg' => $msg]);
     }
 }

@@ -33,7 +33,7 @@ class User extends Controller {
      * @param UserMerchant $merchant
      */
     public function create() {
-        return $this->returnMsg(0, '管理员不可以新增用户');
+        return $this->fail( '管理员不可以新增用户');
     }
 
     /**
@@ -47,7 +47,7 @@ class User extends Controller {
         // 原数据
         $userOldInfo = $GaaraUser->getId( $user_id );
         if(empty($userOldInfo))
-            return $this->returnMsg(0, '要修改的用户不存在');
+            return $this->fail( '要修改的用户不存在');
     
         $GaaraUser->orm = $userInfo;
        
@@ -57,7 +57,7 @@ class User extends Controller {
             Token::removeToken($user_id);
             return $this->returnData($res);
         }catch(PDOException $pdo){
-            return $this->returnMsg(0, $pdo->getMessage());
+            return $this->fail( $pdo->getMessage());
         }
     }
 
@@ -66,6 +66,6 @@ class User extends Controller {
      * @return type
      */
     public function destroy() {
-        return $this->returnMsg(0, '管理员不可以删除用户');
+        return $this->fail( '管理员不可以删除用户');
     }
 }

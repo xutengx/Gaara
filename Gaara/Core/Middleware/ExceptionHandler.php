@@ -51,8 +51,7 @@ class ExceptionHandler extends Middleware {
 			if ($exception instanceof MessageException) {
 				$msg = $exception->getMessage();
 				Response::setStatus(500)->exitData([
-					'code'	 => '500',
-					'msg'	 => $msg
+					'msg' => $msg
 				]);
 			}
 		});

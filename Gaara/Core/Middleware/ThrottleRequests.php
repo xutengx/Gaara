@@ -63,7 +63,7 @@ class ThrottleRequests extends Middleware {
 	 * @return bool
 	 */
 	protected function tooManyAttempts(): bool {
-		// 是否"访问计数器"超过限制 , (Cache::get方法会在key不存在时生成)
+		// 是否"访问计数器"超过限制 , (Cache::remember方法会在key不存在时生成)
 		if (($this->getValue()) >= $this->maxAttempts) {
 			return true;
 		} else {
@@ -89,7 +89,8 @@ class ThrottleRequests extends Middleware {
 			$this->addHeader();
 		} else {
 			$this->addHeader($retryAfter);
-			Response::setStatus(429)->exitData('Too Many Attempts. Try again after ' . $retryAfter . ' seconds');
+			Response::setStatus(429, 'Try again after ' . $retryAfter . ' seconds')
+			->exitData('Too Many Attempts. Try again after ' . $retryAfter . ' seconds');
 		}
 	}
 

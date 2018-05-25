@@ -28,11 +28,11 @@ class Login extends Controller {
                     
                     return $this->returnData($this->makeToken($newInfo));
                 } else
-                    return $this->returnMsg(0, '用户已被禁用');
+                    return $this->fail( '用户已被禁用');
             } else
-                return $this->returnMsg(0, '密码错误');
+                return $this->fail( '密码错误');
         } else
-            return $this->returnMsg(0, '此邮箱没有注册');
+            return $this->fail( '此邮箱没有注册');
     }
     /**
      * 更换 token 令牌
@@ -52,17 +52,17 @@ class Login extends Controller {
                                 $newInfo = $this->userLogin($tokenInfo['id'], $user, $request, $tokenInfo);
                                 return $this->returnData($this->makeToken($newInfo));
                             } else
-                                return $this->returnMsg(0, '用户已在另一处登入');
+                                return $this->fail( '用户已在另一处登入');
                         } else
-                            return $this->returnMsg(0, 'ip地址发生变动');
+                            return $this->fail( 'ip地址发生变动');
                     } else
-                        return $this->returnMsg(0, '用户已禁用');
+                        return $this->fail( '用户已禁用');
                 } else
-                    return $this->returnMsg(0, '密码已变更');
+                    return $this->fail( '密码已变更');
             } else
-                return $this->returnMsg(0, '用户不存在');
+                return $this->fail( '用户不存在');
         } else
-            return $this->returnMsg(0, '非法token');
+            return $this->fail( '非法token');
     }
 
     /**

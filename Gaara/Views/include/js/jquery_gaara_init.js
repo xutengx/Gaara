@@ -3,12 +3,12 @@ $.ajaxSetup({
         // 将cookie中的X-CSRF-TOKEN加入ajax请求头
         var b = window.document.cookie.match(/(?:^|\s|;)X-XSRF-TOKEN\s*=\s*([^;]+)(?:;|$)/);
         a.setRequestHeader("X-XSRF-TOKEN", b && b[1]);
-    }, error: function (a, b, c) {
+    }, error: function (a, b, http_msg) {
         try{
             a = JSON.parse(a.responseText);
             void 0 !== a.msg ? alert(a.msg) : void 0 !== a.error.message && alert(a.error.message);
         }catch(e){
-            
+			alert(http_msg);
         }
     }
 });

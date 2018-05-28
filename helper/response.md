@@ -18,6 +18,7 @@
     * [设定http状态码](#设定http状态码)
     * [链式返回响应](#链式返回响应)
     * [中断响应](#中断响应)
+    * [视图友好响应](#视图友好响应)
     * [其他方法](#其他方法)
 * [中间件](/helper/middleware.md)
 * [控制器](/helper/controller.md)
@@ -29,15 +30,16 @@
 
 ## 总览
 
-响应处理在`Gaara\Core\Response`类中, 中间件`Gaara\Core\Middleware\ReturnResponse`, 启用的情况下依据http协议自动处理响应结果, 否则需要手动处理。
+响应处理在`Gaara\Core\Response`类中,
+中间件`Gaara\Core\Middleware\ReturnResponse`, 启用的情况下依据http协议自动处理响应结果, 否则需要手动处理。
 
 ## 设定ContentType
 
 ```php
 <?php
-// put请求域名 http://eg.com/?name=gaara, 
+// put请求域名 http://eg.com/?name=gaara,
 // 响应头 Content-Type:application/xml; charset=utf-8
-// 响应 <?xml version="1.0" encoding="utf-8"?><root>gaara</root> 
+// 响应 <?xml version="1.0" encoding="utf-8"?><root>gaara</root>
 Route::put('/', function(Gaara\Core\Reuqest $request, Gaara\Core\Response $response){
     $response->setContentType('xml');
     return $request->get('name');
@@ -49,9 +51,9 @@ Route::put('/', function(Gaara\Core\Reuqest $request, Gaara\Core\Response $respo
 
 ```php
 <?php
-// put请求域名 http://eg.com/?name=gaara, 
+// put请求域名 http://eg.com/?name=gaara,
 // 响应 状态码 400
-// 响应 gaara 
+// 响应 gaara
 Route::put('/', function(Gaara\Core\Reuqest $request, Gaara\Core\Response $response){
     $response->setStatus(400);
     return $request->get('name');
@@ -63,7 +65,7 @@ Route::put('/', function(Gaara\Core\Reuqest $request, Gaara\Core\Response $respo
 
 ```php
 <?php
-// 响应 gaara 
+// 响应 gaara
 // 状态码 200
 Route::get('/', function(Gaara\Core\Response $response){
     return $response
@@ -78,7 +80,7 @@ Route::get('/', function(Gaara\Core\Response $response){
 
 ```php
 <?php
-// 响应 gaara 
+// 响应 gaara
 // 状态码 200
 // 不会执行中间件 terminate
 Route::get('/', function(Gaara\Core\Response $response){
@@ -88,6 +90,24 @@ Route::get('/', function(Gaara\Core\Response $response){
     ->exitData('gaara');
 });
 ```
+
+## 视图友好响应
+
+当通过控制器下的`display()`生成的视图, 会附带以下响应相关的功能
+
+```js
+$.ajaxSetup({
+    error: function (a, b, http_msg) {
+        try{
+            a = JSON.parse(a.responseText);
+            void 0 !== a.msg ? alert(a.msg) : void 0 !== a.error.message && alert(a.error.message);
+        }catch(e){
+			alert(http_msg);
+        }
+    }
+});
+```
+
 
 ## 其他方法
 

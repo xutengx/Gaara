@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Gaara\Core\Controller\Traits;
 
 use Gaara\Core\Request;
+use Response;
 
 /**
  * 请求过滤
@@ -23,9 +24,9 @@ trait RequestTrait {
 		if (!is_null($key)) {
 			$res = $request->{$fun}($key, $rule);
 			if ($res === false) {
-				return $this->requestArgumentInvalid($key, $fun, $msg);
+				return $this->requestArgumentInvalid($key, $fun, $msg, $rule);
 			} elseif ($res === null) {
-				return $this->requestArgumentNotFound($key, $fun, $msg);
+				return $this->requestArgumentNotFound($key, $fun, $msg, $rule);
 			} else
 				return $res;
 		}else {
@@ -64,10 +65,11 @@ trait RequestTrait {
 	 * @param string $key
 	 * @param string $fun
 	 * @param string $msg
+	 * @param string $rule
 	 */
-	protected function requestArgumentInvalid(string $key, string $fun, string $msg = null) {
-		$msg = $msg ?? 'Invalid request argument : ' . $key . ' [' . $fun . ']';
-		exit($this->returnMsg(0, $msg));
+	protected function requestArgumentInvalid(string $key, string $fun, string $msg, string $rule) {
+		$message = $msg ?? 'Invalid request argument : ' . $key . ' [ Rule : ' . $rule . ' ]';
+		exit($this->fail($message, 422));
 	}
 
 	/**
@@ -75,10 +77,11 @@ trait RequestTrait {
 	 * @param string $key
 	 * @param string $fun
 	 * @param string $msg
+	 * @param string $rule
 	 */
-	protected function requestArgumentNotFound(string $key, string $fun, string $msg = null) {
-		$msg = $msg ?? 'Not found request argument : ' . $key . ' [' . $fun . ']';
-		exit($this->returnMsg(0, $msg));
+	protected function requestArgumentNotFound(string $key, string $fun, string $msg, string $rule) {
+		$message = $msg ?? 'Not found request argument : ' . $key . ' [ Method : ' . $fun . ' ]';
+		exit($this->fail($message, 422));
 	}
 
 }

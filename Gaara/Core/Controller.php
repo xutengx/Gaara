@@ -18,20 +18,6 @@ abstract class Controller {
 	// 可以使用 $this->display(); 展示视图
 	 ViewTrait;
 
-	// 可以使用 $this->getInfoOnWechatProfessional(); 一键授权(对数据库字段有一定要求)
-	// use Traits\WechatTrait; // 已过期
-
-	/**
-	 * 返回一个msg响应
-	 * @param int $code 状态标记
-	 * @param string $msg 状态描述
-	 * @return string
-	 */
-//	protected function returnMsg(int $code = 0, string $msg = 'fail !'): string {
-//		$data = ['code' => $code, 'msg' => $msg];
-//		return Response::returnData($data);
-//	}
-
 	/**
 	 * 返回一个data响应,当接收的参数是Closure时,会捕获PDOException异常,一旦捕获成功,将返回msg响应
 	 * @param mixed $content 响应内容
@@ -52,12 +38,25 @@ abstract class Controller {
 		return $this->success($content);
 	}
 
-	protected function fail(string $msg = 'Fail'): string {
-		return Response::setStatus(400)->returnData(['msg' => $msg]);
+	/**
+	 * 返回一个失败的响应
+	 * @param string $msg 错误消息提示
+	 * @param int $statusCode http状态码
+	 * @return string
+	 */
+	protected function fail(string $msg = 'Fail', int $statusCode = 400): string {
+		return Response::setStatus($statusCode)->returnData(['msg' => $msg]);
 	}
 
-	protected function success($data = [], string $msg = 'Success'): string {
-		return Response::setStatus(200)->returnData(['data' => $data, 'msg' => $msg]);
+	/**
+	 * 返回一个正确的响应
+	 * @param mixed $data 主要返回内容
+	 * @param string $msg 正确消息提示
+	 * @param int $statusCode http状态码
+	 * @return string
+	 */
+	protected function success($data = [], string $msg = 'Success', int $statusCode = 200): string {
+		return Response::setStatus($statusCode)->returnData(['data' => $data, 'msg' => $msg]);
 	}
 
 }

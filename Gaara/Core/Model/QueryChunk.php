@@ -12,9 +12,9 @@ use Closure;
  */
 class QueryChunk implements Iterator {
 
-	public $PDOStatement;
+	private $PDOStatement;
 	// 当前位置是否有效
-	private $is_over = true;
+	private $is_valid = true;
 	// 当前元素的键的来源
 	private $index	 = null;
 	// 当前元素的键
@@ -28,13 +28,21 @@ class QueryChunk implements Iterator {
 	}
 
 	/**
-	 * 获取结果集value, 键key自增, 判断is_over
+	 * 手动关闭
+	 * @return bool
+	 */
+	public function closeCursor(): bool {
+		return $this->PDOStatement->closeCursor();
+	}
+
+	/**
+	 * 获取结果集value, 键key自增, 判断is_valid
 	 * @return void
 	 */
 	private function fetchData(): void {
 		$value = $this->PDOStatement->fetch(\PDO::FETCH_ASSOC);
 		if ($value === false) {
-			$this->is_over = false;
+			$this->is_valid = false;
 		} else {
 			if (is_null($this->index))
 				$this->key = is_null($this->key) ? 0 : ++$this->key;
@@ -57,11 +65,11 @@ class QueryChunk implements Iterator {
 		return $this->PDOStatement->$method(...$parameters);
 	}
 
-	/*	 * ********************************************** 以下 Iterator 实现 ************************************************** */
+	/*********************************************** 以下 Iterator 实现 ***************************************************/
 
 	public function rewind(): void {
 		$this->key		 = null;
-		$this->is_over	 = true;
+		$this->is_valid	 = true;
 		$this->fetchData();
 	}
 
@@ -69,8 +77,8 @@ class QueryChunk implements Iterator {
 		return $this->value;
 	}
 
-	public function key(): string {
-		return (string) $this->key;
+	public function key() {
+		return $this->key;
 	}
 
 	public function next(): void {
@@ -78,10 +86,10 @@ class QueryChunk implements Iterator {
 	}
 
 	public function valid(): bool {
-		if (!$this->is_over) {
+		if (!$this->is_valid) {
 			$this->PDOStatement->closeCursor();
 		}
-		return $this->is_over;
+		return $this->is_valid;
 	}
 
 }

@@ -35,10 +35,10 @@ trait ObjectRelationalMappingTrait {
 		$param	 = [];
 		$bind	 = [];
 		foreach ($this->field as $v) {
-			if (array_key_exists($v['Field'], $this->orm)) {
-				$tempkey			 = ':' . $v['Field'];
-				$param[$v['Field']]	 = $tempkey;
-				$bind[$tempkey]		 = $this->orm[$v['Field']];
+			if (array_key_exists($v['field'], $this->orm)) {
+				$tempkey			 = ':' . $v['field'];
+				$param[$v['field']]	 = $tempkey;
+				$bind[$tempkey]		 = $this->orm[$v['field']];
 			}
 		}
 		if (is_null($key) && isset($this->orm[$this->primaryKey])) {
@@ -58,10 +58,10 @@ trait ObjectRelationalMappingTrait {
 		$param	 = [];
 		$bind	 = [];
 		foreach ($this->field as $v) {
-			if (array_key_exists($v['Field'], $this->orm)) {
-				$tempkey			 = ':' . $v['Field'];
-				$param[$v['Field']]	 = $tempkey;
-				$bind[$tempkey]		 = $this->orm[$v['Field']];
+			if (array_key_exists($v['field'], $this->orm)) {
+				$tempkey			 = ':' . $v['field'];
+				$param[$v['field']]	 = $tempkey;
+				$bind[$tempkey]		 = $this->orm[$v['field']];
 			}
 		}
 		return $this->data($param)

@@ -7,8 +7,8 @@ Route::set404(function($pathinfo){
 });
 
 return [
-	'/t' => function() {
-		return 't';
+	'/phpinfo' => function() {
+		phpinfo();exit;
 	},
 	Route::get('/', function() {
 		return \Response::setContentType('html')->returnData('hello world');

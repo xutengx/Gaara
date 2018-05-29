@@ -556,7 +556,7 @@ $res = $visitorInfo->select(['id', 'name', 'phone'])
 
 ```php
 <?php
-// 返回 ['100_Bob' => ['id' => 100, 'name' => 'Bob', ...], 101 => [...], 103 => [...], ...]
+// 返回 ['100_Bob' => ['id' => 100, 'name' => 'Bob', ...], 101_Peter => [...], 103_Alice => [...], ...]
 $res = $visitorInfo->select(['id', 'name', 'phone'])
 ->whereBetween('id','100','104')
 ->index(function($row){
@@ -633,7 +633,7 @@ foreach($chunk as $k => $v){
 
 ```php
 <?php
-$chunk = $visitorInfo->where('id','>','200');
+$res = $visitorInfo->where('id','>','200');
 // 遍历第一次
 foreach($res->getChunk() as $k => $v){
     var_dump($k);
@@ -643,6 +643,36 @@ foreach($res->getChunk() as $k => $v){
 foreach($res->getChunk() as $k => $v){
     var_dump($k);
     var_export($v);
+}
+```
+**注: `分块获取`基于`PDO::MYSQL_ATTR_USE_BUFFERED_QUERY = false`,在`PHP`取回所有结果前,当前数据库连接下不能发送其他的查询请求**
+```php
+<?php
+$res = $visitorInfo->where('id','>','200');
+// 以下写法将会报错`SQLSTATE[HY000]: General error: 2014 Cannot execute queries while other unbuffered queries are active. `
+foreach($res->getChunk() as $k => $v){
+    $chunk = $visitorInfo->where('id',$v['id'])->getChunk();
+    foreach($chunk as $v2){
+        var_dump($v2);
+    }
+}
+// 以下写法正确
+foreach($res->getAll() as $k => $v){
+    $chunk = $visitorInfo->where('id',$v['id'])->getChunk();
+    foreach($chunk as $v2){
+        var_dump($v2);
+    }
+}
+```
+**注: 手动释放当前查询`QueryChunk::closeCursor():bool`**
+```php
+<?php
+$QueryChunk = $res->getChunk();
+foreach($QueryChunk as $k => $v){
+    var_dump($k);
+    var_export($v);
+	$QueryChunk->closeCursor(); // 提前退出, 须要手动释放当前查询
+	break;
 }
 ```
 

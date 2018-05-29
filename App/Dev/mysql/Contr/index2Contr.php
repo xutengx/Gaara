@@ -337,24 +337,35 @@ class index2Contr extends Controller {
     public function test_17(Model\visitorInfoDev $visitorInfo){
         $res = $visitorInfo->whereIn('id',[1991,1992,1993,3625,3627,166]);
 
-        foreach($res->getChunk() as $k => $v){
+        foreach($res->getAll() as $k => $v){
             $chunk = $visitorInfo->where('id',$v['id'])->getChunk();
             foreach($chunk as $v2){
                 var_dump($v2);
             }
         }
+		echo '手动关闭';
 
-        foreach($res->getChunk() as $k => $v){
+		$手动关闭 = $res->getChunk();
+
+        foreach($手动关闭 as $k => $v){
             var_dump($k);
             var_export($v);
+			$手动关闭->closeCursor();
+			break;
         }
+
+		$res = $visitorInfo->whereIn('id',[1991,1992,1993,3625,3627,166])->getRow();
 
     }
     public function test_18(Model\visitorInfoDev $visitorInfo){
         $info = $visitorInfo->whereIn('id',[1991,1992,1993,3625,3627,166])->index(function($row){
             return $row['id'].'--'.$row['name'];
-        })->getAll();
+        })->limit(2)->getAll();
         var_dump($info);
+        $info2 = $visitorInfo->whereIn('id',[1991,1992,1993,3625,3627,166])->index('id')->limit(2)->getAll();
+        var_dump($info2);
+        $info3 = $visitorInfo->whereIn('id',[1991,1992,1993,3625,3627,166])->limit(2)->getAll();
+        var_dump($info3);
     }
     public function test_19(Model\visitorInfoDev $visitorInfo){
         $res = $visitorInfo->inRandomOrder()->limit(5)->getAll();

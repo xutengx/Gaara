@@ -3,9 +3,11 @@
 declare(strict_types = 1);
 namespace Gaara\Core;
 
+use Exception;
 use PDOException;
 use PDOStatement;
 use Log;
+use PDO;
 
 /**
  * 数据库连接类，依赖 PDO_MYSQL 扩展
@@ -83,6 +85,7 @@ class DbConnection {
 	 * @param string $pwd           // 密码
 	 * @param string $db            // 数据库
 	 */
+
 	/**
 	 *
 	 * @param array $DBconf	 配置数组
@@ -90,8 +93,8 @@ class DbConnection {
 	 * @param bool $single 单进程模式
 	 */
 	public function __construct(array $DBconf, string $connection, bool $single = true) {
-		$this->connection = $connection;
-		$this->single = $single;
+		$this->connection	 = $connection;
+		$this->single		 = $single;
 		$this->confFormat($DBconf['write'], $this->dbWriteWeight, $this->dbWrite);
 		if (isset($DBconf['read']) && !empty($DBconf['read'])) {
 			$this->confFormat($DBconf['read'], $this->dbReadWeight, $this->dbRead);
@@ -122,7 +125,7 @@ class DbConnection {
 	 * 由操作类型(读/写), 返回已存在的PDO实现
 	 * @return PDO
 	 */
-	private function PDO(): \PDO {
+	private function PDO(): PDO {
 		// http请求都属于此
 		if ($this->single) {
 			// 查询操作且不属于事务,使用读连接
@@ -141,7 +144,7 @@ class DbConnection {
 	 * 由操作类型(读/写)和权重(weight), 创建并返回PDO数据库连接
 	 * @return PDO
 	 */
-	private function connect(): \PDO {
+	private function connect(): PDO {
 		// 查询操作且不属于事务,使用读连接
 		if ($this->type === 'select' && !$this->transaction && $this->Master_slave) {
 			return $this->weightSelection($this->dbReadWeight, $this->dbRead);
@@ -154,9 +157,9 @@ class DbConnection {
 	 * 根据权重, 实例化pdo
 	 * @param array $theDbWeight 权重数组
 	 * @param array &$theDb 配置数组->pdo数组
-	 * @return \PDO
+	 * @return PDO
 	 */
-	private function weightSelection(array $theDbWeight, array &$theDb): \PDO {
+	private function weightSelection(array $theDbWeight, array &$theDb): PDO {
 		$tmp	 = array_keys($theDbWeight);
 		$weight	 = rand(1, end($tmp));
 		foreach ($theDbWeight as $k => $v) {
@@ -168,7 +171,7 @@ class DbConnection {
 		if (!is_object($theDb[$key])) {
 			$settings	 = $theDb[$key];
 			$dsn		 = 'mysql:dbname=' . $settings['db'] . ';host=' . $settings['host'] . ';port=' . $settings['port'];
-			$theDb[$key] = new \PDO($dsn, $settings['user'], $settings['pwd'], $this->initArray($settings['char']
+			$theDb[$key] = new PDO($dsn, $settings['user'], $settings['pwd'], $this->initArray($settings['char']
 				?? 'utf8'));
 		}
 		return $theDb[$key];
@@ -176,15 +179,21 @@ class DbConnection {
 
 	/**
 	 * pdo初始化属性
+	 * 参考文档 https://www.cnblogs.com/Zender/p/8270833.html https://www.cnblogs.com/hf8051/p/4673030.html
 	 * @param string $char 字符编码
 	 * @return array
 	 */
 	private function initArray(string $char): array {
 		return [
-			\PDO::MYSQL_ATTR_INIT_COMMAND	 => 'SET NAMES ' . $char,
-			\PDO::MYSQL_ATTR_INIT_COMMAND	 => "set session sql_mode='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'",
-			\PDO::ATTR_ERRMODE				 => \PDO::ERRMODE_EXCEPTION,
-			\PDO::ATTR_EMULATE_PREPARES		 => false
+			PDO::MYSQL_ATTR_INIT_COMMAND		 => 'SET NAMES ' . $char, // 设置字符集
+			PDO::MYSQL_ATTR_INIT_COMMAND		 => "set session sql_mode='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'", // 设置本次会话属性:`严格group(与oracle一致)`,`严格模式，进行数据的严格校验，错误数据不能插入，报error错误`,`如果被零除(或MOD(X，0))，则产生错误(否则为警告)`,`防止GRANT自动创建新用户，除非还指定了密码`,`如果需要的存储引擎被禁用或未编译，那么抛出错误`
+			PDO::ATTR_ERRMODE					 => PDO::ERRMODE_EXCEPTION, // 错误以异常的形式抛出
+			PDO::ATTR_EMULATE_PREPARES			 => false, // 不使用模拟prepare, 使用真正意义的prepare
+			PDO::MYSQL_ATTR_USE_BUFFERED_QUERY	 => false, // 无缓冲模式,MySQL查询执行查询,同时数据等待从MySQL服务器进行获取,在PHP取回所有结果前,在当前数据库连接下不能发送其他的查询请求.
+			PDO::ATTR_CASE						 => PDO::CASE_LOWER, // 强制列名小写
+			PDO::ATTR_ORACLE_NULLS				 => PDO::NULL_TO_STRING, // 将 NULL 转换成空字符串
+			PDO::ATTR_STRINGIFY_FETCHES			 => false, // 提取的时候不将数值转换为字符串
+			PDO::ATTR_AUTOCOMMIT				 => true, // 自动提交每个单独的语句
 		];
 	}
 
@@ -197,40 +206,41 @@ class DbConnection {
 	 */
 	private function query_prepare_execute(string $sql, array $pars = array()) {
 		$PDO = $this->PDO();
-        try {
-            if (empty($pars)) {
-                $res = $PDO->query($sql);
-            } else {
-                $res = $PDO->prepare($sql);
-                $res->execute($pars);
-            }
+		try {
+			if (empty($pars)) {
+				$res = $PDO->query($sql);
+			} else {
+				$res = $PDO->prepare($sql);
+				$res->execute($pars);
+			}
 			// 普通 sql 记录
 			Log::dbinfo('', [
-				'sql' => $sql ,
-				'pars' => $pars,
-				'connection' => $this->connection,
-				'master_slave' => $this->Master_slave,
-				'type' => $this->type,
-				'transaction' => $this->transaction,
-				'single' => $this->single
+				'sql'			 => $sql,
+				'pars'			 => $pars,
+				'connection'	 => $this->connection,
+				'master_slave'	 => $this->Master_slave,
+				'type'			 => $this->type,
+				'transaction'	 => $this->transaction,
+				'single'		 => $this->single
 			]);
-        } catch (PDOException $pdo) {
+		} catch (PDOException $pdo) {
 			// 错误 sql 记录
-            Log::dberror($pdo->getMessage(), [
-				'sql' => $sql ,
-				'pars' => $pars,
-				'connection' => $this->connection,
-				'master_slave' => $this->Master_slave,
-				'type' => $this->type,
-				'transaction' => $this->transaction,
-				'single' => $this->single
+			Log::dberror($pdo->getMessage(), [
+				'sql'			 => $sql,
+				'pars'			 => $pars,
+				'connection'	 => $this->connection,
+				'master_slave'	 => $this->Master_slave,
+				'type'			 => $this->type,
+				'transaction'	 => $this->transaction,
+				'single'		 => $this->single
 			]);
 			// 异常抛出
 			throw $pdo;
-        }
+		}
 
-		if ($this->type === 'insert')
+		if ($this->type === 'insert') {
 			return $PDO;
+		}
 		return $res;
 	}
 
@@ -323,11 +333,11 @@ class DbConnection {
 	/**
 	 * 开启事务
 	 * @return bool
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function begin(): bool {
 		if ($this->single !== true)
-			throw new \Exception('非常不建议在单进程,多数据库切换模式下开启事务!');
+			throw new Exception('非常不建议在单进程,多数据库切换模式下开启事务!');
 		$this->transaction	 = true;
 		$PDO				 = $this->PDO();
 		return $PDO->beginTransaction();

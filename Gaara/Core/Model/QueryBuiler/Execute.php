@@ -22,6 +22,11 @@ trait Execute {
 
 	/**
 	 * 查询多行
+	 * 以下写法无法使用自定义索引
+	 * $this->sqlType = 'select';
+	 * $sql = $this->toSql($pars);
+	 * return $this->db->getAll($sql, $pars);
+	 * 以上写法无法使用自定义索引
 	 * @param array $pars
 	 * @return array
 	 */

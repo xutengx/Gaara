@@ -15,7 +15,7 @@ class Kernel extends HttpKernel {
 	protected $middlewareGlobel	 = [
 		// 异常处理
 		ExceptionHandler::class,
-		// 移除意外输出,根据http协议返回
+		// 移除意外输出,根据http协议返回,\Generator对象分割下载
 		ReturnResponse::class,
 		// post请求体大小检测
 		ValidatePostSize::class,

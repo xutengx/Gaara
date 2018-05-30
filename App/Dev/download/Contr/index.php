@@ -13,7 +13,7 @@ class index extends Controller{
 
     public function index(Best $Best, Response $Response){
         $data = $Best->limit(14000)->getChunk();
-return;
+//return;
         $filename = 'TransactionDaily_.csv';
         $mimetype = 'mime/type';
 
@@ -27,7 +27,7 @@ return;
         return $this->download($data);
     }
 
-    private function download(Iterator $data): Generator{
+    private function download($data): Generator{
         foreach($data as $v){
             yield '"\''.$v['create_time'].'","\''.$v['transactionid'].'","'.$v['operator_id'].'","\''.$v['price'].'","'.$v['actiontype'].'","'.$v['currency'].'"'."\n";
         }

@@ -28,14 +28,6 @@ class QueryChunk implements Iterator {
 	}
 
 	/**
-	 * 手动关闭
-	 * @return bool
-	 */
-	public function closeCursor(): bool {
-		return $this->PDOStatement->closeCursor();
-	}
-
-	/**
 	 * 获取结果集value, 键key自增, 判断is_valid
 	 * @return void
 	 */
@@ -57,6 +49,7 @@ class QueryChunk implements Iterator {
 
 	/**
 	 * 直接操作 PDOStatement
+	 * 手动关闭 PDOStatement::closeCursor();
 	 * @param string $method
 	 * @param array $parameters
 	 * @return type

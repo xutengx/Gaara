@@ -63,6 +63,8 @@ trait Select {
 		else
 			$sql		 = $res;
 		$aliasString = is_null($alias) ? '' : " as '$alias'";
+		// 合并绑定数组
+		$this->bindings += $queryBuiler->getBindings();
 		return $this->selectRaw($function . $this->bracketFormat($sql) . $aliasString);
 	}
 

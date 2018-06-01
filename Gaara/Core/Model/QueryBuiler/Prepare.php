@@ -52,10 +52,12 @@ trait Prepare {
 	 * @return QueryPrepare
 	 */
 	private function forPrepara(string $type): QueryPrepare {
+		$pars = $this->bindings;
 		$this->sqlType	 = $type;
-		$sql			 = $this->toSql();
+		$sql			 = $this->toSql($pars);
 		$PDOStatement	 = $this->db->prepare($sql, $type);
-		return new QueryPrepare($PDOStatement);
+//		var_dump($PDOStatement);exit;
+		return new QueryPrepare($PDOStatement, $pars, $this->db);
 	}
 
 }

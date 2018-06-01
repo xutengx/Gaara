@@ -2,17 +2,16 @@
 
 declare(strict_types = 1);
 namespace App\yh\m;
-defined('IN_SYS') || exit('ACC Denied');
 
 class MerchantSecret extends \Gaara\Core\Model {
-    
+
     /**
      * 查询商户的密钥信息
      * @param int $id
      * @return array
      */
     public function getByMerchantId(int $id): array {
-        return $this->where(['id' => ':id'])->getRow([':id' => $id]);
+        return $this->where(['id' => $id])->getRow();
     }
 
     /**
@@ -23,7 +22,7 @@ class MerchantSecret extends \Gaara\Core\Model {
      * @param string $private_key
      * @return bool
      */
-    public function createInfo(int $id, string $yh_key, string $public_key, string $private_key): bool {
+    public function createInfo(int $id, string $yh_key, string $public_key, string $private_key): int {
         return $this->data([
             'id' => $id,
             'yh_key' => $yh_key,
@@ -31,7 +30,7 @@ class MerchantSecret extends \Gaara\Core\Model {
             'private_key' => $private_key,
         ])->insert();
     }
-    
+
     public function delById(int $id){
         return $this->where('id', $id)->delete();
     }

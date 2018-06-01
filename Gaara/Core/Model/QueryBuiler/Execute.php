@@ -13,11 +13,11 @@ trait Execute {
 	 * @param array $pars
 	 * @return array
 	 */
-	public function getRow(array $pars = []): array {
+	public function getRow(): array {
 		$this->sqlType	 = 'select';
 		$this->limitTake(1);
-		$sql			 = $this->toSql($pars);
-		return $this->db->getRow($sql, $pars);
+		$sql			 = $this->toSql($this->bindings);
+		return $this->db->getRow($sql, $this->bindings);
 	}
 
 	/**
@@ -44,10 +44,10 @@ trait Execute {
 	 * @param array $pars
 	 * @return QueryChunk
 	 */
-	public function getChunk(array $pars = []): QueryChunk {
+	public function getChunk(): QueryChunk {
 		$this->sqlType	 = 'select';
-		$sql			 = $this->toSql($pars);
-		$PDOStatement	 = $this->db->getChunk($sql, $pars);
+		$sql			 = $this->toSql($this->bindings);
+		$PDOStatement	 = $this->db->getChunk($sql, $this->bindings);
 		return new QueryChunk($PDOStatement, $this->index);
 	}
 
@@ -57,12 +57,12 @@ trait Execute {
 	 * @return int
 	 * @throws Exception
 	 */
-	public function update(array $pars = []): int {
+	public function update(): int {
 		$this->sqlType	 = 'update';
 		if (empty($this->data))
 			throw new Exception('要执行UPDATE操作, 需要使用data方法设置更新的值');
-		$sql			 = $this->toSql($pars);
-		return $this->db->update($sql, $pars);
+		$sql			 = $this->toSql($this->bindings);
+		return $this->db->update($sql, $this->bindings);
 	}
 
 	/**
@@ -71,12 +71,12 @@ trait Execute {
 	 * @return int
 	 * @throws Exception
 	 */
-	public function insertGetId(array $pars = []): int {
+	public function insertGetId(): int {
 		$this->sqlType	 = 'insert';
-		if (empty($this->data))
+		if (is_null($this->data))
 			throw new Exception('要执行INSERT操作, 需要使用data方法设置新增的值');
-		$sql			 = $this->toSql($pars);
-		return $this->db->insertGetId($sql, $pars);
+		$sql			 = $this->toSql($this->bindings);
+		return $this->db->insertGetId($sql, $this->bindings);
 	}
 
 	/**
@@ -85,12 +85,12 @@ trait Execute {
 	 * @return bool
 	 * @throws Exception
 	 */
-	public function insert(array $pars = []): bool {
+	public function insert(): int {
 		$this->sqlType	 = 'insert';
-		if (empty($this->data))
+		if (is_null($this->data))
 			throw new Exception('要执行INSERT操作, 需要使用data方法设置新增的值');
-		$sql			 = $this->toSql($pars);
-		return $this->db->insert($sql, $pars);
+		$sql			 = $this->toSql($this->bindings);
+		return $this->db->insert($sql, $this->bindings);
 	}
 
 	/**
@@ -99,12 +99,12 @@ trait Execute {
 	 * @return int
 	 * @throws Exception
 	 */
-	public function delete(array $pars = []): int {
+	public function delete(): int {
 		$this->sqlType	 = 'delete';
 		if (empty($this->where))
 			throw new Exception('执行 DELETE 操作并没有相应的 where 约束, 请确保操作正确, 使用where(1)将强制执行.');
-		$sql			 = $this->toSql($pars);
-		return $this->db->update($sql, $pars);
+		$sql			 = $this->toSql($this->bindings);
+		return $this->db->update($sql, $this->bindings);
 	}
 
 	/**
@@ -113,12 +113,12 @@ trait Execute {
 	 * @return int
 	 * @throws Exception
 	 */
-	public function replace(array $pars = []): int {
+	public function replace(): int {
 		$this->sqlType	 = 'replace';
-		if (empty($this->data))
+		if (is_null($this->data))
 			throw new Exception('要执行REPLACE操作, 需要使用data方法设置新增or修改的值');
-		$sql			 = $this->toSql($pars);
-		return $this->db->update($sql, $pars);
+		$sql			 = $this->toSql($this->bindings);
+		return $this->db->update($sql, $this->bindings);
 	}
 
 }

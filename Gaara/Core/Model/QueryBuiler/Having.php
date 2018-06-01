@@ -114,7 +114,7 @@ trait Having {
 	 * @return QueryBuiler
 	 */
 	public function havingInArray(string $field, array $values): QueryBuiler {
-		$sql = $this->fieldFormat($field) . 'in' . $this->bracketFormat($this->valueFormat(implode('","', $values)));
+		$sql = $this->fieldFormat($field) . 'in' . $this->bracketFormat($this->valueFormat(implode('\',\'', $values)));
 		return $this->havingPush($sql);
 	}
 
@@ -125,7 +125,7 @@ trait Having {
 	 * @return QueryBuiler
 	 */
 	public function havingNotInArray(string $field, array $values): QueryBuiler {
-		$sql = $this->fieldFormat($field) . 'not in' . $this->bracketFormat($this->valueFormat(implode('","', $values)));
+		$sql = $this->fieldFormat($field) . 'not in' . $this->bracketFormat($this->valueFormat(implode('\',\'', $values)));
 		return $this->havingPush($sql);
 	}
 
@@ -191,6 +191,8 @@ trait Having {
 		else
 			$str = $res;
 		$sql = $this->bracketFormat($str);
+		// 合并绑定数组
+		$this->bindings += $queryBuiler->getBindings();
 		return $sql;
 	}
 

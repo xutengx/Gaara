@@ -14,18 +14,20 @@ use PDO;
  */
 class DbConnection {
 
+	// 当前进程标识
+	private $identification	 = null;
 	// 是否主从数据库
 	private $Master_slave	 = true;
 	// 数据库链接名称, 当抛出异常时帮助定位数据库链接
 	private $connection		 = null;
 	// 数据库 读 连接集合
-	private $dbRead			 = array();
+	private $dbRead			 = [];
 	// 数据库 读 权重
-	private $dbReadWeight	 = array();
+	private $dbReadWeight	 = [];
 	// 数据库 写 连接集合
-	private $dbWrite		 = array();
+	private $dbWrite		 = [];
 	// 数据库 写 权重
-	private $dbWriteWeight	 = array();
+	private $dbWriteWeight	 = [];
 	// 当前操作类型 select update delate insert
 	private $type			 = 'select';
 	// 是否事务过程中 不进行数据库更换
@@ -93,8 +95,9 @@ class DbConnection {
 	 * @param bool $single 单进程模式
 	 */
 	public function __construct(array $DBconf, string $connection, bool $single = true) {
-		$this->connection	 = $connection;
-		$this->single		 = $single;
+		$this->identification	 = uniqid((string) getmypid());
+		$this->connection		 = $connection;
+		$this->single			 = $single;
 		$this->confFormat($DBconf['write'], $this->dbWriteWeight, $this->dbWrite);
 		if (isset($DBconf['read']) && !empty($DBconf['read'])) {
 			$this->confFormat($DBconf['read'], $this->dbReadWeight, $this->dbRead);
@@ -201,47 +204,51 @@ class DbConnection {
 	 * 内部执行, 返回原始数据对象, 触发异常处理
 	 * @param string $sql
 	 * @param array $pars 参数绑定数组
-	 * @return PDOStatement or PDO
+	 * @param bool $auto 自动执行绑定
+	 * @param      $PDO 用作 `insertGetId`的return
+	 * @return PDOStatement
 	 * @throws PDOException
 	 */
-	private function query_prepare_execute(string $sql, array $pars = array()) {
-		$PDO = $this->PDO();
+	private function prepare_execute(string $sql, array $pars = [], bool $auto = true, &$PDO = null): PDOStatement {
 		try {
-			if (empty($pars)) {
-				$res = $PDO->query($sql);
-			} else {
-				$res = $PDO->prepare($sql);
-				$res->execute($pars);
-			}
+			// 链接数据库
+			$PDO			 = $this->PDO();
+			// 备要执行的SQL语句并返回一个 PDOStatement 对象
+			$PDOStatement	 = $PDO->prepare($sql);
+			if ($auto)
+			// 执行一条预处理语句
+				$PDOStatement->execute($pars);
 			// 普通 sql 记录
-			Log::dbinfo('', [
-				'sql'			 => $sql,
-				'pars'			 => $pars,
-				'connection'	 => $this->connection,
-				'master_slave'	 => $this->Master_slave,
-				'type'			 => $this->type,
-				'transaction'	 => $this->transaction,
-				'single'		 => $this->single
-			]);
-		} catch (PDOException $pdo) {
+			$this->logInfo($sql, $pars, !$auto);
+			return $PDOStatement;
+		} catch (PDOException $pdoException) {
 			// 错误 sql 记录
-			Log::dberror($pdo->getMessage(), [
-				'sql'			 => $sql,
-				'pars'			 => $pars,
-				'connection'	 => $this->connection,
-				'master_slave'	 => $this->Master_slave,
-				'type'			 => $this->type,
-				'transaction'	 => $this->transaction,
-				'single'		 => $this->single
-			]);
+			$this->logError($pdoException->getMessage(), $sql, $pars, !$auto);
 			// 异常抛出
-			throw $pdo;
+			throw $pdoException;
 		}
+	}
 
-		if ($this->type === 'insert') {
-			return $PDO;
+	/**
+	 * 执行
+	 * @param PDOStatement $PDOStatement
+	 * @param array $bindings
+	 * @return void
+	 * @throws PDOException
+	 */
+	public function execute(PDOStatement $PDOStatement, array $bindings): void {
+		$sql = $PDOStatement->queryString;
+		try {
+			// 执行一条预处理语句
+			$PDOStatement->execute($bindings);
+			// 普通 sql 记录
+			$this->logInfo($sql, $bindings, true);
+		} catch (PDOException $pdoException) {
+			// 错误 sql 记录
+			$this->logError($pdoException->getMessage(), $sql, $bindings, true);
+			// 异常抛出
+			throw $pdoException;
 		}
-		return $res;
 	}
 
 	/**
@@ -250,9 +257,9 @@ class DbConnection {
 	 * @param array $pars
 	 * @return PDOStatement
 	 */
-	public function getChunk(string $sql, array $pars = array()): PDOStatement {
+	public function getChunk(string $sql, array $pars = []): PDOStatement {
 		$this->type = 'select';
-		return $this->query_prepare_execute($sql, $pars);
+		return $this->prepare_execute($sql, $pars);
 	}
 
 	/**
@@ -261,9 +268,9 @@ class DbConnection {
 	 * @param array $pars 参数绑定数组
 	 * @return array 一维数组
 	 */
-	public function getRow(string $sql, array $pars = array()): array {
+	public function getRow(string $sql, array $pars = []): array {
 		$this->type	 = 'select';
-		$re			 = $this->query_prepare_execute($sql, $pars)->fetch(\PDO::FETCH_ASSOC);
+		$re			 = $this->prepare_execute($sql, $pars)->fetch(\PDO::FETCH_ASSOC);
 		return $re ? $re : [];
 	}
 
@@ -273,9 +280,9 @@ class DbConnection {
 	 * @param array $pars 参数绑定数组
 	 * @return array 二维数组
 	 */
-	public function getAll($sql, array $pars = array()): array {
+	public function getAll($sql, array $pars = []): array {
 		$this->type = 'select';
-		return $this->query_prepare_execute($sql, $pars)->fetchall(\PDO::FETCH_ASSOC);
+		return $this->prepare_execute($sql, $pars)->fetchall(\PDO::FETCH_ASSOC);
 	}
 
 	/**
@@ -284,11 +291,9 @@ class DbConnection {
 	 * @param array $pars 参数绑定数组
 	 * @return int 受影响的行数
 	 */
-	public function update(string $sql, array $pars = array()): int {
-		$this->type	 = 'update';
-		$res		 = $this->query_prepare_execute($sql, $pars);
-		if ($res)
-			return $res->rowCount();
+	public function update(string $sql, array $pars = []): int {
+		$this->type = 'update';
+		return $this->prepare_execute($sql, $pars)->rowCount();
 	}
 
 	/**
@@ -297,37 +302,39 @@ class DbConnection {
 	 * @param array $pars 参数绑定数组
 	 * @return int 插入的主键
 	 */
-	public function insertGetId(string $sql, array $pars = array()): int {
+	public function insertGetId(string $sql, array $pars = []): int {
 		$this->type	 = 'insert';
-		$res		 = $this->query_prepare_execute($sql, $pars);
+		$pdo		 = null;
+		$res		 = $this->prepare_execute($sql, $pars, true, $pdo)->rowCount();
 		if ($res)
-			return $res->lastInsertId();
+			return $pdo->lastInsertId();
+		else
+			return 0;
 	}
 
 	/**
 	 * 插入数据
 	 * @param string $sql
 	 * @param array $pars 参数绑定数组
-	 * @return bool
+	 * @return int 受影响的行数
 	 */
-	public function insert(string $sql, array $pars = array()): bool {
-		$this->type	 = 'insert';
-		$res		 = $this->query_prepare_execute($sql, $pars);
-		return $res ? true : false;
+	public function insert(string $sql, array $pars = []): int {
+		$this->type = 'insert';
+		return $this->prepare_execute($sql, $pars)->rowCount();
 	}
 
 	/**
 	 * 使用PDO->prepare(), 返回的对象可用$res->execute($pars)重复调用
 	 * @param string $sql
 	 * @param string $type
-	 * @return type
+	 * @return PDOStatement
 	 * @throws Exception
 	 */
 	public function prepare(string $sql, string $type = 'update'): PDOStatement {
 		if (!in_array($type, ['select', 'update', 'delete', 'insert', 'replace']))
 			throw new Exception('$type mast in_array(select update delete insert replace). but ' . $type . ' given');
 		$this->type = $type;
-		return $this->PDO()->prepare($sql);
+		return $this->prepare_execute($sql, [], false);
 	}
 
 	/**
@@ -376,6 +383,46 @@ class DbConnection {
 	 */
 	public function close() {
 		$this->pdo = null;
+	}
+
+	/**
+	 * 普通 sql 记录
+	 * @param string $sql
+	 * @param array $bindings
+	 */
+	private function logInfo(string $sql, array $bindings = [], bool $manual = false): bool {
+		// 普通 sql 记录
+		return Log::dbinfo('', [
+			'sql'			 => $sql,
+			'bindings'		 => $bindings,
+			'manual'		 => $manual,
+			'connection'	 => $this->connection,
+			'master_slave'	 => $this->Master_slave,
+			'type'			 => $this->type,
+			'transaction'	 => $this->transaction,
+			'single'		 => $this->single,
+			'identification' => $this->identification
+		]);
+	}
+
+	/**
+	 * 错误 sql 记录
+	 * @param string $msg
+	 * @param string $sql
+	 * @param array $bindings
+	 */
+	private function logError(string $msg, string $sql, array $bindings = [], bool $manual = false): bool {
+		return Log::dberror($msg, [
+			'sql'			 => $sql,
+			'bindings'		 => $bindings,
+			'manual'		 => $manual,
+			'connection'	 => $this->connection,
+			'master_slave'	 => $this->Master_slave,
+			'type'			 => $this->type,
+			'transaction'	 => $this->transaction,
+			'single'		 => $this->single,
+			'identification' => $this->identification
+		]);
 	}
 
 	public function __call(string $method, array $parameters = []) {

@@ -2,7 +2,6 @@
 
 declare(strict_types = 1);
 namespace App\yh\m;
-defined('IN_SYS') || exit('ACC Denied');
 
 class MainUser extends \Gaara\Core\Model {
 
@@ -18,13 +17,9 @@ class MainUser extends \Gaara\Core\Model {
     public function createUser(string $email, string $passwd) {
         $hashPasswd = password_hash($passwd, self::encryption);
         return $this->data([
-            'email' => ':email',
-            'passwd' => ':passwd'
-        ])
-        ->insert([
-            ':email' => $email,
-            ':passwd' => $hashPasswd
-        ]);
+            'email' => $email,
+            'passwd' => $hashPasswd
+        ])->insert();
     }
     /**
      * 加密保存, 并发下处理
@@ -36,19 +31,15 @@ class MainUser extends \Gaara\Core\Model {
         $hashPasswd = password_hash($passwd, self::encryption);
         try{
             return $this->where([
-                'email' => ':email'
+                'email' => $email,
             ])->data([
-                'passwd' => ':passwd'
-            ])
-            ->update([
-                ':email' => $email,
-                ':passwd' => $hashPasswd
-            ]);
+                'passwd' => $hashPasswd
+            ])->update();
         }catch (\Exception $e){
             return false;
         }
     }
-    
+
     /**
      * 查询用户名
      * @param string $email
@@ -56,8 +47,8 @@ class MainUser extends \Gaara\Core\Model {
      */
     public function getEmail(string $email) : array{
         return $this->where('email', $email)->getRow();
-    } 
-    
+    }
+
     /**
      * 查询用户ID
      * @param int $id
@@ -67,7 +58,7 @@ class MainUser extends \Gaara\Core\Model {
         return $this->where('id', $id)->getRow();
     }
 
-    
+
     /**
      * 登入, 并更新用户登入状态
      * @param int $id

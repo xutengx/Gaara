@@ -48,7 +48,7 @@ trait Transaction {
 	 * @param Closure $callback         闭包
 	 * @param int $attempts             重试次数
 	 * @param bool $throwException      事务失败后是否抛出异常
-	 * @return boolean
+	 * @return boolean 事物是否执行成功
 	 * @throws Exception
 	 */
 	public function transaction(Closure $callback, int $attempts = 1, bool $throwException = false): bool {

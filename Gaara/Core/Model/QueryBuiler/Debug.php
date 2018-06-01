@@ -8,14 +8,32 @@ use ErrorException as Exception;
 trait Debug {
 
 	/**
+	 * 返回此刻的参数绑定数组
+	 * @return array
+	 */
+	public function getBindings(): array {
+		return $this->bindings;
+	}
+
+	/**
+	 * 查询多行 的sql 保留参数绑定的 key
+	 * @return string
+	 */
+	public function getAllToSqlWithBindingsKey(): string{
+		$pars = $this->bindings;
+		$this->sqlType	 = 'select';
+		return $this->toSql($pars);
+	}
+
+	/**
 	 * 查询一行 的sql
 	 * @param array $pars
 	 * @return string
 	 */
-	public function getRowToSql(array $pars = []): string {
+	public function getRowToSql(): string {
 		$this->sqlType	 = 'select';
 		$this->limitTake(1);
-		$sql			 = $this->toSql($pars);
+		$this->toSql($this->bindings);
 		return $this->lastSql;
 	}
 
@@ -24,9 +42,9 @@ trait Debug {
 	 * @param array $pars
 	 * @return string
 	 */
-	public function getAllToSql(array $pars = []): string {
+	public function getAllToSql(): string {
 		$this->sqlType	 = 'select';
-		$sql			 = $this->toSql($pars);
+		$this->toSql($this->bindings);
 		return $this->lastSql;
 	}
 
@@ -36,11 +54,11 @@ trait Debug {
 	 * @return string
 	 * @throws Exception
 	 */
-	public function updateToSql(array $pars = []): string {
+	public function updateToSql(): string {
 		$this->sqlType	 = 'update';
 		if (empty($this->data))
 			throw new Exception('要执行UPDATE操作, 需要使用data方法设置更新的值');
-		$sql			 = $this->toSql($pars);
+		$this->toSql($this->bindings);
 		return $this->lastSql;
 	}
 
@@ -50,11 +68,9 @@ trait Debug {
 	 * @return string
 	 * @throws Exception
 	 */
-	public function insertGetIdToSql(array $pars = []): string {
+	public function insertGetIdToSql(): string {
 		$this->sqlType	 = 'insert';
-		if (empty($this->data))
-			throw new Exception('要执行INSERT操作, 需要使用data方法设置新增的值');
-		$sql			 = $this->toSql($pars);
+		$this->toSql($this->bindings);
 		return $this->lastSql;
 	}
 
@@ -64,11 +80,9 @@ trait Debug {
 	 * @return string
 	 * @throws Exception
 	 */
-	public function insertToSql(array $pars = []): string {
+	public function insertToSql(): string {
 		$this->sqlType	 = 'insert';
-		if (empty($this->data))
-			throw new Exception('要执行INSERT操作, 需要使用data方法设置新增的值');
-		$sql			 = $this->toSql($pars);
+		$this->toSql($this->bindings);
 		return $this->lastSql;
 	}
 
@@ -78,11 +92,11 @@ trait Debug {
 	 * @return string
 	 * @throws Exception
 	 */
-	public function deleteToSql(array $pars = []): string {
+	public function deleteToSql(): string {
 		$this->sqlType	 = 'delete';
 		if (empty($this->data))
 			throw new Exception('执行 DELETE 操作并没有相应的 where 约束, 请确保操作正确, 使用where(1)将强制执行.');
-		$sql			 = $this->toSql($pars);
+		$this->toSql($this->bindings);
 		return $this->lastSql;
 	}
 
@@ -92,11 +106,9 @@ trait Debug {
 	 * @return string
 	 * @throws Exception
 	 */
-	public function replaceToSql(array $pars = []): string {
+	public function replaceToSql(): string {
 		$this->sqlType	 = 'replace';
-		if (empty($this->data))
-			throw new Exception('要执行REPLACE操作, 需要使用data方法设置新增or修改的值');
-		$sql			 = $this->toSql($pars);
+		$this->toSql($this->bindings);
 		return $this->lastSql;
 	}
 
@@ -106,12 +118,12 @@ trait Debug {
 	 * @return string
 	 * @throws Exception
 	 */
-	public function sql(array $pars = []): string {
-		if (!empty($this->data))
+	public function sql(): string {
+		if (!is_null($this->data))
 			$this->sqlType	 = 'update';
 		else
 			$this->sqlType	 = 'select';
-		$sql			 = $this->toSql($pars);
+		$this->toSql($this->bindings);
 		return $this->lastSql;
 	}
 

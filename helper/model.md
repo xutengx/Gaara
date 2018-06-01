@@ -161,6 +161,8 @@ class Dev extends \Gaara\Core\Controller {
     }
 }
 ```
+**注: `transaction()`返回`bool`, 表示事物是否提交成功, 要手动终止事物, 可在闭包内抛出任意异常**
+
 ## ORM
 
 ```php
@@ -182,6 +184,8 @@ class Dev extends \Gaara\Core\Controller {
     }
 }
 ```
+**注: 如果`$data`中不存在数据表的主键,则需要在`save($key)`中传入**
+
 ## 查询构造器
 
 ### 获取
@@ -233,9 +237,9 @@ $row = $yourModel::->where('id',12)->delete();
 
 <?php
 // name=prepare 的行数
-$visitorInfo->where('name',':name')->count('*', [':name'=>'prepare']);
+$visitorInfo->where('name','prepare')->count('*');
 // 兼容group的count()
-$visitorInfo->select('name')->where('name',':name')->group('name,note')->count('note', [':name'=>'prepare']);
+$visitorInfo->select('name')->where('name','prepare')->group('name,note')->count('note');
 // 最大id
 $visitorInfo->max('id');
 // 最小id
@@ -451,7 +455,7 @@ $row = Model\visitorInfoDev::whereNull('name')->getAll();
 ```
 
 whereExists whereNotExists
-> 可接收QueryBuiler,Closure,String,3种参数
+> 可接收Closure,String,2种参数
 
 ```php
 <?php
@@ -459,11 +463,9 @@ $first = $visitorInfo->select(['id', 'name', 'phone'])->whereBetween('id','100',
 
 $res = Model\visitorInfoDev::select(['id', 'name', 'phone'])
     ->whereBetween('id','100','103')
-    // 接收QueryBuiler
-    ->whereExists($first)
     // 接收String
     ->whereExists($first->getAllToSql())
-    // 接收Closure
+    // 接收Closure 推荐
     ->whereExists(function($obj){
         $obj->select(['id', 'name', 'phone'])
         ->whereBetween('id','100','103');
@@ -518,7 +520,7 @@ $row = $yourModel::data('name','bob')->data(['age'=> '12'])->update();
 ```
 ### union
 
-> union 可接收QueryBuiler,Closure,String,3种参数. 也可使用 unionAll 方法，它和 union 方法有着相同的用法
+> union 可接收Closure,String,2种参数. 也可使用 unionAll 方法，它和 union 方法有着相同的用法
 
 ```php
 <?php
@@ -526,11 +528,9 @@ $first = $visitorInfo->select(['id', 'name', 'phone'])->whereBetween('id','100',
 
 $res = Model\visitorInfoDev::select(['id', 'name', 'phone'])
     ->whereBetween('id','100','103')
-    // 接收QueryBuiler
-    ->union($first)
     // 接收String
     ->unionAll($first->getAllToSql())
-    // 接收Closure
+    // 接收Closure 推荐
     ->union(function($obj){
         $obj->select(['id', 'name', 'phone'])
         ->whereBetween('id','100','103');
@@ -574,7 +574,7 @@ $res = $visitorInfo->select(['id', 'name', 'phone'])
 ```php
 <?php
 $res = Model\visitorInfoDev::select(['id', 'name', 'phone'])
-    ->where( 'scene', '&', ':scene_1')
+    ->where( 'scene', '&', '1')
     ->where( 'phone', '13849494949')
     ->whereIn('id',['100','101','102','103'])
     ->orWhere(function($queryBuiler){
@@ -582,7 +582,7 @@ $res = Model\visitorInfoDev::select(['id', 'name', 'phone'])
                    $re->where('phone','13849494949')->whereNotNull('id');
                 });
     })
-    ->getAll([':scene_1' => '1']);
+    ->getAll();
 
 $sql = Model\visitorInfoDev::getLastSql();
 ```
@@ -591,7 +591,7 @@ $sql = Model\visitorInfoDev::getLastSql();
 ```php
 <?php
 sql = Model\visitorInfoDev::select(['id', 'name', 'phone'])
-    ->where( 'scene', '&', ':scene_1')
+    ->where( 'scene', '&', '1')
     ->where( 'phone', '13849494949')
     ->whereIn('id',['100','101','102','103'])
     ->orWhere(function($queryBuiler){
@@ -599,12 +599,12 @@ sql = Model\visitorInfoDev::select(['id', 'name', 'phone'])
                     $re->where('phone','13849494949')->whereNotNull('id');
                 });
     })
-    ->getAllToSql([':scene_1' => '1']);
+    ->getAllToSql();
 ```
 
 ## where子查询
 
-> 链式操作对象`QueryBuiler`中包含`whereSubquery`方法, 接收 string $field, string $symbol, (string $subquery | QueryBuiler $QueryBuiler | Closure $Closure)
+> 链式操作对象`QueryBuiler`中包含`whereSubquery`方法, 接收 string $field, string $symbol, (string $subquery | Closure $Closure)
 
 ```php
 <?php

@@ -56,6 +56,10 @@ class QueryBuiler {
 	private $order = null;
 	private $limit = null;
 	private $union					 = [];
+	// 自动绑定计数器
+	private static $bindingCounter = 0;
+	// 自动绑定数组
+	private $bindings = [];
 	// 预期的查询2维数组的索引
 	private $index					 = null;
 	// Model 中为 QueryBuiler 注册de自定义链式方法
@@ -185,8 +189,6 @@ class QueryBuiler {
 					case 'object':
 						if ($obj instanceof \Closure) {
 							return $this->whereExistsClosure($obj);
-						} elseif ($obj instanceof QueryBuiler) {
-							return $this->whereExistsQueryBuiler($obj);
 						}
 					case 'string':
 						return $this->whereExistsRaw($obj);
@@ -206,8 +208,6 @@ class QueryBuiler {
 					case 'object':
 						if ($obj instanceof \Closure) {
 							return $this->whereNotExistsClosure($obj);
-						} elseif ($obj instanceof QueryBuiler) {
-							return $this->whereNotExistsQueryBuiler($obj);
 						}
 					case 'string':
 						return $this->whereNotExistsRaw($obj);
@@ -486,9 +486,10 @@ class QueryBuiler {
 					case 'object':
 						if ($obj instanceof \Closure) {
 							return $this->unionClosure($obj);
-						} elseif ($obj instanceof QueryBuiler) {
-							return $this->unionQueryBuiler($obj);
 						}
+//						elseif ($obj instanceof QueryBuiler) {
+//							return $this->unionQueryBuiler($obj);
+//						}
 					case 'string':
 						return $this->unionRaw(...$params);
 				}

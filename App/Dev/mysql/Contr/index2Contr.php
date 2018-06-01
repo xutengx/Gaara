@@ -25,7 +25,7 @@ class index2Contr extends Controller {
         '闭包事务,' => 'test_9',
         'union,3种链接写法' => 'test_10',
         'where exists,3种链接写法' => 'test_11',
-        'model中的pdo使用(原始sql)' => 'test_12',
+        'model中的pdo使用(原始sql), sql 注入测试' => 'test_12',
         'model中的pdo使用 使用pdo的参数绑定, 以不同的参数重复执行同一语句' => 'test_13',
         '链式操作 参数绑定, 以不同的参数重复执行同一语句' => 'test_14',
         '聚合函数' => 'test_15',
@@ -37,6 +37,7 @@ class index2Contr extends Controller {
         '自定义的模型连贯操作' => 'test_21',
         '调用mysql中的函数' => 'test_22',
         'where字段之间比较' => 'test_23',
+        '测试' => 'test_24',
         'exit' => 'test_99',
     ];
 
@@ -53,8 +54,15 @@ class index2Contr extends Controller {
     }
 
     private function test_1() {
-//        throw new \InvalidArgumentException('wwwwww');
+
         $obj = obj(Model\visitorInfoDev::class);
+
+		$s = $obj->getRow();
+		var_dump($s);
+
+		$t = $obj->data(['name' => 'autoInsertName'])->insert();
+		var_dump($t);
+
         $sql = $obj->select(['id', 'name', 'phone'])
             ->where( 'id', '>', '2000')
             ->where('id' ,'<', '2004')
@@ -76,13 +84,13 @@ class index2Contr extends Controller {
         $obj = obj(Model\visitorInfoDev::class);
 
         $sql = $obj->select('id,name,phone')
-            ->where( 'scene', '&', '?' )
-            ->getRowToSql(['1']);
+            ->where( 'scene', '&', '1' )
+            ->getRowToSql();
         var_dump($sql);
 
         $res = $obj->select('id,name,phone')
-            ->where( 'scene', '&', '?' )
-            ->getRow(['1']);
+            ->where( 'scene', '&', '1' )
+            ->getRow();
         var_dump($res);
     }
     private function test_3() {
@@ -108,35 +116,35 @@ class index2Contr extends Controller {
         $sql = $obj
             ->data(['name' => 'autoUpdate'])
             ->dataIncrement('is_del', 1)
-            ->where('scene' ,'&', ':scene_1' )
+            ->where('scene' ,'&', '1' )
             ->limit(1)
-            ->updateToSql([':scene_1' => '1']);
+            ->updateToSql();
         var_dump($sql);
 
         $res = $obj
             ->data(['name' => 'autoUpdate'])
             ->dataIncrement('is_del', 1)
-            ->where('scene' ,'&', ':scene_1' )
+            ->where('scene' ,'&', '1' )
             ->limit(1)
-            ->update([':scene_1' => '1']);
+            ->update();
         var_dump($res);
     }
     private function test_5() {
         $obj = obj(Model\visitorInfoDev::class);
 
         $sql = $obj
-            ->data(['name' => ':autoUpdate'])
-            ->insertToSql([':autoUpdate' => 'autoInsertName']);
+            ->data(['name' => 'autoInsertName'])
+            ->insertToSql();
         var_dump($sql);
 
         $res = $obj
-            ->data(['name' => ':autoUpdate'])
-            ->insert([':autoUpdate' => 'autoInsertName']);
+            ->data(['name' => 'autoInsertName'])
+            ->insert();
         var_dump($res);
     }
     private function test_6() {
         $res = Model\visitorInfoDev::select(['id', 'name', 'phone'])
-            ->where( 'scene', '&', ':scene_1')
+            ->where( 'scene', '&', '1')
             ->where( 'phone', '13849494949')
             ->whereIn('id',['100','101','102','103'])
             ->orWhere(function($queryBuiler){
@@ -154,11 +162,11 @@ class index2Contr extends Controller {
     }
     private function test_7() {
         $res = Model\visitorInfoDev::select(['id'])
-            ->where( 'scene', '&', ':scene_1')
+            ->where( 'scene', '&', '1')
             ->whereBetween('id', ['100','103' ])
             ->havingIn('id',['100','102'])
             ->group('id')
-            ->getAll([':scene_1' => '1']);
+            ->getAll();
         $sql = Model\visitorInfoDev::getLastSql();
 
         var_dump($sql);
@@ -176,12 +184,12 @@ class index2Contr extends Controller {
     }
     private function test_9(Model\visitorInfoDev $visitorInfo){
         $res = $visitorInfo->transaction(function($obj){
-            $obj->data(['name' => ':autoInsertName'])
-                ->insert([':autoInsertName' => 'autoInsertName transaction']);
-            $obj->data(['name' => ':autoInsertName'])
-                ->insert([':autoInsertName' => 'autoInsertName transaction2']);
-            $obj->data(['id' => ':autoInsertNam'])
-                ->insert([':autoInsertNam' => '12']);
+            $obj->data(['name' => 'autoInsertName transaction'])
+                ->insert();
+            $obj->data(['name' => 'autoInsertName transaction2'])
+                ->insert();
+            $obj->data(['id' => '12'])
+                ->insert();
         },3);
         var_dump($res);
     }
@@ -191,7 +199,6 @@ class index2Contr extends Controller {
 
         $res = Model\visitorInfoDev::select(['id', 'name', 'phone'])
             ->whereBetween('id','100','103')
-            ->union($first)
             ->union(function($obj){
                 $obj->select(['id', 'name', 'phone'])
                 ->whereBetween('id','100','103');
@@ -209,7 +216,7 @@ class index2Contr extends Controller {
 
         $res = Model\visitorInfoDev::select(['id', 'name', 'phone'])
             ->whereBetween('id','100','103')
-            ->whereExists($first)
+//            ->whereExists($first)
             ->whereExists(function($obj){
                 $obj->select(['id', 'name', 'phone'])
                 ->whereBetween('id','100','103');
@@ -222,28 +229,29 @@ class index2Contr extends Controller {
         var_dump($res);
     }
 
-    private function test_12(Model\visitorInfoDev $visitorInfo, Model\Best $best){
-//        $sql = <<<SQL
-//select currency, sum(price) AS sum_price, date_format(create_time, "%Y-%m-%d %H") as "hour", count(*) as count_num from `cdr_file` where (`cdr_file`.`operator_id` in ('1', '2', '3', '4', '5', '19', '21', '31', '32', '6', '8', '15', '16', '24', '22', '25', '26', '27', '28', '29', '35', '33', '34', '36', '38', '40', '7', '10', '11', '13', '12', '14', '18', '23', '37', '39', '17', '20') or `cdr_file`.`operator_id` is null) and (`cdr_file`.`actiontype` in ('1', '2', '4', '5', '6', '7', '8', '9', '10', '11', '13', '14', '16', '17', '18', '12', '15') or `cdr_file`.`actiontype` is null) and (`cdr_file`.`currency` in ('THB', 'VND', 'IDR', 'USD', 'MYR') or `cdr_file`.`currency` is null) and (`cdr_file`.`telco_name` in ('TRUE', 'AIS', 'dtac', 'TrueMoney', 'OneTwoCall', 'Line', 'bank', 'bluewallet', 'BlueCoins', 'Ais', 'True', 'Telkomsel', 'xl', 'indosat', 'unipin', 'smartfren', 'otc', 'indomog', 'hutchison', 'lytoCard', 'atm', 'bank', 'viettel', 'mobifone', 'vinaphone', 'vtc', 'vietnamMobile', 'bank', 'CC', 'UM', 'DG', 'MX', 'Telenor') or `cdr_file`.`telco_name` is null) and `actiontype` in ('2', '4', '5', '8', '11', '13', '14') and `status` = '200' and `create_time` >= '2017-10-25 00:00:00' and `create_time` <= '2017-10-25 23:59:59' group by date_format(create_time, "%Y-%m-%d %H"), `currency`
-//SQL;
-//        $PDOStatement = $best->query($sql, 'select');
-//        $res = ($PDOStatement->fetchall(\PDO::FETCH_ASSOC));
-//        var_dump($sql);
-//        var_dump($res);
-//
-//        $sql = <<<SQL
-//select currency, sum(price) AS sum_price, date_format(create_time, "%Y-%m-%d %H") as "hour", count(*) as count_num from `cdr_file` where (`cdr_file`.`operator_id` in ('1', '2', '3', '4', '5', '19', '21', '31', '32', '6', '8', '15', '16', '24', '22', '25', '26', '27', '28', '29', '35', '33', '34', '36', '38', '40', '7', '10', '11', '13', '12', '14', '18', '23', '37', '39', '17', '20') or `cdr_file`.`operator_id` is null) and (`cdr_file`.`actiontype` in ('1', '2', '4', '5', '6', '7', '8', '9', '10', '11', '13', '14', '16', '17', '18', '12', '15') or `cdr_file`.`actiontype` is null) and (`cdr_file`.`currency` in ('THB', 'VND', 'IDR', 'USD', 'MYR') or `cdr_file`.`currency` is null) and (`cdr_file`.`telco_name` in ('TRUE', 'AIS', 'dtac', 'TrueMoney', 'OneTwoCall', 'Line', 'bank', 'bluewallet', 'BlueCoins', 'Ais', 'True', 'Telkomsel', 'xl', 'indosat', 'unipin', 'smartfren', 'otc', 'indomog', 'hutchison', 'lytoCard', 'atm', 'bank', 'viettel', 'mobifone', 'vinaphone', 'vtc', 'vietnamMobile', 'bank', 'CC', 'UM', 'DG', 'MX', 'Telenor') or `cdr_file`.`telco_name` is null) and `actiontype` in ('2', '4', '5', '8', '11', '13', '14') and `status` = '200' and `create_time` >= '2017-10-24 00:00:00' and `create_time` <= '2017-10-24 23:59:59' group by date_format(create_time, "%Y-%m-%d %H"), `currency`
-//SQL;
-//        $PDOStatement = $best->query($sql, 'select');
-//        $res = ($PDOStatement->fetchall(\PDO::FETCH_ASSOC));
-//        var_dump($sql);
-//        var_dump($res);
+    private function test_12(Model\visitorInfoDev $visitorInfo){
+		$用户输入	 = 'prepare\' and 0<>(select count(*) from onethink_action) and \'1';
+		echo '用户输入:'.$用户输入.'<br><br>' ;
 
-//        $sql = 'insert into visitor_info set name="原生sql插入"';
-//        $PDOStatement = $visitorInfo->query($sql, 'insert');
-//        $res = ($PDOStatement->rowCount ());
-//        var_dump($sql);
-//        var_dump($res);
+		$da		 = $visitorInfo->where('name', $用户输入)->limit(1)->getAll();
+		var_dump($visitorInfo->getLastSql());
+		var_dump($da);
+		echo '普通使用, sql注入', empty($da) ? '失败, 程序安全 !' : '成功, 程序要凉 !'.'<br><br>' ;
+
+        $sql = <<<SQL
+select * from `visitor_info` where `name`='$用户输入' limit 1
+SQL;
+        $PDOStatement = $visitorInfo->query($sql, 'select');
+        $res = ($PDOStatement->fetchall(\PDO::FETCH_ASSOC));
+        var_dump($sql);
+        var_dump($res);
+		echo '原生sql拼接使用, sql注入', empty($da) ? '失败 !' : '成功 !'.'<br><br>' ;
+
+		$da		 = $visitorInfo->where('name', ':name')->limit(1)->getAll([':name'=> $用户输入]);
+		var_dump($visitorInfo->getLastSql());
+		var_dump($da);
+		echo '参数绑定使用, sql注入', empty($da) ? '失败 !' : '成功 !' .'<br><br>' ;
+
     }
 
     private function test_13(Model\visitorInfoDev $visitorInfo){
@@ -267,8 +275,8 @@ class index2Contr extends Controller {
     }
 
     private function test_14(Model\visitorInfoDev $visitorInfo){
-        $p = $visitorInfo->where('id',':id')->selectPrepare();
-
+        $p = $visitorInfo->where('id',':id')->where('name','xuteng')->selectPrepare();
+//		var_dump($p);exit;
         var_dump($p->getRow([':id' => '12']));
         var_dump($p->getRow([':id' => '11']));
         var_dump($p->getRow([':id' => '102']));
@@ -294,15 +302,15 @@ class index2Contr extends Controller {
     }
 
     public function test_15(Model\visitorInfoDev $visitorInfo){
-        $res = $visitorInfo->select('name')->where('name',':name')->group('name,note')->count('note', [':name'=>'prepare']);
+        $res = $visitorInfo->select('name')->where('name','prepare')->group('name,note')->count('note');
         var_dump($visitorInfo->getLastSql());
         var_dump($res);
 
-        $res = $visitorInfo->where('name',':name')->count('note', [':name'=>'prepare']);
+        $res = $visitorInfo->where('name','prepare')->count('note');
         var_dump($visitorInfo->getLastSql());
         var_dump($res);
 
-        $res = $visitorInfo->max('id');
+        $res = $visitorInfo->where('name','prepare')->max('id');
         var_dump($visitorInfo->getLastSql());
         var_dump($res);
 
@@ -439,7 +447,10 @@ SELECT * FROM `table` WHERE id >=
 		var_dump($da);
     }
 
-    public function test_99(Model\visitorInfoDev $visitorInfo) {
+    public function test_24(Model\visitorInfoDev $visitorInfo) {
+	}
+
+	public function test_99(Model\visitorInfoDev $visitorInfo) {
 		ini_set('assertions' , '1');
 
 		assert_options(ASSERT_ACTIVE, 1);

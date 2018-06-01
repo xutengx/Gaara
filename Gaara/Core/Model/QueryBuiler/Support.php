@@ -61,16 +61,14 @@ trait Support {
 	}
 
 	/**
-	 * 值加上双引号
-	 * 注:参数绑定的形参不加双引号
-	 * @param string $value 字段 eg:1765595948
-	 * @return string   eg:"1765595948"
+	 * 将值转化为`绑定参数键`
+	 * @param string $value
+	 * @return string
 	 */
 	private function valueFormat(string $value): string {
-		if ((strpos($value, ':') === 0) || ($value === '?'))
-			return (string) $value;
-		else
-			return '"' . (string) $value . '"';
+		$key = ':'.(string)self::$bindingCounter++;
+		$this->bindings[$key] = $value;
+		return ' '.$key.' ';
 	}
 
 	/**
@@ -135,8 +133,7 @@ trait Support {
 	 * @param array $pars 参数绑定数组
 	 * @return void
 	 */
-	private function rememberSql(string $sql, array $pars): void {
-		$pars = is_array($pars) ? $pars : [];
+	private function rememberSql(string $sql, array $pars = []): void {
 		foreach ($pars as $k => $v) {
 			$pars[$k] = '\'' . $v . '\'';
 		}

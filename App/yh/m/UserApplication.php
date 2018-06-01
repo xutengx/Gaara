@@ -2,7 +2,6 @@
 
 declare(strict_types = 1);
 namespace App\yh\m;
-defined('IN_SYS') || exit('ACC Denied');
 
 class UserApplication extends \Gaara\Core\Model {
 
@@ -25,6 +24,6 @@ class UserApplication extends \Gaara\Core\Model {
     }
 
     public function getInfoByIdWithMerchant(int $id, int $merchant_id): array {
-        return $this->where('id', ':id')->where('merchant_id', $merchant_id)->getRow([':id' => $id]);
+        return $this->where('id', $id)->where('merchant_id', $merchant_id)->getRow();
     }
 }

@@ -24,10 +24,12 @@ trait Union {
 	 * @param string $type union|union all
 	 * @return QueryBuiler
 	 */
-	public function unionQueryBuiler(QueryBuiler $queryBuiler, string $type = 'union'): QueryBuiler {
-		$sql = $queryBuiler->getAllToSql();
-		return $this->unionPush($sql, $type);
-	}
+//	public function unionQueryBuiler(QueryBuiler $queryBuiler, string $type = 'union'): QueryBuiler {
+//		$sql = $queryBuiler->getAllToSqlWithBindingsKey();
+//		// 合并绑定数组
+//		$this->bindings += $queryBuiler->getBindings();
+//		return $this->unionPush($sql, $type);
+//	}
 
 	/**
 	 * union一个闭包
@@ -39,15 +41,17 @@ trait Union {
 		$res		 = $callback($queryBuiler = $this->getSelf());
 		// 调用方未调用return
 		if (is_null($res)) {
-			$sql = $queryBuiler->getAllToSql();
+			$sql = $queryBuiler->getAllToSqlWithBindingsKey();
 		}
 		// 调用方未调用toSql
 		elseif ($res instanceof QueryBuiler) {
-			$sql = $res->getAllToSql();
+			$sql = $res->getAllToSqlWithBindingsKey();
 		}
 		// 调用正常
 		else
 			$sql = $res;
+		// 合并绑定数组
+		$this->bindings += $queryBuiler->getBindings();
 		return $this->unionPush($sql, $type);
 	}
 

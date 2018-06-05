@@ -60,7 +60,7 @@ class Cache {
 	 * @return mixed|null
 	 */
 	public function get(string $key) {
-		return ($content = $this->driver->get($key)) ? unserialize($content) : null;
+		return ($content = $this->driver->get($key)) ? $this->unserialize($content) : null;
 	}
 
 	/**
@@ -74,7 +74,7 @@ class Cache {
 		if ($value instanceof Closure) {
 			$value = $value();
 		}
-		return $this->driver->set($key, serialize($value), $expire ?? $this->expire);
+		return $this->driver->set($key, $this->serialize($value), $expire ?? $this->expire);
 	}
 
 	/**
@@ -105,40 +105,24 @@ class Cache {
 	}
 
 	/**
-	 * 自增
+	 * 自增 (原子性)
 	 * 当$key不存在时,将以 $this->set($key, 0, -1); 初始化
 	 * @param string $key
-	 * @param int $amount
+	 * @param int $step
 	 * @return int 自增后的值
 	 */
-	public function increment(string $key, int $amount = 1): int {
-		$value		 = $this->get($key);
-		$new_value	 = is_null($value) ? 0 : (int) $value + abs($amount);
-
-		$expire		 = $this->ttl($key);
-		$new_expire	 = ( $expire === -2 ) ? -1 : $expire;
-		if ($this->set($key, $new_value, $new_expire)) {
-			return $new_value;
-		} else
-			throw new Exception('Cache Increment Error!');
+	public function increment(string $key, int $step = 1): int {
+		return $this->driver->increment($key, abs($step));
 	}
 
 	/**
-	 * 自减
+	 * 自减 (原子性)
 	 * @param string $key
-	 * @param int $amount
+	 * @param int $step
 	 * @return int 自减后的值
 	 */
-	public function decrement(string $key, int $amount = 1): int {
-		$value		 = $this->get($key);
-		$new_value	 = is_null($value) ? 0 : (int) $value - abs($amount);
-
-		$expire		 = $this->ttl($key);
-		$new_expire	 = ( $expire === -2 ) ? -1 : $expire;
-		if ($this->set($key, $new_value, $new_expire)) {
-			return $new_value;
-		} else
-			throw new Exception('Cache Decrement Error!');
+	public function decrement(string $key, int $step = 1): int {
+		return $this->driver->decrement($key, abs($step));
 	}
 
 	/**
@@ -180,6 +164,24 @@ class Cache {
 	}
 
 	/**
+	 * php序列化.
+	 * @param mixed $value
+	 * @return string
+	 */
+	protected function serialize($value): string {
+		return is_numeric($value) ? (string) $value : serialize($value);
+	}
+
+	/**
+	 * php反序列化.
+	 * @param string $value
+	 * @return string
+	 */
+	protected function unserialize($value): string {
+		return is_numeric($value) ? (string) $value : unserialize($value);
+	}
+
+	/**
 	 * 生成键名
 	 * @param string|object $obj
 	 * @param string $funcname
@@ -189,7 +191,7 @@ class Cache {
 	 */
 	private function makeKey($obj, string $funcname = '', array $params = []): string {
 		$classname	 = is_object($obj) ? get_class($obj) : $obj;
-		$key		 = '';				   // default
+		$key		 = '';	// default
 		if (!empty($params)) {
 			foreach ($params as $v) {
 				if (is_object($v))

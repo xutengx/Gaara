@@ -79,6 +79,26 @@ class Redis implements DriverInterface {
 		return $this->handler->ttl($key);
 	}
 
+	/**
+	 * 自增 (原子性)
+	 * @param string $key
+	 * @param int $step
+	 * @return int 自增后的值
+	 */
+	public function increment(string $key, int $step = 1): int {
+		return $this->handler->incrby($key, $step);
+	}
+
+	/**
+	 * 自减 (原子性)
+	 * @param string $key
+	 * @param int $step
+	 * @return int 自减后的值
+	 */
+	public function decrement(string $key, int $step = 1): int{
+		return $this->handler->decrby($key, $step);
+	}
+
 	public function __call(string $func, array $pars = []) {
 		return call_user_func_array([$this->handler, $func], $pars);
 	}

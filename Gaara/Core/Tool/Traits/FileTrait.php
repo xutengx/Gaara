@@ -35,6 +35,7 @@ trait FileTrait {
 		$filename	 = $path . $name;
 		$file		 = $filename;
 		if (FALSE !== ($handler	 = fopen($file, 'r'))) {
+			flock($handler, LOCK_SH);
 			header('Content-Description: File Transfer');
 			header('Content-Type: application/octet-stream');
 			header('Content-Disposition: attachment; filename=' . $showname . '.zip');
@@ -46,6 +47,7 @@ trait FileTrait {
 			while (false !== ($chunk = fread($handler, 4096))) {
 				echo $chunk;
 			}
+			flock($handler, LOCK_UN);
 		}
 		exit;
 	}
@@ -56,11 +58,13 @@ trait FileTrait {
 //        $this->absoluteDir($path);
 		$filename	 = $path . $name;
 		$file		 = fopen($filename, "r");
+		flock($file, LOCK_SH);
 		header("Content-type: application/octet-stream");
 		header("Accept-Ranges: bytes");
 		header("Accept-Length:" . filesize($filename));
 		header("Content-Disposition: attachment; filename=" . $name);
 		echo fread($file, filesize($filename));
+		flock($file, LOCK_UN);
 		fclose($file);
 		exit();
 	}

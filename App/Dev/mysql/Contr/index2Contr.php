@@ -456,26 +456,13 @@ SELECT * FROM `table` WHERE id >=
 	}
 
 	public function test_99(Model\visitorInfoDev $visitorInfo) {
-		ini_set('assertions' , '1');
 
-		assert_options(ASSERT_ACTIVE, 1);
-		assert_options(ASSERT_WARNING, 0);
-		assert_options(ASSERT_QUIET_EVAL, 1);
-
-//创建处理函数
-		$my_assert_handler = function ($file, $line, $code, $desc = null) {
-			echo "Assertion failed at $file:$line: $code";
-			if ($desc) {
-				echo ": $desc";
-			}
-			echo "\n";
-		};
-
-// 设置回调函数
-		assert_options(ASSERT_CALLBACK, '$my_assert_handler');
-
-		$a = assert('2 < 1', 'Two is less than one');
-		var_dump($a);
+//		$PDOStatement = $visitorInfo->query('SELECT @@tx_isolation');
+//        $res = ($PDOStatement->fetchall(\PDO::FETCH_ASSOC));
+//        var_dump($res);
+//		$PDOStatement = $visitorInfo->query('update visitor_info set note=12 where id = 12');
+//        $res = ($PDOStatement->fetchall(\PDO::FETCH_ASSOC));
+//        var_dump($res);
 		exit;
 	}
 

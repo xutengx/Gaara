@@ -174,8 +174,8 @@ class DbConnection {
 		if (!is_object($theDb[$key])) {
 			$settings	 = $theDb[$key];
 			$dsn		 = 'mysql:dbname=' . $settings['db'] . ';host=' . $settings['host'] . ';port=' . $settings['port'];
-			$theDb[$key] = new PDO($dsn, $settings['user'], $settings['pwd'], $this->initArray($settings['char']
-				?? 'utf8'));
+			$theDb[$key] = $this->newPdo($dsn, $settings['user'], $settings['pwd'], $settings['char']
+				?? 'utf8');
 		}
 		return $theDb[$key];
 	}
@@ -183,13 +183,15 @@ class DbConnection {
 	/**
 	 * pdo初始化属性
 	 * 参考文档 https://www.cnblogs.com/Zender/p/8270833.html https://www.cnblogs.com/hf8051/p/4673030.html
-	 * @param string $char 字符编码
-	 * @return array
+	 * @param string $dsn
+	 * @param string $user
+	 * @param string $pwd
+	 * @param string $char
+	 * @return PDO
 	 */
-	private function initArray(string $char): array {
-		return [
-			PDO::MYSQL_ATTR_INIT_COMMAND		 => 'SET NAMES ' . $char, // 设置字符集
-			PDO::MYSQL_ATTR_INIT_COMMAND		 => "set session sql_mode='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'", // 设置本次会话属性:`严格group(与oracle一致)`,`严格模式，进行数据的严格校验，错误数据不能插入，报error错误`,`如果被零除(或MOD(X，0))，则产生错误(否则为警告)`,`防止GRANT自动创建新用户，除非还指定了密码`,`如果需要的存储引擎被禁用或未编译，那么抛出错误`
+	private function newPdo(string $dsn, string $user, string $pwd, string $char): PDO {
+		$pdo = new PDO($dsn, $user, $pwd, [
+			PDO::MYSQL_ATTR_INIT_COMMAND		 => "SET SESSION SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'", // 设置本次会话属性:`严格group(与oracle一致)`,`严格模式，进行数据的严格校验，错误数据不能插入，报error错误`,`如果被零除(或MOD(X，0))，则产生错误(否则为警告)`,`防止GRANT自动创建新用户，除非还指定了密码`,`如果需要的存储引擎被禁用或未编译，那么抛出错误`
 			PDO::ATTR_ERRMODE					 => PDO::ERRMODE_EXCEPTION, // 错误以异常的形式抛出
 			PDO::ATTR_EMULATE_PREPARES			 => false, // 不使用模拟prepare, 使用真正意义的prepare
 			PDO::MYSQL_ATTR_USE_BUFFERED_QUERY	 => false, // 无缓冲模式,MySQL查询执行查询,同时数据等待从MySQL服务器进行获取,在PHP取回所有结果前,在当前数据库连接下不能发送其他的查询请求.
@@ -197,7 +199,11 @@ class DbConnection {
 			PDO::ATTR_ORACLE_NULLS				 => PDO::NULL_TO_STRING, // 将 NULL 转换成空字符串
 			PDO::ATTR_STRINGIFY_FETCHES			 => false, // 提取的时候不将数值转换为字符串
 			PDO::ATTR_AUTOCOMMIT				 => true, // 自动提交每个单独的语句
-		];
+		]);
+		$pdo->prepare('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ')->execute(); //[READ UNCOMMITTED|READ COMMITTED|REPEATABLE READ|SERIALIZABLE]
+		$pdo->prepare('SET NAMES ' . $char)->execute();
+
+		return $pdo;
 	}
 
 	/**

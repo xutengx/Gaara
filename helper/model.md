@@ -41,6 +41,7 @@
         * [data](#data)
         * [union](#union)
         * [index](#index)
+        * [lock](#lock)
     * [debug](#debug)
     * [where子查询](#where子查询)
     * [分块查询](#分块查询)
@@ -566,6 +567,25 @@ $res = $visitorInfo->select(['id', 'name', 'phone'])
 ```
 
 **注: index()的键名若发生重复,将会覆盖。index()同样可作用于getChunk()方法返回的`QueryChunk`对象**
+
+### lock
+
+> 获取事物之外的目标数据的最新状态,若目标数据不可独占(其他锁,其他事物修改但未提交)便等待,获取成功并上锁(`更新`&`上锁查询`等待直至本事物提交)。
+
+```php
+
+<?php
+$visitorInfo->transaction(function($obj) {
+    $obj->where('id', '>=', "1")->where('id', '<=', "256")
+    ->having('id','<>','256')->order('id', 'desc')
+    ->select('id')->group('id')->lock()->getRow();
+}, 3);
+
+```
+
+**注: `gaara`还同时提供`lockForShared()`与`lockForUpdate()`方法**
+
+**注: 配合`mysql`的`Repeatable read`设置, 可有效解决`幻读`**
 
 ## debug
 

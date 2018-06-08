@@ -2,7 +2,6 @@
 
 declare(strict_types = 1);
 namespace App\yh\c\admin;
-defined('IN_SYS') || exit('ACC Denied');
 
 use App\yh\m\UserMerchant;
 use Gaara\Core\Request;
@@ -13,7 +12,7 @@ use PDOException;
  * 管理员, 对商户的权限管理
  */
 class Merchant extends Controller {
-    
+
     /**
      * 查询商户信息
      * @param Request $request
@@ -50,7 +49,7 @@ class Merchant extends Controller {
             return $this->fail( '要修改的商户不存在');
         // 将要被替换的文件
         $oldFileArr = [];
-        
+
         $merchant->orm = $merchantInfo;
         $merchant->orm['reviewe_at'] = date('Y-m-d H:i:s');
         $merchant->orm['admin_id'] = $admin_id;
@@ -66,7 +65,7 @@ class Merchant extends Controller {
                 return $this->fail( '上传类型不为图片, 或者大于8m');
             }
         }
-        
+
         // 写入数据库, 若失败则删除已保存的文件
         try{
             $res = $merchant->save($merchantOldInfo['id']);
@@ -85,7 +84,7 @@ class Merchant extends Controller {
     public function destroy() {
         return $this->fail( '管理员不可以删除商户');
     }
-    
+
     /**
      * 删除数组中的文件
      * @param array $arr

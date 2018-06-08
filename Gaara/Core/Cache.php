@@ -175,9 +175,9 @@ class Cache {
 	/**
 	 * php反序列化.
 	 * @param string $value
-	 * @return string
+	 * @return mixed
 	 */
-	protected function unserialize($value): string {
+	protected function unserialize(string $value) {
 		return is_numeric($value) ? (string) $value : unserialize($value);
 	}
 

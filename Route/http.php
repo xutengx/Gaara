@@ -7,6 +7,7 @@ Route::set404(function($pathinfo){
 });
 
 return [
+	'/wapSub/dtac' => 'App\bluepay\subscribe\dtac@index',
 	'/phpinfo' => function() {
 		phpinfo();exit;
 	},

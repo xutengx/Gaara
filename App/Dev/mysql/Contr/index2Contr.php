@@ -22,7 +22,7 @@ class index2Contr extends Controller {
         '静态调用model, where参数数量为2, 3, where的in条件, where闭包' => 'test_6',
         '静态调用model, where的between条件, having条件, 参数绑定,' => 'test_7',
         '静态调用model, whereRaw(不处理)的and or嵌套条件, 参数绑定,' => 'test_8',
-        '闭包事务,' => 'test_9',
+        '闭包事务, 事物中的锁' => 'test_9',
         'union,3种链接写法' => 'test_10',
         'where exists,3种链接写法' => 'test_11',
         'model中的pdo使用(原始sql), sql 注入测试' => 'test_12',
@@ -182,18 +182,23 @@ class index2Contr extends Controller {
         var_dump($sql);
         var_dump($res);
     }
-    private function test_9(Model\visitorInfoDev $visitorInfo){
-        $res = $visitorInfo->transaction(function($obj){
-            $obj->data(['name' => 'autoInsertName transaction'])
-                ->insert();
-            $obj->data(['name' => 'autoInsertName transaction2'])
-                ->insert();
-            $obj->data(['id' => '12'])
-                ->insert();
-        },3);
-        var_dump($res);
-    }
-    private function test_10(Model\visitorInfoDev $visitorInfo){
+    private function test_9(Model\visitorInfoDev $visitorInfo) {
+		$res = $visitorInfo->transaction(function($obj) {
+			$tt = $obj->where('id', '>=', "1")->where('id', '<=', "256")->having('id','<>','256')
+			->order('id', 'desc')->select('id')->group('id')->lock()->getRow();
+			var_dump($tt);
+
+			$obj->data(['name' => 'autoInsertName transaction'])
+			->insert();
+			$obj->data(['name' => 'autoInsertName transaction2'])
+			->insert();
+			$obj->data(['id' => '12'])
+			->insert();
+		}, 3);
+		var_dump($res);
+	}
+
+	private function test_10(Model\visitorInfoDev $visitorInfo){
         $first = $visitorInfo->select(['id', 'name', 'phone'])
             ->whereBetween('id','100','103');
 

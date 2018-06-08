@@ -26,7 +26,7 @@ trait FileTrait {
 			if ($pos === false || $pos !== 1)
 				$dir = ROOT . ltrim($dir, './');
 		} else
-			exit('未兼容的操作系统!');
+			throw new Exception('Incompatible operating system');
 	}
 
 	// 分割下载 // test
@@ -127,7 +127,7 @@ trait FileTrait {
 			}
 			return $arr;
 		} else
-			throw new Exception($dirName . ' 并非可读路径!');
+			throw new Exception($dirName . 'is not readable path!');
 	}
 
 	/**

@@ -8,6 +8,7 @@ use Gaara\Core\Model\QueryBuiler;
 use Gaara\Core\Model\Traits\{
 	DebugTrait, ObjectRelationalMappingTrait, Transaction
 };
+use Gaara\Core\Cache;
 
 class Model {
 

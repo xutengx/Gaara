@@ -113,7 +113,8 @@ trait Support {
 		$this->dealGroup() .
 		$this->dealHaving() .
 		$this->dealOrder() .
-		$this->dealLimit();
+		$this->dealLimit() .
+		$this->dealLock();
 		if (!empty($this->union)) {
 			$sql = $this->bracketFormat($sql);
 			foreach ($this->union as $type => $clauseArray) {
@@ -263,6 +264,18 @@ trait Support {
 			return '';
 		} else {
 			return ' limit ' . $this->limit;
+		}
+	}
+
+	/**
+	 * lock
+	 * @return string
+	 */
+	private function dealLock(): string {
+		if (is_null($this->lock)) {
+			return '';
+		} else {
+			return ' ' . $this->lock;
 		}
 	}
 

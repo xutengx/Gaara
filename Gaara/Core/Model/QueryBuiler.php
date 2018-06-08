@@ -24,6 +24,7 @@ class QueryBuiler {
 	use QueryBuiler\Group;
 	use QueryBuiler\Order;
 	use QueryBuiler\Limit;
+	use QueryBuiler\Lock;
 	use QueryBuiler\Having;
 	use QueryBuiler\Index;
 	use QueryBuiler\Union;
@@ -55,6 +56,7 @@ class QueryBuiler {
 	private $having = null;
 	private $order = null;
 	private $limit = null;
+	private $lock = null;
 	private $union					 = [];
 	// 自动绑定计数器
 	private static $bindingCounter = 0;
@@ -515,6 +517,14 @@ class QueryBuiler {
 						return $this->unionRaw($obj, 'union all');
 				}
 		}
+	}
+
+	/**
+	 * 排他锁
+	 * @return QueryBuiler
+	 */
+	public function lock(): QueryBuiler{
+		return $this->lockForUpdate();
 	}
 
 	public function __call(string $method, array $args = []) {

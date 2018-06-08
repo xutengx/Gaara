@@ -251,9 +251,9 @@ class File implements DriverInterface {
 
 	/**
 	 * 递归生成目录
-	 * @param type $dir
-	 * @param type $mode
-	 * @return type
+	 * @param string $dir
+	 * @param int $mode
+	 * @return bool
 	 */
 	private function _mkdir(string $dir, int $mode = 0777): bool {
 		if (is_dir(dirname($dir)) || $this->_mkdir(dirname($dir)))

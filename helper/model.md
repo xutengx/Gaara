@@ -392,14 +392,14 @@ whereBetween whereNotBetween
 $row = $yourModel::whereBetween('id', ['100','103' ])
 ->whereBetween('age',18, 23)
 ->whereNotBetween('height',156, 189)
-->whereNotBetween('weight'[40, 120])
+->whereNotBetween('weight',[40, 120])
 ->getAll();
 
 // 以上等价于
 $row = $yourModel::whereBetweenArray('id', ['100','103' ])
 ->whereBetweenString('age','18', '23')
 ->whereNotBetweenString('height','156', '189')
-->whereNotBetweenArray('weight'[40, 120])
+->whereNotBetweenArray('weight',[40, 120])
 ->getAll();
 ```
 **注: `whereBetweenString`与`whereNotBetweenString`参数必须是string**
@@ -410,16 +410,16 @@ whereIn whereNotIn
 <?php
 
 $row = $yourModel::whereIn('id', ['100','103' ])
-->whereIn('age',18, 23)
-->whereNotIn('height',156, 189)
-->whereNotIn('weight'[40, 120])
+->whereIn('age','18,23')
+->whereNotIn('height','156,189')
+->whereNotIn('weight',[40, 120])
 ->getAll();
 
 // 以上等价于
 $row = $yourModel::whereInArray('id', ['100','103','26' ])
 ->whereInString('age','18,23,46')
 ->whereNotInString('height','156,189')
-->whereNotInArray('weight'[40, 120, 88])
+->whereNotInArray('weight',[40, 120, 88])
 ->getAll();
 ```
 **注: `whereInString`与`whereNotInString`参数必须是string**

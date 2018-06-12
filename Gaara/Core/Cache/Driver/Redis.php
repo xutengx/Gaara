@@ -50,7 +50,7 @@ class Redis implements DriverInterface {
 	 * @return bool
 	 */
 	public function rm(string $key): bool {
-		return $this->handler->delete($key) === 0 ? false : true;
+		return $this->handler->del($key) === 0 ? false : true;
 	}
 
 	/**

@@ -46,22 +46,22 @@ class QueryBuiler {
 	// 所属模型
 	private $model;
 	// 最近次执行的sql
-	private $lastSql = null;
-	private $select = null;
-	private $data = null;
-	private $from = null;
-	private $where = null;
-	private $join = null;
-	private $group = null;
-	private $having = null;
-	private $order = null;
-	private $limit = null;
-	private $lock = null;
+	private $lastSql				 = null;
+	private $select					 = null;
+	private $data					 = null;
+	private $from					 = null;
+	private $where					 = null;
+	private $join					 = null;
+	private $group					 = null;
+	private $having					 = null;
+	private $order					 = null;
+	private $limit					 = null;
+	private $lock					 = null;
 	private $union					 = [];
 	// 自动绑定计数器
-	private static $bindingCounter = 0;
+	private static $bindingCounter	 = 0;
 	// 自动绑定数组
-	private $bindings = [];
+	private $bindings				 = [];
 	// 预期的查询2维数组的索引
 	private $index					 = null;
 	// Model 中为 QueryBuiler 注册de自定义链式方法
@@ -114,7 +114,7 @@ class QueryBuiler {
 			case 3:
 				return $this->whereValue((string) $params[0], (string) $params[1], (string) $params[2]);
 		}
-		return $this;
+		throw new InvalidArgumentException;
 	}
 
 	/**
@@ -132,6 +132,7 @@ class QueryBuiler {
 						return $this->whereInString(...$params);
 				}
 		}
+		throw new InvalidArgumentException;
 	}
 
 	/**
@@ -146,9 +147,10 @@ class QueryBuiler {
 					case 'array':
 						return $this->whereNotInArray(...$params);
 					default :
-						return $this->whereNotInString((string) $params[0], (string) $params[1], (string) $params[2]);
+						return $this->whereNotInString(...$params);
 				}
 		}
+		throw new InvalidArgumentException;
 	}
 
 	/**
@@ -163,6 +165,7 @@ class QueryBuiler {
 			case 3:
 				return $this->whereBetweenString((string) $params[0], (string) $params[1], (string) $params[2]);
 		}
+		throw new InvalidArgumentException;
 	}
 
 	/**
@@ -177,6 +180,7 @@ class QueryBuiler {
 			case 3:
 				return $this->whereNotBetweenString((string) $params[0], (string) $params[1], (string) $params[2]);
 		}
+		throw new InvalidArgumentException;
 	}
 
 	/**
@@ -189,13 +193,12 @@ class QueryBuiler {
 			case 1:
 				switch (gettype($obj = reset($params))) {
 					case 'object':
-						if ($obj instanceof \Closure) {
-							return $this->whereExistsClosure($obj);
-						}
+						return $this->whereExistsClosure($obj);
 					case 'string':
 						return $this->whereExistsRaw($obj);
 				}
 		}
+		throw new InvalidArgumentException;
 	}
 
 	/**
@@ -208,13 +211,12 @@ class QueryBuiler {
 			case 1:
 				switch (gettype($obj = reset($params))) {
 					case 'object':
-						if ($obj instanceof \Closure) {
-							return $this->whereNotExistsClosure($obj);
-						}
+						return $this->whereNotExistsClosure($obj);
 					case 'string':
 						return $this->whereNotExistsRaw($obj);
 				}
 		}
+		throw new InvalidArgumentException;
 	}
 
 	/**
@@ -236,6 +238,7 @@ class QueryBuiler {
 						return $this->whereSubqueryRaw(...$params);
 				}
 		}
+		throw new InvalidArgumentException;
 	}
 
 	/**
@@ -259,7 +262,7 @@ class QueryBuiler {
 			case 3:
 				return $this->havingValue((string) $params[0], (string) $params[1], (string) $params[2]);
 		}
-		return $this;
+		throw new InvalidArgumentException;
 	}
 
 	/**
@@ -277,6 +280,7 @@ class QueryBuiler {
 						return $this->havingInString(...$params);
 				}
 		}
+		throw new InvalidArgumentException;
 	}
 
 	/**
@@ -291,9 +295,10 @@ class QueryBuiler {
 					case 'array':
 						return $this->havingNotInArray(...$params);
 					default :
-						return $this->havingNotInString((string) $params[0], (string) $params[1], (string) $params[2]);
+						return $this->havingNotInString(...$params);
 				}
 		}
+		throw new InvalidArgumentException;
 	}
 
 	/**
@@ -308,6 +313,7 @@ class QueryBuiler {
 			case 3:
 				return $this->havingBetweenString((string) $params[0], (string) $params[1], (string) $params[2]);
 		}
+		throw new InvalidArgumentException;
 	}
 
 	/**
@@ -322,6 +328,7 @@ class QueryBuiler {
 			case 3:
 				return $this->havingNotBetweenString((string) $params[0], (string) $params[1], (string) $params[2]);
 		}
+		throw new InvalidArgumentException;
 	}
 
 	/**
@@ -372,6 +379,7 @@ class QueryBuiler {
 						return $this->indexClosure(...$params);
 				}
 		}
+		throw new InvalidArgumentException;
 	}
 
 	/**
@@ -393,6 +401,7 @@ class QueryBuiler {
 			case 3:
 				return $this->selectFunction(...$params);
 		}
+		throw new InvalidArgumentException;
 	}
 
 	/**
@@ -407,6 +416,7 @@ class QueryBuiler {
 			case 2:
 				return $this->dataString(...$params);
 		}
+		throw new InvalidArgumentException;
 	}
 
 	/**
@@ -419,6 +429,7 @@ class QueryBuiler {
 			case 1:
 				return $this->fromString(...$params);
 		}
+		throw new InvalidArgumentException;
 	}
 
 	/**
@@ -446,6 +457,7 @@ class QueryBuiler {
 						return $this->groupString(...$params);
 				}
 		}
+		throw new InvalidArgumentException;
 	}
 
 	/**
@@ -460,6 +472,7 @@ class QueryBuiler {
 			case 2:
 				return $this->orderString(...$params);
 		}
+		throw new InvalidArgumentException;
 	}
 
 	/**
@@ -474,6 +487,7 @@ class QueryBuiler {
 			case 2:
 				return $this->limitOffsetTake(...$params);
 		}
+		throw new InvalidArgumentException;
 	}
 
 	/**
@@ -486,16 +500,12 @@ class QueryBuiler {
 			case 1:
 				switch (gettype($obj = reset($params))) {
 					case 'object':
-						if ($obj instanceof \Closure) {
-							return $this->unionClosure($obj);
-						}
-//						elseif ($obj instanceof QueryBuiler) {
-//							return $this->unionQueryBuiler($obj);
-//						}
+						return $this->unionClosure($obj);
 					case 'string':
 						return $this->unionRaw(...$params);
 				}
 		}
+		throw new InvalidArgumentException;
 	}
 
 	/**
@@ -508,7 +518,7 @@ class QueryBuiler {
 			case 1:
 				switch (gettype($obj = reset($params))) {
 					case 'object':
-						if ($obj instanceof \Closure) {
+						if ($obj instanceof Closure) {
 							return $this->unionClosure($obj, 'union all');
 						} elseif ($obj instanceof QueryBuiler) {
 							return $this->unionQueryBuiler($obj, 'union all');
@@ -517,13 +527,14 @@ class QueryBuiler {
 						return $this->unionRaw($obj, 'union all');
 				}
 		}
+		throw new InvalidArgumentException;
 	}
 
 	/**
 	 * 排他锁
 	 * @return QueryBuiler
 	 */
-	public function lock(): QueryBuiler{
+	public function lock(): QueryBuiler {
 		return $this->lockForUpdate();
 	}
 

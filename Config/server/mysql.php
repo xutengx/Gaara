@@ -6,7 +6,7 @@ return [
 	  | PDO对象实例化属性
 	  |--------------------------------------------------------------------------
 	  | 在每次 mysql 数据库连接时, 都会调用
-	  |	http://php.net/manual/zh/pdo.setattribute.php
+	  | http://php.net/manual/zh/pdo.setattribute.php
 	 */
 	'pdo_attr'	 => [
 		/*
@@ -14,7 +14,7 @@ return [
 		  | PDO 初始化命令
 		  |--------------------------------------------------------------------------
 		  | ONLY_FULL_GROUP_BY				`严格group(与oracle一致)`
-		  |	STRICT_TRANS_TABLES				`严格模式, 进行数据的严格校验，错误数据不能插入，报error错误`
+		  | STRICT_TRANS_TABLES				`严格模式, 进行数据的严格校验，错误数据不能插入，报error错误`
 		  | ERROR_FOR_DIVISION_BY_ZERO		`如果被零除(或MOD(X，0))，则产生错误(否则为警告)`
 		  | NO_AUTO_CREATE_USER				`防止GRANT自动创建新用户，除非还指定了密码`
 		  | NO_ENGINE_SUBSTITUTION			`如果需要的存储引擎被禁用或未编译，那么抛出错误`
@@ -40,12 +40,13 @@ return [
 		PDO::ATTR_ERRMODE					 => PDO::ERRMODE_EXCEPTION,
 		/*
 		  |--------------------------------------------------------------------------
-		  | PDO对象实例化属性
+		  | 启用或禁用预处理语句的模拟
 		  |--------------------------------------------------------------------------
-		  | 在每次数据库连接时, 都会调用
+		  | true
+		  | false
 		  |
 		 */
-		PDO::ATTR_EMULATE_PREPARES			 => false, // 不使用模拟prepare, 使用真正意义的prepare
+		PDO::ATTR_EMULATE_PREPARES			 => false,
 		/*
 		  |--------------------------------------------------------------------------
 		  | 是否使用缓冲查询

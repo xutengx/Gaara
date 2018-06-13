@@ -113,7 +113,7 @@ return [
 			return 'ttttt';
 		});
 
-		Route::get('/swoole', function(){
+		Route::get('/phpinfo', function(){
 			phpinfo();
 			exit;
 		});

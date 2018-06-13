@@ -3,6 +3,7 @@
 declare(strict_types = 1);
 namespace Gaara\Core;
 
+use Exception;
 
 class Conf {
 
@@ -37,6 +38,20 @@ class Conf {
 	}
 
 	/**
+	 * 服务器相关初始化文件
+	 * @param string $filename
+	 * @return array
+	 * @throws Exception
+	 */
+	public function getServerConf(string $filename): array {
+		$file = CONFIG . 'server/' . $filename . '.php';
+		if (is_file($file)) {
+			return $this->{'server/' . $filename};
+		}
+		throw new Exception('Not found server ini file : ' . $file);
+	}
+
+	/**
 	 * 惰性读取配置文件
 	 * @param string $configName
 	 * @return mixed
@@ -44,9 +59,10 @@ class Conf {
 	public function __get(string $configName) {
 		if (array_key_exists($configName, self::$data)) {
 			return self::$data[$configName];
-		} elseif (is_file(CONFIG . $configName . '.php')) {
-			return self::$data[$configName] = require(CONFIG . $configName . '.php');
+		} elseif (is_file($filename = CONFIG . $configName . '.php')) {
+			return self::$data[$configName] = require($filename);
 		}
+		throw new Exception('Not found conf file : ' . $filename);
 	}
 
 }

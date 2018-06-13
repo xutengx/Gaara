@@ -12,7 +12,6 @@ return [
 					'port'	 => env('DB_PORT'),
 					'user'	 => env('DB_USER'),
 					'pwd'	 => env('DB_PASSWD'),
-					'char'	 => 'UTF8',
 					'db'	 => env('DB_DATABASE'),
 				]
 			],
@@ -24,7 +23,6 @@ return [
 					'port'	 => env('DB_PORT'),
 					'user'	 => env('DB_USER'),
 					'pwd'	 => env('DB_PASSWD'),
-					'char'	 => 'UTF8',
 					'db'	 => env('DB_DATABASE'),
 				],
 				[
@@ -34,7 +32,6 @@ return [
 					'port'	 => env('DB_PORT'),
 					'user'	 => env('DB_USER'),
 					'pwd'	 => env('DB_PASSWD'),
-					'char'	 => 'UTF8',
 					'db'	 => env('DB_DATABASE'),
 				]
 			]
@@ -48,7 +45,6 @@ return [
 					'port'	 => 21406,
 					'user'	 => 'cdr',
 					'pwd'	 => env('DB_BEST_PASSWD'),
-					'char'	 => 'UTF8',
 					'db'	 => 'cdr_report',
 				]
 			]
@@ -62,7 +58,6 @@ return [
 					'port'	 => 3306,
 					'user'	 => 'root',
 					'pwd'	 => 'root',
-					'char'	 => 'UTF8',
 					'db'	 => 'test'
 				]
 			],
@@ -74,7 +69,6 @@ return [
 					'port'	 => 3306,
 					'user'	 => 'root',
 					'pwd'	 => 'root',
-					'char'	 => 'UTF8',
 					'db'	 => 'test'
 				],
 				[
@@ -84,7 +78,6 @@ return [
 					'port'	 => 3306,
 					'user'	 => 'root',
 					'pwd'	 => 'root',
-					'char'	 => 'UTF8',
 					'db'	 => 'test'
 				]
 			]

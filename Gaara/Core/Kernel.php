@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Gaara\Core;
 
 use Closure;
+use Exception;
 use Gaara\Core\Route;
 use ReflectionFunction;
 use ReflectionClass;
@@ -27,6 +28,12 @@ abstract class Kernel {
 	 */
 	public function Init(): Kernel {
 		$conf = obj(Conf::class)->app;
+		$serverIni = obj(Conf::class)->getServerConf('php');
+		foreach($serverIni as $k => $v){
+			if(ini_set($k, $v) === false){
+				throw new Exception("ini_set($k, $v) is Fail");
+			}
+		}
 		date_default_timezone_set($conf['timezone']);
 		if ($conf['debug'] === '1') {
 			ini_set('display_errors', '1');

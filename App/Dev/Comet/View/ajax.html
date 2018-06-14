@@ -1,18 +1,22 @@
 <div><?php echo $title; ?></div>
 <script>
+	var timestamp = Date.parse(new Date());
 	var request;
 	var ajaxComet = function () {
 		request = $.ajax({
 			url: $.url('/ajax/do'),
 			dataType: 'json',
+			data:{'timestamp':timestamp},
 			success: function (res) {
 				console.log(res);
 				ajaxComet();
 			},
 			error: function (jqXHR, textStatus, errorThrown) {
-				a = JSON.parse(jqXHR.responseText);
-				if (a.status !== 410) {
+//				return;
+				if(jqXHR.status === 423){
+					alert(errorThrown);
 
+				}else if (jqXHR.status !== 410) {
 					ajaxComet();
 				}
 			}

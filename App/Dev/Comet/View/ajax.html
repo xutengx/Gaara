@@ -1,0 +1,32 @@
+<div><?php echo $title; ?></div>
+<script>
+	var request;
+	var ajaxComet = function () {
+		request = $.ajax({
+			url: $.url('/ajax/do'),
+			dataType: 'json',
+			success: function (res) {
+				console.log(res);
+				ajaxComet();
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				a = JSON.parse(jqXHR.responseText);
+				if (a.status !== 410) {
+
+					ajaxComet();
+				}
+			}
+		});
+	};
+	ajaxComet();
+
+window.onunload = function(){
+	$.ajax({
+		url: $.url('/ajax/do'),
+		data: {'action': 'leave'},
+		async: false
+	});
+};
+
+</script>
+

@@ -78,6 +78,10 @@ return [
 		});
 	}),
 	Route::group(['middleware' => ['web', 'api'], 'namespace' => 'App\Dev'], function() {
+		// ajax 长轮询 页面
+		Route::get('/ajax', ['namespace' => '', 'uses' => 'Comet\Contr\ajax@index']);
+		// ajax 长轮询 请求
+		Route::get('/ajax/do', ['namespace' => '', 'uses' => 'Comet\Contr\ajax@ajaxdo']);
 		// ini文件
 		Route::get('/ini', ['namespace' => '', 'uses' => 'inifile\index@index']);
 		// 数据库测试

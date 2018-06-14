@@ -191,7 +191,7 @@ class Cache {
 	 */
 	private function makeKey($obj, string $funcname = '', array $params = []): string {
 		$classname	 = is_object($obj) ? get_class($obj) : $obj;
-		$key		 = '';	// default
+		$key		 = ''; // default
 		if (!empty($params)) {
 			foreach ($params as $v) {
 				if (is_object($v))

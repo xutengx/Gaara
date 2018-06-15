@@ -13,50 +13,60 @@ trait CometTrait {
 
 	/**
 	 * ajax长轮询
+	 * 前端 $.ajaxComet() 可调用
 	 * @param Closure $callback  return null 则 padding
-	 * @param int $sleep
-	 * @param int $timeout
-	 * @return type
+	 * @param int $timeout 进程padding时间(秒)
+	 * @param float $sleep 处理业务的间隔时间(秒)
+	 * @return string
 	 */
-	protected function ajaxComet(Closure $callback, int $sleep = 1, int $timeout = 30): string {
-		$endBusinessKey			 = $this->endBusinessKey();
-		$exclusiveBusinessKey	 = $this->exclusiveBusinessKey();
+	protected function ajaxComet(Closure $callback, int $timeout = 30, float $sleep = 0.1): string {
+		$cycleTimes				 = (int) ($timeout / $sleep); // 循环次数
+		$microsecond			 = (int) ($sleep * 1000000); // 间隔微秒
+		$endBusinessKey			 = $this->endBusinessKey();  // 退出标记 key
+		$exclusiveBusinessKey	 = $this->exclusiveBusinessKey(); // 独占 key
 		// 关闭 session
 		session_write_close();
 
-		// 退出业务标记
-		if ($this->endBusinessMarker($endBusinessKey)) {
-			return $this->success();
-		}
-
-		// 独占业务
-		if (!$this->exclusiveBusiness($exclusiveBusinessKey, $timeout)) {
-			return $this->fail('timeout', 423);
-		}
-
-		$i = 0;
-		while ($i++ < $timeout) {
-			// 业务已被标记退出退出
-			if ($this->endBusiness($endBusinessKey, $exclusiveBusinessKey)) {
-				return $this->success([], 'stop');
+		try {
+			// 退出业务标记
+			if ($this->endBusinessMarker($endBusinessKey, $microsecond)) {
+				return $this->success();
 			}
 
-			// 业务调用
-			if (!is_null($res = $callback())) {
-				return $this->success($res);
+			// 独占业务
+			if (!$this->exclusiveBusiness($exclusiveBusinessKey, $cycleTimes)) {
+				return $this->fail('lock', 423);
 			}
-			sleep($sleep);
+
+			$i = 0;
+			while ($i++ < $cycleTimes) {
+				// 业务已被标记退出, 则退出
+				if ($this->endBusiness($endBusinessKey, $exclusiveBusinessKey)) {
+					return $this->success([], 'stop');
+				}
+
+				// 业务调用
+				if (!is_null($res = $callback())) {
+					return $this->success($res);
+				}
+				usleep($microsecond);
+			}
+			return $this->fail('timeout', 408);
+		} catch (Exception $exc) {
+			$this->endBusinessException($endBusinessKey, $exclusiveBusinessKey);
+			throw $exc;
 		}
-		return $this->fail('timeout', 408);
 	}
 
 	/**
 	 * 独占业务
+	 * @param string $exclusiveBusinessKey
+	 * @param int $timeout 进程padding时间(秒)
 	 * @return bool
 	 */
 	protected function exclusiveBusiness(string $exclusiveBusinessKey, int $timeout): bool {
 		if (obj(Cache::class)->setnx($exclusiveBusinessKey, serialize(true))) {
-			obj(Cache::class)->set($exclusiveBusinessKey, obj(Request::class)->input('timestamp'), $timeout * 3 + 10);
+			obj(Cache::class)->set($exclusiveBusinessKey, obj(Request::class)->input('timestamp'), $timeout * 2 + 5); // 容错过期时间
 			return true;
 		} elseif (obj(Cache::class)->get($exclusiveBusinessKey) === obj(Request::class)->input('timestamp')) {
 			return true;
@@ -65,7 +75,21 @@ trait CometTrait {
 	}
 
 	/**
+	 * 异常情况下 退出业务
+	 * @param string $endBusinessKey
+	 * @param string $exclusiveBusinessKey
+	 * @return bool
+	 */
+	protected function endBusinessException(string $endBusinessKey, string $exclusiveBusinessKey): bool {
+		obj(Cache::class)->rm($endBusinessKey);
+		obj(Cache::class)->rm($exclusiveBusinessKey);
+		return true;
+	}
+
+	/**
 	 * 退出业务
+	 * @param string $endBusinessKey
+	 * @param string $exclusiveBusinessKey
 	 * @return bool
 	 */
 	protected function endBusiness(string $endBusinessKey, string $exclusiveBusinessKey): bool {
@@ -79,11 +103,17 @@ trait CometTrait {
 
 	/**
 	 * 退出业务标记
+	 * @param string $endBusinessKey
+	 * @param int $microsecond
 	 * @return bool
 	 */
-	protected function endBusinessMarker(string $endBusinessKey): bool {
-		if (obj(Request::class)->input('action')) {
+	protected function endBusinessMarker(string $endBusinessKey, int $microsecond): bool {
+		if (obj(Request::class)->input('action') === 'leave') {
 			obj(Cache::class)->set($endBusinessKey, true);
+			$i = 0;
+			while (!is_null(obj(Cache::class)->get($endBusinessKey)) && $i++ < 3) {
+				usleep($microsecond); // 0.1秒
+			}
 			return true;
 		} else
 			return false;
@@ -113,8 +143,8 @@ trait CometTrait {
 	protected function resolveRequestSignature(): string {
 		if (isset($_SESSION)) {
 			return session_id() . '|' . static::class . '|';
-		}
-		throw new Exception('Need session ');
+		} else
+			throw new Exception('AjaxComet is dependent on Session');
 	}
 
 }

@@ -23,7 +23,7 @@ class ajax extends Controller {
 			if ($value = $Cache->rpop('ajax')) {
 				return $value;
 			}
-		}, 1, 30);
+		}, 10);
 	}
 
 }

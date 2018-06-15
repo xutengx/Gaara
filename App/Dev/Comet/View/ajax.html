@@ -1,36 +1,55 @@
 <div><?php echo $title; ?></div>
+<input id="inp" type="button"  value="123" placeholder="" />
 <script>
-	var timestamp = Date.parse(new Date());
-	var request;
-	var ajaxComet = function () {
-		request = $.ajax({
-			url: $.url('/ajax/do'),
-			dataType: 'json',
-			data:{'timestamp':timestamp},
-			success: function (res) {
-				console.log(res);
-				ajaxComet();
-			},
-			error: function (jqXHR, textStatus, errorThrown) {
-//				return;
-				if(jqXHR.status === 423){
-					alert(errorThrown);
+	$('#inp').copy();
 
-				}else if (jqXHR.status !== 410) {
-					ajaxComet();
-				}
-			}
-		});
-	};
-	ajaxComet();
 
-window.onunload = function(){
-	$.ajax({
+	$.ajaxComet({
 		url: $.url('/ajax/do'),
-		data: {'action': 'leave'},
-		async: false
+		dataType: 'json',
+		data: {'param1': Date.parse(new Date())}
+	}, function(res){
+		console.log(res);
 	});
-};
+
+console.log($.url('ajax/do', {'name':'xuteng','param1':'value'}));
+
+//	var timestamp = Date.parse(new Date());
+//	var request;
+//	var ajaxComet = function () {
+//		request = $.ajax({
+//			url: $.url('/ajax/do'),
+//			dataType: 'json',
+//			data: {'timestamp': timestamp},
+//			success: function (res) {
+//				console.log(res);
+//				ajaxComet();
+//			},
+//			error: function (jqXHR, textStatus, errorThrown) {
+//				if (jqXHR.status === 423 || jqXHR.status === 429) {		// lock || Too Many Attempts
+//					alert(errorThrown);
+//				} else if (jqXHR.status === 500) {	// error
+//					try {
+//						void 0 !== jqXHR.msg ? alert(jqXHR.msg) : void 0 !== jqXHR.error.message && alert(jqXHR.error.message);
+//					} catch (e) {
+//						alert(errorThrown);
+//					}
+//				} else if (jqXHR.status !== 410) {	// gone
+//					ajaxComet();
+//				}
+//			}
+//		});
+//	};
+//	ajaxComet();
+//
+//	window.onunload = function () {
+//		$.ajax({
+//			url: $.url('/ajax/do'),
+//			data: {'action': 'leave'},
+//			async: false,
+//			timeout: 2000 // 设置超时时间
+//		});
+//	};
 
 </script>
 

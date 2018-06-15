@@ -21,7 +21,11 @@
 * [获取对象](/helper/getobj.md)
 * [惰性js](/helper/inertjs.md)
     * [总览](#总览)
-    * [方法列表](#别名获取)
+    * [方法列表](#方法列表)
+        * [ajaxComet](#ajaxComet)
+        * [url](#url)
+        * [submitData](#submitData)
+        * [多语言](#多语言)
 
 ## 总览
 
@@ -33,5 +37,131 @@
 
 ## 方法列表
 
-**注 : 详情查看`Gaara\Views\include\js\jquery_gaara_init.js`**
+### ajaxComet
 
+长轮询, 单页面锁定保证数据正确性, 提前退出便会结束当前轮询进程
+
+**注:依赖`session`,`redis`**
+
+js段,调用
+
+```js
+$.ajaxComet({
+	url: '/ajax/do',     // 指向php段接口
+	dataType: 'json',
+	data: {'param1': Date.parse(new Date())}
+}, function(res){
+	console.log(res);
+});
+```
+**注:`ajaxComet(obj, success_function) `**
+
+php端,接受请求
+
+```php
+<?php
+
+namespace App\Dev\Comet\Contr;
+
+use Gaara\Core\{
+	Controller, Cache, Request, Controller\Traits\CometTrait
+};
+
+class ajax extends Controller {
+
+	use CometTrait;     // 引入`ajaxComet()`
+
+	protected $view	 = 'App/Dev/Comet/View/';
+	protected $title = 'ajax 长轮询 !';
+
+    // 页面渲染 `display会提供可用js`
+	public function index() {
+		$this->assignPhp('title', $this->title);
+		return $this->display();
+	}
+
+    // 轮询入口
+	public function ajaxdo(Cache $Cache) {
+		return $this->ajaxComet(function() use ($Cache) {
+		    // 不符合条件,无需返回,进程将padding
+			if ($value = $Cache->rpop('ajax')) {
+				return $value;
+			}
+		}, 10);
+	}
+
+}
+```
+**注:`ajaxComet(Closure $callback, int $timeout = 30, float $sleep = 0.1): string `**
+
+### url
+
+生成url
+
+```js
+var u = $.url('ajax/do', {
+    'name':'xuteng',
+    'param1':'value'
+});
+console.log(u); // http://www.gaara.com/ajax/do?name=xuteng&param1=value
+```
+
+
+### submitData
+
+提取`form`中的数据, 效验, 组装后提交
+
+```html
+<form action="action">
+    <span>邮箱</span><input type="text" name="email" value="1771033392@qq.com"/><br>
+    <span>url</span><input type="text" name="url" value="http://前端地址,我要注册#拼接参数=" /><br>
+    <input id="userreg" type="button" value="submit">
+</form>
+
+<script>
+    $('#userreg').submitData('/user/reg', function (re) {
+        console.log(re);
+    }, 'post');
+</script>
+```
+
+### 多语言
+
+多语言切换
+
+```js
+
+console.log($.lr('time')+date);
+
+$.lw('time');
+
+```
+```php
+<?php
+
+namespace App\yh\c\Dev;
+
+use Gaara\Core\Controller;
+
+class Date extends Controller {
+
+    protected $view = 'App/yh/c/Dev/';
+
+    protected $language = 0;        // 确定语言键
+
+    protected $language_array = [   // 语言数组
+        'time' => [
+            '时间','time'
+        ]
+    ];
+
+    public function index() {
+        $this->assign('date', date('Y-m-d H;i:s'));
+
+        return $this->display('assembly/date');
+
+    }
+
+}
+
+```

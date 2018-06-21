@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Gaara\Core\Cache\Driver;
 
 use Gaara\Core\Cache\DriverInterface;
+use Gaara\Core\Conf;
 use redis as php_redis;
 
 class Redis implements DriverInterface {
@@ -22,6 +23,7 @@ class Redis implements DriverInterface {
 		);
 		if (isset($options['passwd']) && !empty($options['passwd']))
 			$this->handler->auth($options['passwd']);
+		$this->handler->select((int) $options['database'] ?? 0);
 	}
 
 	/**

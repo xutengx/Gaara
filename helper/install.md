@@ -25,7 +25,7 @@
 ## composer
 在你希望建立项目的目录下通过 composer 进行安装。
 ```
-$ composer create-project xutengx/gaara
+$ composer create-project --prefer-dist xutengx/gaara project
 ```
 将会生成 gaara 的文件夹，并自动安装依赖。
 ## clone

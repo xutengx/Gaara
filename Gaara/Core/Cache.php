@@ -4,8 +4,9 @@ declare(strict_types = 1);
 namespace Gaara\Core;
 
 use Gaara\Core\Conf;
-use Gaara\Core\Cache\Driver;
-use Gaara\Core\Cache\Traits;
+use Gaara\Core\Cache\{
+	Driver, Traits
+};
 use Closure;
 use InvalidArgumentException;
 use Exception;
@@ -38,17 +39,18 @@ class Cache {
 
 	/**
 	 * 指定使用的缓存驱动
-	 * @param string $drivername
+	 * @param string $driver_name
 	 * @return \Gaara\Core\Cache
 	 * @throws InvalidArgumentException
 	 */
-	public function store(string $drivername = null): Cache {
-		$drivername = $drivername ?? $this->conf['driver'];
+	public function store(string $driver_name = null): Cache {
+		$drivername = $driver_name ?? $this->conf['driver'];
 		if (array_key_exists($drivername, $this->supportedDrivers)) {
 			if (array_key_exists($drivername, $this->Drivers)) {
 				$this->driver = $this->Drivers[$drivername];
-			} else
-				$this->driver				 = $this->Drivers[$drivername]	 = new $this->supportedDrivers[$drivername]($this->conf[$drivername]);
+			} else {
+				$this->driver = $this->Drivers[$drivername]	= new $this->supportedDrivers[$drivername]($this->conf[$drivername]);
+			}
 		} else
 			throw new InvalidArgumentException('Not supported the cache driver : ' . $drivername . '.');
 		return $this;

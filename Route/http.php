@@ -78,6 +78,8 @@ return [
 		});
 	}),
 	Route::group(['middleware' => ['web', 'api'], 'namespace' => 'App\Dev'], function() {
+		// lock 页面
+		Route::get('/lock', ['namespace' => '', 'uses' => 'lock\index@indexDo']);
 		// ajax 长轮询 页面
 		Route::get('/ajax', ['namespace' => '', 'uses' => 'Comet\Contr\ajax@index']);
 		// ajax 长轮询 请求

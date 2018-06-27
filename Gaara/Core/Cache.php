@@ -160,10 +160,10 @@ class Cache {
 
 	/**
 	 * 获取当前驱动的类名称
-	 * @return string
+	 * @return string eg:redis
 	 */
 	public function getDirverName(): string {
-		return get_class($this->driver);
+		return array_search(get_class($this->driver), $this->supportedDrivers);
 	}
 
 	/**

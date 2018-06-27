@@ -65,7 +65,7 @@ trait CometTrait {
 	 * @return bool
 	 */
 	protected function exclusiveBusiness(string $exclusiveBusinessKey, int $timeout): bool {
-		if (obj(Cache::class)->setnx($exclusiveBusinessKey, serialize(true))) {
+		if (obj(Cache::class)->setnx($exclusiveBusinessKey, serialize(true))) { // 未兼容 file
 			obj(Cache::class)->set($exclusiveBusinessKey, obj(Request::class)->input('timestamp'), $timeout * 2 + 5); // 容错过期时间
 			return true;
 		} elseif (obj(Cache::class)->get($exclusiveBusinessKey) === obj(Request::class)->input('timestamp')) {

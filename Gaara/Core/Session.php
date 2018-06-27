@@ -31,13 +31,17 @@ class Session {
 		ini_set('session.gc_maxlifetime', (string) $lifetime);
 		ini_set('session.name', $this->session_name);
 
+		switch ($driver) {
+			case 'redis':
+				$conn = empty($conf['redis']['connection']) ? obj(Conf::class)->redis['default'] : $conf['redis']['connection'];
 
-		if ($driver === 'redis')
-			$this->Drivers	 = new Driver\Redis($conf[$driver]);
-		elseif ($driver === 'file')
-			$this->Drivers	 = new Driver\File($conf[$driver]);
-		elseif ($driver === 'mysql')
-			$this->Drivers	 = new Driver\Mysql($conf[$driver]);
+				$this->Drivers	 = new Driver\Redis($conn);
+				break;
+			default:
+				$this->Drivers	 = new Driver\File($conf['file']['dir']);
+				break;
+		}
+
 
 		// 重写后 未完成
 		$this->Manual = $Manual;

@@ -49,7 +49,8 @@ class Cache {
 			if (array_key_exists($drivername, $this->Drivers)) {
 				$this->driver = $this->Drivers[$drivername];
 			} else {
-				$this->driver = $this->Drivers[$drivername]	= new $this->supportedDrivers[$drivername]($this->conf[$drivername]);
+				$conn = empty(reset($this->conf[$drivername])) ? obj(Conf::class)->redis['default'] : reset($this->conf[$drivername]);
+				$this->driver = $this->Drivers[$drivername] = new $this->supportedDrivers[$drivername]($conn);
 			}
 		} else
 			throw new InvalidArgumentException('Not supported the cache driver : ' . $drivername . '.');

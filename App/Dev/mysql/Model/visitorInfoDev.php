@@ -5,15 +5,15 @@ namespace App\Dev\mysql\Model;
 use Gaara\Core\Model\QueryBuiler;
 
 class test extends \Gaara\Core\Model {
-    
+
     protected $table = 'visitor_info';
 
+    protected $connection = 'con3';
 
-    protected $connection = '_dev';
-    
+
     public function construct() {
     }
-   
+
     protected $create_sql = <<<SQL
 CREATE TABLE `visitor_info` (
   `id` int(1) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
@@ -28,11 +28,11 @@ CREATE TABLE `visitor_info` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=23630 DEFAULT CHARSET=utf8 COMMENT='访客登记表';
 SQL;
-    
+
 }
 
 class visitorInfoDev extends test{
-    
+
     public function registerMethodForQueryBuiler():array{
         return [
             'ID_is_bigger_than_1770' => function(QueryBuiler $queryBuiler): QueryBuiler{
@@ -43,5 +43,5 @@ class visitorInfoDev extends test{
             },
         ];
     }
-    
+
 }

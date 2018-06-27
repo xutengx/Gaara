@@ -13,9 +13,12 @@ class Redis implements DriverInterface {
 
 	/**
 	 * redis链接
-	 * @param array $options
+	 * @param string $connection redis连接名
 	 */
-	public function __construct(array $options = []) {
+	public function __construct(string $connection) {
+		// 取连接, 不存在则取默认连接
+		$options = obj(Conf::class)->redis['connections'][$connection] ?? obj(Conf::class)->redis['connections'][obj(Conf::class)->redis['default']];
+
 		$this->handler	 = new php_redis();
 		$connect		 = (CLI === true) ? 'pconnect' : 'connect';
 		$this->handler->$connect(

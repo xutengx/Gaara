@@ -13,8 +13,8 @@ class File implements DriverInterface {
 	// 缓存扩展名
 	private $cacheFileExt = '.php';
 
-	final public function __construct($options = array()) {
-		$this->cacheRoot = isset($options['dir']) ? ROOT . $options['dir'] : ROOT . 'data/Cache/';
+	final public function __construct(string $dir = null) {
+		$this->cacheRoot = !is_null($dir) ? ROOT . $dir : ROOT . 'data/Cache/';
 	}
 
 	/**

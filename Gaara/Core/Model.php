@@ -10,7 +10,7 @@ use Gaara\Core\Model\Traits\{
 };
 use Gaara\Core\Cache;
 
-class Model {
+abstract class Model {
 
 	use DebugTrait,
 	 ObjectRelationalMappingTrait,
@@ -49,8 +49,7 @@ class Model {
 	protected function getDB(): DbConnection {
 		$conf							 = obj(Conf::class)->db;
 		$this->connection				 = $this->connection ?? $conf['default'];
-		$connectionConf					 = $conf['connections'][$this->connection];
-		return self::$dbs[$this->connection] ?? self::$dbs[$this->connection]	 = dobj(DbConnection::class, $connectionConf, $this->connection);
+		return self::$dbs[$this->connection] ?? self::$dbs[$this->connection]	 = dobj(DbConnection::class, $this->connection);
 	}
 
 	/**

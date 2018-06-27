@@ -3,18 +3,24 @@
 declare(strict_types = 1);
 namespace Gaara\Core\Session\Driver;
 
+use Gaara\Core\Conf;
+
 class Redis {
 
-	public function __construct($options = array()) {
-		$host	 = ( isset($options['host']) && !is_null($options['host']) ) ? $options['host']
-			: '127.0.0.1';
-		$port	 = ( isset($options['port']) && !is_null($options['port']) ) ? $options['port']
-			: 6379;
-		$passwd	 = ( isset($options['passwd']) && !is_null($options['passwd']) ) ? '?auth=' . $options['passwd']
-			: '';
+	/**
+	 *
+	 * @param string $connection redis连接名
+	 */
+	public function __construct(string $connection) {
+		$options = obj(Conf::class)->redis['connections'][$connection];
+
+		$host				 = $options['host'] ?? '127.0.0.1';
+		$port				 = $options['port'] ?? 6379;
+		$query['auth']		 = $options['password'] ?? '';
+		$query['database']	 = $options['database'] ?? 0;
 
 		ini_set('session.save_handler', 'redis');
-		ini_set('session.save_path', 'tcp://' . $host . ':' . $port . $passwd);
+		ini_set('session.save_path', 'tcp://' . $host . ':' . $port . '?' . http_build_query($query));
 	}
 
 }

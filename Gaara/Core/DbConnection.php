@@ -90,11 +90,11 @@ class DbConnection {
 
 	/**
 	 *
-	 * @param array $DBconf	 配置数组
 	 * @param string $connection 数据库链接名
 	 * @param bool $single 单进程模式
 	 */
-	public function __construct(array $DBconf, string $connection, bool $single = true) {
+	public function __construct(string $connection, bool $single = true) {
+		$DBconf = obj(Conf::class)->db['connections'][$connection];
 		$this->identification	 = uniqid((string) getmypid());
 		$this->connection		 = $connection;
 		$this->single			 = $single;

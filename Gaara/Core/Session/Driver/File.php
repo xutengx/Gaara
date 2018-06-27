@@ -3,16 +3,21 @@
 declare(strict_types = 1);
 namespace Gaara\Core\Session\Driver;
 
+use Gaara\Core\Tool;
+
 class File {
 
-	public function __construct($options = array()) {
-		$dir = ( isset($options['dir']) && !is_null($options['dir']) ) ? $options['dir']
-			: 'data/Session';
+	/**
+	 *
+	 * @param string $dir session文件存储位置
+	 */
+	public function __construct(string $dir) {
+		$dir = $dir ?? 'data/Session';
 
-		obj('tool')->absoluteDir($dir);
+		obj(Tool::class)->absoluteDir($dir);
 
 		if (!is_dir($dir))
-			obj('tool')->__mkdir($dir);
+			obj(Tool::class)->__mkdir($dir);
 
 		ini_set('session.save_handler', 'files');
 		ini_set('session.save_path', $dir);

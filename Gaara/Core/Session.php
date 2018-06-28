@@ -33,7 +33,7 @@ class Session {
 
 		switch ($driver) {
 			case 'redis':
-				$conn = empty($conf['redis']['connection']) ? obj(Conf::class)->redis['default'] : $conf['redis']['connection'];
+				$conn = empty($conf['redis']['connection']) ? obj(Conf::class)->redis['default_connection'] : $conf['redis']['connection'];
 
 				$this->Drivers	 = new Driver\Redis($conn);
 				break;

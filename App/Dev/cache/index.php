@@ -13,7 +13,7 @@ class index extends Controller{
 
     private $fun_array = [
         'Cache->get("不存在的键")' => 'test_1',
-        'Cache->set("键","我是值")' => 'test_2',
+        'Cache->set("键","我是值") & Cache->setnx("键","我是值")' => 'test_2',
         'Cache->get("键")' => 'test_3',
         'Cache->rm("键")' => 'test_4',
         'Cache->rm("不存在的键")' => 'test_5',
@@ -57,6 +57,7 @@ class index extends Controller{
     private function test_2(Cache $Cache) {
         $Cache->set("时间",time());
         var_dump($Cache->set("键","我是值"));
+        var_dump($Cache->setnx("键","我是值"));
     }
 
     private function test_3(Cache $Cache) {

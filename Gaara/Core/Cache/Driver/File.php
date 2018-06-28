@@ -52,6 +52,25 @@ class File implements DriverInterface {
 	}
 
 	/**
+	 * 设置缓存
+	 * 仅在不存在时设置缓存 set if not exists
+	 * @param string $key 键
+	 * @param string $value 值
+	 * @return bool
+	 */
+	public function setnx(string $key, string $value): bool {
+		$return_value = false;
+		$success = $this->lock($key, function($handle)use ($value, &$return_value) {
+			$old_value = $this->getWithLock($handle);
+			if (($old_value === false) && $this->setWithLock($handle, $value, -1)) {
+				return $return_value = true;
+			} else
+				return $return_value = false;
+		});
+		return ($success && $return_value);
+	}
+
+	/**
 	 * 删除单一缓存
 	 * @param string $key 键
 	 * @return bool
@@ -109,35 +128,42 @@ class File implements DriverInterface {
 	 * @return int 自增后的值
 	 */
 	public function increment(string $key, int $step = 1): int {
-		return $this->lock($key, function($handle)use ($step) {
+		$return_value;
+		// todo
+		$success = $this->lock($key, function($handle)use ($step, &$return_value) {
 			$value		 = $this->getWithLock($handle);
 			$new_value	 = (int) $value + $step; // (int)false === 0
 			$expire		 = $this->ttlWithLock($handle);
 			$new_expire	 = ( $expire === -2 ) ? -1 : $expire;
 			if ($this->setWithLock($handle, (string) $new_value, $new_expire)) {
-				return $new_value;
-			} else
-				throw new Exception('Cache Increment Error!');
+				$return_value = $new_value;
+			}
 		});
+		if ($success) {
+			return $return_value;
+		} else
+			throw new Exception('Cache Increment Error!');
 	}
 
 	/**
 	 * 以独占锁开启一个文件, 并执行闭包
 	 * @param string $key
 	 * @param Closure $callback
-	 * @return mixed
+	 * @param int $locktype LOCK_EX LOCK_NB
+	 * @return bool
 	 */
-	private function lock(string $key, Closure $callback) {
+	private function lock(string $key, Closure $callback, int $locktype = LOCK_EX) {
 		$filename	 = $this->makeFilename($key);
 		$type		 = is_file($filename) ? 'rb+' : 'wb+';
 		if ($handle		 = fopen($filename, $type)) {
-			if (flock($handle, LOCK_EX)) {
-				$res = $callback($handle);
+			if (flock($handle, $locktype)) {
+				$callback($handle);
 				flock($handle, LOCK_UN);
+				fclose($handle);
+				return true;
 			}
-			fclose($handle);
-			return $res;
 		}
+		return false;
 	}
 
 	/**
@@ -239,14 +265,15 @@ class File implements DriverInterface {
 	 * 写入文件
 	 * @param string $filename 文件名(绝对路径)
 	 * @param string $text
+	 * @param int $locktype LOCK_EX LOCK_NB
 	 * @return bool
 	 */
-	private function saveFile(string $filename, string $text): bool {
+	private function saveFile(string $filename, string $text, int $locktype = LOCK_EX): bool {
 		if (!is_file($filename)) {
 			if (is_dir(dirname($filename)) || $this->_mkdir(dirname($filename)))
 				touch($filename);
 		}
-		return file_put_contents($filename, $text, LOCK_EX) === false ? false : true;
+		return file_put_contents($filename, $text, $locktype) === false ? false : true;
 	}
 
 	/**

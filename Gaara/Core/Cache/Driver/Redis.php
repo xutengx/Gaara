@@ -17,7 +17,7 @@ class Redis implements DriverInterface {
 	 */
 	public function __construct(string $connection) {
 		// 取连接, 不存在则取默认连接
-		$options = obj(Conf::class)->redis['connections'][$connection] ?? obj(Conf::class)->redis['connections'][obj(Conf::class)->redis['default']];
+		$options = obj(Conf::class)->redis['connections'][$connection];
 
 		$this->handler	 = new php_redis();
 		$connect		 = (CLI === true) ? 'pconnect' : 'connect';

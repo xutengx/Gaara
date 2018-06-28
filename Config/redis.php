@@ -8,7 +8,7 @@ return [
 	  |
 	  |
 	 */
-	'default' => env('REDIS_CONNECTION', 'con1'),
+	'default_connection' => env('REDIS_CONNECTION', 'default'),
 	/*
 	  |--------------------------------------------------------------------------
 	  | redis可使用的redis连接
@@ -17,7 +17,7 @@ return [
 	  |
 	 */
 	'connections' => [
-		'con1'	 => [
+		'default'	 => [
 			'host'		 => env('REDIS_HOST', '127.0.0.1'),
 			'password'	 => env('REDIS_PASSWORD', null),
 			'port'		 => env('REDIS_PORT', 6379),

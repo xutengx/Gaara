@@ -48,7 +48,7 @@ abstract class Model {
 	 */
 	protected function getDB(): DbConnection {
 		$conf							 = obj(Conf::class)->db;
-		$this->connection				 = $this->connection ?? $conf['default'];
+		$this->connection				 = $this->connection ?? $conf['default_connection'];
 		return self::$dbs[$this->connection] ?? self::$dbs[$this->connection]	 = dobj(DbConnection::class, $this->connection);
 	}
 

@@ -26,7 +26,7 @@ return [
 	  |
 	 */
 	'redis' => [
-		'connection' => env('SESSION_REDIS_CONNECTION'),
+		'connection' => env('CACHE_DIRVER_REDIS_CONNECTION'),
 	],
 	/*
 	  |--------------------------------------------------------------------------

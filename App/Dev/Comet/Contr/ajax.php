@@ -20,9 +20,9 @@ class ajax extends Controller {
 
 	public function ajaxdo(Cache $Cache) {
 		return $this->ajaxComet(function() use ($Cache) {
-			if ($value = $Cache->rpop('ajax')) {
-				return $value;
-			}
+//			if ($value = $Cache->rpop('ajax')) {
+//				return $value;
+//			}
 		}, 10);
 	}
 

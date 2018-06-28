@@ -49,7 +49,7 @@ class Cache {
 			if (array_key_exists($drivername, $this->Drivers)) {
 				$this->driver = $this->Drivers[$drivername];
 			} else {
-				$conn = empty(reset($this->conf[$drivername])) ? obj(Conf::class)->redis['default'] : reset($this->conf[$drivername]);
+				$conn = empty(reset($this->conf[$drivername])) ? obj(Conf::class)->redis['default_connection'] : reset($this->conf[$drivername]);
 				$this->driver = $this->Drivers[$drivername] = new $this->supportedDrivers[$drivername]($conn);
 			}
 		} else
@@ -64,6 +64,20 @@ class Cache {
 	 */
 	public function get(string $key) {
 		return ($content = $this->driver->get($key)) ? $this->unserialize($content) : null;
+	}
+
+	/**
+	 * 设置缓存
+	 * 仅在不存在时设置缓存 set if not exists
+	 * @param string $key 键
+	 * @param mixed $value 值
+	 * @return bool
+	 */
+	public function setnx(string $key, $value): bool {
+		if ($value instanceof Closure) {
+			$value = $value();
+		}
+		return $this->driver->setnx($key, $this->serialize($value));
 	}
 
 	/**
@@ -181,7 +195,7 @@ class Cache {
 	 * @return mixed
 	 */
 	protected function unserialize(string $value) {
-		return is_numeric($value) ? (string) $value : unserialize($value);
+		return is_numeric($value) ? $value : unserialize($value);
 	}
 
 	/**

@@ -8,7 +8,7 @@ return [
 	  |
 	  |
 	 */
-	'default' => env('DB_CONNECTION', 'con1'),
+	'default_connection' => env('DB_CONNECTION', 'default'),
 
 	/*
 	  |--------------------------------------------------------------------------
@@ -18,7 +18,7 @@ return [
 	  |
 	 */
 	'connections' => [
-		'con1'	 => [
+		'default'	 => [
 			'write'	 => [
 				[
 					'weight' => 10,

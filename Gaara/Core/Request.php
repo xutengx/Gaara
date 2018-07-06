@@ -26,38 +26,45 @@ class Request {
 	private $input	 = [];
 	private $cookie	 = [];
 	private $file	 = null;
-	// 当前http方法
-	public $method;
-	// 当前路由别名
-	public $alias;
-	// 当前路由可用的http方法数组
-	public $methods;
 
 	/**
 	 * 初始化参数
-	 * @param array $urlPar 路由参数数组
-	 * @param array $domainPar 域名参数数组
 	 */
-	final public function __construct(array $urlPar = [], array $domainPar = []) {
+	final public function __construct() {
+		$this->RequestInfoInit();
 		$this->file = new UploadFile();
-		$this->getContentType($urlPar, $domainPar);
+	}
+
+	/**
+	 * 设置来自路由的`域名`参数
+	 * @param array $domainParamters
+	 * @return Request
+	 */
+	public function setDomainParamters(array $domainParamters = []): Request {
+		$this->domain = $this->filter($domainParamters);
+		return $this;
+	}
+
+	/**
+	 * 设置来自路由的`url`参数
+	 * @param array $urlParamters
+	 * @return Request
+	 */
+	public function setUrlParamters(array $urlParamters = []): Request {
+		$this->get = $this->filter($urlParamters);
+		return $this;
 	}
 
 	/**
 	 * 获取参数到当前类的属性
-	 * @param array $urlPar     来自路由的 url 参数
-	 * @param array $domainPar  来自路由的 域名 参数
-	 * @return void
+	 * @return Request
 	 */
-	private function getContentType(array $urlPar, array $domainPar): void {
-		$this->domain	 = $this->filter($domainPar);
-		$this->get		 = $this->filter($urlPar);
-		$this->cookie	 = $this->_htmlspecialchars($_COOKIE);
-		$this->method	 = strtolower($_SERVER["REQUEST_METHOD"]);
+	public function setRequestParamters(): Request {
+		$this->cookie = $this->_htmlspecialchars($_COOKIE);
 
 		if (($argc = $this->method) !== 'get') {
 			$temp			 = file_get_contents('php://input');
-			$content_type	 = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '';
+			$content_type	 = $this->contentType;
 
 			if (stripos($content_type, 'application/x-www-form-urlencoded') !== false) {
 				parse_str($temp, $this->{$argc});
@@ -73,6 +80,7 @@ class Request {
 		$this->get	 = array_merge($this->get, $this->_htmlspecialchars($_GET));
 		$this->consistentFile();
 		$this->input = $this->{$argc};
+		return $this;
 	}
 
 	/**
@@ -86,15 +94,12 @@ class Request {
 	 * @param bool $httponly
 	 * @return void
 	 */
-	public function setcookie(string $name, $value = '', int $expire = 0,
-	string $path = '', string $domain = '', bool $secure = false,
-	bool $httponly = true): void {
+	public function setcookie(string $name, $value = '', int $expire = 0, string $path = '', string $domain = '', bool $secure = false, bool $httponly = true): void {
 		$expire				 += time();
 		$this->cookie[$name] = $_COOKIE[$name]		 = $value;
 		if (is_array($value))
 			foreach ($value as $k => $v)
-				setcookie($name . '[' . $k . ']', $v, $expire, $path, $domain, $secure,
-				$httponly);
+				setcookie($name . '[' . $k . ']', $v, $expire, $path, $domain, $secure, $httponly);
 		else
 			setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
 	}
@@ -107,7 +112,7 @@ class Request {
 	private function getStream(string $input): array {
 		$a_data = array();
 		// grab multipart boundary from content type header
-		preg_match('/boundary=(.*)$/', $_SERVER['CONTENT_TYPE'], $matches);
+		preg_match('/boundary=(.*)$/', $this->contentType, $matches);
 
 		// content type is probably regular form-encoded
 		if (!count($matches)) {
@@ -128,14 +133,12 @@ class Request {
 			// parse uploaded files
 			if (strpos($block, 'filename=') !== FALSE) {
 				// match "name", then everything after "stream" (optional) except for prepending newlines
-				preg_match("/name=\"([^\"]*)\".*filename=\"([^\"].*?)\".*Content-Type:\s+(.*?)[\n|\r|\r\n]+([^\n\r].*)?$/s",
-				$block, $matches);
+				preg_match("/name=\"([^\"]*)\".*filename=\"([^\"].*?)\".*Content-Type:\s+(.*?)[\n|\r|\r\n]+([^\n\r].*)?$/s", $block, $matches);
 				// 兼容无文件上传的情况
 				if (empty($matches))
 					continue;
 				$content_blob	 = $matches[4];
-				$content_blob	 = substr($content_blob, 0,
-				strlen($content_blob) - strlen(PHP_EOL) * 2);  // 移除尾部多余换行符
+				$content_blob	 = substr($content_blob, 0, strlen($content_blob) - strlen(PHP_EOL) * 2);  // 移除尾部多余换行符
 				$this->file->addFile([
 					'key_name'	 => $matches[1],
 					'name'		 => $matches[2],
@@ -238,9 +241,6 @@ class Request {
 	public function __get($property_name) {
 		if (in_array(strtolower($property_name), ['input', 'post', 'get', 'put', 'cookie', 'delete', 'file'], true))
 			return $this->$property_name;
-		elseif (method_exists($this, $method = 'get' . ucfirst($property_name))) {
-			return $this->$method();
-		}
 	}
 
 	/**

@@ -28,14 +28,14 @@ class ExceptionHandler extends Middleware {
 		if (DEBUG) {
 			if (CLI)
 				$whoops->pushHandler(new PlainTextHandler);
-			elseif ($request->isAjax())
+			elseif ($request->isAjax)
 				$whoops->pushHandler(new PrettyPageHandler);
 			else
 				$whoops->pushHandler(new PrettyPageHandler);
 		}else {
 			if (CLI)
 				$whoops->pushHandler(new PlainTextHandler);
-			elseif ($request->isAjax())
+			elseif ($request->isAjax)
 				$whoops->pushHandler(new JsonResponseHandler);
 			else {
 				$whoops->pushHandler(function($exception, $inspector, $run) {

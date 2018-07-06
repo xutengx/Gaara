@@ -5,7 +5,6 @@ namespace Gaara\Core;
 
 use Closure;
 use Exception;
-use Gaara\Core\Route;
 use ReflectionFunction;
 use ReflectionClass;
 
@@ -23,10 +22,20 @@ abstract class Kernel {
 	}
 
 	/**
-	 * 初始化时区, 报错
+	 * 初始化配置
 	 * @return Kernel
 	 */
 	public function Init(): Kernel {
+		$this->ConfInit();
+		$this->RequestInit();
+		return $this;
+	}
+
+	/**
+	 * 初始化配置
+	 * @return void
+	 */
+	private function ConfInit(){
 		$conf = obj(Conf::class)->app;
 		$serverIni = obj(Conf::class)->getServerConf('php');
 		foreach($serverIni as $k => $v){
@@ -41,7 +50,14 @@ abstract class Kernel {
 		} else {
 			ini_set('display_errors', '0');
 		}
-		return $this;
+	}
+
+	/**
+	 * 初始化请求
+	 * @return void
+	 */
+	private function RequestInit():void{
+		obj(Request::class);
 	}
 
 	/**

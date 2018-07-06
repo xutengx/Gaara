@@ -39,7 +39,7 @@ class Route {
 	 * @return string
 	 */
 	private static function getPathInfo(): string {
-		return $_SERVER['path_info'] ?? '/' . \str_replace('?' . $_SERVER['QUERY_STRING'], '', \substr_replace($_SERVER['REQUEST_URI'], '', 0, strlen(\str_replace(\IN_SYS, '', $_SERVER['SCRIPT_NAME']))));
+		return obj(Request::class)->pathInfo;
 	}
 
 	/**
@@ -75,7 +75,7 @@ class Route {
 				obj(Response::class)->setStatus(200)->exitData();
 			}
 		}
-		if(is_null($rule404 = self::$rule404))
+		if (is_null($rule404 = self::$rule404))
 			obj(Response::class)->setStatus(404)->exitData('Not Found ..');
 		else
 			self::doKernel([], $rule404, ['pathinfo' => self::$pathInfo]);
@@ -143,7 +143,6 @@ class Route {
 
 	/**
 	 * 执行分析 : 路由别名, 域名分析, 中间件注册, 执行闭包
-	 * 申明 obj('request');
 	 * @param string $rule 路由匹配段
 	 * @param string|array $info 路由执行段 (可能是形如 'App\index\Contr\IndexContr@indexDo' 或者 闭包, 或者 数组包含以上2钟)
 	 * @param array $urlParam url参数数组
@@ -159,8 +158,12 @@ class Route {
 		if (!is_array($domainParam = self::domainToPreg($info['domain']))) {
 			return false;
 		}
+
+		// 初始化 Request
+		$request = obj(Request::class);
+
 		// http方法分析
-		if (!in_array(strtolower($_SERVER['REQUEST_METHOD']), $info['method'], true))
+		if (!in_array(strtolower($request->method), $info['method'], true))
 			return false;
 
 		// 中间件
@@ -172,10 +175,9 @@ class Route {
 		// 合并 域名参数 与 路由参数
 		$wholeParam = array_merge($domainParam, $urlParam);
 
-		// 初始化 Request
-		$request			 = obj(Request::class, $urlParam, $domainParam);
 		$request->alias		 = $alias;
 		$request->methods	 = $info['method'];
+		$request->setDomainParamters($domainParam)->setUrlParamters($urlParam)->setRequestParamters();
 
 		// 核心执行,管道模式中间件,以及控制器
 		self::doKernel($middleware, $contr, $wholeParam);
@@ -205,7 +207,7 @@ class Route {
 			$arr = [
 				'method'	 => self::$allowMethod,
 				'middleware' => [],
-				'domain'	 => $_SERVER['HTTP_HOST'],
+				'domain'	 => obj(Request::class)->host,
 				'as'		 => null,
 				'uses'		 => $info
 			];
@@ -213,7 +215,7 @@ class Route {
 			$arr = [
 				'method'	 => $info['method'] ?? self::$allowMethod,
 				'middleware' => $info['middleware'] ?? [],
-				'domain'	 => $info['domain'] ?? $_SERVER['HTTP_HOST'],
+				'domain'	 => $info['domain'] ?? obj(Request::class)->host,
 				'as'		 => $info['as'] ?? null,
 				'uses'		 => $info['uses']
 			];
@@ -239,7 +241,7 @@ class Route {
 				$param[$k] = $matches[$i++];
 			}
 			return 'true';
-		}, $_SERVER['HTTP_HOST']);
+		}, obj(Request::class)->host);
 		// 若匹配失败 则返回false
 		if ($key !== 'true') {
 			return false;

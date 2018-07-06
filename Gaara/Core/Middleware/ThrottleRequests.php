@@ -129,8 +129,8 @@ class ThrottleRequests extends Middleware {
 	 */
 	protected function resolveRequestSignature(Request $request): string {
 		$methods	 = $request->methods;
-		$factor[]	 = $request->urlWithoutQueryString;
-		$factor[]	 = $request->ip;
+		$factor[]	 = $request->staticUrl;
+		$factor[]	 = $request->userIp;
 		// 增加用户区分
 		// $factor[] = $request->userinfo['id'];
 		return sha1(implode('|', array_merge($methods, $factor)));

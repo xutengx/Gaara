@@ -8,6 +8,7 @@ use Response;
 use Gaara\Core\{
 	Middleware, Request
 };
+use Gaara\Core\Exception\Http\TooManyRequestsHttpException;
 
 /**
  * 访问频率限制
@@ -89,6 +90,7 @@ class ThrottleRequests extends Middleware {
 			$this->addHeader();
 		} else {
 			$this->addHeader($retryAfter);
+//			throw new TooManyRequestsHttpException('Too Many Attempts. Try again after ' . $retryAfter . ' seconds');
 			Response::setStatus(429, 'Try again after ' . $retryAfter . ' seconds')
 			->exitData('Too Many Attempts. Try again after ' . $retryAfter . ' seconds');
 		}

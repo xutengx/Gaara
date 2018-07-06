@@ -6,10 +6,10 @@ namespace Gaara\Core;
 use Closure;
 use PDOException;
 use Exception;
-use Response;
 use Gaara\Core\Controller\Traits\{
 	RequestTrait, ViewTrait
 };
+use Gaara\Core\Exception\Http\BadRequestHttpException;
 
 abstract class Controller {
 
@@ -41,22 +41,22 @@ abstract class Controller {
 	/**
 	 * 返回一个失败的响应
 	 * @param string $msg 错误消息提示
-	 * @param int $statusCode http状态码
+	 * @param int $httpCode http状态码
 	 * @return string
 	 */
-	protected function fail(string $msg = 'Fail', int $statusCode = 400): string {
-		return Response::setStatus($statusCode)->returnData(['msg' => $msg]);
+	protected function fail(string $msg = 'Fail', int $httpCode = 400): string {
+		return obj(Response::class)->fail($msg, $httpCode);
 	}
 
 	/**
 	 * 返回一个正确的响应
 	 * @param mixed $data 主要返回内容
 	 * @param string $msg 正确消息提示
-	 * @param int $statusCode http状态码
+	 * @param int $httpCode http状态码
 	 * @return string
 	 */
-	protected function success($data = [], string $msg = 'Success', int $statusCode = 200): string {
-		return Response::setStatus($statusCode)->returnData(['data' => $data, 'msg' => $msg]);
+	protected function success($data = [], string $msg = 'Success', int $httpCode = 200): string {
+		return obj(Response::class)->success($data, $msg, $httpCode);
 	}
 
 }

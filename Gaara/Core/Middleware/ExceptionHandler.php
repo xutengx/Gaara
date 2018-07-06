@@ -6,7 +6,10 @@ namespace Gaara\Core\Middleware;
 use Log;
 use Response;
 use Gaara\Core\{
-	Middleware, Request, Exception\MessageException
+	Middleware, Request
+};
+use Gaara\Core\Exception\{
+	MessageException, HttpException
 };
 use Whoops\Run;
 use Whoops\Handler\{
@@ -51,6 +54,13 @@ class ExceptionHandler extends Middleware {
 			if ($exception instanceof MessageException) {
 				$msg = $exception->getMessage();
 				Response::setStatus(500)->exitData([
+					'msg' => $msg
+				]);
+			}
+			if ($exception instanceof HttpException) {
+				$msg	 = $exception->getMessage();
+				$code	 = $exception->getCode();
+				Response::setStatus($code)->exitData([
 					'msg' => $msg
 				]);
 			}

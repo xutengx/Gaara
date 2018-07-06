@@ -4,7 +4,6 @@ declare(strict_types = 1);
 namespace Gaara\Core\Response\Traits;
 
 use Gaara\Core\Response;
-use Exception;
 
 /**
  * 对外链式操作

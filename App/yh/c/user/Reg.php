@@ -11,9 +11,9 @@ use Gaara\Core\Exception\MessageException;
 
 class Reg extends Controller {
     // 生成邮箱注册, 所需的盐
-    const key = 'yhreg'; 
+    const key = 'yhreg';
     // 激活邮件的有效时间 (s)
-    const overtime = 3600; 
+    const overtime = 3600;
 
     /**
      * 用户邮箱注册注册
@@ -24,19 +24,19 @@ class Reg extends Controller {
     public function index(Secure $secure, Mail $mail, MainUser $user) {
         $email = $this->post('email', 'email');
         $url = $this->post('url','url');
-        
-        // 检测邮箱 
+
+        // 检测邮箱
         if(!$this->checkEmail($email, $user)){
             return $this->fail( '邮箱已被注册!!');
         }
-        
+
         // 生成激活链接
         $urlLink = $this->makeToken($email, $url, $secure);
-        
+
         // 发送邮件
         return $this->returnData($this->sendMail($email, $urlLink, $mail));
     }
-    
+
     /**
      * 新增用户, 设置密码
      * @param Secure $secure
@@ -52,7 +52,7 @@ class Reg extends Controller {
         return $this->returnData(function() use ($user, $email, $passwd){
             return $user->createUser($email, $passwd);
         });
-//        return $this->returnData($user->createUser($email, $passwd)); 
+//        return $this->returnData($user->createUser($email, $passwd));
     }
 
     /**
@@ -86,9 +86,9 @@ class Reg extends Controller {
             else exit($this->fail( '链接与邮箱不匹配.'));
         }
         else exit($this->fail( '无效的链接.'));
-        
+
     }
-    
+
     /**
      * 检测邮箱是否已经被注册
      */
@@ -109,7 +109,7 @@ class Reg extends Controller {
         $token = $secure->encrypt($str, self::key);
         return $address.$token;
     }
-    
+
     /**
      * 发送邮箱激活邮件
      * @param string $email     目标邮箱

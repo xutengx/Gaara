@@ -5,14 +5,16 @@ namespace Gaara\Core;
 
 use PhpConsole;
 use Gaara\Core\Conf;
-use Gaara\Core\Response\Traits\SetTrait;
+use Gaara\Core\Response\Traits\{
+	SetTrait,GetTrait,Format,RequestInfo
+};
 
 /**
  * 处理系统全部响应( 输出 )
  */
 class Response {
 
-	use SetTrait;
+	use SetTrait,GetTrait,Format,RequestInfo;
 
 	private static $httpType	 = [
 		'html'	 => ['text/html', 'application/xhtml+xml'],
@@ -142,31 +144,6 @@ class Response {
 				$encode	 = $data;
 		}
 		return (string) $encode;
-	}
-
-	/**
-	 * 获取当前请求的Accept头信息
-	 * @return string
-	 */
-	private function getAcceptType(): string {
-		if (isset($_SERVER['HTTP_ACCEPT'])) {
-			foreach (self::$httpType as $key => $val) {
-				foreach ($val as $v) {
-					if (stristr($_SERVER['HTTP_ACCEPT'], $v)) {
-						return $key;
-					}
-				}
-			}
-		}
-		return 'html';
-	}
-
-	/**
-	 * 获取当前请求的请求方法信息
-	 * @return string
-	 */
-	private function getRequestMethod(): string {
-		return \strtolower($_SERVER['REQUEST_METHOD']);
 	}
 
 }

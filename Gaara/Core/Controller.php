@@ -9,7 +9,6 @@ use Exception;
 use Gaara\Core\Controller\Traits\{
 	RequestTrait, ViewTrait
 };
-use Gaara\Core\Exception\Http\BadRequestHttpException;
 
 abstract class Controller {
 

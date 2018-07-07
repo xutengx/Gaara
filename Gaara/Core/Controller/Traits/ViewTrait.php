@@ -3,11 +3,10 @@
 declare(strict_types = 1);
 namespace Gaara\Core\Controller\Traits;
 
-use Response;
 use Closure;
 use InvalidArgumentException;
 use Gaara\Core\{
-	Cache, Template
+	Cache, Template, Response
 };
 
 /**
@@ -115,9 +114,9 @@ trait ViewTrait {
 	/**
 	 * 生成视图数据
 	 * @param string $file 模版文件名
-	 * @return string
+	 * @return Response
 	 */
-	protected function display(string $file = null): string {
+	protected function display(string $file = null): Response {
 		ob_start();
 
 		$this->html(function()use($file) {
@@ -136,7 +135,7 @@ trait ViewTrait {
 
 		$contents = ob_get_contents();
 		ob_end_clean();
-		return Response::setContentType('html')->returnData($contents);
+		return obj(Response::class)->setContentType('html')->setContent($contents);
 	}
 
 	/**

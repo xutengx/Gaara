@@ -45,10 +45,10 @@ abstract class Middleware {
 
 	/**
 	 * 执行末置中间件
-	 * @param type $response    上级操作响应结果
-	 * @return mix              本次操作的响应 ( 合理的返回不应该为 null , null 将会忽略 )
+	 * @param Response $response 上级操作响应结果
+	 * @return Response 本次操作的响应
 	 */
-	final protected function doTerminate($response) {
+	final protected function doTerminate(Response $response): Response {
 		if ($this->effective() && method_exists($this, 'terminate')) {
 			return Integrator::run($this, 'terminate', [$response]);
 		} else

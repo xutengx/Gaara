@@ -46,12 +46,12 @@ class Request {
 	}
 
 	/**
-	 * 设置来自路由的`url`参数
-	 * @param array $urlParamters
+	 * 设置来自url静态参数(pathInfo参数)
+	 * @param array $staticParamters
 	 * @return Request
 	 */
-	public function setUrlParamters(array $urlParamters = []): Request {
-		$this->get = $this->filter($urlParamters);
+	public function setStaticParamters(array $staticParamters = []): Request {
+		$this->get = $this->filter($staticParamters);
 		return $this;
 	}
 

@@ -28,6 +28,7 @@ trait RequestInfo {
 	public $userIp;
 	public $contentType;
 	public $acceptType;
+	public $MatchedRouting = null; // 路由匹配成功后,由`Kernel`赋值的`MatchedRouting`对象
 
 	public function RequestInfoInit() {
 		$this->inSys		 = IN_SYS;

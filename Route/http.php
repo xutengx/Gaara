@@ -3,7 +3,7 @@
 
 //Route::set404('App\Dev\mysql\Contr\index2Contr@indexDo');
 Route::set404(function($pathinfo){
-	obj(Response::class)->setStatus(404)->exitData('Not Found .. ' . $pathinfo);
+	return obj(Response::class)->setStatus(404)->setContent('Not Found .. ' . $pathinfo)->sendExit();
 });
 
 return [
@@ -17,9 +17,9 @@ return [
 	Route::get('/data/upload/{yearmonth}/{day}/{name}', function($yearmonth, $day, $name) {
 		$filename = ROOT . "data/upload/$yearmonth/$day/$name";
 		if (is_file($filename))
-			return \Response::setContentType(substr(strrchr($name, '.'), 1))->returnData(file_get_contents($filename));
+			return \Response::setContentType(substr(strrchr($name, '.'), 1))->setContent(file_get_contents($filename));
 		else
-			return \Response::setStatus(404)->exitData();
+			return \Response::setStatus(404)->setContent();
 	}),
 	// yh
 	Route::group(['middleware' => ['web'], 'namespace' => 'App\yh\c'], function() {

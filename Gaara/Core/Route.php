@@ -7,6 +7,7 @@ use App\Kernel;
 use Closure;
 use Generator;
 use Gaara\Core\Route\Traits\SetRoute;
+use Gaara\Core\Route\Component\MatchedRouting;
 
 /**
  * 显式自定义路由
@@ -16,20 +17,37 @@ class Route {
 	// 分组以及静态方法申明路由
 	use SetRoute;
 
+	// $middleware
+//	public static $middleware;
+	// $contr
+//	public static $contr;
+	// $wholeParam
+//	public static $wholeParam;
+	//
+//	public static $alias;
+//	public static $methods;
+//	public static $domainParam;
+//	public static $urlParam;
+//	public static $middlewareGroups;
+	public static $MatchedRouting;
 	// 当前 $pathInfo
-	private static $pathInfo	 = null;
+	private static $pathInfo		 = null;
 	// 全部路由规则
-	protected static $routeRule	 = [];
+	private static $routeRule	 = [];
 	// 404
-	protected static $rule404	 = null;
+	public static $rule404		 = null;
 
-	public static function Start(): void {
+	/**
+	 * 路由匹配
+	 * @return bool
+	 */
+	public static function Start(): bool {
 		// 得到 $pathInfo
 		self::$pathInfo	 = self::getPathInfo();
 		// 引入route规则
 		self::$routeRule = self::getRouteRule();
 		// 分析路由, 并执行
-		self::routeAnalysis();
+		return self::routeAnalysis();
 	}
 
 	/**
@@ -56,9 +74,9 @@ class Route {
 	/**
 	 * 路由分析, 包含最终执行
 	 * 路由匹配失败, 则响应404
-	 * @return void
+	 * @return bool
 	 */
-	private static function routeAnalysis(): void {
+	private static function routeAnalysis(): bool {
 		foreach (self::pretreatment() as $rule => $info) {
 			// 形参数组
 			$parameter		 = [];
@@ -66,19 +84,16 @@ class Route {
 			// 确定路由匹配
 			if (preg_match($pathInfoPreg, self::$pathInfo, $argument)) {
 				// 确认 url 参数
-				$urlParam	 = self::paramAnalysis($parameter, $argument);
+				$staticParamter	 = self::paramAnalysis($parameter, $argument);
 				// 执行分析
-				$check		 = self::infoAnalysis($rule, $info, $urlParam);
+				$check			 = self::infoAnalysis($rule, $info, $staticParamter);
 				// 域名不匹配, 则继续 foreach
 				if ($check === false)
 					continue;
-				obj(Response::class)->setStatus(200)->exitData();
+				return true;
 			}
 		}
-		if (is_null($rule404 = self::$rule404))
-			obj(Response::class)->setStatus(404)->exitData('Not Found ..');
-		else
-			self::doKernel([], $rule404, ['pathinfo' => self::$pathInfo]);
+		return false;
 	}
 
 	/**
@@ -145,60 +160,35 @@ class Route {
 	 * 执行分析 : 路由别名, 域名分析, 中间件注册, 执行闭包
 	 * @param string $rule 路由匹配段
 	 * @param string|array $info 路由执行段 (可能是形如 'App\index\Contr\IndexContr@indexDo' 或者 闭包, 或者 数组包含以上2钟)
-	 * @param array $urlParam url参数数组
+	 * @param array $staticParamter 静态参数(pathInfo参数)
 	 * @return bool
 	 */
-	private static function infoAnalysis(string $rule, $info, array $urlParam = []): bool {
+	private static function infoAnalysis(string $rule, $info, array $staticParamter = []): bool {
 		// 一致化格式
 		$info = self::unifiedInfo($info);
 
-		// 别名分析
-		$alias		 = $info['as'] ?? $rule;
 		// 域名分析
-		if (!is_array($domainParam = self::domainToPreg($info['domain']))) {
+		if (!is_array($domainParamter = self::domainToPreg($info['domain'])))
 			return false;
-		}
-
-		// 初始化 Request
-		$request = obj(Request::class);
 
 		// http方法分析
-		if (!in_array(strtolower($request->method), $info['method'], true))
+		if (!in_array(strtolower(obj(Request::class)->method), $info['method'], true))
 			return false;
 
-		// 中间件
-		$middleware = $info['middleware'];
-
-		// 执行
-		$contr = $info['uses'];
-
-		// 合并 域名参数 与 路由参数
-		$wholeParam = array_merge($domainParam, $urlParam);
-
-		$request->alias		 = $alias;
-		$request->methods	 = $info['method'];
-		$request->setDomainParamters($domainParam)->setUrlParamters($urlParam)->setRequestParamters();
-
-		// 核心执行,管道模式中间件,以及控制器
-		self::doKernel($middleware, $contr, $wholeParam);
-
+		$MR						 = self::$MatchedRouting	 = new MatchedRouting;
+		$MR->alias				 = $info['as'] ?? $rule;
+		$MR->middlewareGroups	 = $info['middleware'];
+		$MR->methods			 = $info['method'];
+		$MR->subjectMethod		 = $info['uses'];
+		$MR->domainParamter		 = $domainParamter;
+		$MR->staticParamter		 = $staticParamter;
+		$MR->urlParamter		 = array_merge($domainParamter, $staticParamter);
 		return true;
 	}
 
 	/**
-	 * 执行中间件, 控制器
-	 * @param array $middleware
-	 * @param string|callback|array $contr
-	 * @param array $wholeParam
-	 * @return void
-	 */
-	private static function doKernel(array $middleware, $contr, array $wholeParam): void {
-		obj(Kernel::class)->run($middleware, $contr, $wholeParam);
-	}
-
-	/**
 	 * info 一致化格式
-	 * @param \Closure $info
+	 * @param mixed $info
 	 * @return void
 	 */
 	private static function unifiedInfo($info): array {

@@ -14,7 +14,7 @@ abstract class Kernel {
 	protected $pipeline			 = null;
 	// 全局中间件
 	protected $middlewareGlobel	 = [];
-	// 路由中间件
+	// 路由中间件组
 	protected $middlewareGroups	 = [];
 
 	public function __construct(Pipeline $pipeline) {
@@ -35,11 +35,11 @@ abstract class Kernel {
 	 * 初始化配置
 	 * @return void
 	 */
-	private function ConfInit(){
-		$conf = obj(Conf::class)->app;
-		$serverIni = obj(Conf::class)->getServerConf('php');
-		foreach($serverIni as $k => $v){
-			if(ini_set($k, $v) === false){
+	private function ConfInit() {
+		$conf		 = obj(Conf::class)->app;
+		$serverIni	 = obj(Conf::class)->getServerConf('php');
+		foreach ($serverIni as $k => $v) {
+			if (ini_set($k, $v) === false) {
 				throw new Exception("ini_set($k, $v) is Fail");
 			}
 		}
@@ -56,7 +56,7 @@ abstract class Kernel {
 	 * 初始化请求
 	 * @return void
 	 */
-	private function RequestInit():void{
+	private function RequestInit(): void {
 		obj(Request::class);
 	}
 
@@ -64,20 +64,36 @@ abstract class Kernel {
 	 * 执行路由
 	 */
 	public function Start() {
-		Route::Start();
+		if (Route::Start()) {
+			obj(Request::class)->MatchedRouting	 = $MR									 = Route::$MatchedRouting;
+			obj(Request::class)->alias			 = $MR->alias;
+			obj(Request::class)->methods		 = $MR->methods;
+
+			obj(Request::class)->setDomainParamters($MR->domainParamter)
+			->setStaticParamters($MR->staticParamter)
+			->setRequestParamters();
+			$MR->middlewares = $this->getMiddlewares($MR->middlewareGroups);
+
+			$this->run($MR->middlewares, $MR->subjectMethod, $MR->urlParamter);
+		} else {
+			if (is_null($rule404 = Route::$rule404))
+				obj(Response::class)->setStatus(404)->setContent('Not Found ..')->sendExit();
+			else
+				$this->run([], $rule404, ['pathinfo' => obj(Request::class)->pathInfo]);
+		}
 	}
 
 	/**
 	 * 执行中间件以及用户业务代码
-	 * @param array $middlewareGroups
-	 * @param string|callback|array $contr
+	 * @param array $middlewares
+	 * @param string|callback|array $subjectMethod
 	 * @param array $request
 	 * @return void
 	 */
-	public function run(array $middlewareGroups, $contr, array $request): void {
+	public function run(array $middlewares, $subjectMethod, array $request): void {
 		$this->statistic();
-		$this->pipeline->setPipes($this->addMiddleware($middlewareGroups));
-		$this->pipeline->setDefaultClosure($this->doController($contr, $request));
+		$this->pipeline->setPipes($middlewares);
+		$this->pipeline->setDefaultClosure($this->doController($subjectMethod, $request));
 		$this->pipeline->then();
 	}
 
@@ -86,7 +102,7 @@ abstract class Kernel {
 	 * @param array $middlewareGroups
 	 * @return array
 	 */
-	protected function addMiddleware(array $middlewareGroups): array {
+	protected function getMiddlewares(array $middlewareGroups): array {
 		$arr = [];
 		// 全局中间件
 		foreach ($this->middlewareGlobel as $middleware) {
@@ -103,12 +119,12 @@ abstract class Kernel {
 
 	/**
 	 * 方法依赖注入,执行,支持闭包函数
-	 * @param string|callback|array $contr 将要执行的方法
+	 * @param string|callback|array $subjectMethod 将要执行的方法
 	 * @param array $request 请求参数
 	 * @return Closure
 	 */
-	protected function doController($contr, array $request): Closure {
-		return function () use ($contr, $request) {
+	protected function doController($subjectMethod, array $request): Closure {
+		return function () use ($subjectMethod, $request) {
 			/**
 			 * 方法依赖注入
 			 * @param array $parameters 由反射类获取的方法依赖参数链表
@@ -137,8 +153,8 @@ abstract class Kernel {
 				return $argument;
 			};
 			// 形如 'App\index\Contr\IndexContr@indexDo'
-			if (is_string($contr)) {
-				$temp			 = explode('@', $contr);
+			if (is_string($subjectMethod)) {
+				$temp			 = explode('@', $subjectMethod);
 				$reflectionClass = new ReflectionClass($temp[0]);
 				$methodClass	 = $reflectionClass->getMethod($temp[1]);
 				$parameters		 = $methodClass->getParameters();
@@ -147,12 +163,12 @@ abstract class Kernel {
 				$return		 = call_user_func_array(array(Integrator::getWithoutAlias($temp[0]), $temp[1]), $argument);
 			}
 			// 形如 function($param_1, $param_2 ) {return 'this is a function !';}
-			elseif ($contr instanceof Closure) {
-				$reflectionFunction	 = new ReflectionFunction($contr);
+			elseif ($subjectMethod instanceof Closure) {
+				$reflectionFunction	 = new ReflectionFunction($subjectMethod);
 				$parameters			 = $reflectionFunction->getParameters();
 
 				$argument	 = $injection($parameters);
-				$return		 = call_user_func_array($contr, $argument);
+				$return		 = call_user_func_array($subjectMethod, $argument);
 			}
 			return $return;
 		};

@@ -3,10 +3,11 @@
 declare(strict_types = 1);
 namespace Gaara\Core\Middleware;
 
-use Response;
 use Iterator;
 use Generator;
-use Gaara\Core\Middleware;
+use Gaara\Core\{
+	Middleware, Response
+};
 use Gaara\Expand\PhpConsole;
 
 /**
@@ -24,25 +25,43 @@ class ReturnResponse extends Middleware {
 	 *
 	 * @param PhpConsole $PhpConsole
 	 */
-	public function handle(PhpConsole $PhpConsole) {
-		ob_start();
+	public function handle() {
+		$this->obStart();
 	}
 
 	/**
-	 * 特殊处理 true/false/Iterator/Generator
-	 * @param type $response
+	 * 
+	 * @param Response $response
 	 */
-	public function terminate($response) {
-		if ($response instanceof Generator) {
-			return $this->generatorDecode($response);
-		} elseif ($response === true) {
-			Response::setStatus(200)->exitData();
-		} elseif ($response === false) {
-			Response::setStatus(400)->exitData();
-		} elseif ($response instanceof Iterator) {
-			$response = $this->iteratorDecode($response);
+	public function terminate(Response $response) {
+//		var_dump($response); exit;
+		$this->obEnd();
+		$response->send();
+//		if ($response instanceof Generator) {
+//			return $this->generatorDecode($response);
+//		} elseif ($response === true) {
+//			obj(Response::class)->setStatus(200)->sendExit();
+//		} elseif ($response === false) {
+//			obj(Response::class)->setStatus(400)->sendExit();
+//		} elseif ($response instanceof Iterator) {
+//			$response = $this->iteratorDecode($response);
+//		} elseif ($response instanceof Response) {
+//			$response->send();
+//		}
+		exit;
+
+//		Response::exitData($response);
+	}
+
+	private function obStart() {
+		ob_start();
+	}
+
+	private function obEnd() {
+		$level = ob_get_level();
+		for ($i = 0; $i < $level; $i++) {
+			ob_end_clean();
 		}
-		Response::exitData($response);
 	}
 
 	/**

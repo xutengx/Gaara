@@ -3,10 +3,8 @@
 declare(strict_types = 1);
 namespace Gaara\Core\Middleware;
 
-use Cache;
-use Response;
 use Gaara\Core\{
-	Middleware, Request
+	Middleware, Request,Response,Cache
 };
 use Gaara\Core\Exception\Http\TooManyRequestsHttpException;
 
@@ -56,7 +54,7 @@ class ThrottleRequests extends Middleware {
 	 * @return int
 	 */
 	protected function getValue(int $times = 0): int {
-		return (int) Cache::remember($this->key, $times, $this->decaySecond);
+		return (int) obj(Cache::class)->remember($this->key, $times, $this->decaySecond);
 	}
 
 	/**
@@ -81,18 +79,16 @@ class ThrottleRequests extends Middleware {
 	 * @return void
 	 */
 	protected function buildResponse(): void {
-		$retryAfter = Cache::ttl($this->key);
+		$retryAfter = obj(Cache::class)->ttl($this->key);
 		// 高并发下容错处理
 		if ($retryAfter === -1) {
-			Cache::rm($this->key);
+			obj(Cache::class)->rm($this->key);
 			$this->getValue(1);
 			$this->accessTimes = 1;
 			$this->addHeader();
 		} else {
 			$this->addHeader($retryAfter);
-//			throw new TooManyRequestsHttpException('Too Many Attempts. Try again after ' . $retryAfter . ' seconds');
-			Response::setStatus(429, 'Try again after ' . $retryAfter . ' seconds')
-			->exitData('Too Many Attempts. Try again after ' . $retryAfter . ' seconds');
+			throw new TooManyRequestsHttpException('Too Many Attempts. Try again after ' . $retryAfter . ' seconds');
 		}
 	}
 
@@ -101,7 +97,7 @@ class ThrottleRequests extends Middleware {
 	 * @return int 返回自增后的值
 	 */
 	protected function increment(): int {
-		return Cache::increment($this->key);
+		return obj(Cache::class)->increment($this->key);
 	}
 
 	/**
@@ -110,16 +106,13 @@ class ThrottleRequests extends Middleware {
 	 * @return void
 	 */
 	protected function addHeader(int $retryAfter = null): void {
-		$headers = [
-			'X-RateLimit-Limit'		 => $this->maxAttempts,
-			'X-RateLimit-Remaining'	 => $this->maxAttempts - $this->accessTimes,
-		];
+		obj(Response::class)->header()->set('X-RateLimit-Limit', $this->maxAttempts);
+		obj(Response::class)->header()->set('X-RateLimit-Remaining', $this->maxAttempts - $this->accessTimes);
 		if (!is_null($retryAfter)) {
-			$headers['X-RateLimit-Remaining']	 = 0;
-			$headers['Retry-After']				 = $retryAfter;
-			$headers['X-RateLimit-Reset']		 = time() + $retryAfter;
+			obj(Response::class)->header()->set('Retry-After', $retryAfter);
+			obj(Response::class)->header()->set('X-RateLimit-Remaining', 0);
+			obj(Response::class)->header()->set('X-RateLimit-Reset', time() + $retryAfter);
 		}
-		Response::setHeaders($headers);
 	}
 
 	/**

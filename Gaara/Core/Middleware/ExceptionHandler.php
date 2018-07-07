@@ -3,10 +3,8 @@
 declare(strict_types = 1);
 namespace Gaara\Core\Middleware;
 
-use Log;
-use Response;
 use Gaara\Core\{
-	Middleware, Request
+	Middleware, Request, Response, Log
 };
 use Gaara\Core\Exception\{
 	MessageException, HttpException
@@ -49,20 +47,20 @@ class ExceptionHandler extends Middleware {
 		}
 		$whoops->pushHandler(function($exception, $inspector, $run) {
 			// 记录异常
-			Log::error($inspector->getException());
+			obj(Log::class)->error($inspector->getException());
 
 			if ($exception instanceof MessageException) {
 				$msg = $exception->getMessage();
-				Response::setStatus(500)->exitData([
+				obj(Response::class)->setStatus(500)->setContent([
 					'msg' => $msg
-				]);
+				])->sendExit();
 			}
 			if ($exception instanceof HttpException) {
 				$msg	 = $exception->getMessage();
 				$code	 = $exception->getCode();
-				Response::setStatus($code)->exitData([
+				obj(Response::class)->setStatus($code)->setContent([
 					'msg' => $msg
-				]);
+				])->sendExit();
 			}
 		});
 		$whoops->register();

@@ -34,7 +34,7 @@ class Kernel extends HttpKernel {
 			// 允许跨域
 			CrossDomainAccess::class,
 			// 访问频率控制  30次 / 60s
-			ThrottleRequests::class . '@10@60',
+			ThrottleRequests::class . '@30@60',
 		],
 //        'sendMail' => [
 //            // 访问频率控制  1次 / 30s

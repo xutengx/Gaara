@@ -3,12 +3,11 @@
 declare(strict_types = 1);
 namespace Gaara\Core\Middleware;
 
-use Secure;
 use Exception;
-use Response;
 use Gaara\Core\{
-	Middleware, Request
+	Middleware, Request, Secure
 };
+use Gaara\Core\Exception\Http\ForbiddenHttpException;
 
 /**
  * CsrfToken 依赖 session(cookie)
@@ -39,7 +38,7 @@ class VerifyCsrfToken extends Middleware {
 		if ($this->isReturnHtml($request) && $this->isReading($request) || $this->tokensMatch($request)) {
 
 		} else {
-			Response::setStatus(403, 'csrf token error')->exitData();
+			throw new ForbiddenHttpException('Csrf Token Error');
 		}
 	}
 
@@ -104,7 +103,7 @@ class VerifyCsrfToken extends Middleware {
 	 * @return string
 	 */
 	protected function theToken(): string {
-		return Secure::md5(session_id());
+		return obj(Secure::class)->md5(session_id());
 	}
 
 }

@@ -15,17 +15,16 @@ class CrossDomainAccess extends Middleware {
 
 	public function handle(Request $request, Response $response): void {
 		if (isset($_SERVER['HTTP_REFERER'])) {
-			$headers['Access-Control-Allow-Credentials'] = 'true';
-			$headers['Access-Control-Allow-Origin']		 = $this->allowDomain();
+			$response->header()->set('Access-Control-Allow-Credentials', 'true');
+			$response->header()->set('Access-Control-Allow-Origin', $this->allowDomain());
 		} else {
-			$headers['Access-Control-Allow-Credentials'] = 'false';
-			$headers['Access-Control-Allow-Origin']		 = '*';
+			$response->header()->set('Access-Control-Allow-Credentials', 'false');
+			$response->header()->set('Access-Control-Allow-Origin', '*');
 		}
-		$headers['Access-Control-Allow-Headers'] = 'X-Requested-With,scrftoken,Origin, Content-Type, Cookie, Accept, multipart/form-data, application/json';
-		$headers['Access-Control-Allow-Methods'] = $this->allowMothods($request);
-		$response->setHeaders($headers);
+		$response->header()->set('Access-Control-Allow-Headers', 'X-Requested-With,scrftoken,Origin, Content-Type, Cookie, Accept, multipart/form-data, application/json');
+		$response->header()->set('Access-Control-Allow-Methods', $this->allowMothods($request));
 		if ($request->method === 'options') {
-			exit($response->returnData());
+			$response->status(200)->sendExit();
 		}
 	}
 

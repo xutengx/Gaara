@@ -3,10 +3,10 @@
 declare(strict_types = 1);
 namespace Gaara\Core\Middleware;
 
-use Response;
 use Gaara\Core\{
-	Middleware, Request
+	Middleware, Request, Response
 };
+use Gaara\Core\Exception\Http\PayloadTooLargeException;
 
 /**
  * 验证 post 数据大小,避免大于php设定的post_max_size
@@ -15,7 +15,7 @@ class ValidatePostSize extends Middleware {
 
 	public function handle(Request $request) {
 		if ($request->CONTENT_LENGTH > $this->getPostMaxSize()) {
-			Response::setStatus(413)->exitData();
+			throw new PayloadTooLargeException;
 		}
 	}
 

@@ -11,11 +11,11 @@ use Gaara\Expand\PhpConsole;
  */
 class PerformanceMonitoring extends Middleware {
 
-	public function terminate($response, PhpConsole $PhpConsole) {
-		$info = \statistic();
-		$PhpConsole->debug($info, 'PerformanceMonitoring');
+//	public function terminate($response, PhpConsole $PhpConsole) {
+//		$info = \statistic();
+//		$PhpConsole->debug($info, 'PerformanceMonitoring');
 
-		return $response;
-	}
+//		return $response;
+//	}
 
 }

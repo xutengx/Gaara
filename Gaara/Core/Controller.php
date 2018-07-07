@@ -21,9 +21,9 @@ abstract class Controller {
 	/**
 	 * 返回一个data响应,当接收的参数是Closure时,会捕获PDOException异常,一旦捕获成功,将返回msg响应
 	 * @param mixed $content 响应内容
-	 * @return string
+	 * @return Response
 	 */
-	protected function returnData($content = ''): string {
+	protected function returnData($content = ''): Response {
 		if ($content instanceof Closure) {
 			try {
 				$content = call_user_func($content);
@@ -39,23 +39,23 @@ abstract class Controller {
 	}
 
 	/**
-	 * 返回一个失败的响应
+	 * 返回一个失败的`Response`
 	 * @param string $msg 错误消息提示
 	 * @param int $httpCode http状态码
-	 * @return string
+	 * @return Response
 	 */
-	protected function fail(string $msg = 'Fail', int $httpCode = 400): string {
+	protected function fail(string $msg = 'Fail', int $httpCode = 400): Response {
 		return obj(Response::class)->fail($msg, $httpCode);
 	}
 
 	/**
-	 * 返回一个正确的响应
+	 * 返回一个正确的`Response`
 	 * @param mixed $data 主要返回内容
 	 * @param string $msg 正确消息提示
 	 * @param int $httpCode http状态码
-	 * @return string
+	 * @return Response
 	 */
-	protected function success($data = [], string $msg = 'Success', int $httpCode = 200): string {
+	protected function success($data = [], string $msg = 'Success', int $httpCode = 200): Response {
 		return obj(Response::class)->success($data, $msg, $httpCode);
 	}
 

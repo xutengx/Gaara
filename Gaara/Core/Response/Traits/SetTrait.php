@@ -3,7 +3,10 @@
 declare(strict_types = 1);
 namespace Gaara\Core\Response\Traits;
 
-use Gaara\Core\Response;
+use Gaara\Core\{
+	Response, Conf
+};
+use InvalidArgumentException;
 
 /**
  * 对外链式操作
@@ -75,41 +78,17 @@ trait SetTrait {
 	];
 
 	/**
-	 * 设置Http头信息
-	 * @param array $headers
-	 * @return Response
-	 */
-	public function setHeaders(array $headers): Response {
-		foreach ($headers as $k => $v)
-			$this->setHeader($k . ':' . $v);
-		return $this;
-	}
-
-	/**
-	 * 设置Http头信息
-	 * @param string $header
-	 * @return Response
-	 */
-	public function setHeader(string $header): Response {
-		header($header);
-		return $this;
-	}
-
-	/**
 	 * 设置Http状态码
 	 * @param int $status
 	 * @param string $msg Description 状态码补充说明
 	 * @return Response
 	 */
 	public function setStatus(int $status, string $msg = null): Response {
-		if (is_null($this->status) && isset(self::$httpStatus[$status])) {
-			$msg = (is_null($msg) ? '' : ' ' . ucwords($msg));
-			header('HTTP/1.1 ' . $status . ' ' . self::$httpStatus[$status] . $msg);
-			// 确保FastCGI模式下正常
-			header('Status:' . $status . ' ' . self::$httpStatus[$status] . $msg);
-
-			$this->status = $status;
-		}
+		$msg			 = (is_null($msg) ? '' : ' ' . ucwords($msg));
+		header('HTTP/1.1 ' . $status . ' ' . self::$httpStatus[$status] . $msg);
+		// 确保FastCGI模式下正常
+		header('Status:' . $status . ' ' . self::$httpStatus[$status] . $msg);
+		$this->status	 = $status;
 		return $this;
 	}
 
@@ -119,10 +98,19 @@ trait SetTrait {
 	 * @return Response
 	 */
 	public function setContentType(string $type): Response {
-		if (is_null($this->contentType) && isset(self::$httpType[$type])) {
-			header('Content-Type: ' . reset(self::$httpType[$type]) . '; charset=' . $this->char);
-			$this->contentType = $type;
-		}
+		$this->body->setContentType($type);
+		$this->body->setChar(obj(Conf::class)->app['char']);
+		$this->header->add('Content-Type', reset(self::$httpType[$type]) . '; charset=' . obj(Conf::class)->app['char']);
+		return $this;
+	}
+
+	/**
+	 * 设置响应内容
+	 * @param mixed $data
+	 * @return Response
+	 */
+	public function setContent($data): Response {
+		$this->body->setContent($data);
 		return $this;
 	}
 

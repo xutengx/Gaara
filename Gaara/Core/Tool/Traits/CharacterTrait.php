@@ -163,9 +163,9 @@ trait CharacterTrait {
 	 * @param mixed  $data 数据
 	 * @param string $item 数字索引时的节点名称
 	 * @param string $id   数字索引key转换为的属性名
-	 * @return string
+	 * @return string|null
 	 */
-	public function data_to_xml($data, string $item = 'item', string $id = 'id'): string {
+	public function data_to_xml($data, string $item = 'item', string $id = 'id') {
 		$xml	 = $attr	 = '';
 		if (is_array($data)) {
 			foreach ($data as $key => $val) {

@@ -12,7 +12,7 @@ return [
 		phpinfo();exit;
 	},
 	Route::get('/', function() {
-		return \Response::setContentType('html')->returnData('hello world');
+		return \Response::setContentType('html')->setContent('hello world');
 	}),
 	Route::get('/data/upload/{yearmonth}/{day}/{name}', function($yearmonth, $day, $name) {
 		$filename = ROOT . "data/upload/$yearmonth/$day/$name";

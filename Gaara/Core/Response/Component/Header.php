@@ -73,7 +73,11 @@ class Header {
 					$valueStr					 .= ',' . $value;
 				}
 				$headerValueStr = ltrim($valueStr, ',');
-				header($key . ':' . $headerValueStr);
+				if ($key === 'HTTP/1.1') {
+					header($key . ' ' . $headerValueStr);
+				} else {
+					header($key . ':' . $headerValueStr);
+				}
 				unset($this->headers[$key]);
 			}
 		}

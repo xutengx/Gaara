@@ -17,25 +17,14 @@ class Route {
 	// 分组以及静态方法申明路由
 	use SetRoute;
 
-	// $middleware
-//	public static $middleware;
-	// $contr
-//	public static $contr;
-	// $wholeParam
-//	public static $wholeParam;
-	//
-//	public static $alias;
-//	public static $methods;
-//	public static $domainParam;
-//	public static $urlParam;
-//	public static $middlewareGroups;
+	// 路由配置成功后对象
 	public static $MatchedRouting;
-	// 当前 $pathInfo
-	private static $pathInfo		 = null;
-	// 全部路由规则
-	private static $routeRule	 = [];
 	// 404
 	public static $rule404		 = null;
+	// 当前 $pathInfo
+	private static $pathInfo	 = null;
+	// 全部路由规则
+	private static $routeRule	 = [];
 
 	/**
 	 * 路由匹配

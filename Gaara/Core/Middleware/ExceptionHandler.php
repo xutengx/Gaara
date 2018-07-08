@@ -37,30 +37,19 @@ class ExceptionHandler extends Middleware {
 				$whoops->pushHandler(new JsonResponseHandler);
 			else {
 				$whoops->pushHandler(function($exception, $inspector, $run) {
-					$level = ob_get_level();
-					for ($i = 0; $i < $level; $i++) {
-						ob_end_clean();
-					}
-					exit(Response::setStatus(500)->view('500'));
+					obj(Response::class)->setStatus(500)->view('500')->sendExit();
 				});
 			}
 		}
+		// 优先级高
 		$whoops->pushHandler(function($exception, $inspector, $run) {
 			// 记录异常
 			obj(Log::class)->error($inspector->getException());
 
-			if ($exception instanceof MessageException) {
-				$msg = $exception->getMessage();
-				obj(Response::class)->setStatus(500)->setContent([
-					'msg' => $msg
-				])->sendExit();
-			}
-			if ($exception instanceof HttpException) {
+			if ($exception instanceof MessageException || $exception instanceof HttpException) {
 				$msg	 = $exception->getMessage();
 				$code	 = $exception->getCode();
-				obj(Response::class)->setStatus($code)->setContent([
-					'msg' => $msg
-				])->sendExit();
+				obj(Response::class)->fail($msg, $code)->sendExit();
 			}
 		});
 		$whoops->register();

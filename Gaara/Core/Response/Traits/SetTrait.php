@@ -85,9 +85,9 @@ trait SetTrait {
 	 */
 	public function setStatus(int $status, string $msg = null): Response {
 		$msg			 = (is_null($msg) ? '' : ' ' . ucwords($msg));
-		header('HTTP/1.1 ' . $status . ' ' . self::$httpStatus[$status] . $msg);
+		$this->header->set('HTTP/1.1', $status . ' ' . self::$httpStatus[$status] . $msg);
 		// 确保FastCGI模式下正常
-		header('Status:' . $status . ' ' . self::$httpStatus[$status] . $msg);
+		$this->header->set('Status', $status . ' ' . self::$httpStatus[$status] . $msg);
 		$this->status	 = $status;
 		return $this;
 	}

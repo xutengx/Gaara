@@ -26,17 +26,19 @@ class ReturnResponse extends Middleware {
 	 * @param PhpConsole $PhpConsole
 	 */
 	public function handle() {
-		$this->obStart();
+		ob_start();
+		ob_start();
 	}
 
 	/**
-	 * 
+	 *
 	 * @param Response $response
 	 */
 	public function terminate(Response $response) {
-//		var_dump($response); exit;
-		$this->obEnd();
+		// 清除非`Response->send()`输出;
+		ob_end_clean();
 		$response->send();
+//		exit;
 //		if ($response instanceof Generator) {
 //			return $this->generatorDecode($response);
 //		} elseif ($response === true) {
@@ -48,20 +50,10 @@ class ReturnResponse extends Middleware {
 //		} elseif ($response instanceof Response) {
 //			$response->send();
 //		}
-		exit;
+//		exit;
 
 //		Response::exitData($response);
-	}
-
-	private function obStart() {
-		ob_start();
-	}
-
-	private function obEnd() {
-		$level = ob_get_level();
-		for ($i = 0; $i < $level; $i++) {
-			ob_end_clean();
-		}
+//		return $response;
 	}
 
 	/**

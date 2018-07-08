@@ -44,15 +44,15 @@ abstract class Middleware {
 	}
 
 	/**
-	 * 执行末置中间件
+	 * 执行末置中间件, 自动传递`Response`
 	 * @param Response $response 上级操作响应结果
 	 * @return Response 本次操作的响应
 	 */
 	final protected function doTerminate(Response $response): Response {
 		if ($this->effective() && method_exists($this, 'terminate')) {
-			return Integrator::run($this, 'terminate', [$response]);
-		} else
-			return $response;
+			Integrator::run($this, 'terminate', [$response]);
+		}
+		return $response;
 	}
 
 	/**

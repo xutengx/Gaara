@@ -12,8 +12,22 @@ class index extends Controller {
 
 	public function indexDo(){
 
-//		var_dump(obj(Request::class));exit;
+		echo 'qwewqe1';
 
+//		\Response::setContent('test111  ')->sendReal();
+		\Response::setContent('test222   ')->send();
+//		\Response::setContent('test333  ')->sendReal();
+
+		echo 'qwewqe2';
+//		var_dump(headers_list());
+//		var_dump(headers_sent($file, $line));
+//		var_dump($file);
+//		var_dump($line);
+//		exit;
+//		var_dump(\Response::header()->getSent());exit;
+//		var_dump(obj(Request::class));exit;
+//		throw new \Gaara\Core\Exception\MessageException("'msg', 'error'");
+//		throw new \Exception('error ');
 //		throw new \Gaara\Core\Exception\Http\NotFoundHttpException();
 //		Response::body()->setContent(['data' => 'body content']);
 

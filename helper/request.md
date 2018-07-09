@@ -19,7 +19,7 @@
         * [控制器过滤](#控制器过滤)
         * [预定义正则](#控制器过滤)
     * [文件参数](#文件参数)
-    * [其他方法](#其他方法)
+    * [请求信息](#请求信息)
 * [响应](/helper/response.md)
 * [中间件](/helper/middleware.md)
 * [控制器](/helper/controller.md)
@@ -51,9 +51,9 @@ Route::put('/', function(Gaara\Core\Reuqest $request){
 // put请求域名 http://eg.com/?name=gaara&age=18
 Route::put('/', function(Gaara\Core\Reuqest $request){
     return $request->get;           // 返回 ['name'=>'gaara','age'=>'18']
-    
+
     return $request->get('name');   // 返回 'gaara'
-    
+
     return $request->get('sex');    // 返回 ''
 });
 ```
@@ -95,8 +95,9 @@ Route::put('/', function(Gaara\Core\Reuqest $request){
 
 ```php
 <?php
-
 namespace App\yh\c\Dev;
+
+use Gaara\Core\Exception\Http\UnprocessableEntityHttpException;
 
 class Dev extends \Gaara\Core\Controller {
 
@@ -105,8 +106,8 @@ class Dev extends \Gaara\Core\Controller {
         return $this->get('name','/^[\w]{5,32}$/','自定义的响应文本'););
     }
 
-/********************* 以下方法在父类中已存在,可重载 **********************/    
-    
+/********************* 以下方法在父类中已存在,可重载 **********************/
+
     /**
      * 定义当参数不合法时的响应
      * @param string $key
@@ -115,7 +116,7 @@ class Dev extends \Gaara\Core\Controller {
      */
     protected function requestArgumentInvalid(string $key, string $fun, string $msg = null) {
         $msg = $msg ?? 'Invalid request argument : '.$key.' ['.$fun.']';
-        exit($this->returnMsg(0, $msg));
+		throw new UnprocessableEntityHttpException($message);
     }
 
     /**
@@ -126,19 +127,9 @@ class Dev extends \Gaara\Core\Controller {
      */
     protected function requestArgumentNotFound(string $key, string $fun, string $msg = null){
         $msg = $msg ?? 'Not found request argument : '.$key.' ['.$fun.']';
-        exit($this->returnMsg(0, $msg));
+		throw new UnprocessableEntityHttpException($message);
     }
-    
-    /**
-     * 返回一个msg响应
-     * @param int $code 状态标记
-     * @param string $msg 状态描述
-     * @return string
-     */
-    protected function returnMsg(int $code = 0, string $msg = 'fail !'): string {
-        $data = ['code' => $code, 'msg' => $msg];
-        return Response::returnData($data);
-    }
+
 }
 
 ```
@@ -199,7 +190,7 @@ Route::put('/', function(Gaara\Core\Reuqest $request){
             // 不使用`makeFilename`时默认路径 'data/upload/'. date('Ym/d/')
             // `makeFilename`方法指定相对路径, 若为绝对路径则指定第2个参数true
             if($file->makeFilename('data/upload/')->move_uploaded_file())
-                // 获得文件保存的路径 
+                // 获得文件保存的路径
                 echo '文件保存的路径是'.$file->saveFilename;
         }else {
             echo '上传类型不为图片, 或者大于8m';
@@ -207,23 +198,36 @@ Route::put('/', function(Gaara\Core\Reuqest $request){
     }
 });
 ```
-## 其他方法
+## 请求信息
 
 ```php
 <?php
-Route::get('/', function(Gaara\Core\Reuqest $request){
-    // 域名参数
-    $request->domain;
-    // cookie
-    $request->cookie;
-    // 来访ip
-    $request->ip;
-    // 当前完整url
-    $request->url;
-    // 是否ajax请求
-    $request->isAjax;
+
+Class Request{
+    public $inSys; // 入口文件名 eg:index.php
+	public $isAjax; // 是否异步请求
+	public $scheme; // https or http
+	public $host; // example.com
+	public $scriptName; // /index.php
+	public $requestUrl; // /admin/index.php/product?id=100
+	public $queryString; //返回 id=100,问号之后的部分。
+	public $absoluteUrl; //返回 http://example.com/admin/index.php/product?id=100, 包含host infode的整个URL。
+	public $hostInfo; //返回 http://example.com, 只有host info部分。
+	public $pathInfo; //返回 /admin/index.php/product， 这问号之前（查询字符串）的部分。
+	public $staticUrl; //返回 http://example.com/admin/index.php/product, 包含host pathInfo。
+	public $serverName; //返回 example.com, URL中的host name。
+	public $serverPort; //返回 80, 这是web服务中使用的端口。
+	public $method; // 当前http方法
+	public $alias; // 当前路由别名
+	public $methods; // 当前路由可用的http方法数组
+	public $userHost; // 来访者的host
+	public $userIp; // 来访者的ip
+	public $contentType; // 请求体格式
+	public $acceptType; // 需求的相应体格式
+	public $MatchedRouting = null; // 路由匹配成功后,由`Kernel`赋值的`MatchedRouting`对象
+
+
     // 设置cookie
-    $request->setcookie(string $name, $value = '', int $expire = 0, string $path = "", string $domain = "", bool $secure = false, bool $httponly = true);
-    
-});
-```
+    public function setcookie(string $name, $value = '', int $expire = 0, string $path = "", string $domain = "", bool $secure = false, bool $httponly = true);
+
+}

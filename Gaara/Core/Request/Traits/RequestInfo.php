@@ -21,13 +21,13 @@ trait RequestInfo {
 	public $staticUrl; //返回 http://example.com/admin/index.php/product, 包含host pathInfo。
 	public $serverName; //返回 example.com, URL中的host name。
 	public $serverPort; //返回 80, 这是web服务中使用的端口。
-	public $method;
+	public $method; // 当前http方法
 	public $alias; // 当前路由别名
 	public $methods; // 当前路由可用的http方法数组
-	public $userHost;
-	public $userIp;
-	public $contentType;
-	public $acceptType;
+	public $userHost; // 来访者的host
+	public $userIp; // 来访者的ip
+	public $contentType; // 请求体格式
+	public $acceptType; // 需求的相应体格式
 	public $MatchedRouting = null; // 路由匹配成功后,由`Kernel`赋值的`MatchedRouting`对象
 
 	public function RequestInfoInit() {

@@ -33,7 +33,7 @@ class Response {
 		$this->header	 = new Header;
 		$this->file		 = new File;
 		$this->body		 = new Body;
-		$this->setContentType($this->getAcceptType())->setStatus(202)
+		$this->setContentType($this->getAcceptType())->setStatus(200)
 		->header()->set('Pragma', 'no-cache')
 		->add('Cache-Control', 'no-store')
 		->add('Cache-Control', 'no-revalidate')

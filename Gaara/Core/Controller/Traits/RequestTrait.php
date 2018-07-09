@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Gaara\Core\Controller\Traits;
 
 use Gaara\Core\Request;
-use Response;
+use Gaara\Core\Exception\Http\UnprocessableEntityHttpException;
 
 /**
  * 请求过滤
@@ -57,7 +57,7 @@ trait RequestTrait {
 	}
 
 	protected function delete(string $key = null, string $rule = null, string $msg = null) {
-		return $this->requestFun($key, $rule, $msg, 'detele');
+		return $this->requestFun($key, $rule, $msg, 'delete');
 	}
 
 	/**
@@ -66,10 +66,12 @@ trait RequestTrait {
 	 * @param string $fun
 	 * @param string $msg
 	 * @param string $rule
+	 * @reutrn void
+	 * @throws UnprocessableEntityHttpException
 	 */
-	protected function requestArgumentInvalid(string $key, string $fun, string $msg, string $rule) {
+	protected function requestArgumentInvalid(string $key, string $fun, string $msg, string $rule): void {
 		$message = $msg ?? 'Invalid request argument : ' . $key . ' [ Rule : ' . $rule . ' ]';
-		exit($this->fail($message, 422));
+		throw new UnprocessableEntityHttpException($message);
 	}
 
 	/**
@@ -78,10 +80,12 @@ trait RequestTrait {
 	 * @param string $fun
 	 * @param string $msg
 	 * @param string $rule
+	 * @reutrn void
+	 * @throws UnprocessableEntityHttpException
 	 */
-	protected function requestArgumentNotFound(string $key, string $fun, string $msg, string $rule) {
+	protected function requestArgumentNotFound(string $key, string $fun, string $msg, string $rule): void {
 		$message = $msg ?? 'Not found request argument : ' . $key . ' [ Method : ' . $fun . ' ]';
-		exit($this->fail($message, 422));
+		throw new UnprocessableEntityHttpException($message);
 	}
 
 }

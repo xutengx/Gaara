@@ -32,7 +32,7 @@ class index extends Controller {
 //		Response::body()->setContent(['data' => 'body content']);
 
 //		return $this->fail('errorrrrrrrrrrrr', 416);
-		return $this->success(['qweqwe','qweqwe'], 'bbb');
+		return $this->success(['email' => 'newuser@163.com']);
 
 //return obj(Response::class);
 		Response::send();

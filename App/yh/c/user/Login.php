@@ -2,7 +2,6 @@
 
 declare(strict_types = 1);
 namespace App\yh\c\user;
-defined('IN_SYS') || exit('ACC Denied');
 
 use App\yh\m\MainUser as GaaraUser;
 use Gaara\Core\Controller;
@@ -25,7 +24,7 @@ class Login extends Controller {
                 if ($info['status'] === 1) {
                     // 数据库更新用户登入状态, 缓存用户状态, 用于登入时校验
                     $newInfo = $this->userLogin($info['id'], $user, $request, $info);
-                    
+
                     return $this->returnData($this->makeToken($newInfo));
                 } else
                     return $this->fail( '用户已被禁用');

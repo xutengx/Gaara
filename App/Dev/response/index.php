@@ -12,12 +12,15 @@ class index extends Controller {
 
 	public function indexDo(){
 
+//		var_dump(ob_get_level());exit;
 		echo 'qwewqe1';
+
+//		echo  str_repeat(" q ",410112);
+//		return \Response::setContent(str_repeat("t ",4096));
 
 //		\Response::setContent('test111  ')->sendReal();
 		\Response::setContent('test222   ')->send();
 //		\Response::setContent('test333  ')->sendReal();
-
 		echo 'qwewqe2';
 //		var_dump(headers_list());
 //		var_dump(headers_sent($file, $line));

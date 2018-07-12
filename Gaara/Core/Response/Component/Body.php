@@ -45,7 +45,6 @@ class Body {
 	 * 编码响应内容
 	 * @param mixed $data
 	 * @return string
-	 * @throws Exception
 	 */
 	private function encode($data): string {
 		$encode = '';
@@ -62,8 +61,6 @@ class Body {
 			case 'html':
 				$encode	 = is_array($data) ? json_encode($data, JSON_UNESCAPED_UNICODE) : $data;
 				break;
-			default:
-				throw new Exception('ContentType is not in [json, xml, php, html]');
 		}
 		return (string) $encode;
 	}

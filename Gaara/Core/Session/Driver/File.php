@@ -14,7 +14,7 @@ class File {
 	public function __construct(string $dir) {
 		$dir = $dir ?? 'data/Session';
 
-		obj(Tool::class)->absoluteDir($dir);
+		$dir = obj(Tool::class)->absoluteDir($dir);
 
 		if (!is_dir($dir))
 			obj(Tool::class)->__mkdir($dir);

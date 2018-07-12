@@ -8,22 +8,16 @@ use Generator;
 use Gaara\Core\{
 	Middleware, Response
 };
-use Gaara\Expand\PhpConsole;
 
 /**
  * 统一响应处理
- * 移除意外输出, 使用PhpConsole调试
  */
 class ReturnResponse extends Middleware {
 
 	protected $except = [];
 
 	/**
-	 * 初始化 PhpConsole, 其__construct 中启用了ob_start, 再手动启用ob_start, 确保header头不会提前发出
-	 * 一层ob的情况下当使用ob_end_clean关闭之后的内容若超过web_server(nginx)的输出缓冲大小(默认4k),将会被发送
-	 * 受限于http响应头大小,意外输出过多时(大于3000)将会写入文件, 详见\Gaara\Expand\PhpConsole
-	 *
-	 * @param PhpConsole $PhpConsole
+	 * 兼容不同服务器下, php可能存在的默认缓冲区
 	 */
 	public function handle() {
 		ob_start();
@@ -37,37 +31,55 @@ class ReturnResponse extends Middleware {
 	public function terminate(Response $response) {
 		// 清除非`Response->send()`输出;
 		ob_end_clean();
+		// 发送响应
 		$response->send();
-//		exit;
-//		if ($response instanceof Generator) {
-//			return $this->generatorDecode($response);
-//		} elseif ($response === true) {
-//			obj(Response::class)->setStatus(200)->sendExit();
-//		} elseif ($response === false) {
-//			obj(Response::class)->setStatus(400)->sendExit();
-//		} elseif ($response instanceof Iterator) {
-//			$response = $this->iteratorDecode($response);
-//		} elseif ($response instanceof Response) {
-//			$response->send();
-//		}
-//		exit;
-
-//		Response::exitData($response);
-//		return $response;
 	}
 
+
+/**
+
+CREATE TABLE `log` (
+  `bigint` int(1) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+
+  `client_ip` char(15) NOT NULL DEFAULT '' COMMENT '客户端的ip',
+	`client_referer` varchar(500) NOT NULL DEFAULT '' COMMENT '客户端的来源页',
+	`client_url` varchar(500) NOT NULL DEFAULT '' COMMENT '客户端的完整url',
+	`client_file` varchar(200) NOT NULL DEFAULT '' COMMENT '客户端的发送api请求的文件',
+	`client_line` int(1) NOT NULL DEFAULT '' COMMENT '客户端的发送api请求的文件行数',
+	`client_class_function` varchar(50) NOT NULL DEFAULT '' COMMENT '客户端的发送api请求的类&方法',
+
+
+  `api_url` varchar(200) NOT NULL DEFAULT '' COMMENT 'api请求的url',
+  `api_request_url` varchar(500) NOT NULL DEFAULT '' COMMENT 'api请求的完整url',
+  `api_request_method` char(10) NOT NULL DEFAULT '' COMMENT 'api请求的http方法',
+  `api_request_data` varchar(2000) NOT NULL DEFAULT '' COMMENT 'api请求的参数, json',
+
+  `api_response_status` int(1) NOT NULL DEFAULT '' COMMENT 'api响应的http状态码',
+  `api_response_data` varchar(2000) NOT NULL DEFAULT '' COMMENT 'api响应的数据, json',
+
+  `api_life_time` int(1) NOT NULL DEFAULT '' COMMENT 'api整体耗时, 单位毫秒',
+
+  `description` varchar(2000) NOT NULL COMMENT '描述',
+	`created_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='日志记录表';
+
+
+
+ */
 	/**
 	 * 解码Iterator对象到数组
 	 * @param Iterator $obj
 	 * @return array
 	 */
-	private function iteratorDecode(Iterator $obj): array {
-		$arr = [];
-		foreach ($obj as $k => $v) {
-			$arr[$k] = $v;
-		}
-		return $arr;
-	}
+//	private function iteratorDecode(Iterator $obj): array {
+//		$arr = [];
+//		foreach ($obj as $k => $v) {
+//			$arr[$k] = $v;
+//		}
+//		return $arr;
+//	}
 
 	/**
 	 * 解码Generator对象并直接输出
@@ -75,13 +87,13 @@ class ReturnResponse extends Middleware {
 	 * @param Generator $obj
 	 * @return void
 	 */
-	private function generatorDecode(Generator $obj): void {
-		foreach ($obj as $v) {
-			echo $v;
-			ob_flush();
-			flush();
-		}
-		exit;
-	}
+//	private function generatorDecode(Generator $obj): void {
+//		foreach ($obj as $v) {
+//			echo $v;
+//			ob_flush();
+//			flush();
+//		}
+//		exit;
+//	}
 
 }

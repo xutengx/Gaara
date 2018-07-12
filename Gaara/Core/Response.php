@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Gaara\Core;
 
 use Closure;
+use Generator;
 use PhpConsole;
 use Gaara\Core\Conf;
 use Gaara\Core\Response\Traits\{
@@ -33,12 +34,13 @@ class Response {
 		$this->header	 = new Header;
 		$this->file		 = new File;
 		$this->body		 = new Body;
+		$this->body->setChar(obj(Conf::class)->app['char']);
 		$this->setContentType($this->getAcceptType())->setStatus(200)
 		->header()->set('Pragma', 'no-cache')
 		->add('Cache-Control', 'no-store')
 		->add('Cache-Control', 'no-revalidate')
 		->add('Cache-Control', 'no-cache')
-		->set('Expires', gmdate("D, d M Y H:i:s", time() + 3600) . " GMT")
+		->set('Expires', '-1')
 		->set('X-Powered-By', 'Gaara');
 	}
 
@@ -70,14 +72,24 @@ class Response {
 	 * 响应内容
 	 * 不会清除最后层缓冲区, 也就不会出现响应头重复的问题
 	 * 本方法易用性高, 建议业务中正常响应时使用
+	 * php默认开启的输出缓冲可能不是无限大小(理论值), 而是诸如4096, 倒数第二层以及之后是gaara开启的缓冲层
 	 * @return void
 	 */
 	public function send(): void {
 		$this->obRestore(function() {
 			$this->header()->send();
 			$this->body()->send();
-		}, 1);
+		}, 2);
 	}
+
+//	public function sendGenerator(Generator $Generator) {
+//		$this->obRestore(function()use($Generator) {
+//			$this->header()->send();
+//			foreach ($Generator as $v) {
+//				$this->body()->setContent($v)->send();
+//			}
+//		}, 2);
+//	}
 
 	/**
 	 * 响应内容

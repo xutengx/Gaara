@@ -12,9 +12,10 @@ trait FileTrait {
 
 	/**
 	 * 路径 转 绝对路径
-	 * @param string &$dir
+	 * @param string $dir
+	 * @return string
 	 */
-	public function absoluteDir(string &$dir = '') {
+	public function absoluteDir(string $dir): string {
 		$system	 = php_uname('s');
 		$dir	 = str_replace('\\', '/', trim($dir));
 		if (substr($system, 0, 5) === 'Linux') {
@@ -27,11 +28,12 @@ trait FileTrait {
 				$dir = ROOT . ltrim($dir, './');
 		} else
 			throw new Exception('Incompatible operating system');
+		return $dir;
 	}
 
 	// 分割下载 // test
 	public function download2(string $path, string $name, string $showname) {
-//        $this->absoluteDir($path);
+        $path = $this->absoluteDir($path);
 		$filename	 = $path . $name;
 		$file		 = $filename;
 		if (FALSE !== ($handler	 = fopen($file, 'r'))) {
@@ -55,7 +57,7 @@ trait FileTrait {
 	// 推送下载文件
 	// param  路径  文件名
 	public function download(string $path, string $name) {
-//        $this->absoluteDir($path);
+        $path = $this->absoluteDir($path);
 		$filename	 = $path . $name;
 		$file		 = fopen($filename, "r");
 		flock($file, LOCK_SH);
@@ -63,10 +65,11 @@ trait FileTrait {
 		header("Accept-Ranges: bytes");
 		header("Accept-Length:" . filesize($filename));
 		header("Content-Disposition: attachment; filename=" . $name);
-		echo fread($file, filesize($filename));
+//		 $content = fread($file, filesize($filename));
+		obj(\Response::class)->setContent(fread($file, filesize($filename)))->send();
 		flock($file, LOCK_UN);
 		fclose($file);
-		exit();
+//		exit();
 	}
 
 	/**

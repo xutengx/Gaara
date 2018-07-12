@@ -23,7 +23,7 @@ class version1Upload {
      */
 
     private function make_file_name($file_path) {
-        obj('tool')->absoluteDir($file_path);
+        $file_path = obj('tool')->absoluteDir($file_path);
         $scheme = $_SERVER['REQUEST_SCHEME'];                // 'http';
         $host = $_SERVER['HTTP_HOST'];                  // '192.168.43.128';
         $pars = [
@@ -59,8 +59,8 @@ class version1Upload {
 
     // 获取入口
     public function download($file_name_base64_encrypt, $download) {
-        $file_name = obj('Secure')->decrypt($file_name_base64_encrypt, $this->config['key']); // /mnt/hgfs/www/git/php_/project/data/upload/public/20170606_1135/1235936230b1ac15.png        
-        $name = basename($file_name);                           // 1235936230b1ac15.png    
+        $file_name = obj('Secure')->decrypt($file_name_base64_encrypt, $this->config['key']); // /mnt/hgfs/www/git/php_/project/data/upload/public/20170606_1135/1235936230b1ac15.png
+        $name = basename($file_name);                           // 1235936230b1ac15.png
         $path = strtr($file_name, [$name => '']);                // /mnt/hgfs/www/git/php_/project/data/upload/public/20170606_1135/
         $ext = substr(strrchr($name, '.'), 1);                  // png
 

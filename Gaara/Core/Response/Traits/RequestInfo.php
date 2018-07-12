@@ -22,7 +22,7 @@ trait RequestInfo {
 		'png'	 => ['image/png'],
 		'jpg'	 => ['image/jpg,image/jpeg,image/pjpeg'],
 		'gif'	 => ['image/gif'],
-		'csv'	 => ['text/csv'],
+		'csv'	 => ['mime/type','text/csv'],
 	];
 
 	/**

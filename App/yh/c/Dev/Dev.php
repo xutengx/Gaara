@@ -30,6 +30,7 @@ class Dev extends Controller {
 //        return obj(\App\yh\m\UserMerchant::class)->getRow();
         $this->assignPhp('url', url(''));
         $this->assign('test', 'this is test string !');
+
         return $this->display();
     }
 }

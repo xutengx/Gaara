@@ -4,8 +4,6 @@ declare(strict_types = 1);
 namespace Gaara\Core;
 
 use Closure;
-use Generator;
-use PhpConsole;
 use Gaara\Core\Conf;
 use Gaara\Core\Response\Traits\{
 	SetTrait, GetTrait, Format, RequestInfo
@@ -75,32 +73,25 @@ class Response {
 	 * php默认开启的输出缓冲可能不是无限大小(理论值), 而是诸如4096, 倒数第二层以及之后是gaara开启的缓冲层
 	 * @return void
 	 */
-	public function send(): void {
+	public function send(): Response {
 		$this->obRestore(function() {
 			$this->header()->send();
 			$this->body()->send();
 		}, 2);
+		return $this;
 	}
-
-//	public function sendGenerator(Generator $Generator) {
-//		$this->obRestore(function()use($Generator) {
-//			$this->header()->send();
-//			foreach ($Generator as $v) {
-//				$this->body()->setContent($v)->send();
-//			}
-//		}, 2);
-//	}
 
 	/**
 	 * 响应内容
 	 * 本方法将会即时发送全部响应头
 	 * @return void
 	 */
-	public function sendReal(): void {
+	public function sendReal(): Response {
 		$this->obRestore(function() {
 			$this->header()->send();
 			$this->body()->send();
 		}, 0);
+		return $this;
 	}
 
 	/**
@@ -123,7 +114,7 @@ class Response {
 	 * @param bool $restore 是否还原其他输出
 	 * @return void
 	 */
-	private function obRestore(Closure $Closure, int $leastLevel = 0, bool $restore = true): void {
+	public function obRestore(Closure $Closure, int $leastLevel = 0, bool $restore = true): void {
 		$output		 = [];
 		$MaxLevel	 = ob_get_level();
 		for ($i = $leastLevel; $i < $MaxLevel; $i++) {

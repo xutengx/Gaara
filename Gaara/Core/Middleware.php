@@ -27,7 +27,7 @@ abstract class Middleware {
 		$response = $next();
 
 		// 末置中间件
-		$newResponse = $this->doTerminate($response);
+		$newResponse = $this->doTerminate($response ?? obj(Response::class));
 
 		// 返回
 		return $newResponse;

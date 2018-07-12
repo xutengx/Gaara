@@ -54,24 +54,6 @@ trait FileTrait {
 		exit;
 	}
 
-	// 推送下载文件
-	// param  路径  文件名
-	public function download(string $path, string $name) {
-        $path = $this->absoluteDir($path);
-		$filename	 = $path . $name;
-		$file		 = fopen($filename, "r");
-		flock($file, LOCK_SH);
-		header("Content-type: application/octet-stream");
-		header("Accept-Ranges: bytes");
-		header("Accept-Length:" . filesize($filename));
-		header("Content-Disposition: attachment; filename=" . $name);
-//		 $content = fread($file, filesize($filename));
-		obj(\Response::class)->setContent(fread($file, filesize($filename)))->send();
-		flock($file, LOCK_UN);
-		fclose($file);
-//		exit();
-	}
-
 	/**
 	 * 递归删除 目录(绝对路径)下的所有文件,不包括自身
 	 * @param string $dirName 目录(绝对)

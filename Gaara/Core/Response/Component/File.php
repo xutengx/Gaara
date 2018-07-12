@@ -6,7 +6,10 @@ namespace Gaara\Core\Response\Component;
 use Closure;
 use Iterator;
 use Generator;
-use Gaara\Core\Response;
+use Gaara\Core\{
+	Tool, Response
+};
+use Gaara\Core\Model\QueryChunk;
 
 class File {
 
@@ -14,11 +17,11 @@ class File {
 	 * 下载文件
 	 * @param string $filename
 	 */
-	public function downloadFile(string $path, string $name, string $showname) {
+	public function downloadFile2(string $path, string $name, string $showname) {
 		$filename	 = $path . $name;
 		$file		 = $filename;
 		if (FALSE !== ($handler	 = fopen($file, 'r'))) {
-			flock($handler, LOCK_EX);
+			flock($handler, LOCK_SH);
 			header('Content-Description: File Transfer');
 			header('Content-Type: application/octet-stream');
 			header('Content-Disposition: attachment; filename=' . $showname . '.zip');
@@ -35,38 +38,77 @@ class File {
 	}
 
 	/**
-	 * 发送 Generator 内容到缓冲区
-	 * @param Generator $Generator
-	 * @return Response
+	 * 直接下载某个文件
+	 * @param string $downloadFile
+	 * @param string $downloadFileName
 	 */
-	public function downloadGenerator(Generator $Generator): Response {
-		$this->obRestore(function() use ($Generator) {
-			foreach ($Generator as $v) {
-				obj(Response::class)->body()->setContent($v)->send();
-			}
-		}, 2, false);
+	public function download(string $downloadFile, string $downloadFileName = null) {
+		$file		 = obj(Tool::class)->absoluteDir($downloadFile);
+		$fileName = $downloadFileName ?? basename($file);
+		$fileHandle	 = fopen($file, "r");
+		flock($fileHandle, LOCK_SH);
+		obj(Response::class)->header()->set('Content-type', 'application/octet-stream');
+		obj(Response::class)->header()->set('Accept-Ranges', 'bytes');
+		obj(Response::class)->header()->set('Accept-Length', filesize($file));
+		obj(Response::class)->header()->set('Content-Disposition', "attachment; filename=" . $fileName);
+		obj(Response::class)->setContent(fread($fileHandle, filesize($file)))->sendReal();
+		flock($fileHandle, LOCK_UN);
+		fclose($fileHandle);
 		return obj(Response::class);
 	}
 
 	/**
-	 * 输出并还原缓冲区
-	 * @param Closure $Closure 输出 (echo)
-	 * @param int $leastLevel 输出时剩余的缓冲层
-	 * @param bool $restore 是否还原其他输出
-	 * @return void
+	 * 将数据库分块 (getChunk()) 或者 数据库结果 (getAll()), 导出为csv格式
+	 * 为性能提升, 将直接发送响应头
+	 * @param array|QueryChunk $QueryChunkOrArray
+	 * @param string $downloadFileName
+	 * @return Response
 	 */
-	private function obRestore(Closure $Closure, int $leastLevel = 0, bool $restore = true): void {
-		$output		 = [];
-		$MaxLevel	 = ob_get_level();
-		for ($i = $leastLevel; $i < $MaxLevel; $i++) {
-			$output[] = $restore ? ob_get_contents() : '';
-			ob_end_clean();
-		}
-		$Closure();
-		for ($i = $leastLevel; $i < $MaxLevel; $i++) {
-			ob_start();
-			echo array_pop($output);
-		}
+	public function exportCsv($QueryChunkOrArray, string $downloadFileName = null): Response {
+		$filename = $downloadFileName ? rtrim($downloadFileName, '.csv') . '.csv' : time() . '.csv';
+
+		obj(Response::class)->header()->set('Content-Type', 'mime/type')
+		->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+
+		// 手动 sendReal 避免频繁开关缓冲区
+		obj(Response::class)->obRestore(function() use ($QueryChunkOrArray) {
+			$is_QueryChunk = ($QueryChunkOrArray instanceof QueryChunk) ? true : false;
+			foreach ($QueryChunkOrArray as $v) {
+				obj(Response::class)->setContent($this->arrayKeyValueToCsvRows($v, $is_QueryChunk))->send();
+				break;
+			}
+			foreach ($QueryChunkOrArray as $v) {
+				obj(Response::class)->body()->setContent($this->arrayValueToCsvRow($v))->send();
+			}
+		}, 0, false);
+		return obj(Response::class);
+	}
+
+	/**
+	 * 一位数组的键和值分别转化为csv的一行
+	 * 生成器需要返回2行, 而普通数组只需要1行
+	 * @param array $arr
+	 * @bool $is_QueryChunk
+	 * @return string
+	 */
+	private function arrayKeyValueToCsvRows(array $arr, bool $is_QueryChunk = true): string {
+		$keyArr	 = array_keys($arr);
+		$str	 = '"' . implode('","', $keyArr) . '"' . "\n";
+		$str	 .= $is_QueryChunk ? $this->arrayValueToCsvRow($arr) : '';
+		return $str;
+	}
+
+	/**
+	 * 一位数组的值转化为csv的一行
+	 * 在数字左侧加上等号
+	 * @param array $arr
+	 * @return string
+	 */
+	private function arrayValueToCsvRow(array $arr): string {
+		$str = '';
+		foreach ($arr as $v)
+			$str .= (is_numeric($v) ? '=' : '') . '"' . $v . '",';
+		return rtrim($str, ',') . "\n";
 	}
 
 }

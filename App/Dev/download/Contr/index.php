@@ -13,30 +13,16 @@ class index extends Controller{
 
     public function index(VisitorInfo $model, Response $Response){
 
-//		$this->downloadfile();
-
-//		var_dump(ob_get_level());exit;
+		return $this->downloadfile();
 
         $data = $model->limit(14000)->getChunk();
 //        $data = $model->limit(14000)->getAll();
-//		return $Response->setContent($data);
-//		var_dump($data);exit;
-//return;
+//		return $Response->setContent($data)->send();
 
-        $filename = 'TransactionDaily_.csv';
-        $mimetype = 'mime/type';
-//
-//		$Response->header()->set('Content-Type',  $mimetype);
-//		$Response->header()->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
-//
-		$Response->setContent('"id","name","phone","scene","test","note","created_at","updated_at","is_del"' . "\n")->send();
-//
-		$data  = $this->download($data);
+		return $Response->file()->exportCsv($data);
 
-//		var_dump($Response->header()->get());
-//		var_dump($Response->header()->getSent());exit;
 
-		return $Response->file()->downloadGenerator($data);
+//		return $Response->file()->downloadGenerator($data);
 
 
 //        $Response->setHeaders([
@@ -55,13 +41,14 @@ class index extends Controller{
         }
     }
 
-//	private function downloadfile(){
-//		$file = './data/upload/201711/01/Downloads.zip';
-//		$file = obj(\Tool::class)->absoluteDir($file);
-//
+	private function downloadfile(){
+		$file = './data/upload/201711/01/Downloads.zip';
+		$file = obj(\Tool::class)->absoluteDir($file);
+
+		return \Response::file()->download($file);
 //		obj(\Tool::class)->download('./data/upload/201711/01/', 'Downloads.zip', 'test.zip');
-//
-//
-//	}
+
+
+	}
 
 }

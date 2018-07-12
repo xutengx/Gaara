@@ -12,12 +12,12 @@ trait FileTrait {
 
 	/**
 	 * 路径 转 绝对路径
-	 * @param string $dir
+	 * @param string $dirOld
 	 * @return string
 	 */
-	public function absoluteDir(string $dir): string {
+	public function absoluteDir(string $dirOld): string {
 		$system	 = php_uname('s');
-		$dir	 = str_replace('\\', '/', trim($dir));
+		$dir	 = str_replace('\\', '/', trim($dirOld));
 		if (substr($system, 0, 5) === 'Linux') {
 			$pos = strpos($dir, '/');
 			if ($pos === false || $pos !== 0)
@@ -31,35 +31,12 @@ trait FileTrait {
 		return $dir;
 	}
 
-	// 分割下载 // test
-	public function download2(string $path, string $name, string $showname) {
-        $path = $this->absoluteDir($path);
-		$filename	 = $path . $name;
-		$file		 = $filename;
-		if (FALSE !== ($handler	 = fopen($file, 'r'))) {
-			flock($handler, LOCK_SH);
-			header('Content-Description: File Transfer');
-			header('Content-Type: application/octet-stream');
-			header('Content-Disposition: attachment; filename=' . $showname . '.zip');
-			header('Content-Transfer-Encoding: chunked');
-			header('Expires: 0');
-			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-			header('Pragma: public');
-			header('Content-Length: ' . filesize($file));
-			while (false !== ($chunk = fread($handler, 4096))) {
-				echo $chunk;
-			}
-			flock($handler, LOCK_UN);
-		}
-		exit;
-	}
-
 	/**
 	 * 递归删除 目录(绝对路径)下的所有文件,不包括自身
 	 * @param string $dirName 目录(绝对)
 	 * @return void
 	 */
-	public function delDirAndFile(string $dirName = '') {
+	public function delDirAndFile(string $dirName = ''): void {
 		if (is_dir($dirName) && $dir_arr = scandir($dirName)) {
 			foreach ($dir_arr as $k => $v) {
 				if ($v === '.' || $v === '..') {

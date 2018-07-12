@@ -3,57 +3,70 @@
 declare(strict_types = 1);
 namespace Gaara\Core\Response\Component;
 
-use Closure;
-use Iterator;
-use Generator;
 use Gaara\Core\{
 	Tool, Response
 };
 use Gaara\Core\Model\QueryChunk;
 
+/**
+ * 提供下载响应
+ */
 class File {
 
 	/**
-	 * 下载文件
-	 * @param string $filename
+	 * 下载大文件
+	 * @param string $downloadFile
+	 * @param string $downloadFileName
+	 * @return Response
 	 */
-	public function downloadFile2(string $path, string $name, string $showname) {
-		$filename	 = $path . $name;
-		$file		 = $filename;
-		if (FALSE !== ($handler	 = fopen($file, 'r'))) {
-			flock($handler, LOCK_SH);
-			header('Content-Description: File Transfer');
-			header('Content-Type: application/octet-stream');
-			header('Content-Disposition: attachment; filename=' . $showname . '.zip');
-			header('Content-Transfer-Encoding: chunked');
-			header('Expires: 0');
-			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-			header('Pragma: public');
-			header('Content-Length: ' . filesize($file));
-			while (false !== ($chunk = fread($handler, 4096))) {
-				echo $chunk;
+	public function download(string $downloadFile, string $downloadFileName = null): Response {
+		$file		 = obj(Tool::class)->absoluteDir($downloadFile);
+		$filename	 = $downloadFileName ?? basename($file);
+
+		obj(Response::class)->header()
+		->set('Accept-Length', filesize($file))
+		->set('Content-Length', filesize($file))
+		->set('Content-Type', 'application/octet-stream')
+		->set('Accept-Ranges', 'bytes')
+		->set('Content-Description', 'File Transfer')
+		->set('Content-Transfer-Encoding', 'chunked')
+		->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+		obj(Response::class)->sendReal();
+
+		// 手动 sendReal 避免频繁开关缓冲区
+		obj(Response::class)->obRestore(function() use ($file) {
+			if (FALSE !== ($handler = fopen($file, 'rb'))) {
+				flock($handler, LOCK_SH);
+				while ($chunk = fread($handler, 4096)) {
+					echo $chunk;
+				}
+				flock($handler, LOCK_UN);
+				fclose($handler);
 			}
-			flock($handler, LOCK_UN);
-		}
+		}, 0, false);
+		return obj(Response::class);
 	}
 
 	/**
 	 * 直接下载某个文件
 	 * @param string $downloadFile
 	 * @param string $downloadFileName
+	 * @return Response
 	 */
-	public function download(string $downloadFile, string $downloadFileName = null) {
+	public function downloadMemory(string $downloadFile, string $downloadFileName = null): Response {
 		$file		 = obj(Tool::class)->absoluteDir($downloadFile);
-		$fileName = $downloadFileName ?? basename($file);
-		$fileHandle	 = fopen($file, "r");
-		flock($fileHandle, LOCK_SH);
-		obj(Response::class)->header()->set('Content-type', 'application/octet-stream');
-		obj(Response::class)->header()->set('Accept-Ranges', 'bytes');
-		obj(Response::class)->header()->set('Accept-Length', filesize($file));
-		obj(Response::class)->header()->set('Content-Disposition', "attachment; filename=" . $fileName);
-		obj(Response::class)->setContent(fread($fileHandle, filesize($file)))->sendReal();
-		flock($fileHandle, LOCK_UN);
-		fclose($fileHandle);
+		$filename	 = $downloadFileName ?? basename($file);
+
+		$handler = fopen($file, 'rb');
+		flock($handler, LOCK_SH);
+		obj(Response::class)->header()
+		->set('Accept-Length', filesize($file))
+		->set('Accept-Ranges', 'bytes')
+		->set('Content-type', 'application/octet-stream')
+		->set('Content-Disposition', "attachment; filename=" . $filename);
+		obj(Response::class)->setContent(fread($handler, filesize($file)))->sendReal();
+		flock($handler, LOCK_UN);
+		fclose($handler);
 		return obj(Response::class);
 	}
 
@@ -67,7 +80,8 @@ class File {
 	public function exportCsv($QueryChunkOrArray, string $downloadFileName = null): Response {
 		$filename = $downloadFileName ? rtrim($downloadFileName, '.csv') . '.csv' : time() . '.csv';
 
-		obj(Response::class)->header()->set('Content-Type', 'mime/type')
+		obj(Response::class)->header()
+		->set('Content-Type', 'mime/type')
 		->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
 
 		// 手动 sendReal 避免频繁开关缓冲区

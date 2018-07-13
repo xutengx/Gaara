@@ -19,6 +19,9 @@
     * [HTTP头部](#HTTP头部)
     * [HTTP异常](#HTTP异常)
     * [中断响应](#中断响应)
+    * [下载文件](#下载文件)
+        * [从数据导出csv](#从数据导出csv)
+        * [下载超大的文件](#下载超大的文件)
     * [视图友好响应](#视图友好响应)
     * [其他方法](#其他方法)
 * [中间件](/helper/middleware.md)
@@ -177,6 +180,63 @@ Route::get('/', function(Gaara\Core\Response $response){
 ```
 
 **注:由于立即结束进程, 所以不会执行中间件 terminate**
+
+## 下载文件
+
+
+**注:`gaara`在下载时并不会结束进程, 将会继续执行之后的业务以及中间件`terminate`**
+**注:`gaara`为了性能将会在下载时直接发送对应的响应头到客户端, 需要避免后续业务上的意外输出以及响应头重复的问题**
+
+### 从数据导出csv
+
+从数据库查询的结果, 可以快速的转化为csv文件并发送下载
+在使用数据模型的`分块`作为数据源时, 将会节省大量内存
+
+
+
+```php
+<?php
+
+namespace App\Dev\download\Contr;
+
+class index extends \Gaara\Core\Controller {
+
+	public function index(\App\Model\VisitorInfo $model, \Gaara\Core\Response $Response) {
+        // 传统数组作为数据源
+        $data = $model->limit(14000)->getAll();
+
+        // 数据模型的`分块`作为数据源时, 将会节省大量内存
+        $data = $model->limit(14000)->getChunk();
+
+        // 立刻发送下载
+		$Response->file()->exportCsv($data, 'new_filename.csv');
+
+		// 下载完成后, 记录日志
+		\Log::info('log some info ...');
+	}
+```
+
+### 下载超大的文件
+
+
+```php
+<?php
+
+namespace App\Dev\download\Contr;
+
+class index extends \Gaara\Core\Controller {
+
+	public function index(\Gaara\Core\Response $Response) {
+        // 文件
+        $file = './data/upload/201711/01/Downloads.zip';
+
+        // 立刻发送下载
+		$Response->file()->download($file, 'new_filename.zip');
+
+		// 下载完成后, 记录日志
+		\Log::info('log some info ...');
+	}
+```
 
 ## 视图友好响应
 

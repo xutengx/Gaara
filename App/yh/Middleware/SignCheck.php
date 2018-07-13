@@ -112,6 +112,6 @@ class SignCheck extends Middleware {
      * @param int $code
      */
     private function error(string $msg){
-        Response::setStatus(403)->exitData(['msg' => $msg]);
+        Response::fail($msg, 403)->sendExit();
     }
 }

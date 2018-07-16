@@ -6,37 +6,38 @@ namespace Gaara\Core;
 use App\Kernel;
 use Closure;
 use Generator;
+use Gaara\Contracts\Route\Registrar;
 use Gaara\Core\Route\Traits\SetRoute;
 use Gaara\Core\Route\Component\MatchedRouting;
 
 /**
  * 显式自定义路由
  */
-class Route {
+class Route implements Registrar {
 
 	// 分组以及静态方法申明路由
 	use SetRoute;
 
 	// 路由配置成功后对象
-	public static $MatchedRouting;
+	public $MatchedRouting;
 	// 404
-	public static $rule404		 = null;
+	public $rule404		 = null;
 	// 当前 $pathInfo
-	private static $pathInfo	 = null;
+	private $pathInfo	 = null;
 	// 全部路由规则
-	private static $routeRule	 = [];
+	private $routeRule	 = [];
 
 	/**
 	 * 路由匹配
 	 * @return bool
 	 */
-	public static function Start(): bool {
+	public function Start(): bool {
 		// 得到 $pathInfo
-		self::$pathInfo	 = self::getPathInfo();
+		$this->pathInfo	 = $this->getPathInfo();
 		// 引入route规则
-		self::$routeRule = self::getRouteRule();
+		$this->routeRule = $this->getRouteRule();
 		// 分析路由, 并执行
-		return self::routeAnalysis();
+		return $this->routeAnalysis();
 	}
 
 	/**
@@ -45,7 +46,7 @@ class Route {
 	 * eg:http://git.gitxt.com/data/upload?id=123 -> /data/upload
 	 * @return string
 	 */
-	private static function getPathInfo(): string {
+	private function getPathInfo(): string {
 		return obj(Request::class)->pathInfo;
 	}
 
@@ -54,10 +55,10 @@ class Route {
 	 * 可以接收直接返回的数组格式, 也可以直接执行
 	 * @return array
 	 */
-	private static function getRouteRule(): array {
+	private function getRouteRule(): array {
 		$file		 = obj(Conf::class)->route['file'];
 		$fileRule	 = require(ROUTE . $file);
-		return is_array($fileRule) ? array_merge(self::$routeRule, $fileRule) : self::$routeRule;
+		return is_array($fileRule) ? array_merge($this->routeRule, $fileRule) : $this->routeRule;
 	}
 
 	/**
@@ -65,17 +66,17 @@ class Route {
 	 * 路由匹配失败, 则响应404
 	 * @return bool
 	 */
-	private static function routeAnalysis(): bool {
-		foreach (self::pretreatment() as $rule => $info) {
+	private function routeAnalysis(): bool {
+		foreach ($this->pretreatment() as $rule => $info) {
 			// 形参数组
 			$parameter		 = [];
-			$pathInfoPreg	 = self::ruleToPreg($rule, $parameter);
+			$pathInfoPreg	 = $this->ruleToPreg($rule, $parameter);
 			// 确定路由匹配
-			if (preg_match($pathInfoPreg, self::$pathInfo, $argument)) {
+			if (preg_match($pathInfoPreg, $this->pathInfo, $argument)) {
 				// 确认 url 参数
-				$staticParamter	 = self::paramAnalysis($parameter, $argument);
+				$staticParamter	 = $this->paramAnalysis($parameter, $argument);
 				// 执行分析
-				$check			 = self::infoAnalysis($rule, $info, $staticParamter);
+				$check			 = $this->infoAnalysis($rule, $info, $staticParamter);
 				// 域名不匹配, 则继续 foreach
 				if ($check === false)
 					continue;
@@ -89,8 +90,8 @@ class Route {
 	 * 预处理路由数组信息
 	 * @return Generator
 	 */
-	private static function pretreatment(): Generator {
-		foreach (self::$routeRule as $rule => $info) {
+	private function pretreatment(): Generator {
+		foreach ($this->routeRule as $rule => $info) {
 			// 兼容式路由
 			if (is_int($rule)) {
 				if (is_null($info)) {
@@ -110,7 +111,7 @@ class Route {
 	 * @return string 正则表达式
 	 * @return array $param 形参数组
 	 */
-	private static function ruleToPreg(string $rule = '', array &$param = []): string {
+	private function ruleToPreg(string $rule = '', array &$param = []): string {
 		$temp = explode('/', $rule);
 		foreach ($temp as $k => $v) {
 			$key		 = false;
@@ -135,7 +136,7 @@ class Route {
 	 * @param array $argument 实参数组列表(一维数组)
 	 * @return array 可调用的参数数组(一维链表)
 	 */
-	private static function paramAnalysis(array $parameter, array $argument): array {
+	private function paramAnalysis(array $parameter, array $argument): array {
 		$arr = [];
 		foreach ($parameter as $k => $v) {
 			// 当实参不全时, 填充为 null
@@ -152,19 +153,19 @@ class Route {
 	 * @param array $staticParamter 静态参数(pathInfo参数)
 	 * @return bool
 	 */
-	private static function infoAnalysis(string $rule, $info, array $staticParamter = []): bool {
+	private function infoAnalysis(string $rule, $info, array $staticParamter = []): bool {
 		// 一致化格式
-		$info = self::unifiedInfo($info);
+		$info = $this->unifiedInfo($info);
 
 		// 域名分析
-		if (!is_array($domainParamter = self::domainToPreg($info['domain'])))
+		if (!is_array($domainParamter = $this->domainToPreg($info['domain'])))
 			return false;
 
 		// http方法分析
 		if (!in_array(strtolower(obj(Request::class)->method), $info['method'], true))
 			return false;
 
-		$MR						 = self::$MatchedRouting	 = new MatchedRouting;
+		$MR						 = $this->MatchedRouting	 = new MatchedRouting;
 		$MR->alias				 = $info['as'] ?? $rule;
 		$MR->middlewareGroups	 = $info['middleware'];
 		$MR->methods			 = $info['method'];
@@ -180,11 +181,11 @@ class Route {
 	 * @param mixed $info
 	 * @return void
 	 */
-	private static function unifiedInfo($info): array {
+	private function unifiedInfo($info): array {
 		$arr = [];
 		if (is_string($info) || $info instanceof Closure) {
 			$arr = [
-				'method'	 => self::$allowMethod,
+				'method'	 => $this->allowMethod,
 				'middleware' => [],
 				'domain'	 => obj(Request::class)->host,
 				'as'		 => null,
@@ -192,7 +193,7 @@ class Route {
 			];
 		} elseif (is_array($info)) {
 			$arr = [
-				'method'	 => $info['method'] ?? self::$allowMethod,
+				'method'	 => $info['method'] ?? $this->allowMethod,
 				'middleware' => $info['middleware'] ?? [],
 				'domain'	 => $info['domain'] ?? obj(Request::class)->host,
 				'as'		 => $info['as'] ?? null,
@@ -207,7 +208,7 @@ class Route {
 	 * @param string $rule 域名规则 eg: {admin}.{gitxt}.com
 	 * @return array|false
 	 */
-	private static function domainToPreg(string $rule = '') {
+	private function domainToPreg(string $rule = '') {
 		$param	 = [];
 		$preg	 = \preg_replace_callback("/{[^\.]*}/is", function($matches) use (&$param) {
 			$param[trim(trim($matches[0], '}'), '{')] = null;

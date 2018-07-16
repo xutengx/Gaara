@@ -88,7 +88,7 @@ trait Filter {
 	 * @param string|false $filter
 	 * @return mixed|false|null
 	 */
-	private function filterFunc(string $method, string $key, string $filter = null) {
+	protected function filterFunc(string $method, string $key, string $filter = null) {
 		if (isset($this->$method[$key]))
 			return (is_null($filter) || $this->filterMatch($this->$method[$key], $filter))
 				? $this->$method[$key] : false;
@@ -102,7 +102,7 @@ trait Filter {
 	 * @param string $filter 匹配规则
 	 * @return bool
 	 */
-	private function filterMatch(string $str, string $filter): bool {
+	protected function filterMatch(string $str, string $filter): bool {
 		$rule = $this->filterArr[$filter] ?? $filter;
 		if ($rule instanceof Closure) {
 			return $rule($str) ? true : false;

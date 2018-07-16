@@ -28,6 +28,8 @@ class Repository extends RepositoryFather{
 class Store extends StoreFather{
 	// 依赖另外1个父类, 另外1个子类
 	public function __construct(FactoryFather $FactoryFather, Repository $Repository, $t) {
+		$this->FactoryFather = $FactoryFather;
+		$this->Repository = $Repository;
 		$this->t = $t;
 	}
 }
@@ -44,9 +46,18 @@ $Container->bind(RepositoryInterface::class, RepositoryFather::class);
 
 $Container->bind(StoreInterface::class, StoreFather::class);
 
+$Container->bind(FactoryFather::class, null, true);
+
 $Container->bind(Factory::class);
 
 $Container->bind(Store::class);
+
+$Container->bind('test_config', function(){
+	return [
+		'key' => '$value'
+	];
+});
+
 
 //var_dump($Container);
 
@@ -54,9 +65,14 @@ $obj1 = $Container->make(Factory::class);
 $obj2 = $Container->make(Store::class, [
 	't' => 123
 ]);
+$obj3 = $Container->make(Store::class, [
+	't' => 123
+]);
 
 
+var_dump($obj2->FactoryFather === $obj3->FactoryFather );
+var_dump($obj2 === $obj3 );
 
-var_dump($obj2);
 
-
+$config = $Container->make('test_config');
+var_dump($config);

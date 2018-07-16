@@ -3,55 +3,27 @@
 declare(strict_types = 1);
 namespace Gaara\Core;
 
-use Exception;
+use Gaara\Core\Container\Traits\{
+	Bind, Make, Execution
+};
 
-/**
- * 快捷类
- */
-abstract class Container {
+class Container {
 
-	/**
-	 * 返回自快捷类对应的实体类的实例
-	 * @return object
-	 */
-	final public static function getInstance() {
-		return obj(static::getInstanceName());
-	}
+	use Bind,
+	 Make,
+	 Execution;
 
-	/**
-	 * 返回自快捷类对应的实体类的类名
-	 * @return string
-	 * @throws Exception
-	 */
-	final public static function getInstanceName(): string {
-		if (is_file(ROOT . 'Gaara/Core/' . static::class . '.php')) {
-			return 'Gaara\Core\\' . static::class;
-		} elseif (is_file(ROOT . 'Gaara/Expand/' . static::class . '.php')) {
-			return 'Gaara\Expand\\' . static::class;
-		}
-		throw new Exception('Alias class: "' . static::class . '" not properly defined!');
-	}
-
-	final public function __set(string $param, $value) {
-		return static::getInstance()->$param = $value;
-	}
-
-	final public function __get(string $name) {
-		return static::getInstance()->$name;
-	}
-
-	final public function __invoke(...$params) {
-		return static::getInstance()(...$params);
-	}
-
-	final public function __call(string $method, array $args) {
-		$instance = static::getInstance();
-		return $instance->$method(...$args);
-	}
-
-	final public static function __callStatic(string $method, array $args) {
-		$instance = static::getInstance();
-		return $instance->$method(...$args);
-	}
+	// 严格模式, 只注入已经绑定的依赖
+	protected $strict		 = true;
+	// 正在绑定的信息
+	protected $bindings		 = [];
+	// 单例对象存储
+	protected $instances	 = [];
+	//
+//	protected $aliases		 = [];
+	// 依赖参数
+	protected $with			 = [];
+	// 正在解决的依赖栈
+	protected $buildStack	 = [];
 
 }

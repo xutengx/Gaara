@@ -10,7 +10,8 @@ declare(strict_types = 1);
  * @return mixed 对象
  */
 function obj(string $obj, ...$params) {
-    return \Gaara\Core\Integrator::get($obj, $params);
+//    return \Gaara\Core\Integrator::get($obj, $params);
+    return (new \Gaara\Core\Container)->make($obj, $params);
 }
 
 /**
@@ -76,7 +77,7 @@ function redirect(string $where = '', array $pars = array(), string $msg = null)
  * @return mixed
  */
 function env(string $envname, $default = null) {
-    return obj(Conf::class)->getEnv($envname, $default);
+    return obj(\Gaara\Core\Conf::class)->getEnv($envname, $default);
 }
 
 /**

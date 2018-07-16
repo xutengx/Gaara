@@ -11,19 +11,19 @@ use Closure;
 trait SetRoute {
 
 	// 可用的 http 动作
-	private static $allowMethod	 = [
+	private $allowMethod = [
 		'get', 'post', 'put', 'delete', 'head', 'patch', 'options'
 	];
 	// 分组时的信息
-	private static $group		 = [
+	private $group		 = [
 		'domain'	 => [],
 		'prefix'	 => [],
 		'namespace'	 => [],
 		'middleware' => [],
 	];
 
-	public static function set404($action): void{
-		self::$rule404 = $action;
+	public function set404($action): void {
+		$this->rule404 = $action;
 	}
 
 	/**
@@ -32,11 +32,11 @@ trait SetRoute {
 	 * @param string $controller
 	 * @return void
 	 */
-	public static function restful(string $url, string $controller): void {
-		self::post($url, $controller . '@create');
-		self::delete($url, $controller . '@destroy');
-		self::get($url, $controller . '@select');
-		self::put($url, $controller . '@update');
+	public function restful(string $url, string $controller): void {
+		$this->post($url, $controller . '@create');
+		$this->delete($url, $controller . '@destroy');
+		$this->get($url, $controller . '@select');
+		$this->put($url, $controller . '@update');
 	}
 
 	/**
@@ -45,8 +45,8 @@ trait SetRoute {
 	 * @param mix $action
 	 * @return void
 	 */
-	public static function options(string $url, $action): void {
-		self::match(['options'], $url, $action);
+	public function options(string $url, $action): void {
+		$this->match(['options'], $url, $action);
 	}
 
 	/**
@@ -55,8 +55,8 @@ trait SetRoute {
 	 * @param mix $action
 	 * @return void
 	 */
-	public static function post(string $url, $action): void {
-		self::match(['post', 'options'], $url, $action);
+	public function post(string $url, $action): void {
+		$this->match(['post', 'options'], $url, $action);
 	}
 
 	/**
@@ -65,8 +65,8 @@ trait SetRoute {
 	 * @param mix $action
 	 * @return void
 	 */
-	public static function get(string $url, $action): void {
-		self::match(['get', 'options'], $url, $action);
+	public function get(string $url, $action): void {
+		$this->match(['get', 'options'], $url, $action);
 	}
 
 	/**
@@ -75,8 +75,8 @@ trait SetRoute {
 	 * @param mix $action
 	 * @return void
 	 */
-	public static function put(string $url, $action): void {
-		self::match(['put', 'options'], $url, $action);
+	public function put(string $url, $action): void {
+		$this->match(['put', 'options'], $url, $action);
 	}
 
 	/**
@@ -85,8 +85,8 @@ trait SetRoute {
 	 * @param mix $action
 	 * @return void
 	 */
-	public static function delete(string $url, $action): void {
-		self::match(['delete', 'options'], $url, $action);
+	public function delete(string $url, $action): void {
+		$this->match(['delete', 'options'], $url, $action);
 	}
 
 	/**
@@ -95,8 +95,8 @@ trait SetRoute {
 	 * @param mix $action
 	 * @return void
 	 */
-	public static function head(string $url, $action): void {
-		self::match(['head'], $url, $action);
+	public function head(string $url, $action): void {
+		$this->match(['head'], $url, $action);
 	}
 
 	/**
@@ -105,8 +105,8 @@ trait SetRoute {
 	 * @param mix $action
 	 * @return void
 	 */
-	public static function patch(string $url, $action): void {
-		self::match(['patch'], $url, $action);
+	public function patch(string $url, $action): void {
+		$this->match(['patch'], $url, $action);
 	}
 
 	/**
@@ -115,26 +115,26 @@ trait SetRoute {
 	 * @param mix $action
 	 * @return void
 	 */
-	public static function any(string $url, $action): void {
-		self::match(self::$allowMethod, $url, $action);
+	public function any(string $url, $action): void {
+		$this->match($this->allowMethod, $url, $action);
 	}
 
 	/**
-	 * 处理分析每个路由以及所在组环境, 并加入 self::$routeRule
+	 * 处理分析每个路由以及所在组环境, 并加入 $this->routeRule
 	 * @param array $method 可以匹配的http方法数组
 	 * @param string $url 路由
 	 * @param mix $action
 	 * @return void
 	 */
-	public static function match(array $method, string $url, $action): void {
+	public function match(array $method, string $url, $action): void {
 		// 格式化action
-		$actionInfo = self::formatAction($action);
+		$actionInfo = $this->formatAction($action);
 
 		// 处理得到 url
 		{
-			if (!empty(self::$group['prefix'])) {
+			if (!empty($this->group['prefix'])) {
 				$prefix = '';
-				foreach (self::$group['prefix'] as $v) {
+				foreach ($this->group['prefix'] as $v) {
 					if (!empty($v))
 						$prefix .= '/' . $v;
 				}
@@ -148,7 +148,7 @@ trait SetRoute {
 				$uses = $actionInfo['uses'];
 			} else {
 				$group_namespace = '';
-				foreach (self::$group['namespace'] as $v) {
+				foreach ($this->group['namespace'] as $v) {
 					if (!empty($v))
 						$group_namespace .= str_replace('/', '\\', $v) . '\\';
 				}
@@ -168,8 +168,8 @@ trait SetRoute {
 			$domain = $_SERVER['HTTP_HOST'];
 			if (!empty($actionInfo['domain'])) {
 				$domain = $actionInfo['domain'];
-			} elseif (!empty(self::$group['domain'])) {
-				foreach (self::$group['domain'] as $v) {
+			} elseif (!empty($this->group['domain'])) {
+				foreach ($this->group['domain'] as $v) {
 					if (!empty($v))
 						$domain = $v;
 				}
@@ -179,8 +179,8 @@ trait SetRoute {
 		// 处理得到 完整 middleware
 		{
 			$middleware = [];
-			if (!empty(self::$group['middleware'])) {
-				foreach (self::$group['middleware'] as $v) {
+			if (!empty($this->group['middleware'])) {
+				foreach ($this->group['middleware'] as $v) {
 					if (empty($v))
 						continue;
 					$middleware = array_merge($middleware, $v);
@@ -188,7 +188,7 @@ trait SetRoute {
 			}
 			$middleware = array_merge($middleware, $actionInfo['middleware']);
 		}
-		self::$routeRule[] = [
+		$this->routeRule[] = [
 			$url => [
 				'method'	 => $method,
 				'middleware' => $middleware,
@@ -205,19 +205,19 @@ trait SetRoute {
 	 * @param Closure $callback
 	 * @return void
 	 */
-	public static function group(array $rule, Closure $callback): void {
+	public function group(array $rule, Closure $callback): void {
 		// 当前 group 分组信息填充
-		self::$group['middleware'][] = $rule['middleware'] ?? [];
-		self::$group['namespace'][]	 = $rule['namespace'] ?? '';
-		self::$group['prefix'][]	 = $rule['prefix'] ?? '';
-		self::$group['domain'][]	 = $rule['domain'] ?? '';
+		$this->group['middleware'][] = $rule['middleware'] ?? [];
+		$this->group['namespace'][]	 = $rule['namespace'] ?? '';
+		$this->group['prefix'][]	 = $rule['prefix'] ?? '';
+		$this->group['domain'][]	 = $rule['domain'] ?? '';
 
 		// 执行闭包
 		$callback();
 
 		// 执行完当前 group 后 移除当前分组信息
-		foreach (self::$group as $k => $v) {
-			array_pop(self::$group[$k]);
+		foreach ($this->group as $k => $v) {
+			array_pop($this->group[$k]);
 		}
 	}
 
@@ -226,7 +226,7 @@ trait SetRoute {
 	 * @param mix $action
 	 * @return array
 	 */
-	private static function formatAction($action): array {
+	private function formatAction($action): array {
 		$actionInfo = [];
 		if (is_array($action)) {
 			if ($action['uses'] instanceof Closure) {

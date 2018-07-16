@@ -1,70 +1,15 @@
 <?php
 
 declare(strict_types = 1);
+namespace Gaara\Core\Container\Traits;
 
-//namespace Gaara\Core;
-// https://segmentfault.com/a/1190000008844504
+use Closure;
+use ReflectionClass;
+use ReflectionParameter;
+use Gaara\Core\Request;
+use Gaara\Core\Exception\Http\UnprocessableEntityHttpException;
 
-
-class Container_test {
-
-	// 严格模式, 只注入已经绑定的依赖
-	protected $strict		 = true;
-	// 正在绑定的信息
-	protected $bindings		 = [];
-	// 单例对象存储
-	protected $instances	 = [];
-	protected $aliases		 = [];
-	// 依赖参数
-	protected $with			 = [];
-	// 正在解决的依赖栈
-	protected $buildStack	 = [];
-
-	/**
-	 * 临时绑定, 同接口实现优先使用一次
-	 * @param string $abstract
-	 * @param type $concrete
-	 */
-	public function bindOnce(string $abstract, $concrete = null, bool $singleton = false) {
-
-	}
-
-	/**
-	 * 手动绑定
-	 * @param string $abstract 抽象类/接口/类/自定义的标记
-	 * @param string|null|Closure $concrete 实现
-	 * @param $singleton 实现
-	 */
-	public function bind(string $abstract, string $concrete = null, bool $singleton = false) {
-		// 覆盖旧的绑定信息
-		$this->dropStaleInstances($abstract);
-		// 默认的类实现, 就是其本身
-		$concrete = $concrete ?? $abstract;
-		// 转化为闭包
-		if (!$concrete instanceof Closure) {
-			$concrete = $this->getClosure($abstract, $concrete);
-		}
-		// 记录绑定
-		$this->bindings[$abstract] = compact('concrete', 'singleton');
-
-		// 如果是已经绑定的, 将回调存在的监听者
-		// todo
-	}
-
-	/**
-	 * 转化为闭包
-	 * @param  string  $abstract
-	 * @param  string  $concrete
-	 * @return \Closure
-	 */
-	protected function getClosure(string $abstract, string $concrete): Closure {
-		return function ($container, $parameters = []) use ($abstract, $concrete) {
-			if ($abstract === $concrete) {
-				return $container->build($concrete);
-			}
-			return $container->make($concrete, $parameters);
-		};
-	}
+trait Make {
 
 	/**
 	 * 构建对象
@@ -109,44 +54,16 @@ class Container_test {
 		return $obj;
 	}
 
-	protected function getConcrete($abstract) {
+	/**
+	 *
+	 * @param string $abstract
+	 * @return string
+	 */
+	protected function getConcrete(string $abstract) {
 		if (isset($this->bindings[$abstract])) {
 			return $this->bindings[$abstract]['concrete'];
 		}
 		return $abstract;
-	}
-
-	/**
-	 * 确定给定的抽象类型是否已被解析
-	 *
-	 * @param  string  $abstract
-	 * @return bool
-	 */
-	public function resolved(string $abstract) {
-		if ($this->isAlias($abstract)) {
-			$abstract = $this->getAlias($abstract);
-		}
-
-		return isset($this->resolved[$abstract]) ||
-		isset($this->instances[$abstract]);
-	}
-
-	/**
-	 * 单例绑定
-	 * @param string $abstract
-	 * @param Closure $concrete
-	 */
-	public function singleton(string $abstract, $concrete) {
-
-	}
-
-	/**
-	 * 移除已经绑定的
-	 * @param string $abstract
-	 * @return void
-	 */
-	protected function dropStaleInstances(string $abstract): void {
-		unset($this->instances[$abstract], $this->aliases[$abstract]);
 	}
 
 	/**
@@ -217,9 +134,6 @@ class Container_test {
 	 * @return mixed
 	 */
 	protected function resolvePrimitive(ReflectionParameter $parameter) {
-//		if (!is_null($concrete = $this->getContextualConcrete('$' . $parameter->name))) {
-//			return $concrete instanceof Closure ? $concrete($this) : $concrete;
-//		}
 		// 使用默认值
 		if ($parameter->isDefaultValueAvailable()) {
 			return $parameter->getDefaultValue();

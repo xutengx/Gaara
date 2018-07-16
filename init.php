@@ -4,8 +4,8 @@
 declare(strict_types = 1);
 
 $GLOBALS['statistic'] = [
-	'时间初始量' => microtime(true),
-	'内存初始量' => memory_get_usage()
+	'时间初始量'	 => microtime(true),
+	'内存初始量'	 => memory_get_usage()
 ];
 // 入口文件名, 应该与nginx执行脚本保持一致 eg:index.php
 defined('IN_SYS') || define('IN_SYS', substr(str_replace('\\', '/', __FILE__), strrpos(str_replace('\\', '/', __FILE__), '/') + 1));
@@ -39,11 +39,17 @@ define('ROUTE', ROOT . 'Route/');
 require (ROOT . 'vendor/autoload.php');
 
 /**
+ * 容器注册
+ */
+$app = require (ROOT . 'bootstrap/app.php');
+
+/**
  * 申明debug ( 读取配置 )
  */
-define('DEBUG', obj(Conf::class)->app['debug'] === '1' ? true : false);
+define('DEBUG', obj(\Gaara\Core\Conf::class)->app['debug'] === '1' ? true : false);
 
 /**
  * 执行
  */
-obj(\App\Kernel::class)->Init()->Start();
+$app->Init()->Start();
+//obj(\App\Kernel::class)->Init()->Start();

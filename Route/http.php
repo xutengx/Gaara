@@ -1,5 +1,6 @@
 <?php
 
+use Gaara\Core\Route;
 
 //Route::set404('App\Dev\mysql\Contr\index2Contr@indexDo');
 Route::set404(function($pathinfo){
@@ -13,6 +14,7 @@ return [
 	},
 	Route::get('/', function() {
 		return \Response::setContentType('html')->setContent('hello world');
+//		return obj(\Gaara\Core\Response::class)->setContentType('html')->setContent('hello world');
 	}),
 	Route::get('/data/upload/{yearmonth}/{day}/{name}', function($yearmonth, $day, $name) {
 		$filename = ROOT . "data/upload/$yearmonth/$day/$name";

@@ -35,7 +35,7 @@ abstract class Kernel {
 	 * 初始化配置
 	 * @return void
 	 */
-	private function ConfInit() {
+	protected function ConfInit() {
 		$conf		 = obj(Conf::class)->app;
 		$serverIni	 = obj(Conf::class)->getServerConf('php');
 		foreach ($serverIni as $k => $v) {
@@ -56,7 +56,7 @@ abstract class Kernel {
 	 * 初始化请求
 	 * @return void
 	 */
-	private function RequestInit(): void {
+	protected function RequestInit(): void {
 		obj(Request::class);
 	}
 
@@ -64,19 +64,21 @@ abstract class Kernel {
 	 * 执行路由
 	 */
 	public function Start() {
-		if (Route::Start()) {
-			obj(Request::class)->MatchedRouting	 = $MR									 = Route::$MatchedRouting;
-			obj(Request::class)->alias			 = $MR->alias;
-			obj(Request::class)->methods		 = $MR->methods;
+		$route = obj(Route::class);
+		$request = obj(Request::class);
+		if ($route->Start()) {
+			$request->MatchedRouting	 = $MR									 = $route->MatchedRouting;
+			$request->alias			 = $MR->alias;
+			$request->methods		 = $MR->methods;
 
-			obj(Request::class)->setDomainParamters($MR->domainParamter)
+			$request->setDomainParamters($MR->domainParamter)
 			->setStaticParamters($MR->staticParamter)
 			->setRequestParamters();
 			$MR->middlewares = $this->getMiddlewares($MR->middlewareGroups);
 
 			$this->run($MR->middlewares, $MR->subjectMethod, $MR->urlParamter);
 		} else {
-			if (is_null($rule404 = Route::$rule404))
+			if (is_null($rule404 = $route->rule404))
 				obj(Response::class)->setStatus(404)->setContent('Not Found ..')->sendExit();
 			else
 				$this->run([], $rule404, ['pathinfo' => obj(Request::class)->pathInfo]);
@@ -175,7 +177,7 @@ abstract class Kernel {
 	}
 
 	// 运行统计
-	private function statistic(): void {
+	protected function statistic(): void {
 		$GLOBALS['statistic']['框架路由执行后时间']	 = microtime(true);
 		$GLOBALS['statistic']['框架路由执行后内存']	 = memory_get_usage();
 	}

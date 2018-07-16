@@ -15,7 +15,7 @@ trait ClientInfo {
 	 * @return string
 	 * @throws Exception
 	 */
-	private function getIp(): string {
+	protected function getIp(): string {
 		if (isset($_SERVER['HTTP_CLIENT_IP']) && !empty($_SERVER["HTTP_CLIENT_IP"])) {
 			$cip = $_SERVER["HTTP_CLIENT_IP"];
 		} elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && !empty($_SERVER["HTTP_X_FORWARDED_FOR"])) {

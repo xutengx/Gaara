@@ -55,7 +55,7 @@ trait RequestInfo {
 	 * 是否ajax请求
 	 * @return bool
 	 */
-	private function isAjax(): bool {
+	protected function isAjax(): bool {
 		if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && (strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'))
 			return true;
 		return false;
@@ -65,7 +65,7 @@ trait RequestInfo {
 	 * 获取客户端ip
 	 * @return string
 	 */
-	private function getUserIp(): string {
+	protected function getUserIp(): string {
 		if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
 			$realip = $_SERVER['HTTP_X_FORWARDED_FOR'];
 		} elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {

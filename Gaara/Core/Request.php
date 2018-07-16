@@ -15,17 +15,17 @@ class Request {
 	 RequestInfo,
 	 Filter;
 
-	private $domain	 = [];
-	private $get	 = [];
-	private $post	 = [];
-	private $put	 = [];
-	private $delete	 = [];
-	private $options = [];
-	private $head	 = [];
-	private $patch	 = [];
-	private $input	 = [];
-	private $cookie	 = [];
-	private $file	 = null;
+	protected $domain	 = [];
+	protected $get	 = [];
+	protected $post	 = [];
+	protected $put	 = [];
+	protected $delete	 = [];
+	protected $options = [];
+	protected $head	 = [];
+	protected $patch	 = [];
+	protected $input	 = [];
+	protected $cookie	 = [];
+	protected $file	 = null;
 
 	/**
 	 * 初始化参数
@@ -109,7 +109,7 @@ class Request {
 	 * @param string $input
 	 * @return array
 	 */
-	private function getStream(string $input): array {
+	protected function getStream(string $input): array {
 		$a_data = array();
 		// grab multipart boundary from content type header
 		preg_match('/boundary=(.*)$/', $this->contentType, $matches);
@@ -161,7 +161,7 @@ class Request {
 	 * 将$_FILES 放入 $this->file
 	 * @return void
 	 */
-	private function consistentFile(): void {
+	protected function consistentFile(): void {
 		if (!empty($_FILES)) {
 			foreach ($_FILES as $k => $v) {
 				if ($v['error'] === 0) {
@@ -182,7 +182,7 @@ class Request {
 	 * @param array $arr
 	 * @return array
 	 */
-	private function filter(array $arr): array {
+	protected function filter(array $arr): array {
 		return $this->_addslashes($this->_htmlspecialchars($arr));
 	}
 
@@ -194,7 +194,7 @@ class Request {
 	 * @param array $arr
 	 * @return array
 	 */
-	private function _addslashes(array $arr): array {
+	protected function _addslashes(array $arr): array {
 		$q = [];
 		foreach ($arr as $k => $v) {
 			if (is_string($v)) {
@@ -211,7 +211,7 @@ class Request {
 	 * @param array $arr
 	 * @return array
 	 */
-	private function _htmlspecialchars(array $arr): array {
+	protected function _htmlspecialchars(array $arr): array {
 		$q = [];
 		foreach ($arr as $k => $v) {
 			if (is_string($v)) {

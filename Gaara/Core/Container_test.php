@@ -1,57 +1,119 @@
 <?php
 
 declare(strict_types = 1);
-//namespace Gaara\Core;
 
+//namespace Gaara\Core;
+// https://segmentfault.com/a/1190000008844504
 
 
 class Container_test {
 
 	// 严格模式, 只注入已经绑定的依赖
-	protected $strict = true;
-
-
-	protected $binds	 = [];
+	protected $strict		 = true;
 	// 正在绑定的信息
-	protected $bindings	 = [];
-	protected $instances = [];
-	protected $aliases	 = [];
-	// 参数流向
-	protected $with = [];
-
+	protected $bindings		 = [];
+	// 单例对象存储
+	protected $instances	 = [];
+	protected $aliases		 = [];
+	// 依赖参数
+	protected $with			 = [];
+	// 正在解决的依赖栈
+	protected $buildStack	 = [];
 
 	/**
 	 * 临时绑定, 同接口实现优先使用一次
 	 * @param string $abstract
 	 * @param type $concrete
 	 */
-	public function bindTemporary(string $abstract, $concrete = null, bool $singleton = false){}
+	public function bindOnce(string $abstract, $concrete = null, bool $singleton = false) {
+
+	}
 
 	/**
 	 * 手动绑定
-	 * @param string $abstract 抽象类/接口/类
-	 * @param Closure $concrete 实现
+	 * @param string $abstract 抽象类/接口/类/自定义的标记
+	 * @param string|null|Closure $concrete 实现
+	 * @param $singleton 实现
 	 */
-	public function bind(string $abstract, $concrete = null, bool $singleton = false) {
+	public function bind(string $abstract, string $concrete = null, bool $singleton = false) {
 		// 覆盖旧的绑定信息
-//		$this->dropStaleInstances($abstract);
-
+		$this->dropStaleInstances($abstract);
 		// 默认的类实现, 就是其本身
 		$concrete = $concrete ?? $abstract;
-
-		// 将实现转化为闭包, 方便处理
+		// 转化为闭包
 		if (!$concrete instanceof Closure) {
 			$concrete = $this->getClosure($abstract, $concrete);
 		}
-
+		// 记录绑定
 		$this->bindings[$abstract] = compact('concrete', 'singleton');
 
-		// If the abstract type was already resolved in this container we'll fire the
-		// rebound listener so that any objects which have already gotten resolved
-		// can have their copy of the object updated via the listener callbacks.
-//		if ($this->resolved($abstract)) {
-//			$this->rebound($abstract);
-//		}
+		// 如果是已经绑定的, 将回调存在的监听者
+		// todo
+	}
+
+	/**
+	 * 转化为闭包
+	 * @param  string  $abstract
+	 * @param  string  $concrete
+	 * @return \Closure
+	 */
+	protected function getClosure(string $abstract, string $concrete): Closure {
+		return function ($container, $parameters = []) use ($abstract, $concrete) {
+			if ($abstract === $concrete) {
+				return $container->build($concrete);
+			}
+			return $container->make($concrete, $parameters);
+		};
+	}
+
+	/**
+	 * 构建对象
+	 * @param string $abstract
+	 * @param array $parameters
+	 * @return mixed
+	 */
+	public function make(string $abstract, array $parameters = []) {
+		return $this->resolve($abstract, $parameters);
+	}
+
+	/**
+	 * Resolve the given type from the container.
+	 *
+	 * @param  string  $abstract
+	 * @param  array  $parameters
+	 * @return mixed
+	 */
+	protected function resolve($abstract, $parameters = []) {
+		// 存在接口的实现的结果, 则直接返回
+		if (isset($this->instances[$abstract])) {
+			return $this->instances[$abstract];
+		}
+		// 记录参数
+		$this->with[] = $parameters;
+
+		// 存在接口的实现
+		$concrete = $this->getConcrete($abstract);
+
+		// 尚不存在, 则建立对象
+		$obj = $this->build($concrete, $parameters);
+
+
+		// 需要缓存的对象, 则缓存
+		if ($this->bindings[$abstract]['singleton'] ?? false) {
+			$this->instances[$abstract] = $obj;
+		}
+
+		// 移除参数
+		array_pop($this->with);
+
+		return $obj;
+	}
+
+	protected function getConcrete($abstract) {
+		if (isset($this->bindings[$abstract])) {
+			return $this->bindings[$abstract]['concrete'];
+		}
+		return $abstract;
 	}
 
 	/**
@@ -70,20 +132,6 @@ class Container_test {
 	}
 
 	/**
-	 * 为给定的抽象类型激发“回弹”回调。
-	 *
-	 * @param  string  $abstract
-	 * @return void
-	 */
-	protected function rebound($abstract) {
-		$instance = $this->make($abstract);
-
-		foreach ($this->getReboundCallbacks($abstract) as $callback) {
-			call_user_func($callback, $this, $instance);
-		}
-	}
-
-	/**
 	 * 单例绑定
 	 * @param string $abstract
 	 * @param Closure $concrete
@@ -92,151 +140,135 @@ class Container_test {
 
 	}
 
-	protected function dropStaleInstances(string $abstract) {
+	/**
+	 * 移除已经绑定的
+	 * @param string $abstract
+	 * @return void
+	 */
+	protected function dropStaleInstances(string $abstract): void {
 		unset($this->instances[$abstract], $this->aliases[$abstract]);
 	}
 
 	/**
-	 * 转化为闭包
-	 * @param string $abstract
-	 * @param string $concrete
-	 * @return Closure
-	 */
-	protected function getClosure(string $abstract, string $concrete): Closure {
-		return function ($container, $parameters = []) use ($abstract, $concrete) {
-			if ($abstract == $concrete) {
-				// 实例化
-				return $container->build($concrete);
-			}
-			// 继续解析
-			return $container->makeWith($concrete, $parameters);
-		};
-	}
-
-	/**
 	 * 实例化给定类型的具体实例
-	 *
 	 * @param  string  $concrete
 	 * @return mixed
-	 *
-	 * @throws \Illuminate\Contracts\Container\BindingResolutionException
 	 */
-	public function build(string $concrete) {
-		// If the concrete type is actually a Closure, we will just execute it and
-		// hand back the results of the functions, which allows functions to be
-		// used as resolvers for more fine-tuned resolution of these objects.
+	public function build($concrete) {
+
+		// 是闭包, 则直接执行
 		if ($concrete instanceof Closure) {
 			return $concrete($this, $this->getLastParameterOverride());
 		}
 
 		$reflector = new ReflectionClass($concrete);
 
-		// If the type is not instantiable, the developer is attempting to resolve
-		// an abstract type such as an Interface of Abstract Class and there is
-		// no binding registered for the abstractions so we need to bail out.
 		if (!$reflector->isInstantiable()) {
-			return $this->notInstantiable($concrete);
+			throw new Exception("Target [$concrete] is not instantiable.");
 		}
 
+		// 处理栈入栈
 		$this->buildStack[] = $concrete;
 
+		// 获取类的构造函数
 		$constructor = $reflector->getConstructor();
 
-		// If there are no constructors, that means there are no dependencies then
-		// we can just resolve the instances of the objects right away, without
-		// resolving any other types or dependencies out of these containers.
+		// 如果没有构造函数, 也就是没有依赖的存在, 则马上返回实例化
 		if (is_null($constructor)) {
 			array_pop($this->buildStack);
-
 			return new $concrete;
 		}
-
+		// 获取类的构造函数的需求参数
 		$dependencies = $constructor->getParameters();
 
-		// Once we have all the constructor's parameters we can create each of the
-		// dependency instances and then use the reflection instances to make a
-		// new instance of this class, injecting the created dependencies in.
-		$instances = $this->resolveDependencies(
-		$dependencies
-		);
+		// 解决构造函数的依赖
+		$constructorDependentParameters = $this->resolveDependencies($dependencies);
 
+		// 处理栈出栈
 		array_pop($this->buildStack);
 
-		return $reflector->newInstanceArgs($instances);
+		// 返回实例化
+		return $reflector->newInstanceArgs($constructorDependentParameters);
 	}
 
 	/**
-	 * Resolve the given type from the container.
-	 *
-	 * @param  string  $abstract
-	 * @param  array  $parameters
+	 * 解决依赖
+	 * @param array $dependencies 依赖( ReflectionParameter )组成的数组
+	 * @return array 构造函数的依赖参数
+	 */
+	protected function resolveDependencies(array $dependencies): array {
+		$results = [];
+		foreach ($dependencies as $dependency) {
+			// 如果依赖被手动传递, 则立即使用
+			if ($this->hasParameterOverride($dependency)) {
+				// 获得手动传入的实参
+				$results[] = $this->getParameterOverride($dependency);
+				continue;
+			}
+			// 分别解决`基本类型的依赖`与`对象类型依赖`
+			$results[] = is_null($dependency->getClass()) ? $this->resolvePrimitive($dependency) : $this->resolveClass($dependency);
+		}
+		return $results;
+	}
+
+	/**
+	 * 基本类型的依赖解决
+	 * @param  \ReflectionParameter  $parameter
 	 * @return mixed
 	 */
-	protected function resolve($abstract, $parameters = []) {
-		$abstract = $this->getAlias($abstract);
-
-		$needsContextualBuild = !empty($parameters) || !is_null(
-		$this->getContextualConcrete($abstract)
-		);
-
-		// If an instance of the type is currently being managed as a singleton we'll
-		// just return an existing instance instead of instantiating new instances
-		// so the developer can keep using the same objects instance every time.
-		if (isset($this->instances[$abstract]) && !$needsContextualBuild) {
-			return $this->instances[$abstract];
+	protected function resolvePrimitive(ReflectionParameter $parameter) {
+//		if (!is_null($concrete = $this->getContextualConcrete('$' . $parameter->name))) {
+//			return $concrete instanceof Closure ? $concrete($this) : $concrete;
+//		}
+		// 使用默认值
+		if ($parameter->isDefaultValueAvailable()) {
+			return $parameter->getDefaultValue();
 		}
-
-		$this->with[] = $parameters;
-
-		$concrete = $this->getConcrete($abstract);
-
-		// We're ready to instantiate an instance of the concrete type registered for
-		// the binding. This will instantiate the types, as well as resolve any of
-		// its "nested" dependencies recursively until all have gotten resolved.
-		if ($this->isBuildable($concrete, $abstract)) {
-			$object = $this->build($concrete);
-		} else {
-			$object = $this->make($concrete);
-		}
-
-		// If we defined any extenders for this type, we'll need to spin through them
-		// and apply them to the object being built. This allows for the extension
-		// of services, such as changing configuration or decorating the object.
-		foreach ($this->getExtenders($abstract) as $extender) {
-			$object = $extender($object, $this);
-		}
-
-		// If the requested type is registered as a singleton we'll want to cache off
-		// the instances in "memory" so we can return it later without creating an
-		// entirely new instance of an object on each subsequent request for it.
-		if ($this->isShared($abstract) && !$needsContextualBuild) {
-			$this->instances[$abstract] = $object;
-		}
-
-		$this->fireResolvingCallbacks($abstract, $object);
-
-		// Before returning, we will also set the resolved flag to "true" and pop off
-		// the parameter overrides for this build. After those two things are done
-		// we will be ready to return back the fully constructed class instance.
-		$this->resolved[$abstract] = true;
-
-		array_pop($this->with);
-
-		return $object;
+		$message = "Unresolvable dependency resolving [\$$parameter->name] in class {$parameter->getDeclaringClass()->getName()}";
+		throw new Exception($message);
 	}
 
-	public function makeWith(string $abstract, array $parameters) {
-		return $this->resolve($abstract, $parameters);
+	/**
+	 * 对象类型的依赖解决
+	 * @param  \ReflectionParameter  $parameter
+	 * @return mixed
+	 */
+	protected function resolveClass(ReflectionParameter $parameter) {
+		try {
+			return $this->make($parameter->getClass()->name);
+		} catch (BindingResolutionException $e) {
+			// 使用默认值
+			if ($parameter->isOptional()) {
+				return $parameter->getDefaultValue();
+			}
+			throw $e;
+		}
 	}
 
-	public function make($abstract, $parameters = []) {
-		if (isset($this->instances[$abstract])) {
-			return $this->instances[$abstract];
-		}
+	/**
+	 * 是否存在依赖的参数被手动传入
+	 * @param ReflectionParameter $dependency
+	 * @return bool
+	 */
+	protected function hasParameterOverride(ReflectionParameter $dependency): bool {
+		return array_key_exists($dependency->name, $this->getLastParameterOverride());
+	}
 
-		array_unshift($parameters, $this);
+	/**
+	 * 获得手动传入的且依赖的参数
+	 * @param ReflectionParameter $dependency
+	 * @return mixed
+	 */
+	protected function getParameterOverride(ReflectionParameter $dependency) {
+		return $this->getLastParameterOverride()[$dependency->name];
+	}
 
-		return call_user_func_array($this->bindings[$abstract]['concrete'], $parameters);
+	/**
+	 * 获得手传入的所有参数
+	 * @return array
+	 */
+	protected function getLastParameterOverride(): array {
+		return count($this->with) ? end($this->with) : [];
 	}
 
 }

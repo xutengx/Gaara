@@ -18,7 +18,6 @@ trait Make {
 	 * @return mixed
 	 */
 	public function make(string $abstract, array $parameters = []) {
-		$abstract = $this->checkFacade($abstract);
 		return $this->resolve($abstract, $parameters);
 	}
 
@@ -41,7 +40,7 @@ trait Make {
 		$concrete = $this->getConcrete($abstract);
 
 		// 尚不存在, 则建立对象
-		$obj = $this->build($concrete, $parameters);
+		$obj = $this->build($concrete);
 
 		// 需要缓存的对象, 则缓存
 		if ($this->bindings[$abstract]['singleton'] ?? false) {
@@ -179,20 +178,6 @@ trait Make {
 	 */
 	protected function getLastParameterOverride(): array {
 		return count($this->with) ? end($this->with) : [];
-	}
-
-	/**
-	 * 是否为门面类
-	 * @param string $className
-	 * @return string
-	 */
-	protected static function checkFacade(string $className): string {
-		$ReflectionClass = new ReflectionClass($className);
-		$fatherClass	 = $ReflectionClass->getParentClass();
-		if ($fatherClass !== false && $fatherClass->name === Facade::class) {
-			return $className::getInstanceName();
-		} else
-			return $className;
 	}
 
 }

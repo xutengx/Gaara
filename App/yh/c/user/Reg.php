@@ -81,11 +81,11 @@ class Reg extends Controller {
                 if($strArr[1] > \time() - self::overtime){
                     return true;
                 }
-                else exit($this->fail( '链接已经过期.'));
+                else return ($this->fail( '链接已经过期.'));
             }
-            else exit($this->fail( '链接与邮箱不匹配.'));
+            else return ($this->fail( '链接与邮箱不匹配.'));
         }
-        else exit($this->fail( '无效的链接.'));
+        else return ($this->fail( '无效的链接.'));
 
     }
 

@@ -28,11 +28,6 @@ abstract class Kernel extends Container {
 		return static::$instance ?? (static::$instance = new static);
 	}
 
-	public static function __callStatic(string $method, array $args = []) {
-		$instance = static::getInstance();
-		return $instance->$method(...$args);
-	}
-
 	/**
 	 * 初始化配置
 	 * @return Kernel

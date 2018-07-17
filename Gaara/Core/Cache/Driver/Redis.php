@@ -20,7 +20,7 @@ class Redis implements DriverInterface {
 		$options = obj(Conf::class)->redis['connections'][$connection];
 
 		$this->handler	 = new php_redis();
-		$connect		 = (CLI === true) ? 'pconnect' : 'connect';
+		$connect		 = (app()->cli === true) ? 'pconnect' : 'connect';
 		$this->handler->$connect(
 		$options['host'] ?? '127.0.0.1', (int) ($options['port'] ?? 6379)
 		);

@@ -19,8 +19,8 @@ class Container {
 	protected $bindings		 = [];
 	// 单例对象存储
 	protected $instances	 = [];
-	//
-//	protected $aliases		 = [];
+	// 别名
+	protected $aliases		 = [];
 	// 依赖参数
 	protected $with			 = [];
 	// 正在解决的依赖栈

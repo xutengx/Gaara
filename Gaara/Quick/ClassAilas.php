@@ -4,9 +4,9 @@ declare(strict_types = 1);
 
 namespace {
 	final class Cache extends \Gaara\Core\Facade {}
-	final class Code extends \Gaara\Core\Facade {}
 	final class Conf extends \Gaara\Core\Facade {}
 	final class DbConnection extends \Gaara\Core\Facade {}
+	final class Pipeline extends \Gaara\Core\Facade {}
 	final class Request extends \Gaara\Core\Facade {}
 	final class Response extends \Gaara\Core\Facade {}
 	final class Route extends \Gaara\Core\Facade {}

@@ -9,8 +9,9 @@ use Exception;
 use Gaara\Core\Controller\Traits\{
 	RequestTrait, ViewTrait
 };
+use Gaara\Contracts\ServiceProvider\Single;
 
-abstract class Controller {
+abstract class Controller implements Single  {
 
 	// 可以使用 $this->post('id', '/^1[3|4|5|7|8][0-9]\d{8}$/', 'id不合法!'); 过滤参数
 	use RequestTrait,

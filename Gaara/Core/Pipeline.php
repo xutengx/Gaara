@@ -3,13 +3,14 @@
 declare(strict_types = 1);
 namespace Gaara\Core;
 
-use Gaara\Core\Pipeline\Traits\SetPipes;
 use Closure;
+use Gaara\Core\Pipeline\Traits\SetPipes;
+use Gaara\Contracts\ServiceProvider\Single;
 
 /**
  * 管道模式
  */
-class Pipeline {
+class Pipeline implements Single {
 
 	// 设置管道流程相关
 	use SetPipes;

@@ -4,11 +4,12 @@ declare(strict_types = 1);
 namespace Gaara\Core;
 
 use Exception;
+use Gaara\Contracts\ServiceProvider\Single;
 
 /**
  * 快捷类(门面类)
  */
-abstract class Facade {
+abstract class Facade implements Single {
 
 	/**
 	 * 返回自快捷类对应的实体类的实例

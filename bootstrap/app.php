@@ -1,50 +1,42 @@
 <?php
 
 declare(strict_types = 1);
-namespace Gaara\Core {
 
-	$app = \App\Kernel::getInstance();
+/*
+  |--------------------------------------------------------------------------
+  | 获取内核容器
+  |--------------------------------------------------------------------------
+  |
+ */
+$app = \App\Kernel::getInstance();
 
-	$app->singleton(Conf::class);
-	$app->singleton(Cache::class);
-	$app->singleton(DbConnection::class);
-	$app->singleton(Log::class);
-	$app->singleton(Pipeline::class);
-	$app->singleton(Request::class);
-	$app->singleton(Response::class);
-	$app->singleton(Route::class);
-	$app->singleton(Secure::class);
-	$app->singleton(Session::class);
-	$app->singleton(Template::class);
-	$app->singleton(Tool::class);
-}
-namespace Gaara\Expand {
+/*
+  |--------------------------------------------------------------------------
+  | 注册绑定
+  |--------------------------------------------------------------------------
+  |
+  | $app->bind(string, string)			普通绑定
+  | $app->bindOnce(string, string)		单次绑定
+  | $app->singleton(string, string)		单例绑定
+  |
+ */
 
-	$app->singleton(Image::class);
-	$app->singleton(Mail::class);
-	$app->singleton(PhpConsole::class);
-	$app->singleton(QRCode::class);
-}
 
-namespace {
+/*
+  |--------------------------------------------------------------------------
+  | 获取对象
+  |--------------------------------------------------------------------------
+  |
+  | $app->make(string)
+  |
+ */
 
-	$app->singleton(Conf::class);
-	$app->singleton(Cache::class);
-	$app->singleton(DbConnection::class);
-	$app->singleton(Log::class);
-	$app->singleton(Pipeline::class);
-	$app->singleton(Request::class);
-	$app->singleton(Response::class);
-	$app->singleton(Route::class);
-	$app->singleton(Secure::class);
-	$app->singleton(Session::class);
-	$app->singleton(Template::class);
-	$app->singleton(Tool::class);
 
-	$app->singleton(Image::class);
-	$app->singleton(Mail::class);
-	$app->singleton(PhpConsole::class);
-	$app->singleton(QRCode::class);
-
-	return $app;
-}
+/*
+  |--------------------------------------------------------------------------
+  | 返回内核容器
+  |--------------------------------------------------------------------------
+  |
+  |
+ */
+return $app;

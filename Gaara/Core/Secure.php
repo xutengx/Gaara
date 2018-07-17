@@ -6,8 +6,9 @@ namespace Gaara\Core;
 use Gaara\Core\Secure\Traits\{
 	Encryption,Atomicity
 };
+use Gaara\Contracts\ServiceProvider\Single;
 
-class Secure {
+class Secure implements Single {
 
 	use Encryption,
 	 Atomicity;

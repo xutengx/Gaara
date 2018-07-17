@@ -10,8 +10,9 @@ use Gaara\Core\Cache\{
 use Closure;
 use InvalidArgumentException;
 use Exception;
+use Gaara\Contracts\ServiceProvider\Single;
 
-class Cache {
+class Cache implements Single {
 
 	use Traits\Remember;
 

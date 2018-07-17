@@ -3,17 +3,17 @@
 declare(strict_types = 1);
 namespace Gaara\Core;
 
-use App\Kernel;
 use Closure;
 use Generator;
 use Gaara\Contracts\Route\Registrar;
 use Gaara\Core\Route\Traits\SetRoute;
 use Gaara\Core\Route\Component\MatchedRouting;
+use Gaara\Contracts\ServiceProvider\Single;
 
 /**
  * 显式自定义路由
  */
-class Route implements Registrar {
+class Route implements Registrar,Single {
 
 	// 分组以及静态方法申明路由
 	use SetRoute;

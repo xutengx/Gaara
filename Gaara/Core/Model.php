@@ -9,8 +9,9 @@ use Gaara\Core\Model\Traits\{
 	DebugTrait, ObjectRelationalMappingTrait, Transaction
 };
 use Gaara\Core\Cache;
+use Gaara\Contracts\ServiceProvider\Single;
 
-abstract class Model {
+abstract class Model implements Single {
 
 	use DebugTrait,
 	 ObjectRelationalMappingTrait,

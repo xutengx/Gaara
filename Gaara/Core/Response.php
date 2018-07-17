@@ -11,11 +11,12 @@ use Gaara\Core\Response\Traits\{
 use Gaara\Core\Response\Component\{
 	Header, Body, File
 };
+use Gaara\Contracts\ServiceProvider\Single;
 
 /**
  * 处理系统全部响应( 输出 )
  */
-class Response {
+class Response implements Single {
 
 	use SetTrait,
 	 GetTrait,

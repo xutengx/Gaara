@@ -4,17 +4,16 @@ declare(strict_types = 1);
 namespace Gaara\Core;
 
 use Gaara\Core\Container\Traits\{
-	Bind, Make, Execution
+	Bind, Check, Execution, Make
 };
 
 class Container {
 
 	use Bind,
-	 Make,
-	 Execution;
+	 Check,
+	 Execution,
+	 Make;
 
-	// 严格模式, 只注入已经绑定的依赖
-	protected $strict		 = true;
 	// 正在绑定的信息
 	protected $bindings		 = [];
 	// 单例对象存储

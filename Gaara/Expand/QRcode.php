@@ -6,12 +6,13 @@ namespace Gaara\Expand;
 use Gaara\Core\Conf;
 use chillerlan\QRCode\QRCode as C_QRCode;
 use chillerlan\QRCode\QROptions;
+use Gaara\Contracts\ServiceProvider\Single;
 
 /**
  * 二维码相关
  * https://packagist.org/packages/chillerlan/php-qrcode#2.0.1
  */
-class QRcode {
+class QRcode implements Single {
 
 	/**
 	 * 原作者将配置单独成类以兼容多个模式, 在此仅仅使用QRImage, 遂将配置移回, 以简化调用

@@ -4,12 +4,13 @@ declare(strict_types = 1);
 namespace Gaara\Core;
 
 use Gaara\Core\Session\Driver;
+use Gaara\Contracts\ServiceProvider\Single;
 
 /**
  * Class Session 数据库session存储
  * @package Gaara\Core
  */
-class Session {
+class Session implements Single {
 
 	// session驱动
 	private $Drivers;

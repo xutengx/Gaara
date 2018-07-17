@@ -8,8 +8,9 @@ use Gaara\Core\Request\UploadFile;
 use Gaara\Core\Request\Traits\{
 	ClientInfo, RequestInfo, Filter
 };
+use Gaara\Contracts\ServiceProvider\Single;
 
-class Request {
+class Request implements Single {
 
 	use ClientInfo,
 	 RequestInfo,

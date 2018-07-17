@@ -5,11 +5,12 @@ namespace Gaara\Expand;
 
 use Exception;
 use Response;
+use Gaara\Contracts\ServiceProvider\Single;
 
 /**
  * 图像相关
  */
-class Image {
+class Image implements Single {
 
 	private $font = 'Gaara/Expand/Image/Font/1.ttf';
 

@@ -8,11 +8,12 @@ use PDOException;
 use PDOStatement;
 use Log;
 use PDO;
+use Gaara\Contracts\ServiceProvider\Single;
 
 /**
  * 数据库连接类，依赖 PDO_MYSQL 扩展
  */
-class DbConnection {
+class DbConnection implements Single  {
 
 	// 当前进程标识
 	private $identification	 = null;

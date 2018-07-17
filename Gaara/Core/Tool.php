@@ -6,11 +6,12 @@ namespace Gaara\Core;
 use \Gaara\Core\Tool\Traits\{
 	RequestTrait, FileTrait, CharacterTrait
 };
+use Gaara\Contracts\ServiceProvider\Single;
 
 /**
  * 工具类
  */
-class Tool {
+class Tool implements Single {
 
 	// 请求相关
 	use RequestTrait;

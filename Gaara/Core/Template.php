@@ -4,8 +4,9 @@ declare(strict_types = 1);
 namespace Gaara\Core;
 
 use Gaara\Expand\JavaScriptPacker;
+use Gaara\Contracts\ServiceProvider\Single;
 
-class Template {
+class Template implements Single {
 
 	// 跳转中间页面
 	private $jumpTo		 = 'jumpTo';

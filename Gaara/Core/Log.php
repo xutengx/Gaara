@@ -6,6 +6,7 @@ namespace Gaara\Core;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Formatter\LineFormatter;
+use Gaara\Contracts\ServiceProvider\Single;
 
 /**
  * 记录日志
@@ -18,7 +19,7 @@ use Monolog\Formatter\LineFormatter;
  * @methor alert        550     (string, array());
  * @methor emergency    600     (string, array());
  */
-class Log {
+class Log implements Single {
 
 	// 文件路径
 	private $path			 = 'data/log/';

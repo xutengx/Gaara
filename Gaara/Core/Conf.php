@@ -4,8 +4,9 @@ declare(strict_types = 1);
 namespace Gaara\Core;
 
 use Exception;
+use Gaara\Contracts\ServiceProvider\Single;
 
-class Conf {
+class Conf implements Single {
 
 	// 配置信息
 	private static $data = [];

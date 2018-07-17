@@ -3,19 +3,19 @@
 declare(strict_types = 1);
 namespace Gaara\Expand;
 
-use Tool;
-use Gaara\Core\Conf;
 use PhpConsole\{
-	Handler,
-	Connector,
-	Storage\File
+	Handler, Connector, Storage\File
 };
+use Gaara\Core\{
+	Conf, Tool
+};
+use Gaara\Contracts\ServiceProvider\Single;
 
 /**
  * 借助谷歌浏览器的 php console 插件, 以及 php-console 包, 进行调试
  * @methor debug        (mix, string);
  */
-class PhpConsole {
+class PhpConsole implements Single {
 
 	private $path	 = 'data/phpconsole/';
 	private $ext	 = 'log';
@@ -38,7 +38,7 @@ class PhpConsole {
 	private function makeFilename(): string {
 		$filename = ROOT . $this->path . date('Y/m/d') . '.' . $this->ext;
 		if (!is_file($filename)) {
-			Tool::printInFile($filename, '');
+			obj(Tool::class)->printInFile($filename, '');
 		}
 		return $filename;
 	}

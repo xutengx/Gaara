@@ -3,13 +3,14 @@
 declare(strict_types = 1);
 namespace Gaara\Expand;
 
-use Gaara\Core\Conf;
 use PHPMailer;
+use Gaara\Core\Conf;
+use Gaara\Contracts\ServiceProvider\Single;
 
 /**
  * 邮件发送类
  */
-class Mail {
+class Mail implements Single {
 
 	private $mail = null;
 

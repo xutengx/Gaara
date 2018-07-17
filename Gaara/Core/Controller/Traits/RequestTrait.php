@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Gaara\Core\Controller\Traits;
 
 use Gaara\Core\Request;
-use Gaara\Core\Exception\Http\UnprocessableEntityHttpException;
+use Gaara\Exception\Http\UnprocessableEntityHttpException;
 
 /**
  * 请求过滤

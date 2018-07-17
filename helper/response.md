@@ -134,7 +134,7 @@ $headers->send();
 
 在由于`Gaara\Core\Middleware\ExceptionHandler`中间件的存在, 在业务中的任意地方抛出`HttpException`异常, 都将转化为对应的http状态与信息
 
-> `HttpException`异常在 `\Gaara\Core\Exception\Http\`命名空间下
+> `HttpException`异常在 `\Gaara\Exception\Http\`命名空间下
 
 下面是个常用的例子, 关于参数验证的
 
@@ -144,7 +144,7 @@ namespace App\yh\c\user;
 
 use Gaara\Core\Controller;
 use Gaara\Core\Request;
-use Gaara\Core\Exception\Http\UnprocessableEntityHttpException;
+use Gaara\Exception\Http\UnprocessableEntityHttpException;
 
 class Login extends Controller {
 

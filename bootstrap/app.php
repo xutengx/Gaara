@@ -1,23 +1,31 @@
 <?php
 
 declare(strict_types = 1);
-namespace Gaara\Core;
+namespace Gaara\Core {
 
-$gaara = new Container;
+	$app = \App\Kernel::getInstance();
 
-$gaara->singleton(Conf::class);
-$gaara->singleton(Cache::class);
-$gaara->singleton(DbConnection::class);
-$gaara->singleton(Kernel::class, \App\Kernel::class);
-$gaara->singleton(Log::class);
-$gaara->singleton(Request::class);
-$gaara->singleton(Response::class);
-$gaara->singleton(Route::class);
-$gaara->singleton(Secure::class);
-$gaara->singleton(Session::class);
-$gaara->singleton(Template::class);
-$gaara->singleton(Tool::class);
+	$app->singleton(Conf::class);
+	$app->singleton(Cache::class);
+	$app->singleton(DbConnection::class);
+	$app->singleton(Log::class);
+	$app->singleton(Pipeline::class);
+	$app->singleton(Request::class);
+	$app->singleton(Response::class);
+	$app->singleton(Route::class);
+	$app->singleton(Secure::class);
+	$app->singleton(Session::class);
+	$app->singleton(Template::class);
+	$app->singleton(Tool::class);
+}
+namespace Gaara\Expand {
+	$app->singleton(Image::class);
+	$app->singleton(JavaScriptPacker::class);
+	$app->singleton(Mail::class);
+	$app->singleton(PhpConsole::class);
+	$app->singleton(QRCode::class);
+}
 
-$app = $gaara->make(Kernel::class);
-
-return $app;
+namespace {
+	return $app;
+}

@@ -58,5 +58,5 @@ class Kernel extends HttpKernel {
 			\App\yh\Middleware\PaymentCheck::class
 		]
 	];
-
+	
 }

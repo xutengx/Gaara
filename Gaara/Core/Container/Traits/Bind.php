@@ -33,7 +33,7 @@ trait Bind {
 	 * 转化为闭包
 	 * @param  string  $abstract
 	 * @param  string  $concrete
-	 * @return \Closure
+	 * @return Closure
 	 */
 	protected function getClosure(string $abstract, string $concrete): Closure {
 		return function ($container, $parameters = []) use ($abstract, $concrete) {

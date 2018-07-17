@@ -6,7 +6,7 @@ namespace Gaara\Core\Middleware;
 use Gaara\Core\{
 	Middleware, Request,Response,Cache
 };
-use Gaara\Core\Exception\Http\TooManyRequestsHttpException;
+use Gaara\Exception\Http\TooManyRequestsHttpException;
 
 /**
  * 访问频率限制

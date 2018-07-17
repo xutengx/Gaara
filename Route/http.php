@@ -13,7 +13,13 @@ return [
 		phpinfo();exit;
 	},
 	Route::get('/', function() {
-		return \Response::setContentType('html')->setContent('hello world');
+//		exit;
+		var_dump(obj(\Response::class));
+		var_dump(obj(\Gaara\Core\Response::class));
+		var_dump(array_keys(app()->instances));
+		var_dump(obj(\Response::class) === obj(\Gaara\Core\Response::class));exit;
+		return obj(\Response::class)->setContentType('html')->setContent('hello world');
+//		return \Response::setContentType('html')->setContent('hello world');
 //		return obj(\Gaara\Core\Response::class)->setContentType('html')->setContent('hello world');
 	}),
 	Route::get('/data/upload/{yearmonth}/{day}/{name}', function($yearmonth, $day, $name) {

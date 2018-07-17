@@ -5,7 +5,7 @@ namespace App\Dev\mysql\Contr;
 
 use \Gaara\Core\Controller;
 use \App\Dev\mysql\Model;
-use Gaara\Core\Exception\MessageException;
+use Gaara\Exception\MessageException;
 
 /*
  * 数据库开发测试类

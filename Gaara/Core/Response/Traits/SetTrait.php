@@ -99,7 +99,7 @@ trait SetTrait {
 	 */
 	public function setContentType(string $type): Response {
 		if(is_null(self::$httpType[$type])){
-			throw new \Gaara\Core\Exception\Http\NotAcceptableHttpException;
+			throw new \Gaara\Exception\Http\NotAcceptableHttpException;
 		}
 		$this->body->setContentType($type);
 		$this->header->set('Content-Type', reset(self::$httpType[$type]) . '; charset=' . obj(Conf::class)->app['char']);

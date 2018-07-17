@@ -39,7 +39,7 @@ abstract class Middleware {
 	 */
 	final protected function doHandle(): void {
 		if ($this->effective() && method_exists($this, 'handle')) {
-			Integrator::run($this, 'handle');
+			run($this, 'handle');
 		}
 	}
 
@@ -50,7 +50,7 @@ abstract class Middleware {
 	 */
 	final protected function doTerminate(Response $response): Response {
 		if ($this->effective() && method_exists($this, 'terminate')) {
-			Integrator::run($this, 'terminate', [$response]);
+			run($this, 'terminate', [$response]);
 		}
 		return $response;
 	}

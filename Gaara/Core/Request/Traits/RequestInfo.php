@@ -13,12 +13,13 @@ trait RequestInfo {
 	public $scheme; // https or http
 	public $host; // example.com
 	public $scriptName; // /index.php
-	public $requestUrl; // /admin/index.php/product?id=100
+	public $requestUrl; // /admin/index/product?id=100
 	public $queryString; //返回 id=100,问号之后的部分。
-	public $absoluteUrl; //返回 http://example.com/admin/index.php/product?id=100, 包含host infode的整个URL。
+	public $absoluteUrl; //返回 http://example.com/admin/index/product?id=100, 包含hos的整个URL。
 	public $hostInfo; //返回 http://example.com, 只有host info部分。
-	public $pathInfo; //返回 /admin/index.php/product， 这问号之前（查询字符串）的部分。
-	public $staticUrl; //返回 http://example.com/admin/index.php/product, 包含host pathInfo。
+	public $hostStaticInfo; //返回 http://example.com/, 可以拼接静态资源地址。
+	public $pathInfo; //返回 /admin/index/product， 这问号之前（查询字符串）的部分。
+	public $staticUrl; //返回 http://example.com/admin/index/product, 包含host pathInfo。
 	public $serverName; //返回 example.com, URL中的host name。
 	public $serverPort; //返回 80, 这是web服务中使用的端口。
 	public $method; // 当前http方法
@@ -30,25 +31,28 @@ trait RequestInfo {
 	public $acceptType; // 需求的相应体格式
 	public $MatchedRouting = null; // 路由匹配成功后,由`Kernel`赋值的`MatchedRouting`对象
 
+	//define('HOST', ($_SERVER['HTTP_HTTPS'] ?? $_SERVER['REQUEST_SCHEME']) . '://' . $_SERVER['HTTP_HOST'] . str_replace(IN_SYS, '', $_SERVER['SCRIPT_NAME']));
+
 	public function RequestInfoInit() {
-		$this->inSys		 = IN_SYS;
-		$this->isAjax		 = $this->isAjax();
-		$this->scheme		 = $_SERVER['HTTP_HTTPS'] ?? $_SERVER['REQUEST_SCHEME'];
-		$this->host			 = $_SERVER['HTTP_HOST'];
-		$this->scriptName	 = $_SERVER['SCRIPT_NAME'];
-		$this->requestUrl	 = $_SERVER['REQUEST_URI'];
-		$this->queryString	 = $_SERVER['QUERY_STRING'];
-		$this->absoluteUrl	 = $this->scheme . '://' . $this->host . $this->requestUrl;
-		$this->hostInfo		 = $this->scheme . '://' . $this->host;
-		$this->pathInfo		 = '/' . str_replace('?' . $this->queryString, '', substr_replace($this->requestUrl, '', 0, strlen(str_replace($this->inSys, '', $this->scriptName))));
-		$this->staticUrl	 = $this->hostInfo . $this->pathInfo;
-		$this->serverName	 = $_SERVER['SERVER_NAME'];
-		$this->serverPort	 = $_SERVER['SERVER_PORT'];
-		$this->method		 = strtolower($_SERVER['REQUEST_METHOD']);
-		$this->userHost		 = $_SERVER['REMOTE_HOST'] ?? '';
-		$this->userIp		 = $this->getUserIp();
-		$this->contentType	 = $_SERVER['CONTENT_TYPE'] ?? '';
-		$this->acceptType	 = $_SERVER['ACCEPY_TYPE'] ?? $_SERVER['ACCEPY'] ?? '';
+		$this->inSys			 = IN_SYS ?? 'index.php';
+		$this->isAjax			 = $this->isAjax();
+		$this->scheme			 = $_SERVER['HTTP_HTTPS'] ?? $_SERVER['REQUEST_SCHEME'];
+		$this->host				 = $_SERVER['HTTP_HOST'];
+		$this->scriptName		 = $_SERVER['SCRIPT_NAME'];
+		$this->requestUrl		 = $_SERVER['REQUEST_URI'];
+		$this->queryString		 = $_SERVER['QUERY_STRING'];
+		$this->absoluteUrl		 = $this->scheme . '://' . $this->host . $this->requestUrl;
+		$this->hostInfo			 = $this->scheme . '://' . $this->host;
+		$this->hostStaticInfo	 = $this->scheme . '://' . $this->host . str_replace($this->inSys, '', $this->scriptName);
+		$this->pathInfo			 = '/' . str_replace('?' . $this->queryString, '', substr_replace($this->requestUrl, '', 0, strlen(str_replace($this->inSys, '', $this->scriptName))));
+		$this->staticUrl		 = $this->hostInfo . $this->pathInfo;
+		$this->serverName		 = $_SERVER['SERVER_NAME'];
+		$this->serverPort		 = $_SERVER['SERVER_PORT'];
+		$this->method			 = strtolower($_SERVER['REQUEST_METHOD']);
+		$this->userHost			 = $_SERVER['REMOTE_HOST'] ?? '';
+		$this->userIp			 = $this->getUserIp();
+		$this->contentType		 = $_SERVER['CONTENT_TYPE'] ?? '';
+		$this->acceptType		 = $_SERVER['ACCEPY_TYPE'] ?? $_SERVER['ACCEPY'] ?? '';
 	}
 
 	/**

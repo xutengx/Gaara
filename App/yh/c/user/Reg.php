@@ -7,7 +7,7 @@ use App\yh\m\MainUser;
 use Gaara\Core\Secure;
 use Gaara\Expand\Mail;
 use Gaara\Core\Controller;
-use Gaara\Core\Exception\MessageException;
+use Gaara\Exception\MessageException;
 
 class Reg extends Controller {
     // 生成邮箱注册, 所需的盐

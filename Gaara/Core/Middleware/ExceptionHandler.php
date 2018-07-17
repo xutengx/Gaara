@@ -6,7 +6,7 @@ namespace Gaara\Core\Middleware;
 use Gaara\Core\{
 	Middleware, Request, Response, Log
 };
-use Gaara\Core\Exception\{
+use Gaara\Exception\{
 	MessageException, HttpException
 };
 use Whoops\Run;
@@ -22,16 +22,18 @@ class ExceptionHandler extends Middleware {
 	protected $except = [];
 
 	public function handle(Request $request) {
-		$whoops = new Run;
-		if (DEBUG) {
-			if (CLI)
+		$debug	 = app()->debug;
+		$cli	 = app()->cli;
+		$whoops	 = new Run;
+		if ($debug) {
+			if ($cli)
 				$whoops->pushHandler(new PlainTextHandler);
 			elseif ($request->isAjax)
 				$whoops->pushHandler(new PrettyPageHandler);
 			else
 				$whoops->pushHandler(new PrettyPageHandler);
 		}else {
-			if (CLI)
+			if ($cli)
 				$whoops->pushHandler(new PlainTextHandler);
 			elseif ($request->isAjax)
 				$whoops->pushHandler(new JsonResponseHandler);

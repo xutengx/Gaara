@@ -73,7 +73,7 @@ class Login extends Controller {
      * @return array
      */
     private function userLogin(int $id, GaaraUser $user, Request $request, array $tokenInfo): array {
-        $tokenInfo['last_login_ip'] = \ip2long($request->ip);
+        $tokenInfo['last_login_ip'] = \ip2long($request->userIp);
         $tokenInfo['last_login_at'] = \date('Y-m-d H:i:s');
         $user->login($id, $tokenInfo['last_login_ip'], $tokenInfo['last_login_at']);
         return $tokenInfo;

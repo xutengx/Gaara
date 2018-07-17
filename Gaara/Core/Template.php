@@ -9,7 +9,7 @@ class Template {
 
 	// 跳转中间页面
 	private $jumpTo		 = 'jumpTo';
-	
+
 	// jquery 引入
 	const jqueryDir		 = 'Gaara/Views/include/jquery/';
 	// js 引入
@@ -82,14 +82,14 @@ class Template {
 					$content = $this->AutomaticPacking(file_get_contents($v));
 					obj(Tool::class)->printInFile($jsname, $content);
 				}
-				$str .= '<script src="' . HOST . $jsname . '"></script>';
+				$str .= '<script src="' . obj(Request::class)->hostStaticInfo . $jsname . '"></script>';
 			} elseif ($ext === '.css') {
 				$jsname = $newDir . str_replace($originaDir, '', $v);
 				if (!is_file($jsname) || filemtime($v) > filectime($jsname)) {
 					$content = $this->compressCss(file_get_contents($v));
 					obj(Tool::class)->printInFile($jsname, $content);
 				}
-				$str .= '<link rel="stylesheet" type="text/css" href="' . HOST . $jsname . '" />';
+				$str .= '<link rel="stylesheet" type="text/css" href="' . obj(Request::class)->hostStaticInfo . $jsname . '" />';
 			}
 		}
 		return $str;

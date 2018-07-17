@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types = 1);
-namespace Gaara\Core\Exception;
+namespace Gaara\Exception;
 
 use Exception;
 use Gaara\Core\Response;

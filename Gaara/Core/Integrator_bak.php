@@ -10,7 +10,7 @@ use InvalidArgumentException;
 /**
  * 享元模式,依赖注入
  */
-class Integrator {
+class Integrator_bak {
 
 	// 缓存对象,实现单元素模式
 	private static $obj_ins = [];

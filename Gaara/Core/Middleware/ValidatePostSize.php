@@ -6,7 +6,7 @@ namespace Gaara\Core\Middleware;
 use Gaara\Core\{
 	Middleware, Request, Response
 };
-use Gaara\Core\Exception\Http\PayloadTooLargeException;
+use Gaara\Exception\Http\PayloadTooLargeException;
 
 /**
  * 验证 post 数据大小,避免大于php设定的post_max_size

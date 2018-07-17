@@ -26,4 +26,8 @@ class Container {
 	// 正在解决的依赖栈
 	protected $buildStack	 = [];
 
+	public function __get(string $name) {
+		return $this->$name;
+	}
+
 }

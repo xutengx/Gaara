@@ -29,9 +29,9 @@ class index extends Controller {
 //		exit;
 //		var_dump(\Response::header()->getSent());exit;
 //		var_dump(obj(Request::class));exit;
-//		throw new \Gaara\Core\Exception\MessageException("'msg', 'error'");
+//		throw new \Gaara\Exception\MessageException("'msg', 'error'");
 //		throw new \Exception('error ');
-//		throw new \Gaara\Core\Exception\Http\NotFoundHttpException();
+//		throw new \Gaara\Exception\Http\NotFoundHttpException();
 //		Response::body()->setContent(['data' => 'body content']);
 
 //		return $this->fail('errorrrrrrrrrrrr', 416);

@@ -97,7 +97,7 @@ Route::put('/', function(Gaara\Core\Reuqest $request){
 <?php
 namespace App\yh\c\Dev;
 
-use Gaara\Core\Exception\Http\UnprocessableEntityHttpException;
+use Gaara\Exception\Http\UnprocessableEntityHttpException;
 
 class Dev extends \Gaara\Core\Controller {
 

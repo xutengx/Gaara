@@ -6,8 +6,8 @@ namespace Gaara\Core\Container\Traits;
 use Closure;
 use ReflectionClass;
 use ReflectionParameter;
-use Gaara\Core\Request;
-use Gaara\Core\Exception\Http\UnprocessableEntityHttpException;
+use Gaara\Exception\BindingResolutionException;
+use Gaara\Core\Facade;
 
 trait Make {
 
@@ -18,21 +18,22 @@ trait Make {
 	 * @return mixed
 	 */
 	public function make(string $abstract, array $parameters = []) {
+		$abstract = $this->checkFacade($abstract);
 		return $this->resolve($abstract, $parameters);
 	}
 
 	/**
-	 * Resolve the given type from the container.
-	 *
-	 * @param  string  $abstract
-	 * @param  array  $parameters
+	 * 容器中分析给定的抽象(接口/类)
+	 * @param string $abstract
+	 * @param array $parameters
 	 * @return mixed
 	 */
-	protected function resolve($abstract, $parameters = []) {
+	protected function resolve(string $abstract, array $parameters = []) {
 		// 存在接口的实现的结果, 则直接返回
 		if (isset($this->instances[$abstract])) {
 			return $this->instances[$abstract];
 		}
+
 		// 记录参数
 		$this->with[] = $parameters;
 
@@ -42,10 +43,12 @@ trait Make {
 		// 尚不存在, 则建立对象
 		$obj = $this->build($concrete, $parameters);
 
-
 		// 需要缓存的对象, 则缓存
 		if ($this->bindings[$abstract]['singleton'] ?? false) {
+			// 缓存抽象的实现
 			$this->instances[$abstract] = $obj;
+			// 缓存自己的实现
+			$this->instances[get_class($obj)] = $obj;
 		}
 
 		// 移除参数
@@ -55,19 +58,16 @@ trait Make {
 	}
 
 	/**
-	 *
+	 * 优先返回已绑定的抽象
 	 * @param string $abstract
-	 * @return string
+	 * @return string|Closure
 	 */
 	protected function getConcrete(string $abstract) {
-		if (isset($this->bindings[$abstract])) {
-			return $this->bindings[$abstract]['concrete'];
-		}
-		return $abstract;
+		return $this->bindings[$abstract]['concrete'] ?? $abstract;
 	}
 
 	/**
-	 * 实例化给定类型的具体实例
+	 * 实例化给定抽象的具体实例
 	 * @param  string  $concrete
 	 * @return mixed
 	 */
@@ -81,7 +81,7 @@ trait Make {
 		$reflector = new ReflectionClass($concrete);
 
 		if (!$reflector->isInstantiable()) {
-			throw new Exception("Target [$concrete] is not instantiable.");
+			throw new BindingResolutionException("Target [$concrete] is not instantiable.");
 		}
 
 		// 处理栈入栈
@@ -130,21 +130,17 @@ trait Make {
 
 	/**
 	 * 基本类型的依赖解决
-	 * @param  \ReflectionParameter  $parameter
+	 * @param ReflectionParameter  $parameter
 	 * @return mixed
 	 */
 	protected function resolvePrimitive(ReflectionParameter $parameter) {
-		// 使用默认值
-		if ($parameter->isDefaultValueAvailable()) {
-			return $parameter->getDefaultValue();
-		}
-		$message = "Unresolvable dependency resolving [\$$parameter->name] in class {$parameter->getDeclaringClass()->getName()}";
-		throw new Exception($message);
+		// 优先使用默认值, 否则给null
+		return $parameter->isDefaultValueAvailable() ? $parameter->getDefaultValue() : null;
 	}
 
 	/**
 	 * 对象类型的依赖解决
-	 * @param  \ReflectionParameter  $parameter
+	 * @param ReflectionParameter  $parameter
 	 * @return mixed
 	 */
 	protected function resolveClass(ReflectionParameter $parameter) {
@@ -183,6 +179,20 @@ trait Make {
 	 */
 	protected function getLastParameterOverride(): array {
 		return count($this->with) ? end($this->with) : [];
+	}
+
+	/**
+	 * 是否为门面类
+	 * @param string $className
+	 * @return string
+	 */
+	protected static function checkFacade(string $className): string {
+		$ReflectionClass = new ReflectionClass($className);
+		$fatherClass	 = $ReflectionClass->getParentClass();
+		if ($fatherClass !== false && $fatherClass->name === Facade::class) {
+			return $className::getInstanceName();
+		} else
+			return $className;
 	}
 
 }

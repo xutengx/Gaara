@@ -1,9 +1,9 @@
 <?php
 
 declare(strict_types = 1);
-namespace Gaara\Core\Exception\Http;
+namespace Gaara\Exception\Http;
 
-use Gaara\Core\Exception\HttpException;
+use Gaara\Exception\HttpException;
 
 class ForbiddenHttpException extends HttpException {
 

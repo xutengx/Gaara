@@ -6,7 +6,7 @@ namespace Gaara\Core\Controller\Traits;
 use Closure;
 use InvalidArgumentException;
 use Gaara\Core\{
-	Cache, Template, Response
+	Cache, Template, Response, Request
 };
 
 /**
@@ -97,7 +97,7 @@ trait ViewTrait {
 	 */
 	protected function js(string $file): void {
 		$this->js[] = (0 === strpos($file, 'http://') || 0 === strpos($file, 'https://'))
-			? $file : HOST . $file;
+			? $file : obj(Request::class)->hostStaticInfo . $file;
 	}
 
 	/**
@@ -108,7 +108,7 @@ trait ViewTrait {
 	 */
 	protected function css(string $file): void {
 		$this->css[] = (0 === strpos($file, 'http://') || 0 === strpos($file, 'https://'))
-			? $file : HOST . $file;
+			? $file : obj(Request::class)->hostStaticInfo . $file;
 	}
 
 	/**
@@ -226,9 +226,9 @@ EEE;
 	 */
 	protected function headGaara(): void {
 		// gaara js 引入
-		echo DEBUG ? obj(Template::class)->includeFiles() : obj(Cache::class)->call(obj(Template::class), 'includeFiles', 30);
+		echo app()->debug ? obj(Template::class)->includeFiles() : obj(Cache::class)->call(obj(Template::class), 'includeFiles', 30);
 		// gaara js 定义
-		$this->assign('HOST', HOST);
+		$this->assign('HOST', obj(Request::class)->hostStaticInfo);
 		$this->assign('contr', static::class);
 		$this->script('$.extend({language:' . $this->language . '});');
 	}

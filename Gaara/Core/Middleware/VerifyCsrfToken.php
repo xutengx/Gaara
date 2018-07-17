@@ -7,7 +7,7 @@ use Exception;
 use Gaara\Core\{
 	Middleware, Request, Secure
 };
-use Gaara\Core\Exception\Http\ForbiddenHttpException;
+use Gaara\Exception\Http\ForbiddenHttpException;
 
 /**
  * CsrfToken 依赖 session(cookie)

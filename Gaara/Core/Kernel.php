@@ -5,20 +5,32 @@ namespace Gaara\Core;
 
 use Closure;
 use Exception;
-use ReflectionFunction;
-use ReflectionClass;
 
-abstract class Kernel {
-
+abstract class Kernel extends Container {
+	// 调试模式
+	public $debug = true;
+	// 命令行
+	public $cli = false;
 	// 管道对象
 	protected $pipeline			 = null;
 	// 全局中间件
 	protected $middlewareGlobel	 = [];
 	// 路由中间件组
 	protected $middlewareGroups	 = [];
+	// 缓存自己
+	protected static $instance	 = null;
 
-	public function __construct(Pipeline $pipeline) {
-		$this->pipeline = $pipeline;
+	final protected function __construct() {
+
+	}
+
+	public static function getInstance(): Kernel {
+		return static::$instance ?? (static::$instance = new static);
+	}
+
+	public static function __callStatic(string $method, array $args = []) {
+		$instance = static::getInstance();
+		return $instance->$method(...$args);
 	}
 
 	/**
@@ -26,6 +38,7 @@ abstract class Kernel {
 	 * @return Kernel
 	 */
 	public function Init(): Kernel {
+		$this->pipeline = obj(Pipeline::class);
 		$this->ConfInit();
 		$this->RequestInit();
 		return $this;
@@ -45,11 +58,14 @@ abstract class Kernel {
 		}
 		date_default_timezone_set($conf['timezone']);
 		if ($conf['debug'] === '1') {
+			$this->debug = true;
 			ini_set('display_errors', '1');
 			error_reporting(E_ALL);
 		} else {
+			$this->debug = false;
 			ini_set('display_errors', '0');
 		}
+		$this->cli = (php_sapi_name() === 'cli');
 	}
 
 	/**
@@ -64,10 +80,10 @@ abstract class Kernel {
 	 * 执行路由
 	 */
 	public function Start() {
-		$route = obj(Route::class);
+		$route	 = obj(Route::class);
 		$request = obj(Request::class);
 		if ($route->Start()) {
-			$request->MatchedRouting	 = $MR									 = $route->MatchedRouting;
+			$request->MatchedRouting = $MR						 = $route->MatchedRouting;
 			$request->alias			 = $MR->alias;
 			$request->methods		 = $MR->methods;
 
@@ -92,10 +108,10 @@ abstract class Kernel {
 	 * @param array $request
 	 * @return void
 	 */
-	public function run(array $middlewares, $subjectMethod, array $request): void {
+	protected function run(array $middlewares, $subjectMethod, array $request): void {
 		$this->statistic();
 		$this->pipeline->setPipes($middlewares);
-		$this->pipeline->setDefaultClosure($this->doController($subjectMethod, $request));
+		$this->pipeline->setDefaultClosure($this->doSubject($subjectMethod, $request));
 		$this->pipeline->then();
 	}
 
@@ -120,59 +136,22 @@ abstract class Kernel {
 	}
 
 	/**
-	 * 方法依赖注入,执行,支持闭包函数
-	 * @param string|callback|array $subjectMethod 将要执行的方法
-	 * @param array $request 请求参数
+	 * 主题代码
+	 * @param string|Closure $subjectMethod
+	 * @param array $parameters
 	 * @return Closure
 	 */
-	protected function doController($subjectMethod, array $request): Closure {
-		return function () use ($subjectMethod, $request) {
-			/**
-			 * 方法依赖注入
-			 * @param array $parameters 由反射类获取的方法依赖参数链表
-			 * @return array 参数数组
-			 */
-			$injection = function($parameters) use ($request) {
-				// 定义实参数组
-				$argument = [];
-				// 遍历所有形参
-				foreach ($parameters as $param) {
-					// 判断参数类型 是类
-					if ($paramClass = $param->getClass()) {
-						// 获得参数类型名称
-						$paramClassName	 = $paramClass->getName();
-						// 加入对象到参数列表
-						$argument[]		 = Integrator::getWithoutAlias($paramClassName);
-					} else {
-						if (isset($request[$param->name])) {
-							// 加入实参到参数列表
-							$argument[] = $request[$param->name];
-						} else {
-							$argument[] = \null;
-						}
-					}
-				}
-				return $argument;
-			};
+	protected function doSubject($subjectMethod, array $parameters = []): Closure {
+		return function () use ($subjectMethod, $parameters) {
 			// 形如 'App\index\Contr\IndexContr@indexDo'
 			if (is_string($subjectMethod)) {
-				$temp			 = explode('@', $subjectMethod);
-				$reflectionClass = new ReflectionClass($temp[0]);
-				$methodClass	 = $reflectionClass->getMethod($temp[1]);
-				$parameters		 = $methodClass->getParameters();
-
-				$argument	 = $injection($parameters);
-				$return		 = call_user_func_array(array(Integrator::getWithoutAlias($temp[0]), $temp[1]), $argument);
+				$temp = explode('@', $subjectMethod);
+				return $this->execute($temp[0], $temp[1], $parameters);
 			}
 			// 形如 function($param_1, $param_2 ) {return 'this is a function !';}
 			elseif ($subjectMethod instanceof Closure) {
-				$reflectionFunction	 = new ReflectionFunction($subjectMethod);
-				$parameters			 = $reflectionFunction->getParameters();
-
-				$argument	 = $injection($parameters);
-				$return		 = call_user_func_array($subjectMethod, $argument);
+				return $this->executeClosure($subjectMethod, $parameters);
 			}
-			return $return;
 		};
 	}
 

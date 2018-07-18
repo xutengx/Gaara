@@ -34,7 +34,7 @@ trait RequestTrait {
 	/**
 	 * 并行请求
 	 * @param array $urls 需要请求的url组成数组 eg ['www.baidu.com','test.xuteng.com?testpar=123']
-	 * @param bool $allinfo 是否返回全部信息 eg true 返回`实现了一个PSR-7接口的Response对象`组成的数组, false 返回`相应体`组成的数组
+	 * @param bool $allinfo 是否返回全部信息 eg true 返回`实现了一个PSR-7接口的Response对象`组成的数组, false 返回`响应体`组成的数组
 	 * @return array 每个请求的响应体
 	 */
 	public function parallelExe(array $urls, bool $allinfo = false): array {

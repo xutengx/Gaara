@@ -50,8 +50,10 @@ class Cache implements Single {
 			if (array_key_exists($drivername, $this->Drivers)) {
 				$this->driver = $this->Drivers[$drivername];
 			} else {
-				$conn = empty(reset($this->conf[$drivername])) ? obj(Conf::class)->redis['default_connection'] : reset($this->conf[$drivername]);
-				$this->driver = $this->Drivers[$drivername] = new $this->supportedDrivers[$drivername]($conn);
+				$connection					 = empty(reset($this->conf[$drivername])) ? obj(Conf::class)->redis['default_connection']
+					: reset($this->conf[$drivername]);
+//				$this->driver = $this->Drivers[$drivername] = new $this->supportedDrivers[$drivername]($conn);
+				$this->driver				 = $this->Drivers[$drivername]	 = obj($this->supportedDrivers[$drivername], ['connection' => $connection]);
 			}
 		} else
 			throw new InvalidArgumentException('Not supported the cache driver : ' . $drivername . '.');

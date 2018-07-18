@@ -4,7 +4,6 @@ declare(strict_types = 1);
 namespace Gaara\Core;
 
 use Closure;
-use Exception;
 use Gaara\Core\Kernel\Traits\Init;
 
 abstract class Kernel extends Container {
@@ -12,9 +11,9 @@ abstract class Kernel extends Container {
 	use Init;
 
 	// 调试模式
-	public $debug = true;
+	public $debug				 = true;
 	// 命令行
-	public $cli = false;
+	public $cli					 = false;
 	// 管道对象
 	protected $pipeline			 = null;
 	// 请求对象
@@ -34,16 +33,17 @@ abstract class Kernel extends Container {
 		return static::$instance ?? (static::$instance = new static);
 	}
 
-
 	/**
 	 * 执行路由
 	 */
 	public function start() {
+		// 获取路由对象
 		$route	 = $this->make(Route::class);
 		$request = $this->request;
 
 		// 路由匹配成功
 		if ($route->Start()) {
+			// 匹配成功对象
 			$MR = $route->MatchedRouting;
 
 			// 全局中间件 + 路由中间件
@@ -53,13 +53,15 @@ abstract class Kernel extends Container {
 			$request->setMatchedRouting($MR);
 
 			// 执行
-			$this->run($MR->middlewares, $MR->subjectMethod, $MR->urlParamter);
-		} else {
-			if (is_null($rule404 = $route->rule404))
-				$this->make(Response::class)->setStatus(404)->setContent('Not Found ..')->sendExit();
-			else
-				$this->run([], $rule404, ['pathinfo' => $request->pathInfo]);
+			$this->run($MR->subjectMethod, $MR->urlParamter, $MR->middlewares);
 		}
+		// 是否存在默认的404响应
+		elseif (is_null($rule404 = $route->rule404))
+			// 默认的404响应
+			$this->make(Response::class)->setStatus(404)->setContent('Not Found ..')->sendExit();
+		else
+			// 设置的404响应
+			$this->run($rule404, ['pathinfo' => $request->pathInfo]);
 	}
 
 	/**
@@ -102,20 +104,20 @@ abstract class Kernel extends Container {
 		};
 	}
 
-
 	/**
 	 * 执行中间件以及用户业务代码
+	 * @param string|Closure $subjectMethod
+	 * @param array $parameters
 	 * @param array $middlewares
-	 * @param string|callback|array $subjectMethod
-	 * @param array $request
 	 * @return void
 	 */
-	protected function run(array $middlewares, $subjectMethod, array $request): void {
+	protected function run($subjectMethod, array $parameters = [], array $middlewares = []): void {
 		$this->statistic();
 		$this->pipeline->setPipes($middlewares);
-		$this->pipeline->setDefaultClosure($this->doSubject($subjectMethod, $request));
+		$this->pipeline->setDefaultClosure($this->doSubject($subjectMethod, $parameters));
 		$this->pipeline->then();
 	}
+
 	// 运行统计
 	protected function statistic(): void {
 		$GLOBALS['statistic']['框架路由执行后时间']	 = microtime(true);

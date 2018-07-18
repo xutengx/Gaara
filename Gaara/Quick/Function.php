@@ -9,21 +9,21 @@ function app(): \Gaara\Core\Kernel {
 /**
  * 实例化对象, 解决依赖
  * @param string $obj
- * @param mixed ...$params 其他参数, 注:单例模式下,显然只有第一次实例化时,参数才会被使用!
+ * @param array $parameters 其他参数, 注:单例模式下,显然只有第一次实例化时,参数才会被使用!
  * @return object
  */
-function obj(string $obj, ...$params) {
-	return app()->make($obj, $params);
+function obj(string $obj, array $parameters = []) {
+	return app()->make($obj, $parameters);
 }
 
 /**
  * 执行方法, 解决依赖
  * @param string|object $object 类|对象
  * @param string $method
- * @param mixed ...$parameters
+ * @param array $parameters
  * @return mixed
  */
-function run($object, string $method, ...$parameters) {
+function run($object, string $method, array $parameters = []) {
 	return app()->execute($object, $method, $parameters);
 }
 

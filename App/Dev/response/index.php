@@ -12,6 +12,38 @@ class index extends Controller {
 
 	public function indexDo(){
 
+//		app()->bind('redis_2', \Gaara\Core\Cache::class, true);
+//
+//		$reids_2 = app()->make('redis_2');
+//
+		$reids = app()->make(\Gaara\Core\Cache::class);
+//		$reids_3 = app()->make(\Gaara\Core\Cache::class);
+
+			app()->bindOnce(\Gaara\Core\Cache\Driver\Redis::class, function(){
+				return new \Gaara\Core\Cache\Driver\Redis('con2');
+			});
+
+//		$Redis_2 = app()->make(\Gaara\Core\Cache\Driver\Redis::class,['conn' => 'con2']);
+//		var_dump($Redis_2);exit;
+
+			app()->bind('Cache_2', \Gaara\Core\Cache::class);
+
+//exit('qqqaqq');
+		$Cache_2 = app()->make('Cache_2');
+
+		var_dump($reids);
+		var_dump($Cache_2);exit;
+
+
+		$redis = app()->make(\Gaara\Core\Cache\Driver\Redis::class, [
+			'connection' => 'default'
+		]);
+
+		var_dump($redis);exit;
+		var_dump($reids_2 === $reids);
+		var_dump($reids_3 === $reids);exit;
+
+
 //		var_dump(ob_get_level());exit;
 		echo 'qwewqe1';
 

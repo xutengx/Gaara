@@ -50,7 +50,12 @@ trait Make {
 			// 缓存抽象的实现
 			$this->instances[$abstract] = $results;
 			// 如果是对象, 则缓存自己的实现
-			is_object($results) ? $this->instances[get_class($results)] = $results : '';
+//			is_object($results) ? $this->instances[get_class($results)] = $results : '';
+		}
+
+		// 是否绑定后销毁绑定信息
+		if ($this->bindings[$abstract]['once'] ?? false) {
+			unset($this->bindings[$abstract]);
 		}
 
 		// 移除参数

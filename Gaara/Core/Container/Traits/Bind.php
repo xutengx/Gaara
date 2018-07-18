@@ -12,10 +12,11 @@ trait Bind {
 	 * 手动绑定
 	 * @param string $abstract 抽象类/接口/类/自定义的标记
 	 * @param Closure|string $concrete 闭包|类名
-	 * @param $singleton 单例
+	 * @param bool $singleton 单例
+	 * @param bool $once 一次后销毁
 	 * @return Container
 	 */
-	public function bind(string $abstract, $concrete = null, bool $singleton = false): Container {
+	public function bind(string $abstract, $concrete = null, bool $singleton = false, bool $once = false): Container {
 		// 覆盖旧的绑定信息
 		$this->dropStaleInstances($abstract);
 
@@ -23,7 +24,7 @@ trait Bind {
 		$concrete = $concrete ?? $abstract;
 
 		// 记录绑定
-		$this->bindings[$abstract] = compact('concrete', 'singleton');
+		$this->bindings[$abstract] = compact('concrete', 'singleton', 'once');
 
 		// 如果是已经绑定的, 将回调存在的监听者
 		// todo
@@ -43,19 +44,23 @@ trait Bind {
 	/**
 	 * 临时绑定, 同接口实现优先使用一次
 	 * @param string $abstract
-	 * @param type $concrete
+	 * @param Closure|string $concrete
+	 * @param bool $singleton 单例
+	 * @return Container
 	 */
-	public function bindOnce(string $abstract, $concrete = null, bool $singleton = false) {
-
+	public function bindOnce(string $abstract, $concrete = null, bool $singleton = false) :Container{
+		return $this->bind($abstract, $concrete, $singleton, true);
 	}
 
 	/**
 	 * 单例绑定
 	 * @param string $abstract
 	 * @param Closure|string $concrete
+	 * @param bool $once 一次后销毁
+	 * @return Container
 	 */
-	public function singleton(string $abstract, $concrete = null) {
-		return $this->bind($abstract, $concrete, true);
+	public function singleton(string $abstract, $concrete = null, bool $once = false) :Container{
+		return $this->bind($abstract, $concrete, true, $once);
 	}
 
 }

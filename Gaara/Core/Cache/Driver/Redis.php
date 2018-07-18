@@ -16,6 +16,7 @@ class Redis implements DriverInterface {
 	 * @param string $connection redis连接名
 	 */
 	public function __construct(string $connection) {
+		$this->connection = $connection;
 		// 取连接, 不存在则取默认连接
 		$options = obj(Conf::class)->redis['connections'][$connection];
 

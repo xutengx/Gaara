@@ -23,9 +23,9 @@ class Route implements Registrar,Single {
 	// 404
 	public $rule404		 = null;
 	// 当前 $pathInfo
-	private $pathInfo	 = null;
+	protected $pathInfo	 = null;
 	// 全部路由规则
-	private $routeRule	 = [];
+	protected $routeRule	 = [];
 
 	/**
 	 * 路由匹配
@@ -46,7 +46,7 @@ class Route implements Registrar,Single {
 	 * eg:http://git.gitxt.com/data/upload?id=123 -> /data/upload
 	 * @return string
 	 */
-	private function getPathInfo(): string {
+	protected function getPathInfo(): string {
 		return obj(Request::class)->pathInfo;
 	}
 
@@ -55,7 +55,7 @@ class Route implements Registrar,Single {
 	 * 可以接收直接返回的数组格式, 也可以直接执行
 	 * @return array
 	 */
-	private function getRouteRule(): array {
+	protected function getRouteRule(): array {
 		$file		 = obj(Conf::class)->route['file'];
 		$fileRule	 = require(ROUTE . $file);
 		return is_array($fileRule) ? array_merge($this->routeRule, $fileRule) : $this->routeRule;
@@ -66,7 +66,7 @@ class Route implements Registrar,Single {
 	 * 路由匹配失败, 则响应404
 	 * @return bool
 	 */
-	private function routeAnalysis(): bool {
+	protected function routeAnalysis(): bool {
 		foreach ($this->pretreatment() as $rule => $info) {
 			// 形参数组
 			$parameter		 = [];
@@ -90,7 +90,7 @@ class Route implements Registrar,Single {
 	 * 预处理路由数组信息
 	 * @return Generator
 	 */
-	private function pretreatment(): Generator {
+	protected function pretreatment(): Generator {
 		foreach ($this->routeRule as $rule => $info) {
 			// 兼容式路由
 			if (is_int($rule)) {
@@ -111,7 +111,7 @@ class Route implements Registrar,Single {
 	 * @return string 正则表达式
 	 * @return array $param 形参数组
 	 */
-	private function ruleToPreg(string $rule = '', array &$param = []): string {
+	protected function ruleToPreg(string $rule = '', array &$param = []): string {
 		$temp = explode('/', $rule);
 		foreach ($temp as $k => $v) {
 			$key		 = false;
@@ -136,7 +136,7 @@ class Route implements Registrar,Single {
 	 * @param array $argument 实参数组列表(一维数组)
 	 * @return array 可调用的参数数组(一维链表)
 	 */
-	private function paramAnalysis(array $parameter, array $argument): array {
+	protected function paramAnalysis(array $parameter, array $argument): array {
 		$arr = [];
 		foreach ($parameter as $k => $v) {
 			// 当实参不全时, 填充为 null
@@ -153,7 +153,7 @@ class Route implements Registrar,Single {
 	 * @param array $staticParamter 静态参数(pathInfo参数)
 	 * @return bool
 	 */
-	private function infoAnalysis(string $rule, $info, array $staticParamter = []): bool {
+	protected function infoAnalysis(string $rule, $info, array $staticParamter = []): bool {
 		// 一致化格式
 		$info = $this->unifiedInfo($info);
 
@@ -181,7 +181,7 @@ class Route implements Registrar,Single {
 	 * @param mixed $info
 	 * @return void
 	 */
-	private function unifiedInfo($info): array {
+	protected function unifiedInfo($info): array {
 		$arr = [];
 		if (is_string($info) || $info instanceof Closure) {
 			$arr = [
@@ -208,7 +208,7 @@ class Route implements Registrar,Single {
 	 * @param string $rule 域名规则 eg: {admin}.{gitxt}.com
 	 * @return array|false
 	 */
-	private function domainToPreg(string $rule = '') {
+	protected function domainToPreg(string $rule = '') {
 		$param	 = [];
 		$preg	 = \preg_replace_callback("/{[^\.]*}/is", function($matches) use (&$param) {
 			$param[trim(trim($matches[0], '}'), '{')] = null;

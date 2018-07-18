@@ -8,6 +8,7 @@ use Gaara\Core\Request\UploadFile;
 use Gaara\Core\Request\Traits\{
 	ClientInfo, RequestInfo, Filter
 };
+use Gaara\Core\Route\Component\MatchedRouting;
 use Gaara\Contracts\ServiceProvider\Single;
 
 class Request implements Single {
@@ -31,9 +32,26 @@ class Request implements Single {
 	/**
 	 * 初始化参数
 	 */
-	final public function __construct() {
+	final public function __construct(UploadFile $UploadFile) {
 		$this->RequestInfoInit();
-		$this->file = new UploadFile();
+		$this->file = $UploadFile;
+	}
+
+	/**
+	 * 路由匹配后的参数初始化
+	 * @param MatchedRouting $MR
+	 */
+	public function setMatchedRouting(MatchedRouting $MR) {
+		// 存储路由匹配对象
+		$this->MatchedRouting = $MR;
+
+		$this->alias	 = $MR->alias;
+		$this->methods	 = $MR->methods;
+
+		// 设定参数
+		$this->setDomainParamters($MR->domainParamter)
+		->setStaticParamters($MR->staticParamter)
+		->setRequestParamters();
 	}
 
 	/**
@@ -41,7 +59,7 @@ class Request implements Single {
 	 * @param array $domainParamters
 	 * @return Request
 	 */
-	public function setDomainParamters(array $domainParamters = []): Request {
+	protected function setDomainParamters(array $domainParamters = []): Request {
 		$this->domain = $this->filter($domainParamters);
 		return $this;
 	}
@@ -51,7 +69,7 @@ class Request implements Single {
 	 * @param array $staticParamters
 	 * @return Request
 	 */
-	public function setStaticParamters(array $staticParamters = []): Request {
+	protected function setStaticParamters(array $staticParamters = []): Request {
 		$this->get = $this->filter($staticParamters);
 		return $this;
 	}
@@ -60,7 +78,7 @@ class Request implements Single {
 	 * 获取参数到当前类的属性
 	 * @return Request
 	 */
-	public function setRequestParamters(): Request {
+	protected function setRequestParamters(): Request {
 		$this->cookie = $this->_htmlspecialchars($_COOKIE);
 
 		if (($argc = $this->method) !== 'get') {

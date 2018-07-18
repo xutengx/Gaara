@@ -11,11 +11,11 @@ use Closure;
 trait SetRoute {
 
 	// 可用的 http 动作
-	private $allowMethod = [
+	protected $allowMethod = [
 		'get', 'post', 'put', 'delete', 'head', 'patch', 'options'
 	];
 	// 分组时的信息
-	private $group		 = [
+	protected $group		 = [
 		'domain'	 => [],
 		'prefix'	 => [],
 		'namespace'	 => [],
@@ -226,7 +226,7 @@ trait SetRoute {
 	 * @param mix $action
 	 * @return array
 	 */
-	private function formatAction($action): array {
+	protected function formatAction($action): array {
 		$actionInfo = [];
 		if (is_array($action)) {
 			if ($action['uses'] instanceof Closure) {

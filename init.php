@@ -38,6 +38,7 @@ require ROOT . 'bootstrap/define.php';
   |--------------------------------------------------------------------------
   |
   | 注册`gaara`的自带服务
+  | 注册业务的服务
   |
  */
 $app = require ROOT . 'bootstrap/app.php';
@@ -50,4 +51,7 @@ $app = require ROOT . 'bootstrap/app.php';
   | 有问题请联系 QQ 68822684
   |
  */
-$app->Init()->Start();
+$app->init()
+//;
+->start();
+//var_dump($app);exit;

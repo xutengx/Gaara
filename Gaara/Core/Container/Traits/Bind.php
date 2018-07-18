@@ -4,44 +4,31 @@ declare(strict_types = 1);
 namespace Gaara\Core\Container\Traits;
 
 use Closure;
+use Gaara\Core\Container;
 
 trait Bind {
 
 	/**
 	 * 手动绑定
 	 * @param string $abstract 抽象类/接口/类/自定义的标记
-	 * @param Closure|string $concrete
+	 * @param Closure|string $concrete 闭包|类名
 	 * @param $singleton 单例
+	 * @return Container
 	 */
-	public function bind(string $abstract, $concrete = null, bool $singleton = false) {
+	public function bind(string $abstract, $concrete = null, bool $singleton = false): Container {
 		// 覆盖旧的绑定信息
 		$this->dropStaleInstances($abstract);
+
 		// 默认的类实现, 就是其本身
 		$concrete = $concrete ?? $abstract;
-		// 转化为闭包
-		if (!$concrete instanceof Closure) {
-			$concrete = $this->getClosure($abstract, $concrete);
-		}
+
 		// 记录绑定
 		$this->bindings[$abstract] = compact('concrete', 'singleton');
 
 		// 如果是已经绑定的, 将回调存在的监听者
 		// todo
-	}
 
-	/**
-	 * 转化为闭包
-	 * @param  string  $abstract
-	 * @param  string  $concrete
-	 * @return Closure
-	 */
-	protected function getClosure(string $abstract, string $concrete): Closure {
-		return function ($container, $parameters = []) use ($abstract, $concrete) {
-			if ($abstract === $concrete) {
-				return $container->build($concrete);
-			}
-			return $container->make($concrete, $parameters);
-		};
+		return $this;
 	}
 
 	/**

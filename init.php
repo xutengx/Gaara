@@ -51,7 +51,5 @@ $app = require ROOT . 'bootstrap/app.php';
   | 有问题请联系 QQ 68822684
   |
  */
-$app->init()
-//;
-->start();
-//var_dump($app);exit;
+
+$app->init()->start();

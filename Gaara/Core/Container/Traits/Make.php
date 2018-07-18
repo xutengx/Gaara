@@ -8,7 +8,6 @@ use ReflectionClass;
 use ReflectionParameter;
 use Gaara\Exception\BindingResolutionException;
 use Gaara\Contracts\ServiceProvider\Single;
-use Gaara\Core\Facade;
 
 trait Make {
 
@@ -44,20 +43,20 @@ trait Make {
 		$isSingleServiceProvider = false;
 
 		// 尚不存在, 则建立对象
-		$obj = $this->build($concrete, $isSingleServiceProvider);
+		$results = $this->build($concrete, $isSingleServiceProvider);
 
 		// 需要缓存的对象 (单例绑定 or 属于SingleServiceProvider), 则缓存
 		if ($this->bindings[$abstract]['singleton'] ?? $isSingleServiceProvider) {
 			// 缓存抽象的实现
-			$this->instances[$abstract] = $obj;
-			// 缓存自己的实现
-			$this->instances[get_class($obj)] = $obj;
+			$this->instances[$abstract] = $results;
+			// 如果是对象, 则缓存自己的实现
+			is_object($results) ? $this->instances[get_class($results)] = $results : '';
 		}
 
 		// 移除参数
 		array_pop($this->with);
 
-		return $obj;
+		return $results;
 	}
 
 	/**
@@ -76,10 +75,9 @@ trait Make {
 	 * @return mixed
 	 */
 	public function build($concrete, bool &$isSingleServiceProvider = false) {
-
 		// 是闭包, 则直接执行
 		if ($concrete instanceof Closure) {
-			return $concrete($this, $this->getLastParameterOverride());
+			return $this->executeClosure($concrete, $this->getLastParameterOverride());
 		}
 
 		// 反射
@@ -89,9 +87,6 @@ trait Make {
 		if (!$reflector->isInstantiable()) {
 			throw new BindingResolutionException("Target [$concrete] is not instantiable.");
 		}
-
-		// 处理栈入栈
-//		$this->buildStack[] = $concrete;
 
 		// 获取类的构造函数
 		$constructor = $reflector->getConstructor();
@@ -109,9 +104,6 @@ trait Make {
 
 		// 是否属于 SingleServiceProvider
 		$isSingleServiceProvider = in_array(Single::class, $reflector->getInterfaceNames(), true);
-
-		// 处理栈出栈
-//		array_pop($this->buildStack);
 
 		// 返回实例化
 		return $reflector->newInstanceArgs($constructorDependentParameters);

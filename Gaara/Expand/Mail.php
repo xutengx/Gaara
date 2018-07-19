@@ -12,7 +12,7 @@ use Gaara\Contracts\ServiceProvider\Single;
  */
 class Mail implements Single {
 
-	private $mail = null;
+	protected $mail = null;
 
 	public function __construct(Conf $conf, PHPMailer $mail) {
 		$this->mail = $mail;

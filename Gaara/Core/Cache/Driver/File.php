@@ -9,9 +9,9 @@ use Closure;
 class File implements DriverInterface {
 
 	// 缓存目录
-	private $cacheRoot;
+	protected $cacheRoot;
 	// 缓存扩展名
-	private $cacheFileExt = '.php';
+	protected $cacheFileExt = '.php';
 
 	final public function __construct(string $dir = null) {
 		$this->cacheRoot = !is_null($dir) ? ROOT . $dir : ROOT . 'data/Cache/';
@@ -152,7 +152,7 @@ class File implements DriverInterface {
 	 * @param int $locktype LOCK_EX LOCK_NB
 	 * @return bool
 	 */
-	private function lock(string $key, Closure $callback, int $locktype = LOCK_EX) {
+	protected function lock(string $key, Closure $callback, int $locktype = LOCK_EX) {
 		$filename	 = $this->makeFilename($key);
 		$type		 = is_file($filename) ? 'rb+' : 'wb+';
 		if ($handle		 = fopen($filename, $type)) {
@@ -171,7 +171,7 @@ class File implements DriverInterface {
 	 * @param steam $handle 文件句柄
 	 * @return string|false
 	 */
-	private function getWithLock($handle) {
+	protected function getWithLock($handle) {
 		$content = '';
 		while (!feof($handle)) {//循环读取，直至读取完整个文件
 			$content .= fread($handle, 1024);
@@ -190,7 +190,7 @@ class File implements DriverInterface {
 	 * @param steam $handle 文件句柄
 	 * @return int 0表示过期, -1表示无过期时间, -2表示未找到key
 	 */
-	private function ttlWithLock($handle): int {
+	protected function ttlWithLock($handle): int {
 		$content = '';
 		while (!feof($handle)) {//循环读取，直至读取完整个文件
 			$content .= fread($handle, 1024);
@@ -211,7 +211,7 @@ class File implements DriverInterface {
 	 * @param int $expire 过期时间
 	 * @return int 写入字符数
 	 */
-	private function setWithLock($handle, string $value, int $expire): int {
+	protected function setWithLock($handle, string $value, int $expire): int {
 		$data = "<?php\n//" . sprintf('%012d', $expire) . sprintf('%012d', time()) . $value . "\n?>";
 		rewind($handle);  // 重置指针
 		ftruncate($handle, 0); // 清空文件
@@ -224,7 +224,7 @@ class File implements DriverInterface {
 	 * @param int $expir
 	 * @return int
 	 */
-	private function getExpire(int $filemtime, int $expir): int {
+	protected function getExpire(int $filemtime, int $expir): int {
 		if ($expir === -1)
 			return -1;
 		$time = $filemtime + $expir - time();
@@ -236,7 +236,7 @@ class File implements DriverInterface {
 	 * @param string $key
 	 * @return string
 	 */
-	private function makeFilename(string $key): string {
+	protected function makeFilename(string $key): string {
 		return $this->cacheRoot . $key . $this->cacheFileExt;
 	}
 
@@ -245,7 +245,7 @@ class File implements DriverInterface {
 	 * @param string $dirName
 	 * @return void
 	 */
-	private function del_DirAndFile(string $dirName): void {
+	protected function del_DirAndFile(string $dirName): void {
 		if (is_dir($dirName) && $dir_arr = scandir($dirName)) {
 			foreach ($dir_arr as $k => $v) {
 				if ($v === '.' || $v === '..') {
@@ -268,7 +268,7 @@ class File implements DriverInterface {
 	 * @param int $locktype LOCK_EX LOCK_NB
 	 * @return bool
 	 */
-	private function saveFile(string $filename, string $text, int $locktype = LOCK_EX): bool {
+	protected function saveFile(string $filename, string $text, int $locktype = LOCK_EX): bool {
 		if (!is_file($filename)) {
 			if (is_dir(dirname($filename)) || $this->_mkdir(dirname($filename)))
 				touch($filename);
@@ -282,7 +282,7 @@ class File implements DriverInterface {
 	 * @param int $mode
 	 * @return bool
 	 */
-	private function _mkdir(string $dir, int $mode = 0777): bool {
+	protected function _mkdir(string $dir, int $mode = 0777): bool {
 		if (is_dir(dirname($dir)) || $this->_mkdir(dirname($dir)))
 			return mkdir($dir, $mode);
 	}

@@ -298,7 +298,7 @@ trait Where {
 	 * @param Closure $callback
 	 * @return string
 	 */
-	private function whereClosure(Closure $callback): string {
+	protected function whereClosure(Closure $callback): string {
 		$str		 = '';
 		$res		 = $callback($queryBuiler = $this->getSelf());
 		// 调用方未调用return
@@ -324,7 +324,7 @@ trait Where {
 	 * @param string $relationship
 	 * @return QueryBuiler
 	 */
-	private function wherePush(string $part, string $relationship = 'and'): QueryBuiler {
+	protected function wherePush(string $part, string $relationship = 'and'): QueryBuiler {
 		if (is_null($this->where)) {
 			$this->where = $part;
 		} else

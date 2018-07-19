@@ -36,7 +36,7 @@ class QRcode implements Single {
 	 * 获取QRImageOptions对象,并赋值配置
 	 * @return QROptions
 	 */
-	private function getQROptions(): QROptions {
+	protected function getQROptions(): QROptions {
 		$options = (get_object_vars($this));
 
 		return new QROptions($options);

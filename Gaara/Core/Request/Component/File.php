@@ -11,7 +11,7 @@ use \Gaara\Core\Tool;
 class File {
 
 	// type of img
-	private static $imgType				 = [
+	protected static $imgType				 = [
 		'image/gif'		 => 'gif',
 		'image/jpeg'	 => 'jpg',
 		'image/pjpeg'	 => 'jpg',
@@ -31,13 +31,13 @@ class File {
 	// $_FILES 中的临时文件名 (post 上传文件时, 由php生成, 其他方式则没有此项)
 	public $tmp_name;
 	// 文件的内容 (非post 上传文件时, 由框架获取, post方式则没有此项)
-	private $content;
+	protected $content;
 	// 默认文件保存的路径
-	private static $default_save_path	 = 'data/upload/';
+	protected static $default_save_path	 = 'data/upload/';
 	// 文件保存的路径
 	public $saveFilename				 = '';
 	// 文件保存的路径是否为绝对路径
-	private $absolute					 = false;
+	protected $absolute					 = false;
 	// 文件是否保存成功
 	public $is_save						 = false;
 
@@ -45,7 +45,7 @@ class File {
 	 * 获取本对象的内容
 	 * @return string
 	 */
-	private function getContent(): string {
+	protected function getContent(): string {
 		if (!is_null($this->tmp_name)) {
 			return file_get_contents($this->tmp_name);
 		} else {

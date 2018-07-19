@@ -26,11 +26,11 @@ class Cache implements Single {
 		'file'	 => Driver\File::class
 	];
 	// 当前驱动
-	private $driver;
+	protected $driver;
 	// 配置项
-	private $conf			 = [];
+	protected $conf			 = [];
 	// 缓存驱动池
-	private $Drivers		 = [];
+	protected $Drivers		 = [];
 
 	public function __construct(Conf $conf) {
 		$this->conf		 = $conf->cache;
@@ -50,10 +50,8 @@ class Cache implements Single {
 			if (array_key_exists($drivername, $this->Drivers)) {
 				$this->driver = $this->Drivers[$drivername];
 			} else {
-				$connection					 = empty(reset($this->conf[$drivername])) ? obj(Conf::class)->redis['default_connection']
-					: reset($this->conf[$drivername]);
-//				$this->driver = $this->Drivers[$drivername] = new $this->supportedDrivers[$drivername]($conn);
-				$this->driver				 = $this->Drivers[$drivername]	 = obj($this->supportedDrivers[$drivername], ['connection' => $connection]);
+				$dependencyArray			 = $this->conf[$drivername];
+				$this->driver				 = $this->Drivers[$drivername]	 = obj($this->supportedDrivers[$drivername], $dependencyArray);
 			}
 		} else
 			throw new InvalidArgumentException('Not supported the cache driver : ' . $drivername . '.');
@@ -209,7 +207,7 @@ class Cache implements Single {
 	 * @return string
 	 * @throws Exception
 	 */
-	private function makeKey($obj, string $funcname = '', array $params = []): string {
+	protected function makeKey($obj, string $funcname = '', array $params = []): string {
 		$classname	 = is_object($obj) ? get_class($obj) : $obj;
 		$key		 = ''; // default
 		if (!empty($params)) {

@@ -8,12 +8,12 @@ class Mysql {
 	/**
 	 * session保存的数据库名
 	 */
-	private $sessionTable;
+	protected $sessionTable;
 
 	/**
 	 * 数据库句柄
 	 */
-	private $db;
+	protected $db;
 
 	public function __construct($options = array()) {
 		ini_set('session.save_handler', 'user');
@@ -29,7 +29,7 @@ class Mysql {
 		);
 	}
 
-	private function checkSessionDb() {
+	protected function checkSessionDb() {
 		$sql = 'show tables like "' . $this->sessionTable . '"';
 		$re	 = $this->db->getRow($sql);
 		if (empty($re)) {
@@ -137,7 +137,7 @@ EEE;
 	 * 用于webScoket的http阶段
 	 * @return string PHPSESSID
 	 */
-	private function getPHPSESSID() {
+	protected function getPHPSESSID() {
 		if (isset($_SERVER['HTTP_COOKIE'])) {
 			if (preg_match('#.*PHPSESSID=(.*)#', $_SERVER['HTTP_COOKIE'], $match)) {
 				return $match[1];
@@ -150,7 +150,7 @@ EEE;
 	 * @param $encodedData
 	 * @return array
 	 */
-	private function session_decode($encodedData) {
+	protected function session_decode($encodedData) {
 		$explodeIt = explode(';', $encodedData);
 		for ($i = 0; $i < count($explodeIt) - 1; $i++) {
 			$sessGet		 = explode("|", $explodeIt[$i]);
@@ -171,7 +171,7 @@ EEE;
 	 * @param bool|true $safe
 	 * @return string
 	 */
-	private function session_encode($array) {
+	protected function session_encode($array) {
 		$array	 = unserialize(serialize($array));
 		$raw	 = '';
 		$line	 = 0;

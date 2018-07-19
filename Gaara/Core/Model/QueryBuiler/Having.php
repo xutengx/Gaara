@@ -176,7 +176,7 @@ trait Having {
 	 * @param Closure $callback
 	 * @return string
 	 */
-	private function havingClosure(Closure $callback): string {
+	protected function havingClosure(Closure $callback): string {
 		$str		 = '';
 		$res		 = $callback($queryBuiler = $this->getSelf());
 		// 调用方未调用return
@@ -202,7 +202,7 @@ trait Having {
 	 * @param string $relationship
 	 * @return QueryBuiler
 	 */
-	private function havingPush(string $part, string $relationship = 'and'): QueryBuiler {
+	protected function havingPush(string $part, string $relationship = 'and'): QueryBuiler {
 		if (is_null($this->having)) {
 			$this->having = $part;
 		} else

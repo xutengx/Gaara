@@ -13,8 +13,8 @@ defined('IN_SYS') || exit('ACC Denied');
 // appsecret = d4624c36b6795d1d99dcf0547af5443d
 class Wechat {
 
-	private $app_id;
-	private $app_secret;
+	protected $app_id;
+	protected $app_secret;
 
 	public function __construct($app_id = 'wx8f0ca1bc115c1fae', $app_secret = 'd4624c36b6795d1d99dcf0547af5443d') {
 		$this->app_id		 = $app_id;
@@ -193,7 +193,7 @@ class Wechat {
 	}
 
 	// 下载文件
-	private function downloadFile($url) {
+	protected function downloadFile($url) {
 		$ch			 = curl_init($url);
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_NOBODY, 0);
@@ -208,7 +208,7 @@ class Wechat {
 	}
 
 	// 写入下载文件
-	private function saveFile($where, $what) {
+	protected function saveFile($where, $what) {
 		if ($f = fopen($where, 'w')) {
 			if (fwrite($f, $what)) {
 				fclose($f);

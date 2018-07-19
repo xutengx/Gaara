@@ -35,7 +35,7 @@ trait Group {
 	 * @param string $part
 	 * @return QueryBuiler
 	 */
-	private function groupPush(string $part): QueryBuiler {
+	protected function groupPush(string $part): QueryBuiler {
 		if (is_null($this->group)) {
 			$this->group = $part;
 		} else

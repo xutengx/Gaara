@@ -34,7 +34,7 @@ trait Limit {
 	 * @param int $part
 	 * @return QueryBuiler
 	 */
-	private function limitPush(int $part): QueryBuiler {
+	protected function limitPush(int $part): QueryBuiler {
 		$this->limit = $part;
 		return $this;
 	}

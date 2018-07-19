@@ -16,30 +16,30 @@ use Gaara\Contracts\ServiceProvider\Single;
 class DbConnection implements Single  {
 
 	// 当前进程标识
-	private $identification	 = null;
+	protected $identification	 = null;
 	// 是否主从数据库
-	private $Master_slave	 = true;
+	protected $Master_slave	 = true;
 	// 数据库链接名称, 当抛出异常时帮助定位数据库链接
-	private $connection		 = null;
+	protected $connection		 = null;
 	// 数据库 读 连接集合
-	private $dbRead			 = [];
+	protected $dbRead			 = [];
 	// 数据库 读 权重
-	private $dbReadWeight	 = [];
+	protected $dbReadWeight	 = [];
 	// 数据库 写 连接集合
-	private $dbWrite		 = [];
+	protected $dbWrite		 = [];
 	// 数据库 写 权重
-	private $dbWriteWeight	 = [];
+	protected $dbWriteWeight	 = [];
 	// 当前操作类型 select update delate insert
-	private $type			 = 'select';
+	protected $type			 = 'select';
 	// 是否事务过程中 不进行数据库更换
-	private $transaction	 = false;
+	protected $transaction	 = false;
 	// ---------------------------- 单进程 ----------------------------- //
 	// 单进程不进行数据库更换
-	private $single			 = true;
+	protected $single			 = true;
 	// 当前数据库 读 连接
-	private $dbReadSingle;
+	protected $dbReadSingle;
 	// 当前数据库 写 连接
-	private $dbWriteSingle;
+	protected $dbWriteSingle;
 
 	// ------------------------------------------------------------------//
 
@@ -95,7 +95,7 @@ class DbConnection implements Single  {
 	 * @param bool $single 单进程模式
 	 */
 	public function __construct(string $connection, bool $single = true) {
-		$DBconf = obj(Conf::class)->db['connections'][$connection];
+		$DBconf = obj(Conf::class)->getDriverConnection('db', $connection);
 		$this->identification	 = uniqid((string) getmypid());
 		$this->connection		 = $connection;
 		$this->single			 = $single;
@@ -112,7 +112,7 @@ class DbConnection implements Single  {
 	 * @param array &$theDbWeight 权重数组
 	 * @param array &$theDb 配置数组
 	 */
-	private function confFormat(array $theConf, array &$theDbWeight, array &$theDb): void {
+	protected function confFormat(array $theConf, array &$theDbWeight, array &$theDb): void {
 		foreach ($theConf as $k => $v) {
 			$theDb[md5(serialize($v))]	 = $v;
 			$t							 = end($theDbWeight);
@@ -129,7 +129,7 @@ class DbConnection implements Single  {
 	 * 由操作类型(读/写), 返回已存在的PDO实现
 	 * @return PDO
 	 */
-	private function PDO(): PDO {
+	protected function PDO(): PDO {
 		// http请求都属于此
 		if ($this->single) {
 			// 查询操作且不属于事务,使用读连接
@@ -148,7 +148,7 @@ class DbConnection implements Single  {
 	 * 由操作类型(读/写)和权重(weight), 创建并返回PDO数据库连接
 	 * @return PDO
 	 */
-	private function connect(): PDO {
+	protected function connect(): PDO {
 		// 查询操作且不属于事务,使用读连接
 		if ($this->type === 'select' && !$this->transaction && $this->Master_slave) {
 			return $this->weightSelection($this->dbReadWeight, $this->dbRead);
@@ -163,7 +163,7 @@ class DbConnection implements Single  {
 	 * @param array &$theDb 配置数组->pdo数组
 	 * @return PDO
 	 */
-	private function weightSelection(array $theDbWeight, array &$theDb): PDO {
+	protected function weightSelection(array $theDbWeight, array &$theDb): PDO {
 		$tmp	 = array_keys($theDbWeight);
 		$weight	 = rand(1, end($tmp));
 		foreach ($theDbWeight as $k => $v) {
@@ -188,7 +188,7 @@ class DbConnection implements Single  {
 	 * @param string $char
 	 * @return PDO
 	 */
-	private function newPdo(string $type, string $db, string $host, string $port, string $user, string $pwd): PDO {
+	protected function newPdo(string $type, string $db, string $host, string $port, string $user, string $pwd): PDO {
 		$serverIni = obj(Conf::class)->getServerConf($type);
 		$dsn = $type . ':dbname=' . $db . ';host=' . $host . ';port=' . $port;
 		$pdo = new PDO($dsn, $user, $pwd, $serverIni['pdo_attr']);
@@ -207,7 +207,7 @@ class DbConnection implements Single  {
 	 * @return PDOStatement
 	 * @throws PDOException
 	 */
-	private function prepare_execute(string $sql, array $pars = [], bool $auto = true, &$PDO = null): PDOStatement {
+	protected function prepare_execute(string $sql, array $pars = [], bool $auto = true, &$PDO = null): PDOStatement {
 		try {
 			// 链接数据库
 			$PDO			 = $this->PDO();
@@ -388,7 +388,7 @@ class DbConnection implements Single  {
 	 * @param string $sql
 	 * @param array $bindings
 	 */
-	private function logInfo(string $sql, array $bindings = [], bool $manual = false): bool {
+	protected function logInfo(string $sql, array $bindings = [], bool $manual = false): bool {
 		// 普通 sql 记录
 		return Log::dbinfo('', [
 			'sql'			 => $sql,
@@ -409,7 +409,7 @@ class DbConnection implements Single  {
 	 * @param string $sql
 	 * @param array $bindings
 	 */
-	private function logError(string $msg, string $sql, array $bindings = [], bool $manual = false): bool {
+	protected function logError(string $msg, string $sql, array $bindings = [], bool $manual = false): bool {
 		return Log::dberror($msg, [
 			'sql'			 => $sql,
 			'bindings'		 => $bindings,

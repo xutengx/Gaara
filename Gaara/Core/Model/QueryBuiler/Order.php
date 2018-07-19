@@ -22,7 +22,7 @@ trait Order {
 	 * @param string $part
 	 * @return QueryBuiler
 	 */
-	private function orderPush(string $part): QueryBuiler {
+	protected function orderPush(string $part): QueryBuiler {
 		if (is_null($this->order)) {
 			$this->order = $part;
 		} else

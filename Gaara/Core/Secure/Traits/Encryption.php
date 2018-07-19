@@ -9,7 +9,7 @@ namespace Gaara\Core\Secure\Traits;
 trait Encryption {
 
 	// 盐
-	private $key = 'key';
+	protected $key = 'key';
 
 	/**
 	 * 加密

@@ -5,13 +5,17 @@ namespace Gaara\Core;
 
 use Exception;
 use Gaara\Contracts\ServiceProvider\Single;
+use Gaara\Exception\Conf\{
+	UndefinedConnectionException, NotFoundConfFileException, NotFoundServerIniFileException,
+	NoConnectionException
+};
 
 class Conf implements Single {
 
 	// 配置信息
-	private static $data = [];
+	protected static $data	 = [];
 	// 环境变量
-	private static $env	 = [];
+	protected static $env	 = [];
 
 	final public function __construct() {
 		$this->setEnv();
@@ -22,7 +26,7 @@ class Conf implements Single {
 	 * 包含多配置的选择
 	 * @return void
 	 */
-	private function setEnv(): void {
+	protected function setEnv(): void {
 		$data		 = parse_ini_file(ROOT . ".env", true);
 		$env		 = $data['ENV'];
 		self::$env	 = array_merge($data, $data[$env]);
@@ -49,7 +53,7 @@ class Conf implements Single {
 		if (is_file($file)) {
 			return $this->{'server/' . $filename};
 		}
-		throw new Exception('Not found server ini file : ' . $file);
+		throw new NotFoundServerIniFileException("[$file]");
 	}
 
 	/**
@@ -63,7 +67,25 @@ class Conf implements Single {
 		} elseif (is_file($filename = CONFIG . $configName . '.php')) {
 			return self::$data[$configName] = require($filename);
 		}
-		throw new Exception('Not found conf file : ' . $filename);
+		throw new NotFoundConfFileException("[$filename]");
+	}
+
+	/**
+	 * 得到某个驱动的连接属性
+	 * @param string $driver
+	 * @param string $connection
+	 * @return array
+	 * @throws UndefinedConnectionException
+	 * @throws NoConnectionException
+	 */
+	public function getDriverConnection(string $driver, string $connection): array {
+		$conf = $this->{$driver};
+		if (isset($conf['connections'])) {
+			if (isset($conf['connections'][$connection]))
+				return $conf['connections'][$connection];
+			throw new UndefinedConnectionException("[$driver] didn't have a connection called [$connection].");
+		}
+		throw new NoConnectionException("[$driver] didn't have connections.");
 	}
 
 }

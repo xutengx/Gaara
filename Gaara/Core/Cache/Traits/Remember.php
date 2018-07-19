@@ -18,7 +18,7 @@ trait Remember {
 	 * @param int $expir
 	 * @return mixed
 	 */
-	private function rememberEverythingWithKey(bool $nocache = false, string $key, $value, int $expir = null) {
+	protected function rememberEverythingWithKey(bool $nocache = false, string $key, $value, int $expir = null) {
 		if ($nocache)
 			return $this->set($key, $value, $expir) ? $this->get($key) : null;
 		else
@@ -33,7 +33,7 @@ trait Remember {
 	 * @param int $expir
 	 * @return mixed
 	 */
-	private function rememberClosureWithoutKey(bool $nocache = false, Closure $callback, int $expir = null) {
+	protected function rememberClosureWithoutKey(bool $nocache = false, Closure $callback, int $expir = null) {
 		$class	 = $this->analysisClosure($callback);
 		$debug	 = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4);
 		foreach ($debug as $v) {
@@ -58,7 +58,7 @@ trait Remember {
 	 * @param Closure $closure
 	 * @return string
 	 */
-	private function analysisClosure(Closure $closure): string {
+	protected function analysisClosure(Closure $closure): string {
 		ob_start();
 		var_dump($closure);
 		$info	 = ob_get_contents();

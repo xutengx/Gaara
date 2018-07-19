@@ -7,7 +7,7 @@ use Gaara\Core\Model\QueryBuiler;
 
 trait From {
 
-	private $noFrom = false;
+	protected $noFrom = false;
 
 	/**
 	 * 将一个from加入查询

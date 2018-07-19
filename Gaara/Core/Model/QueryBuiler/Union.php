@@ -61,7 +61,7 @@ trait Union {
 	 * @param string $type union|union all
 	 * @return QueryBuiler
 	 */
-	private function unionPush(string $sql, string $type): QueryBuiler {
+	protected function unionPush(string $sql, string $type): QueryBuiler {
 		$this->union[$type][] = $sql;
 		return $this;
 	}

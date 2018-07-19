@@ -13,7 +13,7 @@ use InvalidArgumentException;
  */
 trait SetTrait {
 
-	private static $httpStatus = [
+	protected static $httpStatus = [
 		100	 => 'Continue',
 		101	 => 'Switching Protocols',
 		102	 => 'Processing', // RFC2518

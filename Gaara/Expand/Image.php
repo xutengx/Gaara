@@ -12,7 +12,7 @@ use Gaara\Contracts\ServiceProvider\Single;
  */
 class Image implements Single {
 
-	private $font = 'Gaara/Expand/Image/Font/1.ttf';
+	protected $font = 'Gaara/Expand/Image/Font/1.ttf';
 
 	/**
 	 * 验证码
@@ -86,7 +86,7 @@ class Image implements Single {
 	 * 检测session是否可用
 	 * return bool
 	 */
-	private function hasSession(): bool {
+	protected function hasSession(): bool {
 		return isset($_SESSION);
 	}
 
@@ -96,7 +96,7 @@ class Image implements Single {
 	 * @param int $second
 	 * @return void
 	 */
-	private function firstMustBeBig(int &$first, int &$second): void {
+	protected function firstMustBeBig(int &$first, int &$second): void {
 		if ($second > $first) {
 			$tmp	 = $first;
 			$first	 = $second;

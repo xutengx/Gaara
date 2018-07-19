@@ -25,9 +25,9 @@ class Response implements Single {
 
 	// 响应状态码
 	public $status;
-	private $header;
-	private $body;
-	private $file;
+	protected $header;
+	protected $body;
+	protected $file;
 
 	public function __construct() {
 		$this->header	 = new Header;

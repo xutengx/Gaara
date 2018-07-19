@@ -22,11 +22,11 @@ use Gaara\Contracts\ServiceProvider\Single;
 class Log implements Single {
 
 	// 文件路径
-	private $path			 = 'data/log/';
-	private $env			 = null;
-	private $ext			 = 'log';
-	private $baseHandle		 = null;
-	private $databaseHandle	 = null;
+	protected $path			 = 'data/log/';
+	protected $env			 = null;
+	protected $ext			 = 'log';
+	protected $baseHandle		 = null;
+	protected $databaseHandle	 = null;
 
 	public function __construct(Conf $Conf) {
 		$this->env = $Conf->getEnv('ENV', 'local');
@@ -58,7 +58,7 @@ class Log implements Single {
 	 * 注册db专用Logger
 	 * @return void
 	 */
-	private function setDatabaseHandle(): void {
+	protected function setDatabaseHandle(): void {
 		$this->databaseHandle	 = new Logger($this->env);
 		$formatter				 = new LineFormatter(null, null, true, true);
 		$this->databaseHandle->pushHandler((new StreamHandler($this->makeFilename('database'), Logger::DEBUG, false))->setFormatter($formatter));
@@ -69,7 +69,7 @@ class Log implements Single {
 	 * 注册通用Logger
 	 * @return void
 	 */
-	private function setBaseHandle(): void {
+	protected function setBaseHandle(): void {
 		$this->baseHandle	 = new Logger($this->env);
 		$formatter			 = new LineFormatter(null, null, true, true);
 		$this->baseHandle->pushHandler((new StreamHandler($this->makeFilename('debug'), Logger::DEBUG, false))->setFormatter($formatter));
@@ -86,7 +86,7 @@ class Log implements Single {
 	 * @param string $name
 	 * @return string
 	 */
-	private function makeFilename(string $name): string {
+	protected function makeFilename(string $name): string {
 		$filename = ROOT . $this->path . date('Y/m/d/') . $name . '.' . $this->ext;
 		return $filename;
 	}

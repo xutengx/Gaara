@@ -7,9 +7,9 @@ use Gaara\Core\Tool;
 
 class Body {
 
-	private $contentType;
-	private $content;
-	private $char;
+	protected $contentType;
+	protected $content;
+	protected $char;
 
 	/**
 	 * 设置Http响应的文档类型
@@ -46,7 +46,7 @@ class Body {
 	 * @param mixed $data
 	 * @return string
 	 */
-	private function encode($data): string {
+	protected function encode($data): string {
 		$encode = '';
 		switch ($this->contentType) {
 			case 'json':

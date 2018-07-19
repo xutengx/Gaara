@@ -11,7 +11,7 @@ class File {
 	 *
 	 * @param string $dir session文件存储位置
 	 */
-	public function __construct(string $dir) {
+	public function __construct(string $dir = null) {
 		$dir = $dir ?? 'data/Session';
 
 		$dir = obj(Tool::class)->absoluteDir($dir);

@@ -73,7 +73,7 @@ CREATE TABLE `log` (
 	 * @param Iterator $obj
 	 * @return array
 	 */
-//	private function iteratorDecode(Iterator $obj): array {
+//	protected function iteratorDecode(Iterator $obj): array {
 //		$arr = [];
 //		foreach ($obj as $k => $v) {
 //			$arr[$k] = $v;
@@ -87,7 +87,7 @@ CREATE TABLE `log` (
 	 * @param Generator $obj
 	 * @return void
 	 */
-//	private function generatorDecode(Generator $obj): void {
+//	protected function generatorDecode(Generator $obj): void {
 //		foreach ($obj as $v) {
 //			echo $v;
 //			ob_flush();

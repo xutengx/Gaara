@@ -11,7 +11,7 @@ trait Support {
 	 * 获取一个与自己主属性相同的全新实例, 不同于clone
 	 * @return QueryBuiler
 	 */
-	private function getSelf(): QueryBuiler {
+	protected function getSelf(): QueryBuiler {
 		return new QueryBuiler($this->table, $this->primaryKey, $this->db, $this->model);
 	}
 
@@ -20,7 +20,7 @@ trait Support {
 	 * @param string $part sql片段
 	 * @return string
 	 */
-	private function partFormat(string $part): string {
+	protected function partFormat(string $part): string {
 		return ' ' . trim($part) . ' ';
 	}
 
@@ -29,7 +29,7 @@ trait Support {
 	 * @param string $field 字段 eg: sum(order.amount) as sum_price
 	 * @return string eg: sum(`order`.`amount`) as `sum_price`
 	 */
-	private function fieldFormat(string $field): string {
+	protected function fieldFormat(string $field): string {
 		if ($has_as = stristr($field, ' as ')) {
 			$as			 = substr($has_as, 0, 4);
 			$info		 = explode($as, $field);
@@ -65,7 +65,7 @@ trait Support {
 	 * @param string $value
 	 * @return string
 	 */
-	private function valueFormat(string $value): string {
+	protected function valueFormat(string $value): string {
 		$key = ':'.(string)self::$bindingCounter++;
 		$this->bindings[$key] = $value;
 		return ' '.$key.' ';
@@ -76,7 +76,7 @@ trait Support {
 	 * @param string $value 字段 eg:1765595948
 	 * @return string   eg:(1765595948)
 	 */
-	private function bracketFormat(string $value): string {
+	protected function bracketFormat(string $value): string {
 		return '(' . $value . ')';
 	}
 
@@ -134,7 +134,7 @@ trait Support {
 	 * @param array $pars 参数绑定数组
 	 * @return void
 	 */
-	private function rememberSql(string $sql, array $pars = []): void {
+	protected function rememberSql(string $sql, array $pars = []): void {
 		foreach ($pars as $k => $v) {
 			$pars[$k] = '\'' . $v . '\'';
 		}
@@ -146,7 +146,7 @@ trait Support {
 	 * 返回select部分
 	 * @return string
 	 */
-	private function dealSelect(): string {
+	protected function dealSelect(): string {
 		if (is_null($this->select)) {
 			return '*';
 		} else {
@@ -158,7 +158,7 @@ trait Support {
 	 * data
 	 * @return string
 	 */
-	private function dealData(): string {
+	protected function dealData(): string {
 		if (is_null($this->data)) {
 			return '';
 		} else {
@@ -170,7 +170,7 @@ trait Support {
 	 * 返回from部分 select 专用
 	 * @return string
 	 */
-	private function dealFromSelect(): string {
+	protected function dealFromSelect(): string {
 		if ($this->noFrom === true)
 			return '';
 		if (is_null($this->from)) {
@@ -184,7 +184,7 @@ trait Support {
 	 * 返回from部分
 	 * @return string
 	 */
-	private function dealFrom(): string {
+	protected function dealFrom(): string {
 		if (is_null($this->from)) {
 			return '`' . $this->table . '`';
 		} else {
@@ -196,7 +196,7 @@ trait Support {
 	 * join
 	 * @return string
 	 */
-	private function dealJoin(): string {
+	protected function dealJoin(): string {
 		if (is_null($this->join)) {
 			return '';
 		} else
@@ -207,7 +207,7 @@ trait Support {
 	 * 返回where部分
 	 * @return string
 	 */
-	private function dealWhere(): string {
+	protected function dealWhere(): string {
 		if (is_null($this->where)) {
 			return '';
 		} else {
@@ -223,7 +223,7 @@ trait Support {
 	 * group
 	 * @return string
 	 */
-	private function dealGroup(): string {
+	protected function dealGroup(): string {
 		if (is_null($this->group)) {
 			return '';
 		} else {
@@ -235,7 +235,7 @@ trait Support {
 	 * having
 	 * @return string
 	 */
-	private function dealHaving(): string {
+	protected function dealHaving(): string {
 		if (is_null($this->having)) {
 			return '';
 		} else {
@@ -247,7 +247,7 @@ trait Support {
 	 * order
 	 * @return string
 	 */
-	private function dealOrder(): string {
+	protected function dealOrder(): string {
 		if (is_null($this->order)) {
 			return '';
 		} else {
@@ -259,7 +259,7 @@ trait Support {
 	 * limit
 	 * @return string
 	 */
-	private function dealLimit(): string {
+	protected function dealLimit(): string {
 		if (is_null($this->limit)) {
 			return '';
 		} else {
@@ -271,7 +271,7 @@ trait Support {
 	 * lock
 	 * @return string
 	 */
-	private function dealLock(): string {
+	protected function dealLock(): string {
 		if (is_null($this->lock)) {
 			return '';
 		} else {

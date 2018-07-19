@@ -9,7 +9,7 @@ use Gaara\Contracts\ServiceProvider\Single;
 class Template implements Single {
 
 	// 跳转中间页面
-	private $jumpTo		 = 'jumpTo';
+	protected $jumpTo		 = 'jumpTo';
 
 	// jquery 引入
 	const jqueryDir		 = 'Gaara/Views/include/jquery/';
@@ -71,7 +71,7 @@ class Template implements Single {
 	 * @param string $newDir 压缩后的js存放目录
 	 * @return string JS引入语句 (直接echo即可使用)
 	 */
-	private function createMin(string $originaDir, $newDir = null): string {
+	protected function createMin(string $originaDir, $newDir = null): string {
 		$newDir	 = is_null($newDir) ? self::dataDir : $newDir;
 		$files	 = obj(Tool::class)->getFiles($originaDir);
 		$str	 = '';
@@ -101,7 +101,7 @@ class Template implements Single {
 	 * @param string $content 压缩前js内容
 	 * @return string 压缩后js
 	 */
-	private function AutomaticPacking(string $content): string {
+	protected function AutomaticPacking(string $content): string {
 		$packerNormal	 = (new JavaScriptPacker($content, 'Normal', false, false))->pack();
 		$packerNone		 = (new JavaScriptPacker($content, 'None', false, false))->pack();
 		return strlen($packerNormal) > strlen($packerNone) ? $packerNone : $packerNormal;
@@ -112,7 +112,7 @@ class Template implements Single {
 	 * @param string $content 压缩前css内容
 	 * @return string 压缩后css内容
 	 */
-	private function compressCss(string $content): string {
+	protected function compressCss(string $content): string {
 		/* remove comments */
 		$content = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $content);
 		/* remove tabs, spaces, newlines, etc. */

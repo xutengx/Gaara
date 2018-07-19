@@ -17,9 +17,9 @@ use Gaara\Contracts\ServiceProvider\Single;
  */
 class PhpConsole implements Single {
 
-	private $path	 = 'data/phpconsole/';
-	private $ext	 = 'log';
-	private $handle;
+	protected $path	 = 'data/phpconsole/';
+	protected $ext	 = 'log';
+	protected $handle;
 
 	public function __construct() {
 		$conf		 = obj(Conf::class)->phpconsole;
@@ -35,7 +35,7 @@ class PhpConsole implements Single {
 	 * 返回文件名
 	 * @return string
 	 */
-	private function makeFilename(): string {
+	protected function makeFilename(): string {
 		$filename = ROOT . $this->path . date('Y/m/d') . '.' . $this->ext;
 		if (!is_file($filename)) {
 			obj(Tool::class)->printInFile($filename, '');

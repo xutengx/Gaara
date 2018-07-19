@@ -11,9 +11,9 @@ use Gaara\Core\DbConnection;
  */
 class QueryPrepare {
 
-	private $PDOStatement;
-	private $db;
-	private $bindings = [];
+	protected $PDOStatement;
+	protected $db;
+	protected $bindings = [];
 
 	/**
 	 * @param PDOStatement $PDOStatement
@@ -89,7 +89,7 @@ class QueryPrepare {
 	 * @param array $bindings 手动绑定参数数组
 	 * @return void
 	 */
-	private function execute(array $bindings = []): void {
+	protected function execute(array $bindings = []): void {
 		// 本次执行的`绑定参数数组`
 		$realBindings = [];
 		// 合并`手动绑定参数数组`与`自动绑定参数数组`

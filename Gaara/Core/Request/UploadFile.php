@@ -11,7 +11,7 @@ use Iterator;
  */
 class UploadFile implements Iterator {
 
-	private $_items = [];
+	protected $_items = [];
 
 	/**
 	 * 加入一个文件对象

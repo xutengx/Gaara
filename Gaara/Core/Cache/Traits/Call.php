@@ -46,7 +46,7 @@ trait Call {
 	 * @param array $args
 	 * @return mixed
 	 */
-	private function runFunc($obj, string $func, array $args = []) {
+	protected function runFunc($obj, string $func, array $args = []) {
 		$reflectionClass = new ReflectionClass($obj);
 		$method			 = $reflectionClass->getMethod($func);
 		$closure		 = $method->getClosure($obj);

@@ -31,7 +31,7 @@ trait Lock {
 	 * @param string $part
 	 * @return QueryBuiler
 	 */
-	private function lockPush(string $part): QueryBuiler {
+	protected function lockPush(string $part): QueryBuiler {
 		$this->lock = $part;
 		return $this;
 	}

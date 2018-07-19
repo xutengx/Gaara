@@ -6,9 +6,9 @@ namespace Gaara\Core\Response\Component;
 class Header {
 
 	// 未发送的响应头
-	private $headers	 = [];
+	protected $headers	 = [];
 	// 已发送的响应头
-	private $sentHeaders = [];
+	protected $sentHeaders = [];
 
 	/**
 	 * 查询一个or全部已发送的响应头

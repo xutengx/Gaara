@@ -7,7 +7,7 @@ use Gaara\Core\Request;
 
 trait RequestInfo {
 
-	private static $httpType = [
+	protected static $httpType = [
 		'html'		 => ['text/html', 'application/xhtml+xml'],
 		'php'		 => ['application/php', 'text/php', 'php'],
 		'xml'		 => ['application/xml', 'text/xml', 'application/x-xml'],
@@ -29,7 +29,7 @@ trait RequestInfo {
 	 * 获取当前请求的Accept头信息
 	 * @return string
 	 */
-	private function getAcceptType(): string {
+	protected function getAcceptType(): string {
 		foreach (self::$httpType as $key => $val) {
 			foreach ($val as $v) {
 				if (stristr(obj(Request::class)->acceptType, $v)) {

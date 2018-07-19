@@ -36,36 +36,36 @@ class QueryBuiler {
 	use QueryBuiler\Special;
 
 	// 绑定的表名
-	private $table;
+	protected $table;
 	// 主键
-	private $primaryKey;
+	protected $primaryKey;
 	// 当前语句类别
-	private $sqlType;
+	protected $sqlType;
 	// 数据库链接
-	private $db;
+	protected $db;
 	// 所属模型
-	private $model;
+	protected $model;
 	// 最近次执行的sql
-	private $lastSql				 = null;
-	private $select					 = null;
-	private $data					 = null;
-	private $from					 = null;
-	private $where					 = null;
-	private $join					 = null;
-	private $group					 = null;
-	private $having					 = null;
-	private $order					 = null;
-	private $limit					 = null;
-	private $lock					 = null;
-	private $union					 = [];
+	protected $lastSql				 = null;
+	protected $select					 = null;
+	protected $data					 = null;
+	protected $from					 = null;
+	protected $where					 = null;
+	protected $join					 = null;
+	protected $group					 = null;
+	protected $having					 = null;
+	protected $order					 = null;
+	protected $limit					 = null;
+	protected $lock					 = null;
+	protected $union					 = [];
 	// 自动绑定计数器
-	private static $bindingCounter	 = 0;
+	protected static $bindingCounter	 = 0;
 	// 自动绑定数组
-	private $bindings				 = [];
+	protected $bindings				 = [];
 	// 预期的查询2维数组的索引
-	private $index					 = null;
+	protected $index					 = null;
 	// Model 中为 QueryBuiler 注册de自定义链式方法
-	private $registerMethodFromModel = [];
+	protected $registerMethodFromModel = [];
 
 	public function __construct(string $table, string $primaryKey, DbConnection $db, Model $model) {
 		$this->table		 = $table;
@@ -80,7 +80,7 @@ class QueryBuiler {
 	 * 在 Model 中为 QueryBuiler 注册自定义链式方法
 	 * @throws InvalidArgumentException
 	 */
-	private function registerMethod() {
+	protected function registerMethod() {
 		foreach ($this->model->registerMethodForQueryBuiler() as $methodName => $func) {
 			if (isset($this->$methodName) || isset($this->registerMethodFromModel[$methodName]) || method_exists($this, $methodName))
 				throw new InvalidArgumentException('The method name [ ' . $methodName . ' ] is already used .');

@@ -9,25 +9,32 @@ use redis as php_redis;
 
 class Redis implements DriverInterface {
 
-	private $handler = null;
+	protected $handler = null;
 
 	/**
 	 * redis链接
 	 * @param string $connection redis连接名
 	 */
 	public function __construct(string $connection) {
-		$this->connection = $connection;
-		// 取连接, 不存在则取默认连接
-		$options = obj(Conf::class)->redis['connections'][$connection];
+		$this->connection	 = $connection;
+		// 取连接
+		$options			 = obj(Conf::class)->getDriverConnection('redis', $connection);
 
-		$this->handler	 = new php_redis();
-		$connect		 = (app()->cli === true) ? 'pconnect' : 'connect';
-		$this->handler->$connect(
-		$options['host'] ?? '127.0.0.1', (int) ($options['port'] ?? 6379)
-		);
+		// 连接对象
+		$this->handler = new php_redis();
+
+		// 连接类型
+		$connect = (app()->cli === true) ? 'pconnect' : 'connect';
+
+		// ip 端口
+		$this->handler->$connect($options['host'] ?? '127.0.0.1', (int) (($options['port'] ?? 6379)));
+
+		// 密码
 		if (isset($options['passwd']) && !empty($options['passwd']))
 			$this->handler->auth($options['passwd']);
-		$this->handler->select((int) $options['database'] ?? 0);
+
+		// 数据库
+		$this->handler->select((int) ($options['database'] ?? 0));
 	}
 
 	/**
@@ -101,7 +108,7 @@ class Redis implements DriverInterface {
 	 * @param int $step
 	 * @return int 自减后的值
 	 */
-	public function decrement(string $key, int $step = 1): int{
+	public function decrement(string $key, int $step = 1): int {
 		return $this->handler->decrby($key, $step);
 	}
 

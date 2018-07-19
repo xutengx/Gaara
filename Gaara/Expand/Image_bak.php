@@ -204,7 +204,7 @@ class Image {
      * @param $first
      * @param $second
      */
-    private function firstMustBeBig(&$first, &$second) {
+    protected function firstMustBeBig(&$first, &$second) {
         if ($second > $first) {
             $tmp = $first;
             $first = $second;
@@ -213,7 +213,7 @@ class Image {
     }
 
     // 生成随机文件名
-    private function makeFilename($dir, $ext, $id = 123) {
+    protected function makeFilename($dir, $ext, $id = 123) {
         $dir = $dir ? trim($dir, '/') . '/' : './';
         $ext = trim($ext, '.');
         $dir .= uniqid($id);

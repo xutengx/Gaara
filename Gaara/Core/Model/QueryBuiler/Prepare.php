@@ -51,7 +51,7 @@ trait Prepare {
 	 * 预执行sql
 	 * @return QueryPrepare
 	 */
-	private function forPrepara(string $type): QueryPrepare {
+	protected function forPrepara(string $type): QueryPrepare {
 		$pars = $this->bindings;
 		$this->sqlType	 = $type;
 		$sql			 = $this->toSql($pars);

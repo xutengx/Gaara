@@ -105,7 +105,7 @@ class File {
 	 * @bool $is_QueryChunk
 	 * @return string
 	 */
-	private function arrayKeyValueToCsvRows(array $arr, bool $is_QueryChunk = true): string {
+	protected function arrayKeyValueToCsvRows(array $arr, bool $is_QueryChunk = true): string {
 		$keyArr	 = array_keys($arr);
 		$str	 = '"' . implode('","', $keyArr) . '"' . "\n";
 		$str	 .= $is_QueryChunk ? $this->arrayValueToCsvRow($arr) : '';
@@ -118,7 +118,7 @@ class File {
 	 * @param array $arr
 	 * @return string
 	 */
-	private function arrayValueToCsvRow(array $arr): string {
+	protected function arrayValueToCsvRow(array $arr): string {
 		$str = '';
 		foreach ($arr as $v)
 			$str .= (is_numeric($v) ? '=' : '') . '"' . $v . '",';

@@ -73,7 +73,7 @@ trait Select {
 	 * @param string $part
 	 * @return QueryBuiler
 	 */
-	private function selectPush(string $part): QueryBuiler {
+	protected function selectPush(string $part): QueryBuiler {
 		if (is_null($this->select)) {
 			$this->select = $part;
 		} else

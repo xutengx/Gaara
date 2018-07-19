@@ -12,15 +12,15 @@ use Closure;
  */
 class QueryChunk implements Iterator {
 
-	private $PDOStatement;
+	protected $PDOStatement;
 	// 当前位置是否有效
-	private $is_valid = true;
+	protected $is_valid = true;
 	// 当前元素的键的来源
-	private $index	 = null;
+	protected $index	 = null;
 	// 当前元素的键
-	private $key	 = null;
+	protected $key	 = null;
 	// 当前元素的值
-	private $value	 = [];
+	protected $value	 = [];
 
 	public function __construct(PDOStatement $PDOStatement, $index = null) {
 		$this->PDOStatement	 = $PDOStatement;
@@ -31,7 +31,7 @@ class QueryChunk implements Iterator {
 	 * 获取结果集value, 键key自增, 判断is_valid
 	 * @return void
 	 */
-	private function fetchData(): void {
+	protected function fetchData(): void {
 		$value = $this->PDOStatement->fetch(\PDO::FETCH_ASSOC);
 		if ($value === false) {
 			$this->is_valid = false;

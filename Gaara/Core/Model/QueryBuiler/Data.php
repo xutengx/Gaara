@@ -65,7 +65,7 @@ trait Data {
 	 * @param string $part
 	 * @return QueryBuiler
 	 */
-	private function dataPush(string $part): QueryBuiler {
+	protected function dataPush(string $part): QueryBuiler {
 		if (is_null($this->data)) {
 			$this->data = $part;
 		} else

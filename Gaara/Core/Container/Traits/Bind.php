@@ -48,7 +48,7 @@ trait Bind {
 	 * @param bool $singleton 单例
 	 * @return Container
 	 */
-	public function bindOnce(string $abstract, $concrete = null, bool $singleton = false) :Container{
+	public function bindOnce(string $abstract, $concrete = null, bool $singleton = false): Container {
 		return $this->bind($abstract, $concrete, $singleton, true);
 	}
 
@@ -59,7 +59,7 @@ trait Bind {
 	 * @param bool $once 一次后销毁
 	 * @return Container
 	 */
-	public function singleton(string $abstract, $concrete = null, bool $once = false) :Container{
+	public function singleton(string $abstract, $concrete = null, bool $once = false): Container {
 		return $this->bind($abstract, $concrete, true, $once);
 	}
 

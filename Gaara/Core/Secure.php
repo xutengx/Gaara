@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Gaara\Core;
 
 use Gaara\Core\Secure\Traits\{
-	Encryption,Atomicity
+	Encryption, Atomicity
 };
 use Gaara\Contracts\ServiceProvider\Single;
 

@@ -18,8 +18,10 @@ class Container {
 	protected $bindings		 = [];
 	// 单例对象存储
 	protected $instances	 = [];
-	// 别名
+	// 别名 -> 抽象 (一个别名对应一个抽象)
 	protected $aliases		 = [];
+	// 抽象 -> 别名 (一个抽象对应多个别名)
+	protected $abstractAliases = [];
 	// 依赖参数
 	protected $with			 = [];
 	// 正在解决的依赖栈

@@ -13,12 +13,12 @@ use Gaara\Contracts\ServiceProvider\Single;
  */
 class Tool implements Single {
 
-	// 请求相关
+// 请求相关
 	use RequestTrait;
 
-	// 文件操作
+// 文件操作
 	use FileTrait;
 
-	// 字符处理
+// 字符处理
 	use CharacterTrait;
 }

@@ -20,7 +20,7 @@ class Pipeline implements Single {
 	// 默认闭包
 	protected $defaultClosure	 = null;
 	// 管道执行的方法
-	protected $func			 = 'implement';
+	protected $func				 = 'implement';
 
 	/**
 	 * 置匿名回调函数

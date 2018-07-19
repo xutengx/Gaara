@@ -22,9 +22,9 @@ use Gaara\Contracts\ServiceProvider\Single;
 class Log implements Single {
 
 	// 文件路径
-	protected $path			 = 'data/log/';
-	protected $env			 = null;
-	protected $ext			 = 'log';
+	protected $path				 = 'data/log/';
+	protected $env				 = null;
+	protected $ext				 = 'log';
 	protected $baseHandle		 = null;
 	protected $databaseHandle	 = null;
 

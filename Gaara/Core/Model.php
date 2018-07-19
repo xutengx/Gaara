@@ -49,7 +49,7 @@ abstract class Model implements Single {
 	 */
 	protected function getDB(): DbConnection {
 		$conf							 = obj(Conf::class)->db;
-		$this->connection				 = $this->connection ?? $conf['default_connection'];
+		$this->connection				 = $this->connection ?? $conf['connection'];
 		return self::$dbs[$this->connection] ?? self::$dbs[$this->connection]	 = dobj(DbConnection::class, $this->connection);
 	}
 

@@ -59,8 +59,8 @@ class File implements DriverInterface {
 	 * @return bool
 	 */
 	public function setnx(string $key, string $value): bool {
-		$return_value = false;
-		$success = $this->lock($key, function($handle)use ($value, &$return_value) {
+		$return_value	 = false;
+		$success		 = $this->lock($key, function($handle)use ($value, &$return_value) {
 			$old_value = $this->getWithLock($handle);
 			if (($old_value === false) && $this->setWithLock($handle, $value, -1)) {
 				return $return_value = true;

@@ -18,16 +18,16 @@ class Request implements Single {
 	 Filter;
 
 	protected $domain	 = [];
-	protected $get	 = [];
-	protected $post	 = [];
-	protected $put	 = [];
+	protected $get		 = [];
+	protected $post		 = [];
+	protected $put		 = [];
 	protected $delete	 = [];
-	protected $options = [];
-	protected $head	 = [];
+	protected $options	 = [];
+	protected $head		 = [];
 	protected $patch	 = [];
 	protected $input	 = [];
 	protected $cookie	 = [];
-	protected $file	 = null;
+	protected $file		 = null;
 
 	/**
 	 * 初始化参数

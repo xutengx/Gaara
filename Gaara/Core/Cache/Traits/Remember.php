@@ -22,8 +22,7 @@ trait Remember {
 		if ($nocache)
 			return $this->set($key, $value, $expir) ? $this->get($key) : null;
 		else
-			return $this->get($key) ?? $this->set($key, $value, $expir) ? $this->get($key)
-				: null;
+			return $this->get($key) ?? $this->set($key, $value, $expir) ? $this->get($key) : null;
 	}
 
 	/**

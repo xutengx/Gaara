@@ -49,8 +49,6 @@ trait Make {
 		if ($this->bindings[$abstract]['singleton'] ?? $isSingleServiceProvider) {
 			// 缓存抽象的实现
 			$this->instances[$abstract] = $results;
-			// 如果是对象, 则缓存自己的实现
-//			is_object($results) ? $this->instances[get_class($results)] = $results : '';
 		}
 
 		// 是否绑定后销毁绑定信息
@@ -90,8 +88,10 @@ trait Make {
 
 		// 不可实例化
 		if (!$reflector->isInstantiable()) {
-			throw new BindingResolutionException("Target [$concrete] is not instantiable.");
+			return $this->notInstantiable($concrete);
 		}
+
+		$this->buildStack[] = $concrete;
 
 		// 获取类的构造函数
 		$constructor = $reflector->getConstructor();
@@ -110,8 +110,26 @@ trait Make {
 		// 是否属于 SingleServiceProvider
 		$isSingleServiceProvider = in_array(Single::class, $reflector->getInterfaceNames(), true);
 
+		array_pop($this->buildStack);
+
 		// 返回实例化
 		return $reflector->newInstanceArgs($constructorDependentParameters);
+	}
+
+	/**
+	 * 发出不可实例化的异常
+	 * @param string $concrete
+	 * @throws BindingResolutionException
+	 * @return void
+	 */
+	protected function notInstantiable(string $concrete): void {
+		if (!empty($this->buildStack)) {
+			$previous	 = implode(', ', $this->buildStack);
+			$message	 = "Target [$concrete] is not instantiable while building [$previous].";
+		} else {
+			$message = "Target [$concrete] is not instantiable.";
+		}
+		throw new BindingResolutionException($message);
 	}
 
 	/**

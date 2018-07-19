@@ -9,18 +9,18 @@ use Gaara\Contracts\ServiceProvider\Single;
 class Template implements Single {
 
 	// 跳转中间页面
-	protected $jumpTo		 = 'jumpTo';
+	protected $jumpTo = 'jumpTo';
 
 	// jquery 引入
 	const jqueryDir		 = 'Gaara/Views/include/jquery/';
 	// js 引入
 	const jsDir			 = 'Gaara/Views/include/js/';
 	// js_plugins 引入
-	const pluginsDir	 = 'Gaara/Views/include/plugins/';
+	const pluginsDir		 = 'Gaara/Views/include/plugins/';
 	// js_plugins 所需的css 引入
 	const pluginsCssDir	 = 'Gaara/Views/include/css/';
 	// 自动压缩后js 存放的目录, public 下
-	const dataDir		 = 'open/minStatic/';
+	const dataDir			 = 'open/minStatic/';
 
 	/**
 	 * 插入页面内容

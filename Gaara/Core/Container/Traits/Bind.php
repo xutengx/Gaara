@@ -63,4 +63,17 @@ trait Bind {
 		return $this->bind($abstract, $concrete, true, $once);
 	}
 
+	/**
+	 * Alias a type to a different name.
+	 *
+	 * @param  string  $abstract
+	 * @param  string  $alias
+	 * @return void
+	 */
+	public function alias($abstract, $alias) {
+		$this->aliases[$alias] = $abstract;
+
+		$this->abstractAliases[$abstract][] = $alias;
+	}
+
 }

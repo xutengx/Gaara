@@ -13,7 +13,7 @@ use Gaara\Contracts\ServiceProvider\Single;
 /**
  * 显式自定义路由
  */
-class Route implements Registrar,Single {
+class Route implements Registrar, Single {
 
 	// 分组以及静态方法申明路由
 	use SetRoute;
@@ -25,7 +25,7 @@ class Route implements Registrar,Single {
 	// 当前 $pathInfo
 	protected $pathInfo	 = null;
 	// 全部路由规则
-	protected $routeRule	 = [];
+	protected $routeRule = [];
 
 	/**
 	 * 路由匹配

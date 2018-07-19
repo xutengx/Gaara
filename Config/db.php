@@ -8,7 +8,7 @@ return [
 	  |
 	  |
 	 */
-	'default_connection' => env('DB_CONNECTION', 'default'),
+	'connection' => env('DB_CONNECTION', 'default'),
 
 	/*
 	  |--------------------------------------------------------------------------

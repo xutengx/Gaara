@@ -25,7 +25,7 @@
         * [单例的绑定](#单例的绑定)
         * [临时的绑定](#临时的绑定)
     * [解析](#解析)
-    * [总览](#总览)
+    * [执行](#执行)
     * [总览](#总览)
     * [别名获取](#别名获取)
     * [通常获取](#通常获取)
@@ -83,8 +83,27 @@ app()->singleton('Cache', \App\Comm\Cache::class, true);
 <?php
 app()->make('Cache');
 
-// 可以传入参数, 要注意是形参注入
+// 可以传入参数, 要注意是形参注入而非顺序注入
 app()->make('Cache', []);
+
+```
+
+## 执行
+
+将会自动解决依赖，也可执行非`public`方法
+
+```php
+<?php
+// 执行某个对象的某个方法
+app()->execute('Cache', 'function', []);
+
+// 执行某个闭包
+app()->executeClosure($Closure, []);
+
+// 执行某个闭包
+app()->executeClosure(function(){
+
+}, []);
 
 ```
 
@@ -99,7 +118,7 @@ use \Cache as AilasCahce;
 use Gaara\Core\Controller;
 
 class Test extends Controller {
-    public function Index(Gaara\Core\Cache $c0) {
+    public function Index(\Gaara\Core\Cache $c0) {
         $c1 = obj(Gaara\Core\Cache::class);
         $c2 = obj(AilasCahce::class);
         $c3 = obj('Gaara\Core\Cache');
@@ -118,4 +137,4 @@ class Test extends Controller {
 obj(App\Model\User::class, ['形参' => '实参']);
 
 ```
-**注 : 若是会缓存的类, 只有第一次实例化时, 参数才会被使用!**
+**注 : 因为类会被缓存, 显然只有第一次实例化时, 参数才会被使用!**

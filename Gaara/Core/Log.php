@@ -3,6 +3,7 @@
 declare(strict_types = 1);
 namespace Gaara\Core;
 
+use Exception;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Formatter\LineFormatter;
@@ -21,15 +22,24 @@ use Gaara\Contracts\ServiceProvider\Single;
  */
 class Log implements Single {
 
+	// 当前环境
+	protected $env				 = null;
 	// 文件路径
 	protected $path				 = 'data/log/';
-	protected $env				 = null;
+	// 日志文件后缀
 	protected $ext				 = 'log';
+	// 通用Logger
 	protected $baseHandle		 = null;
+	// db专用Logger
 	protected $databaseHandle	 = null;
+	// 日志堆
+	protected $logStack			 = [];
 
-	public function __construct(Conf $Conf) {
-		$this->env = $Conf->getEnv('ENV', 'local');
+	public function __construct(Conf $conf) {
+		$this->env = $conf->app['env'];
+		foreach ($conf->log as $k => $v) {
+			$this->$k = $v;
+		}
 		$this->setBaseHandle();
 		$this->setDatabaseHandle();
 	}
@@ -91,8 +101,19 @@ class Log implements Single {
 		return $filename;
 	}
 
+	/**
+	 * 通用日志记录
+	 * @param string $func
+	 * @param array $params
+	 * @return bool
+	 * @throws Exception
+	 */
 	public function __call(string $func, array $params) {
-		return call_user_func_array([$this->baseHandle, $func], $params);
+		if (method_exists($this->baseHandle, $func)) {
+//			$this->logStack[$func][] = $params;
+			return call_user_func_array([$this->baseHandle, $func], $params);
+		}
+		throw new Exception("method [$func] not exist.");
 	}
 
 }

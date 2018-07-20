@@ -16,6 +16,7 @@ class index extends Controller {
 //
 //		$reids_2 = app()->make('redis_2');
 //
+		\Log::info('test', ['this is response']);
 		$reids = app()->make(\Gaara\Core\Cache::class);
 
 		app()->bindOnce(\Gaara\Core\Cache\Driver\Redis::class, function(){

@@ -27,26 +27,19 @@ trait Init {
 	 */
 	protected function confInit(Conf $conf) {
 		// 配置
-		$confApp	 = $conf->app;
+		$confApp = $conf->app;
 
 		// 时区
 		date_default_timezone_set($confApp['timezone']);
 
 		// php.ini
-		$serverIni	 = $conf->getServerConf('php');
+		$serverIni = $conf->getServerConf('php');
 		foreach ($serverIni as $k => $v)
 			if (ini_set($k, $v) === false)
 				throw new Exception("ini_set($k, $v) is Fail");
 
 		// 报错
-		if ($confApp['debug'] === '1') {
-			$this->debug = true;
-			ini_set('display_errors', '1');
-			error_reporting(E_ALL);
-		} else {
-			$this->debug = false;
-			ini_set('display_errors', '0');
-		}
+		$this->debug = ($confApp['debug'] === '1');
 
 		// 控制台
 		$this->cli = (php_sapi_name() === 'cli');

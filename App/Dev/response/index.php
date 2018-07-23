@@ -10,7 +10,10 @@ use Request;
 
 class index extends Controller {
 
-	public function indexDo(){
+	public function indexDo(\Gaara\Core\Request $request){
+		var_dump($request);exit;
+		var_dump($_SERVER);
+		var_dump($request->userIp);exit;
 
 //		app()->bind('redis_2', \Gaara\Core\Cache::class, true);
 //

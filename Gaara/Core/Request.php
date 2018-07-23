@@ -6,15 +6,14 @@ namespace Gaara\Core;
 use Exception;
 use Gaara\Core\Request\UploadFile;
 use Gaara\Core\Request\Traits\{
-	ClientInfo, RequestInfo, Filter
+	RequestInfo, Filter
 };
 use Gaara\Core\Route\Component\MatchedRouting;
 use Gaara\Contracts\ServiceProvider\Single;
 
 class Request implements Single {
 
-	use ClientInfo,
-	 RequestInfo,
+	use RequestInfo,
 	 Filter;
 
 	protected $domain	 = [];

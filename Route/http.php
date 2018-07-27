@@ -81,6 +81,8 @@ return [
 		});
 	}),
 	Route::group(['middleware' => ['web', 'api'], 'namespace' => 'App\Dev'], function() {
+		// readfile 页面
+		Route::get('/readfile', ['namespace' => '', 'uses' => 'readfile\index@indexDo']);
 		// response 页面
 		Route::get('/response', ['namespace' => '', 'uses' => 'response\index@indexDo']);
 		// lock 页面

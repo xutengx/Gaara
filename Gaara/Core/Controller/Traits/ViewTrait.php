@@ -300,12 +300,12 @@ EEE;
 	protected function bodyFile(string $filename = null): void {
 		$file = ROOT . $this->view . ( $filename ?? substr(static::class, strrpos(static::class, '\\') + 1)) . '.html';
 		if (is_file($file)) {
+			unset($file);
 			extract($this->view_data_php);
 			$this->view_data_php = [];
-			unset($file);
 			include ROOT . $this->view . ( $filename ?? substr(static::class, strrpos(static::class, '\\') + 1)) . '.html';
 		} else
-			throw new InvalidArgumentException($file . ' not found.');
+			throw new InvalidArgumentException("[$file] not found.");
 	}
 
 }

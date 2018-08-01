@@ -45,4 +45,18 @@ class Tool implements Single {
 		return false;
 	}
 
+	/**
+	 * 生成唯一的 36位 uuid
+	 * eg: 54b4c01f-dce0-102a-a4e0-462c07a00c5e
+	 * @param string $prefix 盐
+	 * @return string
+	 */
+	public static function uuid(string $prefix = ''): string {
+		$chars	 = md5(uniqid($prefix, true));
+		$uuid	 = '';
+		for ($i = 0; $i < 36; $i++)
+			$uuid	 .= ($i === 8 || $i === 15 || $i === 20 || $i === 25) ? '-' : $chars[mt_rand(0, 31)];
+		return $uuid;
+	}
+
 }

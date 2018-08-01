@@ -81,6 +81,8 @@ return [
 		});
 	}),
 	Route::group(['middleware' => ['web', 'api'], 'namespace' => 'App\Dev'], function() {
+		// uuid 页面
+		Route::get('/uuid', ['namespace' => '', 'uses' => 'readfile\index@uuid']);
 		// readfile 页面
 		Route::get('/readfile', ['namespace' => '', 'uses' => 'readfile\index@indexDo']);
 		// response 页面

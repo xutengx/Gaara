@@ -20,7 +20,7 @@ trait RequestTrait {
 	 * @param string    $host   异步执行的服务器ip
 	 * @return true
 	 */
-	function asynExe(string $where = '', array $pars = array(), string $scheme = 'http', string $host = '127.0.0.1'): bool {
+	public static function asynExe(string $where = '', array $pars = array(), string $scheme = 'http', string $host = '127.0.0.1'): bool {
 		$where	 = str_replace('\\', '/', $where);
 		$host	 = $scheme . '://' . $host . str_replace(IN_SYS, '', $_SERVER['SCRIPT_NAME']);
 		$url	 = $host . ltrim($where, '/');
@@ -37,7 +37,7 @@ trait RequestTrait {
 	 * @param bool $allinfo 是否返回全部信息 eg true 返回`实现了一个PSR-7接口的Response对象`组成的数组, false 返回`响应体`组成的数组
 	 * @return array 每个请求的响应体
 	 */
-	public function parallelExe(array $urls, bool $allinfo = false): array {
+	public static function parallelExe(array $urls, bool $allinfo = false): array {
 		$client		 = new Client();
 		$promises	 = [];
 		foreach ($urls as $k => $v) {
@@ -63,7 +63,7 @@ trait RequestTrait {
 	 * @param array $data
 	 * @return string
 	 */
-	public function sendPost(string $url, array $data = array()): string {
+	public static function sendPost(string $url, array $data = array()): string {
 		$client		 = new Client();
 		$response	 = $client->request('POST', $url, [
 			'query' => $data
@@ -77,7 +77,7 @@ trait RequestTrait {
 	 * @param array $data
 	 * @return string
 	 */
-	public function sendGet(string $url, array $data = array()): string {
+	public static function sendGet(string $url, array $data = array()): string {
 		$client		 = new Client();
 		$response	 = $client->request('GET', $url, [
 			'query' => $data

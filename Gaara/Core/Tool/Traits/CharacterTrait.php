@@ -14,7 +14,7 @@ trait CharacterTrait {
 	 * @param string $format 时间格式
 	 * @return string
 	 */
-	final public function friendlyDate(int $sTime = 0, string $format = 'Y-m-d H:i'): string {
+	public static function friendlyDate(int $sTime = 0, string $format = 'Y-m-d H:i'): string {
 		$dTime	 = time() - $sTime;
 		$state	 = $dTime > 0 ? '前' : '后';
 		$dTime	 = abs($dTime);
@@ -38,7 +38,7 @@ trait CharacterTrait {
 	 * @param string $charset 字符编码
 	 * @return string
 	 */
-	public function cutstr(string $string = '', int $length = 9, string $havedot = '', string $charset = 'utf8'): string {
+	public static function cutstr(string $string = '', int $length = 9, string $havedot = '', string $charset = 'utf8'): string {
 		if (strtolower($charset) === 'gbk')
 			$charset = 'gbk';
 		else
@@ -122,7 +122,7 @@ trait CharacterTrait {
 	 * @param string $str
 	 * @return false|array 解析正确就返回解析结果,否则返回false,说明字符串不是XML格式
 	 */
-	public function xml_decode(string $str) {
+	public static function xml_decode(string $str) {
 		$bool		 = null;
 		$xml_parser	 = xml_parser_create();
 		if (xml_parse($xml_parser, $str, true))
@@ -141,7 +141,7 @@ trait CharacterTrait {
 	 * @param string $id        数字索引子节点key转换的属性名
 	 * @return string
 	 */
-	public function xml_encode($data, string $encoding = 'utf-8', string $root = 'root', string $item = 'item', string $attr = '', string $id = 'id'): string {
+	public static function xml_encode($data, string $encoding = 'utf-8', string $root = 'root', string $item = 'item', string $attr = '', string $id = 'id'): string {
 		if (is_array($attr)) {
 			$_attr = array();
 			foreach ($attr as $key => $value) {
@@ -153,7 +153,7 @@ trait CharacterTrait {
 		$attr	 = empty($attr) ? '' : " {$attr}";
 		$xml	 = "<?xml version=\"1.0\" encoding=\"{$encoding}\"?>";
 		$xml	 .= "<{$root}{$attr}>";
-		$xml	 .= $this->data_to_xml($data, $item, $id);
+		$xml	 .= static::data_to_xml($data, $item, $id);
 		$xml	 .= "</{$root}>";
 		return $xml;
 	}
@@ -165,7 +165,7 @@ trait CharacterTrait {
 	 * @param string $id   数字索引key转换为的属性名
 	 * @return string|null
 	 */
-	public function data_to_xml($data, string $item = 'item', string $id = 'id') {
+	public static function data_to_xml($data, string $item = 'item', string $id = 'id') {
 		$xml	 = $attr	 = '';
 		if (is_array($data)) {
 			foreach ($data as $key => $val) {

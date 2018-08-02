@@ -28,7 +28,7 @@ class Tool implements Single {
 	 * @param array $Ips 默认规则是内网ip
 	 * @return bool
 	 */
-	public function checkIp(string $ip, array $Ips = null): bool {
+	public static function checkIp(string $ip, array $Ips = null): bool {
 		// 内网ip列表
 		$ruleIps = $Ips ?? [
 			['10.0.0.0', '10.255.255.255'],

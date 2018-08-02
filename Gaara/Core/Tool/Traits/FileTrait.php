@@ -15,7 +15,7 @@ trait FileTrait {
 	 * @param string $dirOld
 	 * @return string
 	 */
-	public function absoluteDir(string $dirOld): string {
+	public static function absoluteDir(string $dirOld): string {
 		$system	 = php_uname('s');
 		$dir	 = str_replace('\\', '/', trim($dirOld));
 		if (substr($system, 0, 5) === 'Linux') {
@@ -36,14 +36,14 @@ trait FileTrait {
 	 * @param string $dirName 目录(绝对)
 	 * @return void
 	 */
-	public function delDirAndFile(string $dirName = ''): void {
+	public static function delDirAndFile(string $dirName = ''): void {
 		if (is_dir($dirName) && $dir_arr = scandir($dirName)) {
 			foreach ($dir_arr as $k => $v) {
 				if ($v === '.' || $v === '..') {
 
 				} else {
 					if (is_dir($dirName . '/' . $v)) {
-						$this->delDirAndFile($dirName . '/' . $v);
+						static::delDirAndFile($dirName . '/' . $v);
 						rmdir($dirName . '/' . $v);
 					} else
 						unlink($dirName . '/' . $v);
@@ -58,9 +58,9 @@ trait FileTrait {
 	 * @param string $text 内容
 	 * @return bool
 	 */
-	public function printInFile(string $filename, string $text): bool {
+	public static function printInFile(string $filename, string $text): bool {
 		if (!is_file($filename)) {
-			if (is_dir(dirname($filename)) || $this->__mkdir(dirname($filename)))
+			if (is_dir(dirname($filename)) || static::__mkdir(dirname($filename)))
 				touch($filename);
 		}
 		return file_put_contents($filename, $text, LOCK_EX) === false ? false : true;
@@ -72,16 +72,16 @@ trait FileTrait {
 	 * @return array 一维数组
 	 * @throws Exception
 	 */
-	public function getFiles(string $dirName = ''): array {
+	public static function getFiles(string $dirName = ''): array {
 		$dirName = rtrim($dirName, '/');
-		$arr	 = array();
+		$arr	 = [];
 		if (is_dir($dirName) && $dir_arr = scandir($dirName)) {
 			foreach ($dir_arr as $k => $v) {
 				if ($v === '.' || $v === '..') {
 
 				} else {
 					if (is_dir($dirName . '/' . $v)) {
-						$arr = array_merge($arr, $this->getFiles($dirName . '/' . $v));
+						$arr = array_merge($arr, static::getFiles($dirName . '/' . $v));
 					} else {
 						$arr[] = $dirName . '/' . $v;
 					}
@@ -99,7 +99,7 @@ trait FileTrait {
 	 * @param string $uni 唯一标识
 	 * @return string
 	 */
-	final public function makeFilename(string $dir, string $ext, string $uni = 'def'): string {
+	public static function makeFilename(string $dir, string $ext, string $uni = 'def'): string {
 		$ext = trim($ext, '.');
 		$dir = rtrim($dir, '/') . '/';
 		$dir .= uniqid($uni);
@@ -113,9 +113,10 @@ trait FileTrait {
 	 * @param int $mode 目录权限
 	 * @return bool
 	 */
-	final public function __mkdir(string $dir, $mode = 0777): bool {
-		if (is_dir(dirname($dir)) || $this->__mkdir(dirname($dir)))
-			return mkdir($dir, $mode);
+	public static function __mkdir(string $dir, int $mode = 0777): bool {
+//		if (is_dir(dirname($dir)) || static::__mkdir(dirname($dir)))
+//			return mkdir($dir, $mode);
+		return (is_dir(dirname($dir)) || static::__mkdir(dirname($dir))) ? mkdir($dir, $mode) : true;
 	}
 
 }

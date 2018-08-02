@@ -13,26 +13,26 @@ use Gaara\Contracts\ServiceProvider\Single;
 /**
  * 数据库连接类，依赖 PDO_MYSQL 扩展
  */
-class DbConnection implements Single  {
+class DbConnection implements Single {
 
 	// 当前进程标识
 	protected $identification	 = null;
 	// 是否主从数据库
-	protected $Master_slave	 = true;
+	protected $Master_slave		 = true;
 	// 数据库链接名称, 当抛出异常时帮助定位数据库链接
 	protected $connection		 = null;
 	// 数据库 读 连接集合
 	protected $dbRead			 = [];
 	// 数据库 读 权重
-	protected $dbReadWeight	 = [];
+	protected $dbReadWeight		 = [];
 	// 数据库 写 连接集合
-	protected $dbWrite		 = [];
+	protected $dbWrite			 = [];
 	// 数据库 写 权重
 	protected $dbWriteWeight	 = [];
 	// 当前操作类型 select update delate insert
-	protected $type			 = 'select';
+	protected $type				 = 'select';
 	// 是否事务过程中 不进行数据库更换
-	protected $transaction	 = false;
+	protected $transaction		 = false;
 	// ---------------------------- 单进程 ----------------------------- //
 	// 单进程不进行数据库更换
 	protected $single			 = true;
@@ -95,7 +95,7 @@ class DbConnection implements Single  {
 	 * @param bool $single 单进程模式
 	 */
 	public function __construct(string $connection, bool $single = true) {
-		$DBconf = obj(Conf::class)->getDriverConnection('db', $connection);
+		$DBconf					 = obj(Conf::class)->getDriverConnection('db', $connection);
 		$this->identification	 = uniqid((string) getmypid());
 		$this->connection		 = $connection;
 		$this->single			 = $single;
@@ -174,7 +174,7 @@ class DbConnection implements Single  {
 		}
 		if (!is_object($theDb[$key])) {
 			$settings	 = $theDb[$key];
-			$theDb[$key] = $this->newPdo($settings['type'], $settings['db'], $settings['host'], (string)$settings['port'], $settings['user'], $settings['pwd']);
+			$theDb[$key] = $this->newPdo($settings['type'], $settings['db'], $settings['host'], (string) $settings['port'], $settings['user'], $settings['pwd']);
 		}
 		return $theDb[$key];
 	}
@@ -189,10 +189,10 @@ class DbConnection implements Single  {
 	 * @return PDO
 	 */
 	protected function newPdo(string $type, string $db, string $host, string $port, string $user, string $pwd): PDO {
-		$serverIni = obj(Conf::class)->getServerConf($type);
-		$dsn = $type . ':dbname=' . $db . ';host=' . $host . ';port=' . $port;
-		$pdo = new PDO($dsn, $user, $pwd, $serverIni['pdo_attr']);
-		foreach($serverIni['ini_sql'] as $ini_sql){
+		$serverIni	 = obj(Conf::class)->getServerConf($type);
+		$dsn		 = $type . ':dbname=' . $db . ';host=' . $host . ';port=' . $port;
+		$pdo		 = new PDO($dsn, $user, $pwd, $serverIni['pdo_attr']);
+		foreach ($serverIni['ini_sql'] as $ini_sql) {
 			$pdo->prepare($ini_sql)->execute();
 		}
 		return $pdo;

@@ -13,8 +13,8 @@ class File implements DriverInterface {
 	// 缓存扩展名
 	protected $cacheFileExt = '.php';
 
-	final public function __construct(string $dir = null) {
-		$this->cacheRoot = !is_null($dir) ? ROOT . $dir : ROOT . 'data/Cache/';
+	final public function __construct(?string $dir = null) {
+		$this->cacheRoot = STORAGE . ($dir ?? 'cache/');
 	}
 
 	/**
@@ -51,13 +51,13 @@ class File implements DriverInterface {
 	/**
 	 * 返回过期剩余时间, -1表示无过期时间
 	 * @param int $filemtime
-	 * @param int $expir
+	 * @param int $expire
 	 * @return int
 	 */
-	protected function getExpire(int $filemtime, int $expir): int {
-		if ($expir === -1)
+	protected function getExpire(int $filemtime, int $expire): int {
+		if ($expire === -1)
 			return -1;
-		$time = $filemtime + $expir - time();
+		$time = $filemtime + $expire - time();
 		return ($time > 0) ? $time : 0;
 	}
 
@@ -78,15 +78,15 @@ class File implements DriverInterface {
 	 * 写入文件
 	 * @param string $filename 文件名(绝对路径)
 	 * @param string $text
-	 * @param int $locktype LOCK_EX LOCK_NB
+	 * @param int $lockType LOCK_EX LOCK_NB
 	 * @return bool
 	 */
-	protected function saveFile(string $filename, string $text, int $locktype = LOCK_EX): bool {
+	protected function saveFile(string $filename, string $text, int $lockType = LOCK_EX): bool {
 		if (!is_file($filename)) {
 			if (is_dir(dirname($filename)) || $this->_mkdir(dirname($filename)))
 				touch($filename);
 		}
-		return file_put_contents($filename, $text, $locktype) === false ? false : true;
+		return file_put_contents($filename, $text, $lockType) === false ? false : true;
 	}
 
 	/**
@@ -203,14 +203,14 @@ class File implements DriverInterface {
 	 * 以独占锁开启一个文件, 并执行闭包
 	 * @param string $key
 	 * @param Closure $callback
-	 * @param int $locktype LOCK_EX LOCK_NB
+	 * @param int $lockType LOCK_EX LOCK_NB
 	 * @return bool
 	 */
-	protected function lock(string $key, Closure $callback, int $locktype = LOCK_EX) {
+	protected function lock(string $key, Closure $callback, int $lockType = LOCK_EX) {
 		$filename = $this->makeFilename($key);
 		$type     = is_file($filename) ? 'rb+' : 'wb+';
 		if ($handle = fopen($filename, $type)) {
-			if (flock($handle, $locktype)) {
+			if (flock($handle, $lockType)) {
 				$callback($handle);
 				flock($handle, LOCK_UN);
 				fclose($handle);

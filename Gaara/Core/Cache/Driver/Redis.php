@@ -9,11 +9,16 @@ use redis as php_redis;
 
 class Redis implements DriverInterface {
 
-	protected $handler = null;
+	// 当前redis连接名
+	public $connection;
+	// php拓展的redis对象
+	protected $handler;
 
 	/**
-	 * redis链接
+	 * Redis constructor.
 	 * @param string $connection redis连接名
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	public function __construct(string $connection) {
 		$this->connection = $connection;
@@ -30,7 +35,7 @@ class Redis implements DriverInterface {
 		$this->handler->$connect($options['host'] ?? '127.0.0.1', (int)(($options['port'] ?? 6379)));
 
 		// 密码
-		if (isset($options['passwd']) && !empty($options['passwd']))
+		if (isset($options['password']) && !empty($options['password']))
 			$this->handler->auth($options['passwd']);
 
 		// 数据库

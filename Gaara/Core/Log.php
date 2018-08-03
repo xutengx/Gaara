@@ -11,27 +11,29 @@ use Monolog\Logger;
 
 /**
  * 记录日志
- * @methor debug        100     (string, array());
- * @methor info         200     (string, array());
- * @methor notice       250     (string, array());
- * @methor warning      300     (string, array());
- * @methor error        400     (string, array());
- * @methor critical     500     (string, array());
- * @methor alert        550     (string, array());
- * @methor emergency    600     (string, array());
+ * @method debug        100     (string, array ());
+ * @method info         200     (string, array ());
+ * @method notice       250     (string, array ());
+ * @method warning      300     (string, array ());
+ * @method error        400     (string, array ());
+ * @method critical     500     (string, array ());
+ * @method alert        550     (string, array ());
+ * @method emergency    600     (string, array ());
  */
 class Log implements Single {
 
 	// 当前环境
-	protected $env = null;
-	// 文件路径
-	protected $path = 'data/log/';
+	protected $env;
+	// 日志路径
+	protected $dir = 'log/';
+	// 日志绝对路径
+	protected $path;
 	// 日志文件后缀
 	protected $ext = 'log';
 	// 通用Logger
-	protected $baseHandle = null;
+	protected $baseHandle;
 	// db专用Logger
-	protected $databaseHandle = null;
+	protected $databaseHandle;
 	// 日志堆
 	protected $logStack = [];
 
@@ -47,6 +49,7 @@ class Log implements Single {
 	/**
 	 * 注册通用Logger
 	 * @return void
+	 * @throws Exception
 	 */
 	protected function setBaseHandle(): void {
 		$this->baseHandle = new Logger($this->env);
@@ -73,13 +76,15 @@ class Log implements Single {
 	 * @return string
 	 */
 	protected function makeFilename(string $name): string {
-		$filename = ROOT . $this->path . date('Y/m/d/') . $name . '.' . $this->ext;
+		$this->path = STORAGE . $this->dir;
+		$filename   = $this->path . date('Y/m/d/') . $name . '.' . $this->ext;
 		return $filename;
 	}
 
 	/**
 	 * 注册db专用Logger
 	 * @return void
+	 * @throws Exception
 	 */
 	protected function setDatabaseHandle(): void {
 		$this->databaseHandle = new Logger($this->env);
@@ -96,7 +101,7 @@ class Log implements Single {
 	 * @param array $context
 	 * @return bool
 	 */
-	public function dbinfo(string $message, array $context = []): bool {
+	public function dbInfo(string $message, array $context = []): bool {
 		return $this->databaseHandle->addRecord(Logger::INFO, $message, $context);
 	}
 
@@ -106,7 +111,7 @@ class Log implements Single {
 	 * @param array $context
 	 * @return bool
 	 */
-	public function dberror(string $message, array $context = []): bool {
+	public function dbError(string $message, array $context = []): bool {
 		return $this->databaseHandle->addRecord(Logger::ERROR, $message, $context);
 	}
 

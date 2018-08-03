@@ -9,20 +9,25 @@ use Gaara\Contracts\ServiceProvider\Single;
 
 /**
  * 借助谷歌浏览器的 php console 插件, 以及 php-console 包, 进行调试
- * @methor debug        (mix, string);
+ * @method debug (mixed $info, string $msg);
  */
 class PhpConsole implements Single {
 
-	protected $path = 'data/phpconsole/';
-	protected $ext  = 'log';
+	protected $dir = 'phpconsole/';
+	protected $path;
+	protected $ext = 'log';
 	protected $handle;
+	protected $password;
 
-	public function __construct() {
-		$conf = obj(Conf::class)->phpconsole;
+	public function __construct(Conf $conf) {
+		foreach ($conf->phpconsole as $k => $v) {
+			$this->$k = $v;
+		}
+
 		Connector::setPostponeStorage(new File($this->makeFilename()));
 		$connector = Connector::getInstance();
-		if (!is_null($conf['password'])) {
-			$connector->setPassword($conf['password']);
+		if (!is_null($this->password)) {
+			$connector->setPassword($this->password);
 		}
 		$this->handle = Handler::getInstance();
 	}
@@ -34,7 +39,8 @@ class PhpConsole implements Single {
 	 * @throws \ReflectionException
 	 */
 	protected function makeFilename(): string {
-		$filename = ROOT . $this->path . date('Y/m/d') . '.' . $this->ext;
+		$this->path = STORAGE . $this->dir;
+		$filename   = $this->path . date('Y/m/d') . '.' . $this->ext;
 		if (!is_file($filename)) {
 			obj(Tool::class)->printInFile($filename, '');
 		}

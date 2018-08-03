@@ -41,12 +41,14 @@ abstract class Model implements Single {
 	/**
 	 * 获取数据库链接对象 $this->db
 	 * @return DbConnection
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	protected function getDB(): DbConnection {
 		$conf             = obj(Conf::class)->db;
 		$this->connection = $this->connection ?? $conf['connection'];
 		return self::$dbs[$this->connection] ??
-		       self::$dbs[$this->connection] = dobj(DbConnection::class, $this->connection);
+		       self::$dbs[$this->connection] = dobj(DbConnection::class, [$this->connection]);
 	}
 
 	/**
@@ -88,9 +90,11 @@ abstract class Model implements Single {
 	/**
 	 * 返回当前表名
 	 * @return string
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	public static function getTable(): string {
-		return \obj(static::class)->table;
+		return obj(static::class)->table;
 	}
 
 	/**
@@ -98,6 +102,8 @@ abstract class Model implements Single {
 	 * @param string $method
 	 * @param array $parameters
 	 * @return mixed
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	final public static function __callStatic(string $method, array $parameters = []) {
 		return obj(static::class)->newQuery()->$method(...$parameters);

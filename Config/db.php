@@ -8,7 +8,7 @@ return [
 	  |
 	  |
 	 */
-	'connection' => env('DB_CONNECTION', 'default'),
+	'connection'  => env('DB_CONNECTION', 'default'),
 
 	/*
 	  |--------------------------------------------------------------------------
@@ -18,82 +18,82 @@ return [
 	  |
 	 */
 	'connections' => [
-		'default'	 => [
-			'write'	 => [
-				[
-					'weight' => 10,
-					'type'	 => 'mysql',
-					'host'	 => env('DB_HOST'),
-					'port'	 => env('DB_PORT'),
-					'user'	 => env('DB_USER'),
-					'pwd'	 => env('DB_PASSWD'),
-					'db'	 => env('DB_DATABASE'),
-				]
-			],
-			'read'	 => [
-				[
-					'weight' => 1,
-					'type'	 => 'mysql',
-					'host'	 => env('DB_HOST'),
-					'port'	 => env('DB_PORT'),
-					'user'	 => env('DB_USER'),
-					'pwd'	 => env('DB_PASSWD'),
-					'db'	 => env('DB_DATABASE'),
-				],
-				[
-					'weight' => 1,
-					'type'	 => 'mysql',
-					'host'	 => env('DB_HOST'),
-					'port'	 => env('DB_PORT'),
-					'user'	 => env('DB_USER'),
-					'pwd'	 => env('DB_PASSWD'),
-					'db'	 => env('DB_DATABASE'),
-				]
-			]
-		],
-		'con2'	 => [
+		'default' => [
 			'write' => [
 				[
 					'weight' => 10,
-					'type'	 => 'mysql',
-					'host'	 => '47.90.124.253',
-					'port'	 => 21406,
-					'user'	 => 'cdr',
-					'pwd'	 => env('DB_BEST_PASSWD'),
-					'db'	 => 'cdr_report',
+					'type'   => 'mysql',
+					'host'   => env('DB_HOST'),
+					'port'   => env('DB_PORT'),
+					'user'   => env('DB_USER'),
+					'pwd'    => env('DB_PASSWORD'),
+					'db'     => env('DB_DATABASE'),
+				]
+			],
+			'read'  => [
+				[
+					'weight' => 1,
+					'type'   => 'mysql',
+					'host'   => env('DB_HOST'),
+					'port'   => env('DB_PORT'),
+					'user'   => env('DB_USER'),
+					'pwd'    => env('DB_PASSWORD'),
+					'db'     => env('DB_DATABASE'),
+				],
+				[
+					'weight' => 1,
+					'type'   => 'mysql',
+					'host'   => env('DB_HOST'),
+					'port'   => env('DB_PORT'),
+					'user'   => env('DB_USER'),
+					'pwd'    => env('DB_PASSWORD'),
+					'db'     => env('DB_DATABASE'),
 				]
 			]
 		],
-		'con3'	 => [
-			'write'	 => [
+		'con2'    => [
+			'write' => [
 				[
 					'weight' => 10,
-					'type'	 => 'mysql',
-					'host'	 => '127.0.0.1',
-					'port'	 => 3306,
-					'user'	 => 'root',
-					'pwd'	 => 'root',
-					'db'	 => 'test'
+					'type'   => 'mysql',
+					'host'   => '47.90.124.253',
+					'port'   => 21406,
+					'user'   => 'cdr',
+					'pwd'    => env('DB_BEST_PASSWORD'),
+					'db'     => 'cdr_report',
+				]
+			]
+		],
+		'con3'    => [
+			'write' => [
+				[
+					'weight' => 10,
+					'type'   => 'mysql',
+					'host'   => '127.0.0.1',
+					'port'   => 3306,
+					'user'   => 'root',
+					'pwd'    => 'root',
+					'db'     => 'test'
 				]
 			],
-			'read'	 => [
+			'read'  => [
 				[
 					'weight' => 1,
-					'type'	 => 'mysql',
-					'host'	 => '127.0.0.1',
-					'port'	 => 3306,
-					'user'	 => 'root',
-					'pwd'	 => 'root',
-					'db'	 => 'test'
+					'type'   => 'mysql',
+					'host'   => '127.0.0.1',
+					'port'   => 3306,
+					'user'   => 'root',
+					'pwd'    => 'root',
+					'db'     => 'test'
 				],
 				[
 					'weight' => 2,
-					'type'	 => 'mysql',
-					'host'	 => '127.0.0.1',
-					'port'	 => 3306,
-					'user'	 => 'root',
-					'pwd'	 => 'root',
-					'db'	 => 'test'
+					'type'   => 'mysql',
+					'host'   => '127.0.0.1',
+					'port'   => 3306,
+					'user'   => 'root',
+					'pwd'    => 'root',
+					'db'     => 'test'
 				]
 			]
 		]

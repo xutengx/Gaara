@@ -5,7 +5,6 @@ namespace Gaara\Core;
 
 use Exception;
 use Gaara\Contracts\ServiceProvider\Single;
-use Log;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -18,7 +17,7 @@ class DbConnection implements Single {
 	// 当前进程标识
 	protected $identification = null;
 	// 是否主从数据库
-	protected $Master_slave = true;
+	protected $masterSlave = true;
 	// 数据库链接名称, 当抛出异常时帮助定位数据库链接
 	protected $connection = null;
 	// 数据库 读 连接集合
@@ -90,20 +89,23 @@ class DbConnection implements Single {
 	 */
 
 	/**
+	 * DbConnection constructor.
 	 * @param string $connection 数据库链接名
 	 * @param bool $single 单进程模式
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	public function __construct(string $connection, bool $single = true) {
-		$DBconf               = obj(Conf::class)->getDriverConnection('db', $connection);
+		$conf                 = obj(Conf::class)->getDriverConnection('db', $connection);
 		$this->identification = uniqid((string)getmypid());
 		$this->connection     = $connection;
 		$this->single         = $single;
-		$this->confFormat($DBconf['write'], $this->dbWriteWeight, $this->dbWrite);
-		if (isset($DBconf['read']) && !empty($DBconf['read'])) {
-			$this->confFormat($DBconf['read'], $this->dbReadWeight, $this->dbRead);
+		$this->confFormat($conf['write'], $this->dbWriteWeight, $this->dbWrite);
+		if (isset($conf['read']) && !empty($conf['read'])) {
+			$this->confFormat($conf['read'], $this->dbReadWeight, $this->dbRead);
 		}
 		else
-			$this->Master_slave = false;
+			$this->masterSlave = false;
 	}
 
 	/**
@@ -131,6 +133,8 @@ class DbConnection implements Single {
 	 * @param array $bindings
 	 * @return void
 	 * @throws PDOException
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	public function execute(PDOStatement $PDOStatement, array $bindings): void {
 		$sql = $PDOStatement->queryString;
@@ -153,15 +157,17 @@ class DbConnection implements Single {
 	 * @param array $bindings
 	 * @param bool $manual
 	 * @return bool
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	protected function logInfo(string $sql, array $bindings = [], bool $manual = false): bool {
 		// 普通 sql 记录
-		return Log::dbinfo('', [
+		return obj(Log::class)->dbInfo('', [
 			'sql'            => $sql,
 			'bindings'       => $bindings,
 			'manual'         => $manual,
 			'connection'     => $this->connection,
-			'master_slave'   => $this->Master_slave,
+			'masterSlave'    => $this->masterSlave,
 			'type'           => $this->type,
 			'transaction'    => $this->transaction,
 			'single'         => $this->single,
@@ -176,14 +182,16 @@ class DbConnection implements Single {
 	 * @param array $bindings
 	 * @param bool $manual
 	 * @return bool
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	protected function logError(string $msg, string $sql, array $bindings = [], bool $manual = false): bool {
-		return Log::dberror($msg, [
+		return obj(Log::class)->dbError($msg, [
 			'sql'            => $sql,
 			'bindings'       => $bindings,
 			'manual'         => $manual,
 			'connection'     => $this->connection,
-			'master_slave'   => $this->Master_slave,
+			'masterSlave'    => $this->masterSlave,
 			'type'           => $this->type,
 			'transaction'    => $this->transaction,
 			'single'         => $this->single,
@@ -196,10 +204,12 @@ class DbConnection implements Single {
 	 * @param string $sql
 	 * @param array $pars
 	 * @return PDOStatement
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	public function getChunk(string $sql, array $pars = []): PDOStatement {
 		$this->type = 'select';
-		return $this->prepare_execute($sql, $pars);
+		return $this->prepareExecute($sql, $pars);
 	}
 
 	/**
@@ -207,11 +217,12 @@ class DbConnection implements Single {
 	 * @param string $sql
 	 * @param array $pars 参数绑定数组
 	 * @param bool $auto 自动执行绑定
-	 * @param      $PDO 用作 `insertGetId`的return
+	 * @param null $PDO 用作`insertGetId`的return
 	 * @return PDOStatement
-	 * @throws PDOException
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
-	protected function prepare_execute(string $sql, array $pars = [], bool $auto = true, &$PDO = null): PDOStatement {
+	protected function prepareExecute(string $sql, array $pars = [], bool $auto = true, &$PDO = null): PDOStatement {
 		try {
 			// 链接数据库
 			$PDO = $this->PDO();
@@ -234,12 +245,14 @@ class DbConnection implements Single {
 	/**
 	 * 由操作类型(读/写), 返回已存在的PDO实现
 	 * @return PDO
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	protected function PDO(): PDO {
 		// http请求都属于此
 		if ($this->single) {
 			// 查询操作且不属于事务,使用读连接
-			if ($this->type === 'select' && !$this->transaction && $this->Master_slave) {
+			if ($this->type === 'select' && !$this->transaction && $this->masterSlave) {
 				if (is_object($this->dbReadSingle) || ($this->dbReadSingle = $this->connect()))
 					return $this->dbReadSingle;
 			}
@@ -254,10 +267,12 @@ class DbConnection implements Single {
 	/**
 	 * 由操作类型(读/写)和权重(weight), 创建并返回PDO数据库连接
 	 * @return PDO
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	protected function connect(): PDO {
 		// 查询操作且不属于事务,使用读连接
-		if ($this->type === 'select' && !$this->transaction && $this->Master_slave) {
+		if ($this->type === 'select' && !$this->transaction && $this->masterSlave) {
 			return $this->weightSelection($this->dbReadWeight, $this->dbRead);
 		}
 		else {
@@ -268,8 +283,10 @@ class DbConnection implements Single {
 	/**
 	 * 根据权重, 实例化pdo
 	 * @param array $theDbWeight 权重数组
-	 * @param array &$theDb 配置数组->pdo数组
+	 * @param array $theDb 配置数组->pdo数组
 	 * @return PDO
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	protected function weightSelection(array $theDbWeight, array &$theDb): PDO {
 		$tmp    = array_keys($theDbWeight);
@@ -298,6 +315,8 @@ class DbConnection implements Single {
 	 * @param string $user
 	 * @param string $pwd
 	 * @return PDO
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	protected function newPdo(string $type, string $db, string $host, string $port, string $user, string $pwd): PDO {
 		$serverIni = obj(Conf::class)->getServerConf($type);
@@ -314,10 +333,12 @@ class DbConnection implements Single {
 	 * @param string $sql
 	 * @param array $pars 参数绑定数组
 	 * @return array 一维数组
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	public function getRow(string $sql, array $pars = []): array {
 		$this->type = 'select';
-		$re         = $this->prepare_execute($sql, $pars)->fetch(PDO::FETCH_ASSOC);
+		$re         = $this->prepareExecute($sql, $pars)->fetch(PDO::FETCH_ASSOC);
 		return $re ? $re : [];
 	}
 
@@ -326,10 +347,12 @@ class DbConnection implements Single {
 	 * @param string $sql
 	 * @param array $pars 参数绑定数组
 	 * @return array 二维数组
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	public function getAll(string $sql, array $pars = []): array {
 		$this->type = 'select';
-		return $this->prepare_execute($sql, $pars)->fetchall(PDO::FETCH_ASSOC);
+		return $this->prepareExecute($sql, $pars)->fetchall(PDO::FETCH_ASSOC);
 	}
 
 	/**
@@ -337,10 +360,12 @@ class DbConnection implements Single {
 	 * @param string $sql
 	 * @param array $pars 参数绑定数组
 	 * @return int 受影响的行数
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	public function update(string $sql, array $pars = []): int {
 		$this->type = 'update';
-		return $this->prepare_execute($sql, $pars)->rowCount();
+		return $this->prepareExecute($sql, $pars)->rowCount();
 	}
 
 	/**
@@ -348,11 +373,13 @@ class DbConnection implements Single {
 	 * @param string $sql
 	 * @param array $pars 参数绑定数组
 	 * @return int 插入的主键
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	public function insertGetId(string $sql, array $pars = []): int {
 		$this->type = 'insert';
 		$pdo        = null;
-		$res        = $this->prepare_execute($sql, $pars, true, $pdo)->rowCount();
+		$res        = $this->prepareExecute($sql, $pars, true, $pdo)->rowCount();
 		if ($res)
 			return $pdo->lastInsertId();
 		else
@@ -364,10 +391,12 @@ class DbConnection implements Single {
 	 * @param string $sql
 	 * @param array $pars 参数绑定数组
 	 * @return int 受影响的行数
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	public function insert(string $sql, array $pars = []): int {
 		$this->type = 'insert';
-		return $this->prepare_execute($sql, $pars)->rowCount();
+		return $this->prepareExecute($sql, $pars)->rowCount();
 	}
 
 	/**
@@ -381,7 +410,7 @@ class DbConnection implements Single {
 		if (!in_array($type, ['select', 'update', 'delete', 'insert', 'replace']))
 			throw new Exception('$type mast in_array(select update delete insert replace). but ' . $type . ' given');
 		$this->type = $type;
-		return $this->prepare_execute($sql, [], false);
+		return $this->prepareExecute($sql, [], false);
 	}
 
 	/**
@@ -400,6 +429,8 @@ class DbConnection implements Single {
 	/**
 	 * 提交事务
 	 * @return bool
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	public function commit(): bool {
 		$this->transaction = false;
@@ -418,6 +449,8 @@ class DbConnection implements Single {
 	/**
 	 * 回滚事务
 	 * @return bool
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	public function rollBack(): bool {
 		$this->transaction = false;

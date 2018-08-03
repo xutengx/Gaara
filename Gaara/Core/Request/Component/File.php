@@ -21,7 +21,7 @@ class File {
 		'image/x-icon' => 'ico',
 	];
 	// 上传的文件名
-	protected static $default_save_path = 'data/upload/';
+	protected static $default_save_path = STORAGE . 'upload/';
 	// 文件类型
 	public $name;
 	// 文件大小

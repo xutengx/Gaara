@@ -38,6 +38,6 @@ return [
 	  |
 	 */
 	'file'   => [
-		'dir' => 'data/Cache/'
+		'dir' => 'cache/'
 	]
 ];

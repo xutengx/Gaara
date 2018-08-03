@@ -38,11 +38,13 @@ class Cache implements Single {
 
 	/**
 	 * 指定使用的缓存驱动
-	 * @param string|null $driver_name
+	 * @param string|null $driverName
 	 * @return Cache
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
-	public function store(string $driver_name = null): Cache {
-		$driverName = $driver_name ?? $this->conf['driver'];
+	public function store(string $driverName = null): Cache {
+		$driverName = $driverName ?? $this->conf['driver'];
 		if (array_key_exists($driverName, $this->supportedDrivers)) {
 			if (array_key_exists($driverName, $this->drivers)) {
 				$this->driver = $this->drivers[$driverName];

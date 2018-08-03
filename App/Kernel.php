@@ -12,7 +12,7 @@ use Gaara\Core\Middleware\{
 class Kernel extends HttpKernel {
 
 	// 全局中间件
-	protected $middlewareGlobel	 = [
+	protected $middlewareGlobal	 = [
 		// 异常处理
 		ExceptionHandler::class,
 		// 移除意外输出,根据http协议返回,\Generator对象分割下载

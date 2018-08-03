@@ -120,7 +120,7 @@ class index extends Controller{
     }
 
     private function test_14(Cache $Cache) {
-        var_dump(\Cache::getDirverName());
+        var_dump(\Cache::getDriverName());
         var_dump(\Cache::store('redis')->clear($this, 'tett2'));
     }
 

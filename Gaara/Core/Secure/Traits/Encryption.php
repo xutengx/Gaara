@@ -18,10 +18,10 @@ trait Encryption {
 	 * @return string
 	 */
 	public function encrypt(string $string, string $key = ''): string {
-		$key	 = $key ? md5($key) : md5($this->key);
-		$j		 = 0;
-		$buffer	 = $data	 = '';
-		$length	 = strlen($string);
+		$key    = $key ? md5($key) : md5($this->key);
+		$j      = 0;
+		$buffer = $data = '';
+		$length = strlen($string);
 		for ($i = 0; $i < $length; $i++) {
 			if ($j === 32) {
 				$j = 0;
@@ -36,17 +36,28 @@ trait Encryption {
 	}
 
 	/**
+	 * URL安全的字符串编码
+	 * @param string $string
+	 * @return string
+	 */
+	public function base64_encode(string $string): string {
+		$data = base64_encode($string);
+		$data = str_replace(['+', '/', '='], ['-', '_', ''], $data);
+		return $data;
+	}
+
+	/**
 	 * 解密
 	 * @param string $string
 	 * @param string $key
 	 * @return string
 	 */
 	public function decrypt(string $string, string $key = ''): string {
-		$key	 = $key ? md5($key) : md5($this->key);
-		$string	 = $this->base64_decode($string);
-		$j		 = 0;
-		$buffer	 = $data	 = '';
-		$length	 = strlen($string);
+		$key    = $key ? md5($key) : md5($this->key);
+		$string = $this->base64_decode($string);
+		$j      = 0;
+		$buffer = $data = '';
+		$length = strlen($string);
 		for ($i = 0; $i < $length; $i++) {
 			if ($j === 32) {
 				$j = 0;
@@ -61,24 +72,13 @@ trait Encryption {
 	}
 
 	/**
-	 * URL安全的字符串编码
-	 * @param string $string
-	 * @return string
-	 */
-	public function base64_encode(string $string): string {
-		$data	 = base64_encode($string);
-		$data	 = str_replace(array('+', '/', '='), array('-', '_', ''), $data);
-		return $data;
-	}
-
-	/**
 	 * URL安全的字符串编码的解码
 	 * @param string $string
 	 * @return string
 	 */
 	public function base64_decode(string $string): string {
-		$data	 = str_replace(array('-', '_'), array('+', '/'), $string);
-		$mod4	 = strlen($data) % 4;
+		$data = str_replace(['-', '_'], ['+', '/'], $string);
+		$mod4 = strlen($data) % 4;
 		if ($mod4) {
 			$data .= substr('====', $mod4);
 		}

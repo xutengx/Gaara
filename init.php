@@ -41,6 +41,9 @@ require ROOT . 'bootstrap/define.php';
   | 注册业务的服务
   |
  */
+/**
+ * @var \App\Kernel
+ */
 $app = require ROOT . 'bootstrap/app.php';
 
 /*

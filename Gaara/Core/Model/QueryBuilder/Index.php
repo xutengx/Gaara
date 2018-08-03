@@ -1,19 +1,19 @@
 <?php
 
 declare(strict_types = 1);
-namespace Gaara\Core\Model\QueryBuiler;
+namespace Gaara\Core\Model\QueryBuilder;
 
-use Gaara\Core\Model\QueryBuiler;
 use Closure;
+use Gaara\Core\Model\QueryBuilder;
 
 trait Index {
 
 	/**
 	 * 预期的查询2维数组的索引,设置为一个字段
 	 * @param string $field
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function indexString(string $field): QueryBuiler {
+	public function indexString(string $field): QueryBuilder {
 		$this->index = $field;
 		return $this;
 	}
@@ -21,9 +21,9 @@ trait Index {
 	/**
 	 * 预期的查询2维数组的索引,设置为一个闭包的返回值
 	 * @param Closure $callback
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function indexClosure(Closure $callback): QueryBuiler {
+	public function indexClosure(Closure $callback): QueryBuilder {
 		$this->index = $callback;
 		return $this;
 	}

@@ -1,18 +1,18 @@
 <?php
 
 declare(strict_types = 1);
-namespace Gaara\Core\Model\QueryBuiler;
+namespace Gaara\Core\Model\QueryBuilder;
 
-use Gaara\Core\Model\QueryBuiler;
+use Gaara\Core\Model\QueryBuilder;
 
 trait Data {
 
 	/**
 	 * 加入一个不做处理的data
 	 * @param string $sql
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function dataRaw(string $sql): QueryBuiler {
+	public function dataRaw(string $sql): QueryBuilder {
 		return $this->dataPush($sql);
 	}
 
@@ -20,9 +20,9 @@ trait Data {
 	 * 字段自增
 	 * @param string $field 字段
 	 * @param int $steps
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function dataIncrement(string $field, int $steps = 1): QueryBuiler {
+	public function dataIncrement(string $field, int $steps = 1): QueryBuilder {
 		$sql = $this->fieldFormat($field) . '=' . $this->fieldFormat($field) . '+' . $steps;
 		return $this->dataPush($sql);
 	}
@@ -31,9 +31,9 @@ trait Data {
 	 * 字段自减
 	 * @param string $field 字段
 	 * @param int $steps
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function dataDecrement(string $field, int $steps = 1): QueryBuiler {
+	public function dataDecrement(string $field, int $steps = 1): QueryBuilder {
 		$sql = $this->fieldFormat($field) . '=' . $this->fieldFormat($field) . '-' . $steps;
 		return $this->dataPush($sql);
 	}
@@ -41,9 +41,9 @@ trait Data {
 	/**
 	 * 字段$field赋值$value
 	 * @param string $str
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function dataString(string $field, string $value): QueryBuiler {
+	public function dataString(string $field, string $value): QueryBuilder {
 		$sql = $this->fieldFormat($field) . '=' . $this->valueFormat($value);
 		return $this->dataPush($sql);
 	}
@@ -51,9 +51,9 @@ trait Data {
 	/**
 	 * 批量数组赋值
 	 * @param array $arr
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function dataArray(array $arr): QueryBuiler {
+	public function dataArray(array $arr): QueryBuilder {
 		foreach ($arr as $field => $value) {
 			$this->dataString((string) $field, (string) $value);
 		}
@@ -63,9 +63,9 @@ trait Data {
 	/**
 	 * 将data片段加入data, 返回当前对象
 	 * @param string $part
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	protected function dataPush(string $part): QueryBuiler {
+	protected function dataPush(string $part): QueryBuilder {
 		if (is_null($this->data)) {
 			$this->data = $part;
 		} else

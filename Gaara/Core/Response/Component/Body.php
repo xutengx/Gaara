@@ -22,16 +22,6 @@ class Body {
 	}
 
 	/**
-	 * 设置响应内容
-	 * @param mixed $content
-	 * @return \Gaara\Core\Response\Component\Body
-	 */
-	public function setContent($content): Body {
-		$this->content = $content;
-		return $this;
-	}
-
-	/**
 	 * 设置响应字符集
 	 * @param string $char
 	 * @return \Gaara\Core\Response\Component\Body
@@ -39,6 +29,15 @@ class Body {
 	public function setChar(string $char): Body {
 		$this->char = $char;
 		return $this;
+	}
+
+	/**
+	 * 发送响应
+	 * @return Body
+	 */
+	public function send(): Body {
+		echo $this->encode($this->content);
+		return $this->setContent(null);
 	}
 
 	/**
@@ -50,28 +49,29 @@ class Body {
 		$encode = '';
 		switch ($this->contentType) {
 			case 'json':
-				$encode	 = json_encode($data, JSON_UNESCAPED_UNICODE);
+				$encode = json_encode($data, JSON_UNESCAPED_UNICODE);
 				break;
 			case 'xml':
-				$encode	 = obj(Tool::class)->xml_encode($data, $this->char);
+				$encode = obj(Tool::class)->xml_encode($data, $this->char);
 				break;
 			case 'php':
-				$encode	 = serialize($data);
+				$encode = serialize($data);
 				break;
 			case 'html':
-				$encode	 = is_array($data) ? json_encode($data, JSON_UNESCAPED_UNICODE) : $data;
+				$encode = is_array($data) ? json_encode($data, JSON_UNESCAPED_UNICODE) : $data;
 				break;
 		}
-		return (string) $encode;
+		return (string)$encode;
 	}
 
 	/**
-	 * 发送响应
-	 * @return Body
+	 * 设置响应内容
+	 * @param mixed $content
+	 * @return \Gaara\Core\Response\Component\Body
 	 */
-	public function send(): Body {
-		echo $this->encode($this->content);
-		return $this->setContent(null);
+	public function setContent($content): Body {
+		$this->content = $content;
+		return $this;
 	}
 
 }

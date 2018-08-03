@@ -3,9 +3,8 @@
 declare(strict_types = 1);
 namespace Gaara\Core\Kernel\Traits;
 
-use Gaara\Core\{
-	Conf, Pipeline, Kernel, Request, Response
-};
+use Exception;
+use Gaara\Core\{Conf, Kernel, Pipeline, Request};
 
 trait Init {
 
@@ -14,8 +13,8 @@ trait Init {
 	 * @return Kernel
 	 */
 	public function init(): Kernel {
-		$this->pipeline	 = $this->make(Pipeline::class);
-		$this->request	 = $this->make(Request::class);
+		$this->pipeline = $this->make(Pipeline::class);
+		$this->request  = $this->make(Request::class);
 		$this->execute($this, 'confInit');
 		return $this;
 	}
@@ -24,8 +23,9 @@ trait Init {
 	 * 初始化配置
 	 * @param Conf $conf 配置对象
 	 * @return void
+	 * @throws \Exception
 	 */
-	protected function confInit(Conf $conf) {
+	protected function confInit(Conf $conf): void {
 		// 配置
 		$confApp = $conf->app;
 

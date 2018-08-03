@@ -3,38 +3,33 @@
 declare(strict_types = 1);
 namespace Gaara\Core;
 
-use PDOStatement;
-use Gaara\Core\Model\QueryBuiler;
-use Gaara\Core\Model\Traits\{
-	DebugTrait, ObjectRelationalMappingTrait, Transaction
-};
-use Gaara\Core\Cache;
 use Gaara\Contracts\ServiceProvider\Single;
+use Gaara\Core\Model\QueryBuilder;
+use Gaara\Core\Model\Traits\{DebugTrait, ObjectRelationalMappingTrait, Transaction};
+use PDOStatement;
 
 abstract class Model implements Single {
 
-	use DebugTrait,
-	 ObjectRelationalMappingTrait,
-	 Transaction;
+	use DebugTrait, ObjectRelationalMappingTrait, Transaction;
 
 	// 所有数据库连接类
 	protected static $dbs;
 	// 当前model的数据库连接类
 	protected $db;
 	// 主键的字段
-	protected $primaryKey	 = 'id';
+	protected $primaryKey = 'id';
 	// 表名
-	protected $table		 = '';
+	protected $table = '';
 	// 表信息
-	protected $field		 = array();
+	protected $field = [];
 	// 链式操作集合
-	protected $options		 = array();
+	protected $options = [];
 	// 链式操作 sql
-	protected $lastSql		 = '';
+	protected $lastSql = '';
 	// PDOStatement
-	protected $PDOStatement	 = null;
+	protected $PDOStatement = null;
 	// 主动指定配置文件
-	protected $connection	 = null;
+	protected $connection = null;
 
 	final public function __construct() {
 		$this->db = $this->getDB();
@@ -48,9 +43,10 @@ abstract class Model implements Single {
 	 * @return DbConnection
 	 */
 	protected function getDB(): DbConnection {
-		$conf							 = obj(Conf::class)->db;
-		$this->connection				 = $this->connection ?? $conf['connection'];
-		return self::$dbs[$this->connection] ?? self::$dbs[$this->connection]	 = dobj(DbConnection::class, $this->connection);
+		$conf             = obj(Conf::class)->db;
+		$this->connection = $this->connection ?? $conf['connection'];
+		return self::$dbs[$this->connection] ??
+		       self::$dbs[$this->connection] = dobj(DbConnection::class, $this->connection);
 	}
 
 	/**
@@ -59,22 +55,14 @@ abstract class Model implements Single {
 	 */
 	final protected function get_thisTable(): void {
 		// 驼峰转下划线
-		$uncamelize = function ($camelCaps, $separator = '_') {
+		$uncamelize = function($camelCaps, $separator = '_') {
 			return strtolower(preg_replace('/([a-z])([A-Z])/', "$1" . $separator . "$2", $camelCaps));
 		};
 		if ($this->table === '') {
-			$classname	 = get_class($this);
-			$classname	 = substr($classname, strrpos($classname, '\\') + 1);
-			$this->table = $uncamelize(strtr($classname, array('Model' => '')));
+			$classname   = get_class($this);
+			$classname   = substr($classname, strrpos($classname, '\\') + 1);
+			$this->table = $uncamelize(strtr($classname, ['Model' => '']));
 		}
-	}
-
-	/**
-	 * 返回当前表名
-	 * @return string
-	 */
-	public static function getTable(): string {
-		return \obj(static::class)->table;
 	}
 
 	/**
@@ -95,30 +83,14 @@ abstract class Model implements Single {
 	/**
 	 * 所有手动初始化建议在此执行
 	 */
-	protected function construct() {
-
-	}
+	protected function construct() { }
 
 	/**
-	 * 返回一个查询构造器
-	 * @param string $table 绑定表名
-	 * @param string $primaryKey 主键名
-	 * @return QueryBuiler
+	 * 返回当前表名
+	 * @return string
 	 */
-	public function newQuery(string $table = null, string $primaryKey = null): QueryBuiler {
-		$queryTable		 = $table ?? $this->table;
-		$queryPrimaryKey = $primaryKey ?? $this->primaryKey;
-		return new QueryBuiler($queryTable, $queryPrimaryKey, $this->db, $this);
-	}
-
-	/**
-	 * 对象链式操作
-	 * @param string $method
-	 * @param array $parameters
-	 * @return mixed
-	 */
-	public function __call(string $method, array $parameters = []) {
-		return $this->newQuery()->$method(...$parameters);
+	public static function getTable(): string {
+		return \obj(static::class)->table;
 	}
 
 	/**
@@ -132,11 +104,33 @@ abstract class Model implements Single {
 	}
 
 	/**
-	 * 在 Model 中为 QueryBuiler 注册自定义链式方法
+	 * 对象链式操作
+	 * @param string $method
+	 * @param array $parameters
+	 * @return mixed
+	 */
+	public function __call(string $method, array $parameters = []) {
+		return $this->newQuery()->$method(...$parameters);
+	}
+
+	/**
+	 * 返回一个查询构造器
+	 * @param string $table 绑定表名
+	 * @param string $primaryKey 主键名
+	 * @return QueryBuilder
+	 */
+	public function newQuery(string $table = null, string $primaryKey = null): QueryBuilder {
+		$queryTable      = $table ?? $this->table;
+		$queryPrimaryKey = $primaryKey ?? $this->primaryKey;
+		return new QueryBuilder($queryTable, $queryPrimaryKey, $this->db, $this);
+	}
+
+	/**
+	 * 在 Model 中为 QueryBuilder 注册自定义链式方法
 	 * 重载此方法
 	 * @return array
 	 */
-	public function registerMethodForQueryBuiler(): array {
+	public function registerMethodForQueryBuilder(): array {
 		return [];
 	}
 
@@ -145,6 +139,7 @@ abstract class Model implements Single {
 	 * @param string $sql
 	 * @param string $type 使用的数据库链接类型
 	 * @return PDOStatement
+	 * @throws \Exception
 	 */
 	public function query(string $sql, string $type = 'update'): PDOStatement {
 		$PDOStatement = $this->db->prepare($sql, $type);
@@ -157,6 +152,7 @@ abstract class Model implements Single {
 	 * @param string $sql
 	 * @param string $type 使用的数据库链接类型
 	 * @return PDOStatement
+	 * @throws \Exception
 	 */
 	public function prepare(string $sql, string $type = 'update'): PDOStatement {
 		return $this->db->prepare($sql, $type);

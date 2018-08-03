@@ -1,18 +1,18 @@
 <?php
 
 declare(strict_types = 1);
-namespace Gaara\Core\Model\QueryBuiler;
+namespace Gaara\Core\Model\QueryBuilder;
 
-use Gaara\Core\Model\QueryBuiler;
+use Gaara\Core\Model\QueryBuilder;
 
 trait Order {
 
 	/**
 	 * 单个order
 	 * @param string $field
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function orderString(string $field, string $order = 'asc'): QueryBuiler {
+	public function orderString(string $field, string $order = 'asc'): QueryBuilder {
 		$sql = $this->fieldFormat($field) . ' ' . $order;
 		return $this->orderPush($sql);
 	}
@@ -20,9 +20,9 @@ trait Order {
 	/**
 	 * 将order片段加入order, 返回当前对象
 	 * @param string $part
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	protected function orderPush(string $part): QueryBuiler {
+	protected function orderPush(string $part): QueryBuilder {
 		if (is_null($this->order)) {
 			$this->order = $part;
 		} else

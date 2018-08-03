@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types = 1);
-namespace Gaara\Core\Model\QueryBuiler;
+namespace Gaara\Core\Model\QueryBuilder;
 
 use Gaara\Core\Model\QueryPrepare;
 

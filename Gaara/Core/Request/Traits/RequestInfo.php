@@ -29,6 +29,7 @@ trait RequestInfo {
 	public $methods; // 当前路由可用的http方法数组
 	public $userHost; // 来访者的host
 	public $userIp; // 来访者的ip
+	public $ip; // 来访者的ip
 	public $contentType; // 请求体格式
 	public $acceptType; // 需求的相应体格式
 	public $MatchedRouting = null; // 路由匹配成功后,由`Kernel`赋值的`MatchedRouting`对象
@@ -36,26 +37,27 @@ trait RequestInfo {
 	//define('HOST', ($_SERVER['HTTP_HTTPS'] ?? $_SERVER['REQUEST_SCHEME']) . '://' . $_SERVER['HTTP_HOST'] . str_replace(IN_SYS, '', $_SERVER['SCRIPT_NAME']));
 
 	public function RequestInfoInit() {
-		$this->inSys			 = IN_SYS ?? 'index.php';
-		$this->isAjax			 = $this->isAjax();
-		$this->scheme			 = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? $_SERVER['REQUEST_SCHEME'];
-		$this->host				 = $_SERVER['HTTP_HOST'];
-		$this->port				 = $_SERVER['HTTP_X_FORWARDED_PROT'] ?? $_SERVER['SERVER_PORT'];
-		$this->scriptName		 = $_SERVER['SCRIPT_NAME'];
-		$this->requestUrl		 = $_SERVER['REQUEST_URI'];
-		$this->queryString		 = $_SERVER['QUERY_STRING'];
-		$this->hostInfo			 = $this->scheme . '://' . $this->host . (($this->port !== '80' && $this->port !== '443')
-			? ':' . $this->port : '');
-		$this->absoluteUrl		 = $this->hostInfo . $this->requestUrl;
-		$this->hostStaticInfo	 = $this->hostInfo . str_replace($this->inSys, '', $this->scriptName);
-		$this->pathInfo			 = '/' . str_replace('?' . $this->queryString, '', substr_replace($this->requestUrl, '', 0, strlen(str_replace($this->inSys, '', $this->scriptName))));
-		$this->staticUrl		 = $this->hostInfo . $this->pathInfo;
-		$this->serverName		 = $_SERVER['SERVER_NAME'];
-		$this->method			 = strtolower($_SERVER['REQUEST_METHOD']);
-		$this->userHost			 = $_SERVER['REMOTE_HOST'] ?? '';
-		$this->userIp			 = $this->getUserIp();
-		$this->contentType		 = $_SERVER['CONTENT_TYPE'] ?? '';
-		$this->acceptType		 = $_SERVER['ACCEPY_TYPE'] ?? $_SERVER['ACCEPY'] ?? '';
+		$this->inSys          = IN_SYS ?? 'index.php';
+		$this->isAjax         = $this->isAjax();
+		$this->scheme         = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? $_SERVER['REQUEST_SCHEME'];
+		$this->host           = $_SERVER['HTTP_HOST'];
+		$this->port           = $_SERVER['HTTP_X_FORWARDED_PROT'] ?? $_SERVER['SERVER_PORT'];
+		$this->scriptName     = $_SERVER['SCRIPT_NAME'];
+		$this->requestUrl     = $_SERVER['REQUEST_URI'];
+		$this->queryString    = $_SERVER['QUERY_STRING'];
+		$this->hostInfo       = $this->scheme . '://' . $this->host .
+		                        (($this->port !== '80' && $this->port !== '443') ? ':' . $this->port : '');
+		$this->absoluteUrl    = $this->hostInfo . $this->requestUrl;
+		$this->hostStaticInfo = $this->hostInfo . str_replace($this->inSys, '', $this->scriptName);
+		$this->pathInfo       = '/' . str_replace('?' . $this->queryString, '',
+				substr_replace($this->requestUrl, '', 0, strlen(str_replace($this->inSys, '', $this->scriptName))));
+		$this->staticUrl      = $this->hostInfo . $this->pathInfo;
+		$this->serverName     = $_SERVER['SERVER_NAME'];
+		$this->method         = strtolower($_SERVER['REQUEST_METHOD']);
+		$this->userHost       = $_SERVER['REMOTE_HOST'] ?? '';
+		$this->ip             = $this->userIp = $this->getUserIp();
+		$this->contentType    = $_SERVER['CONTENT_TYPE'] ?? '';
+		$this->acceptType     = $_SERVER['ACCEPY_TYPE'] ?? $_SERVER['ACCEPY'] ?? '';
 	}
 
 	/**
@@ -63,7 +65,8 @@ trait RequestInfo {
 	 * @return bool
 	 */
 	protected function isAjax(): bool {
-		if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && (strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'))
+		if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+		    (strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'))
 			return true;
 		return false;
 	}

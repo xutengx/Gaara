@@ -1,28 +1,28 @@
 <?php
 
 declare(strict_types = 1);
-namespace Gaara\Core\Model\QueryBuiler;
+namespace Gaara\Core\Model\QueryBuilder;
 
 use Closure;
-use Gaara\Core\Model\QueryBuiler;
+use Gaara\Core\Model\QueryBuilder;
 
 trait Select {
 
 	/**
 	 * 加入不做处理的字段
 	 * @param string $sql
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function selectRaw(string $sql): QueryBuiler {
+	public function selectRaw(string $sql): QueryBuilder {
 		return $this->selectPush($sql);
 	}
 
 	/**
 	 * 将一个数组加入查询
 	 * @param array $arr
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function selectArray(array $arr): QueryBuiler {
+	public function selectArray(array $arr): QueryBuilder {
 		$str = '';
 		foreach ($arr as $field) {
 			$str .= $this->fieldFormat($field) . ',';
@@ -35,9 +35,9 @@ trait Select {
 	 * 将一个string加入查询
 	 * @param string $str
 	 * @param string $delimiter
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function selectString(string $str, string $delimiter = ','): QueryBuiler {
+	public function selectString(string $str, string $delimiter = ','): QueryBuilder {
 		return $this->selectArray(explode($delimiter, $str));
 	}
 
@@ -47,16 +47,16 @@ trait Select {
 	 * @param string $function
 	 * @param Closure $callback
 	 * @param string $alias
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function selectFunction(string $function, Closure $callback, string $alias = null): QueryBuiler {
-		$res		 = $callback($queryBuiler = $this->getSelf());
+	public function selectFunction(string $function, Closure $callback, string $alias = null): QueryBuilder {
+		$res		 = $callback($QueryBuilder = $this->getSelf());
 		// 调用方未调用return
 		if (is_null($res)) {
-			$sql = $queryBuiler->getAllToSql();
+			$sql = $QueryBuilder->getAllToSql();
 		}
 		// 调用方未调用toSql
-		elseif ($res instanceof QueryBuiler) {
+		elseif ($res instanceof QueryBuilder) {
 			$sql = $res->getAllToSql();
 		}
 		// 调用正常
@@ -64,16 +64,16 @@ trait Select {
 			$sql		 = $res;
 		$aliasString = is_null($alias) ? '' : " as '$alias'";
 		// 合并绑定数组
-		$this->bindings += $queryBuiler->getBindings();
+		$this->bindings += $QueryBuilder->getBindings();
 		return $this->selectRaw($function . $this->bracketFormat($sql) . $aliasString);
 	}
 
 	/**
 	 * 将select片段加入select, 返回当前对象
 	 * @param string $part
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	protected function selectPush(string $part): QueryBuiler {
+	protected function selectPush(string $part): QueryBuilder {
 		if (is_null($this->select)) {
 			$this->select = $part;
 		} else

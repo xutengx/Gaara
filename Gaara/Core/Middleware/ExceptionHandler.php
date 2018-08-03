@@ -3,16 +3,10 @@
 declare(strict_types = 1);
 namespace Gaara\Core\Middleware;
 
-use Gaara\Core\{
-	Middleware, Request, Response, Log
-};
-use Gaara\Exception\{
-	MessageException, HttpException
-};
+use Gaara\Core\{Log, Middleware, Request, Response};
+use Gaara\Exception\{HttpException, MessageException};
+use Whoops\Handler\{JsonResponseHandler, PlainTextHandler, PrettyPageHandler};
 use Whoops\Run;
-use Whoops\Handler\{
-	PlainTextHandler, JsonResponseHandler, PrettyPageHandler
-};
 
 /**
  * 异常处理
@@ -22,9 +16,9 @@ class ExceptionHandler extends Middleware {
 	protected $except = [];
 
 	public function handle(Request $request) {
-		$debug	 = app()->debug;
-		$cli	 = app()->cli;
-		$whoops	 = new Run;
+		$debug  = app()->debug;
+		$cli    = app()->cli;
+		$whoops = new Run;
 		if ($debug) {
 			if ($cli)
 				$whoops->pushHandler(new PlainTextHandler);
@@ -32,7 +26,8 @@ class ExceptionHandler extends Middleware {
 				$whoops->pushHandler(new PrettyPageHandler);
 			else
 				$whoops->pushHandler(new PrettyPageHandler);
-		}else {
+		}
+		else {
 			if ($cli)
 				$whoops->pushHandler(new PlainTextHandler);
 			elseif ($request->isAjax)
@@ -49,8 +44,8 @@ class ExceptionHandler extends Middleware {
 			obj(Log::class)->error($inspector->getException());
 
 			if ($exception instanceof MessageException || $exception instanceof HttpException) {
-				$msg	 = $exception->getMessage();
-				$code	 = $exception->getCode();
+				$msg  = $exception->getMessage();
+				$code = $exception->getCode();
 				obj(Response::class)->fail($msg, $code)->sendExit();
 			}
 		});

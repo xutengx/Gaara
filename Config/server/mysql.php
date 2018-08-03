@@ -8,7 +8,7 @@ return [
 	  | 在每次 mysql 数据库连接时, 都会调用
 	  | http://php.net/manual/zh/pdo.setattribute.php
 	 */
-	'pdo_attr'	 => [
+	'pdo_attr' => [
 		/*
 		  |--------------------------------------------------------------------------
 		  | PDO 初始化命令
@@ -19,7 +19,7 @@ return [
 		  | NO_AUTO_CREATE_USER				`防止GRANT自动创建新用户，除非还指定了密码`
 		  | NO_ENGINE_SUBSTITUTION			`如果需要的存储引擎被禁用或未编译，那么抛出错误`
 		 */
-		PDO::MYSQL_ATTR_INIT_COMMAND		 => "SET SESSION SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'",
+		PDO::MYSQL_ATTR_INIT_COMMAND       => "SET SESSION SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'",
 		/*
 		  |--------------------------------------------------------------------------
 		  | 指定超时的秒数
@@ -27,7 +27,7 @@ return [
 		  | int
 		  |
 		 */
-		PDO::ATTR_TIMEOUT					 => 60,
+		PDO::ATTR_TIMEOUT                  => 60,
 		/*
 		  |--------------------------------------------------------------------------
 		  | PDO 错误模式
@@ -37,7 +37,7 @@ return [
 		  | PDO::ERRMODE_SILENT				`仅设置错误代码`
 		  |
 		 */
-		PDO::ATTR_ERRMODE					 => PDO::ERRMODE_EXCEPTION,
+		PDO::ATTR_ERRMODE                  => PDO::ERRMODE_EXCEPTION,
 		/*
 		  |--------------------------------------------------------------------------
 		  | 启用或禁用预处理语句的模拟
@@ -46,7 +46,7 @@ return [
 		  | false
 		  |
 		 */
-		PDO::ATTR_EMULATE_PREPARES			 => false,
+		PDO::ATTR_EMULATE_PREPARES         => false,
 		/*
 		  |--------------------------------------------------------------------------
 		  | 是否使用缓冲查询
@@ -57,7 +57,7 @@ return [
 		  | 在PHP取回所有结果前,在当前数据库连接下不能发送其他的查询请求
 		  |
 		 */
-		PDO::MYSQL_ATTR_USE_BUFFERED_QUERY	 => false,
+		PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => false,
 		/*
 		  |--------------------------------------------------------------------------
 		  | 强制列名为指定的大小写
@@ -67,7 +67,7 @@ return [
 		  | PDO::CASE_UPPER					`强制列名大写`
 		  |
 		 */
-		PDO::ATTR_CASE						 => PDO::CASE_LOWER,
+		PDO::ATTR_CASE                     => PDO::CASE_LOWER,
 		/*
 		  |--------------------------------------------------------------------------
 		  | 转换 NULL 和空字符串
@@ -77,7 +77,7 @@ return [
 		  | PDO::NULL_TO_STRING				`将 NULL 转换成空字符串`
 		  |
 		 */
-		PDO::ATTR_ORACLE_NULLS				 => PDO::NULL_TO_STRING,
+		PDO::ATTR_ORACLE_NULLS             => PDO::NULL_TO_STRING,
 		/*
 		  |--------------------------------------------------------------------------
 		  | 提取的时候将数值转换为字符串
@@ -86,7 +86,7 @@ return [
 		  | false
 		  |
 		 */
-		PDO::ATTR_STRINGIFY_FETCHES			 => false,
+		PDO::ATTR_STRINGIFY_FETCHES        => false,
 		/*
 		  |--------------------------------------------------------------------------
 		  | 是否自动提交每个单独的语句
@@ -95,7 +95,7 @@ return [
 		  | false
 		  |
 		 */
-		PDO::ATTR_AUTOCOMMIT				 => true,
+		PDO::ATTR_AUTOCOMMIT               => true,
 	],
 	/*
 	  |--------------------------------------------------------------------------
@@ -104,7 +104,7 @@ return [
 	  | 在每次数据库连接时, 都会调用
 	  |
 	 */
-	'ini_sql'	 => [
+	'ini_sql'  => [
 		/*
 		  |--------------------------------------------------------------------------
 		  | 设置数据库事物隔离级别

@@ -4,9 +4,7 @@ declare(strict_types = 1);
 namespace Gaara\Core\Middleware;
 
 use Exception;
-use Gaara\Core\{
-	Middleware, Request, Secure
-};
+use Gaara\Core\{Middleware, Request, Secure};
 use Gaara\Exception\Http\ForbiddenHttpException;
 
 /**
@@ -21,7 +19,7 @@ class VerifyCsrfToken extends Middleware {
 	 * 初始化 过期时间
 	 */
 	public function __construct($effectiveTime = 3600) {
-		$this->effectiveTime = (int) $effectiveTime;
+		$this->effectiveTime = (int)$effectiveTime;
 	}
 
 	/**
@@ -37,7 +35,8 @@ class VerifyCsrfToken extends Middleware {
 		$this->addCookie($request);
 		if ($this->isReturnHtml($request) && $this->isReading($request) || $this->tokensMatch($request)) {
 
-		} else {
+		}
+		else {
 			throw new ForbiddenHttpException('Csrf Token Error');
 		}
 	}
@@ -48,6 +47,24 @@ class VerifyCsrfToken extends Middleware {
 	 */
 	protected function hasSession(): bool {
 		return isset($_SESSION);
+	}
+
+	/**
+	 * 生成 X-CSRF-TOKEN 加入cookie
+	 * @param Request $request
+	 * @return void
+	 */
+	protected function addCookie(Request $request): void {
+		$token = $this->theToken();
+		$request->setcookie('X-XSRF-TOKEN', $token, $this->effectiveTime, '', '', false, false);
+	}
+
+	/**
+	 * 计算token
+	 * @return string
+	 */
+	protected function theToken(): string {
+		return obj(Secure::class)->md5(session_id());
 	}
 
 	/**
@@ -86,24 +103,6 @@ class VerifyCsrfToken extends Middleware {
 	protected function getTokenFromRequest(Request $request): string {
 		$token = $request->input('_token') ?? $request->header('X-XSRF-TOKEN') ?? $request->header('HTTP_X_XSRF_TOKEN');
 		return $token;
-	}
-
-	/**
-	 * 生成 X-CSRF-TOKEN 加入cookie
-	 * @param Request $request
-	 * @return void
-	 */
-	protected function addCookie(Request $request): void {
-		$token = $this->theToken();
-		$request->setcookie('X-XSRF-TOKEN', $token, $this->effectiveTime, '', '', false, false);
-	}
-
-	/**
-	 * 计算token
-	 * @return string
-	 */
-	protected function theToken(): string {
-		return obj(Secure::class)->md5(session_id());
 	}
 
 }

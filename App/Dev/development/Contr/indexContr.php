@@ -20,6 +20,9 @@ class indexContr extends Controller {
 		$passwd3 = password_hash('123123', PASSWORD_BCRYPT);
 		var_dump($passwd3);
 		
+		$s12 = '123123123131';
+		$qeqweq = $s12;
+		$qweqwe = $qeqweq;
 		var_dump(password_verify(1231231, $passwd));
 		
 		exit();
@@ -49,8 +52,9 @@ class indexContr extends Controller {
 		exit('test');
 	}
 	
-	public function tt() {
+	public function tt(?string $ttt = null): void {
 		echo 'qweqwe';
+		return ;
 	}
 	
 	public function __destruct() {

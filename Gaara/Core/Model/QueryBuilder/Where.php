@@ -1,19 +1,19 @@
 <?php
 
 declare(strict_types = 1);
-namespace Gaara\Core\Model\QueryBuiler;
+namespace Gaara\Core\Model\QueryBuilder;
 
 use Closure;
-use Gaara\Core\Model\QueryBuiler;
+use Gaara\Core\Model\QueryBuilder;
 
 trait Where {
 
 	/**
 	 * exists一句完整的sql
 	 * @param string $sql
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function whereExistsRaw(string $sql): QueryBuiler {
+	public function whereExistsRaw(string $sql): QueryBuilder {
 		$sql = 'exists ' . $this->bracketFormat($sql);
 		return $this->wherePush($sql);
 	}
@@ -21,32 +21,32 @@ trait Where {
 	/**
 	 * exists一个闭包
 	 * @param Closure $callback
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function whereExistsClosure(Closure $callback): QueryBuiler {
-		$res		 = $callback($queryBuiler = $this->getSelf());
+	public function whereExistsClosure(Closure $callback): QueryBuilder {
+		$res		 = $callback($QueryBuilder = $this->getSelf());
 		// 调用方未调用return
 		if (is_null($res)) {
-			$sql = $queryBuiler->getAllToSqlWithBindingsKey();
+			$sql = $QueryBuilder->getAllToSqlWithBindingsKey();
 		}
 		// 调用方未调用toSql
-		elseif ($res instanceof QueryBuiler) {
+		elseif ($res instanceof QueryBuilder) {
 			$sql = $res->getAllToSqlWithBindingsKey();
 		}
 		// 调用正常
 		else
 			$sql = $res;
 		// 合并绑定数组
-		$this->bindings += $queryBuiler->getBindings();
+		$this->bindings += $QueryBuilder->getBindings();
 		return $this->whereExistsRaw($sql);
 	}
 
 	/**
 	 * not exists一句完整的sql
 	 * @param string $sql
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function whereNotExistsRaw(string $sql): QueryBuiler {
+	public function whereNotExistsRaw(string $sql): QueryBuilder {
 		$sql = 'not exists ' . $this->bracketFormat($sql);
 		return $this->wherePush($sql);
 	}
@@ -54,41 +54,41 @@ trait Where {
 	/**
 	 * not exists一个闭包
 	 * @param Closure $callback
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function whereNotExistsClosure(Closure $callback): QueryBuiler {
-		$res		 = $callback($queryBuiler = $this->getSelf());
+	public function whereNotExistsClosure(Closure $callback): QueryBuilder {
+		$res		 = $callback($QueryBuilder = $this->getSelf());
 		// 调用方未调用return
 		if (is_null($res)) {
-			$sql = $queryBuiler->getAllToSqlWithBindingsKey();
+			$sql = $QueryBuilder->getAllToSqlWithBindingsKey();
 		}
 		// 调用方未调用toSql
-		elseif ($res instanceof QueryBuiler) {
+		elseif ($res instanceof QueryBuilder) {
 			$sql = $res->getAllToSqlWithBindingsKey();
 		}
 		// 调用正常
 		else
 			$sql = $res;
 		// 合并绑定数组
-		$this->bindings += $queryBuiler->getBindings();
+		$this->bindings += $QueryBuilder->getBindings();
 		return $this->whereNotExistsRaw($sql);
 	}
 
 	/**
 	 * 加入一个不做处理的条件
 	 * @param string $sql
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function whereRaw(string $sql): QueryBuiler {
+	public function whereRaw(string $sql): QueryBuilder {
 		return $this->wherePush($sql);
 	}
 
 	/**
 	 * 且
 	 * @param Closure $callback
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function andWhere(Closure $callback): QueryBuiler {
+	public function andWhere(Closure $callback): QueryBuilder {
 		$sql = $this->whereClosure($callback);
 		return $this->wherePush($sql);
 	}
@@ -96,9 +96,9 @@ trait Where {
 	/**
 	 * 或
 	 * @param Closure $callback
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function orWhere(Closure $callback): QueryBuiler {
+	public function orWhere(Closure $callback): QueryBuilder {
 		$sql = $this->whereClosure($callback);
 		return $this->wherePush($sql, 'or');
 	}
@@ -108,9 +108,9 @@ trait Where {
 	 * @param string $fieldOne
 	 * @param string $symbol
 	 * @param string $fieldTwo
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function whereColumn(string $fieldOne, string $symbol, string $fieldTwo): QueryBuiler {
+	public function whereColumn(string $fieldOne, string $symbol, string $fieldTwo): QueryBuilder {
 		$sql = $this->fieldFormat($fieldOne) . $symbol . $this->fieldFormat($fieldTwo);
 		return $this->wherePush($sql);
 	}
@@ -120,9 +120,9 @@ trait Where {
 	 * @param string $field
 	 * @param string $symbol
 	 * @param string $value
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function whereValue(string $field, string $symbol, string $value): QueryBuiler {
+	public function whereValue(string $field, string $symbol, string $value): QueryBuilder {
 		$sql = $this->fieldFormat($field) . $symbol . $this->valueFormat($value);
 		return $this->wherePush($sql);
 	}
@@ -133,19 +133,19 @@ trait Where {
 	 * @param string $symbol
 	 * @param string $subquery
 	 */
-	public function whereSubqueryRaw(string $field, string $symbol, string $subquery): QueryBuiler {
+	public function whereSubqueryRaw(string $field, string $symbol, string $subquery): QueryBuilder {
 		$sql = $this->fieldFormat($field) . $symbol . $this->bracketFormat($subquery);
 		return $this->wherePush($sql);
 	}
 
 	/**
-	 * 子查询 一个QueryBuiler对象
+	 * 子查询 一个QueryBuilder对象
 	 * @param string $field
 	 * @param string $symbol
-	 * @param QueryBuiler $queryBuiler
+	 * @param QueryBuilder $QueryBuilder
 	 */
-	public function whereSubqueryQueryBuiler(string $field, string $symbol, QueryBuiler $queryBuiler): QueryBuiler {
-		$sql = $queryBuiler->getAllToSql();
+	public function whereSubqueryQueryBuilder(string $field, string $symbol, QueryBuilder $QueryBuilder): QueryBuilder {
+		$sql = $QueryBuilder->getAllToSql();
 		return $this->whereSubqueryRaw($field, $symbol, $sql);
 	}
 
@@ -155,14 +155,14 @@ trait Where {
 	 * @param string $symbol
 	 * @param Closure $callback
 	 */
-	public function whereSubqueryClosure(string $field, string $symbol, Closure $callback): QueryBuiler {
-		$res		 = $callback($queryBuiler = $this->getSelf());
+	public function whereSubqueryClosure(string $field, string $symbol, Closure $callback): QueryBuilder {
+		$res		 = $callback($QueryBuilder = $this->getSelf());
 		// 调用方未调用return
 		if (is_null($res)) {
-			$sql = $queryBuiler->getAllToSql();
+			$sql = $QueryBuilder->getAllToSql();
 		}
 		// 调用方未调用toSql
-		elseif ($res instanceof QueryBuiler) {
+		elseif ($res instanceof QueryBuilder) {
 			$sql = $res->getAllToSql();
 		}
 		// 调用正常
@@ -174,9 +174,9 @@ trait Where {
 	/**
 	 * 批量相等条件
 	 * @param array $arr
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function whereArray(array $arr): QueryBuiler {
+	public function whereArray(array $arr): QueryBuilder {
 		foreach ($arr as $field => $value) {
 			$this->whereValue((string)$field, '=', (string)$value);
 		}
@@ -188,9 +188,9 @@ trait Where {
 	 * @param string $field
 	 * @param string $min
 	 * @param string $max
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function whereBetweenString(string $field, string $min, string $max): QueryBuiler {
+	public function whereBetweenString(string $field, string $min, string $max): QueryBuilder {
 		$sql = $this->fieldFormat($field) . 'between' . $this->valueFormat($min) . 'and' . $this->valueFormat($max);
 		return $this->wherePush($sql);
 	}
@@ -199,9 +199,9 @@ trait Where {
 	 * 字段值在2值之间
 	 * @param string $field
 	 * @param array $range
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function whereBetweenArray(string $field, array $range): QueryBuiler {
+	public function whereBetweenArray(string $field, array $range): QueryBuilder {
 		$sql = $this->fieldFormat($field) . 'between' . $this->valueFormat(reset($range)) . 'and' . $this->valueFormat(end($range));
 		return $this->wherePush($sql);
 	}
@@ -211,9 +211,9 @@ trait Where {
 	 * @param string $field
 	 * @param string $min
 	 * @param string $max
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function whereNotBetweenString(string $field, string $min, string $max): QueryBuiler {
+	public function whereNotBetweenString(string $field, string $min, string $max): QueryBuilder {
 		$sql = $this->fieldFormat($field) . 'not between' . $this->valueFormat($min) . 'and' . $this->valueFormat($max);
 		return $this->wherePush($sql);
 	}
@@ -222,9 +222,9 @@ trait Where {
 	 * 字段值不在2值之间
 	 * @param string $field
 	 * @param array $range
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function whereNotBetweenArray(string $field, array $range): QueryBuiler {
+	public function whereNotBetweenArray(string $field, array $range): QueryBuilder {
 		$sql = $this->fieldFormat($field) . 'not between' . $this->valueFormat(reset($range)) . 'and' . $this->valueFormat(end($range));
 		return $this->wherePush($sql);
 	}
@@ -233,9 +233,9 @@ trait Where {
 	 * 字段值在范围内
 	 * @param string $field
 	 * @param array $values
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function whereInArray(string $field, array $values): QueryBuiler {
+	public function whereInArray(string $field, array $values): QueryBuilder {
 		$sql = $this->fieldFormat($field) . 'in' . $this->bracketFormat($this->valueFormat(implode('\',\'', $values)));
 		return $this->wherePush($sql);
 	}
@@ -245,9 +245,9 @@ trait Where {
 	 * @param string $field
 	 * @param string $value
 	 * @param array $delimiter
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function whereInString(string $field, string $value, string $delimiter = ','): QueryBuiler {
+	public function whereInString(string $field, string $value, string $delimiter = ','): QueryBuilder {
 		return $this->whereInArray($field, explode($delimiter, $value));
 	}
 
@@ -255,9 +255,9 @@ trait Where {
 	 * 字段值不在范围内
 	 * @param string $field
 	 * @param array $values
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function whereNotInArray(string $field, array $values): QueryBuiler {
+	public function whereNotInArray(string $field, array $values): QueryBuilder {
 		$sql = $this->fieldFormat($field) . 'not in' . $this->bracketFormat($this->valueFormat(implode('\',\'', $values)));
 		return $this->wherePush($sql);
 	}
@@ -267,18 +267,18 @@ trait Where {
 	 * @param string $field
 	 * @param string $value
 	 * @param array $delimiter
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function whereNotInString(string $field, string $value, string $delimiter = ','): QueryBuiler {
+	public function whereNotInString(string $field, string $value, string $delimiter = ','): QueryBuilder {
 		return $this->whereNotInArray($field, explode($delimiter, $value));
 	}
 
 	/**
 	 * 字段值为null
 	 * @param string $field
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function whereNull(string $field): QueryBuiler {
+	public function whereNull(string $field): QueryBuilder {
 		$sql = $this->fieldFormat($field) . 'is null';
 		return $this->wherePush($sql);
 	}
@@ -286,9 +286,9 @@ trait Where {
 	/**
 	 * 字段值不为null
 	 * @param string $field
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function whereNotNull(string $field): QueryBuiler {
+	public function whereNotNull(string $field): QueryBuilder {
 		$sql = $this->fieldFormat($field) . 'is not null';
 		return $this->wherePush($sql);
 	}
@@ -300,13 +300,13 @@ trait Where {
 	 */
 	protected function whereClosure(Closure $callback): string {
 		$str		 = '';
-		$res		 = $callback($queryBuiler = $this->getSelf());
+		$res		 = $callback($QueryBuilder = $this->getSelf());
 		// 调用方未调用return
 		if (is_null($res)) {
-			$str = $queryBuiler->toSql();
+			$str = $QueryBuilder->toSql();
 		}
 		// 调用方未调用toSql
-		elseif ($res instanceof QueryBuiler) {
+		elseif ($res instanceof QueryBuilder) {
 			$str = $res->toSql();
 		}
 		// 调用正常
@@ -314,7 +314,7 @@ trait Where {
 			$str = $res;
 		$sql = $this->bracketFormat($str);
 		// 合并绑定数组
-		$this->bindings += $queryBuiler->getBindings();
+		$this->bindings += $QueryBuilder->getBindings();
 		return $sql;
 	}
 
@@ -322,9 +322,9 @@ trait Where {
 	 * 将where片段加入where, 返回当前对象
 	 * @param string $part
 	 * @param string $relationship
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	protected function wherePush(string $part, string $relationship = 'and'): QueryBuiler {
+	protected function wherePush(string $part, string $relationship = 'and'): QueryBuilder {
 		if (is_null($this->where)) {
 			$this->where = $part;
 		} else

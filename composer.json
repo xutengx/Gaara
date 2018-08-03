@@ -1,7 +1,11 @@
 {
 	"name": "xutengx/gaara",
 	"description": "Framework For PHPer.",
-	"keywords": ["framework", "xuteng", "gaara"],
+	"keywords": [
+		"framework",
+		"xuteng",
+		"gaara"
+	],
 	"license": "MIT",
 	"type": "project",
 	"authors": [
@@ -30,6 +34,11 @@
 	},
 	"require": {
 		"php": ">=7.1.0",
+		"ext-xml": "*",
+		"ext-json": "*",
+		"ext-PDO": "*",
+		"ext-redis": "*",
+		"ext-SimpleXML": "*",
 		"chillerlan/php-qrcode": "^2.0",
 		"ezyang/htmlpurifier": "^4.9",
 		"filp/whoops": "^2.1",

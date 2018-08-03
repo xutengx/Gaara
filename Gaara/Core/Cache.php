@@ -3,58 +3,58 @@
 declare(strict_types = 1);
 namespace Gaara\Core;
 
-use Gaara\Core\Conf;
-use Gaara\Core\Cache\{
-	Driver, Traits
-};
 use Closure;
-use InvalidArgumentException;
 use Exception;
 use Gaara\Contracts\ServiceProvider\Single;
+use Gaara\Core\Cache\{Driver, Traits};
+use InvalidArgumentException;
+use phpDocumentor\Reflection\Types\Mixed;
 
 class Cache implements Single {
 
 	use Traits\Remember;
 
 	// 默认缓存更新时间秒数
-	public $expire			 = 3600;
+	public $expire = 3600;
 	// 缓存键标识
-	public $key				 = null;
+	public $key = null;
 	// 已经支持的驱动
 	public $supportedDrivers = [
-		'redis'	 => Driver\Redis::class,
-		'file'	 => Driver\File::class
+		'redis' => Driver\Redis::class,
+		'file'  => Driver\File::class
 	];
 	// 当前驱动
 	protected $driver;
 	// 配置项
-	protected $conf			 = [];
+	protected $conf = [];
 	// 缓存驱动池
-	protected $Drivers		 = [];
+	protected $drivers = [];
 
 	public function __construct(Conf $conf) {
-		$this->conf		 = $conf->cache;
-		$this->expire	 = $this->conf['expire'] ?? $this->expire;
+		$this->conf   = $conf->cache;
+		$this->expire = $this->conf['expire'] ?? $this->expire;
 		$this->store();
 	}
 
 	/**
 	 * 指定使用的缓存驱动
-	 * @param string $driver_name
-	 * @return \Gaara\Core\Cache
-	 * @throws InvalidArgumentException
+	 * @param string|null $driver_name
+	 * @return Cache
 	 */
 	public function store(string $driver_name = null): Cache {
-		$drivername = $driver_name ?? $this->conf['driver'];
-		if (array_key_exists($drivername, $this->supportedDrivers)) {
-			if (array_key_exists($drivername, $this->Drivers)) {
-				$this->driver = $this->Drivers[$drivername];
-			} else {
-				$dependencyArray			 = $this->conf[$drivername];
-				$this->driver				 = $this->Drivers[$drivername]	 = obj($this->supportedDrivers[$drivername], $dependencyArray);
+		$driverName = $driver_name ?? $this->conf['driver'];
+		if (array_key_exists($driverName, $this->supportedDrivers)) {
+			if (array_key_exists($driverName, $this->drivers)) {
+				$this->driver = $this->drivers[$driverName];
 			}
-		} else
-			throw new InvalidArgumentException('Not supported the cache driver : ' . $drivername . '.');
+			else {
+				$dependencyArray = $this->conf[$driverName];
+				$this->driver    = $this->drivers[$driverName] = obj($this->supportedDrivers[$driverName],
+					$dependencyArray);
+			}
+		}
+		else
+			throw new InvalidArgumentException('Not supported the cache driver : ' . $driverName . '.');
 		return $this;
 	}
 
@@ -158,6 +158,7 @@ class Cache implements Single {
 	 * @param string $func
 	 * @param mixed ...$params
 	 * @return bool
+	 * @throws Exception
 	 */
 	public function clear($obj, string $func = '', ...$params): bool {
 		$key = $this->makeKey($obj, $func, $params);
@@ -177,7 +178,7 @@ class Cache implements Single {
 	 * 获取当前驱动的类名称
 	 * @return string eg:redis
 	 */
-	public function getDirverName(): string {
+	public function getDriverName(): string {
 		return array_search(get_class($this->driver), $this->supportedDrivers);
 	}
 
@@ -187,7 +188,7 @@ class Cache implements Single {
 	 * @return string
 	 */
 	protected function serialize($value): string {
-		return is_numeric($value) ? (string) $value : serialize($value);
+		return is_numeric($value) ? (string)$value : serialize($value);
 	}
 
 	/**
@@ -202,14 +203,14 @@ class Cache implements Single {
 	/**
 	 * 生成键名
 	 * @param string|object $obj
-	 * @param string $funcname
+	 * @param string $funcName
 	 * @param array $params
 	 * @return string
 	 * @throws Exception
 	 */
-	protected function makeKey($obj, string $funcname = '', array $params = []): string {
-		$classname	 = is_object($obj) ? get_class($obj) : $obj;
-		$key		 = ''; // default
+	protected function makeKey($obj, string $funcName = '', array $params = []): string {
+		$className = is_object($obj) ? get_class($obj) : $obj;
+		$key       = ''; // default
 		if (!empty($params)) {
 			foreach ($params as $v) {
 				if (is_object($v))
@@ -223,7 +224,7 @@ class Cache implements Single {
 			}
 			$key = '/' . md5($key);
 		}
-		$str = $classname . '/' . $funcname . $key;
+		$str = $className . '/' . $funcName . $key;
 		$str = is_null($this->key) ? $str : '@' . $this->key . '/' . $str;
 		return str_replace('\\', '/', $str);
 	}

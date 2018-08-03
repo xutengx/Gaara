@@ -3,12 +3,8 @@
 declare(strict_types = 1);
 namespace Gaara\Expand;
 
-use PhpConsole\{
-	Handler, Connector, Storage\File
-};
-use Gaara\Core\{
-	Conf, Tool
-};
+use PhpConsole\{Handler, Connector, Storage\File};
+use Gaara\Core\{Conf, Tool};
 use Gaara\Contracts\ServiceProvider\Single;
 
 /**
@@ -17,16 +13,16 @@ use Gaara\Contracts\ServiceProvider\Single;
  */
 class PhpConsole implements Single {
 
-	protected $path	 = 'data/phpconsole/';
-	protected $ext	 = 'log';
+	protected $path = 'data/phpconsole/';
+	protected $ext  = 'log';
 	protected $handle;
 
 	public function __construct() {
-		$conf		 = obj(Conf::class)->phpconsole;
+		$conf = obj(Conf::class)->phpconsole;
 		Connector::setPostponeStorage(new File($this->makeFilename()));
-		$connector	 = Connector::getInstance();
-		if (!is_null($conf['passwd'])) {
-			$connector->setPassword($conf['passwd']);
+		$connector = Connector::getInstance();
+		if (!is_null($conf['password'])) {
+			$connector->setPassword($conf['password']);
 		}
 		$this->handle = Handler::getInstance();
 	}
@@ -34,6 +30,8 @@ class PhpConsole implements Single {
 	/**
 	 * 返回文件名
 	 * @return string
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	protected function makeFilename(): string {
 		$filename = ROOT . $this->path . date('Y/m/d') . '.' . $this->ext;

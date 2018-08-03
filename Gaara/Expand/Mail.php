@@ -40,9 +40,9 @@ class Mail implements Single {
 	 * addReplyTo('1771033392@qq.com', '回复人xt');  // 设置邮件回复人地址和名称, 可多次调用
 	 * AddAddress('896622242@qq.com', '896622242@qq的名字'); // 设置谁能收到邮件, 可多次调用
 	 * send() 开始发送~
-	 * @param type $method
-	 * @param type $args
-	 * @return type
+	 * @param string $method
+	 * @param array $args
+	 * @return mixed
 	 */
 	final public function __call(string $method, array $args) {
 		return $this->mail->$method(...$args);

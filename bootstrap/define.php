@@ -6,16 +6,26 @@ declare(strict_types = 1);
   |--------------------------------------------------------------------------
   | 配置文件存放路径
   |--------------------------------------------------------------------------
-  | eg:/mnt/hgfs/www/git/php_/project/Config/
+  | eg:/mnt/hgfs/www/git/php_/project/config/
   |
  */
-define('CONFIG', ROOT . 'Config/');
+define('CONFIG', ROOT . 'config/');
 
 /*
   |--------------------------------------------------------------------------
   | 路由文件存放路径
   |--------------------------------------------------------------------------
-  | eg:/mnt/hgfs/www/git/php_/project/Route/
+  | eg:/mnt/hgfs/www/git/php_/project/route/
   |
  */
-define('ROUTE', ROOT . 'Route/');
+define('ROUTE', ROOT . 'route/');
+
+/*
+  |--------------------------------------------------------------------------
+  | 可写文件存放路径
+  |--------------------------------------------------------------------------
+  |
+  | eg:/mnt/hgfs/www/git/php_/project/storage/
+  |
+ */
+define('STORAGE', ROOT . 'storage/');

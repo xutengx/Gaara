@@ -1,5 +1,7 @@
 /data/*
 !/data/.gitignore
+/storage/*
+!/storage/.gitignore
 /public/open/*
 !/public/open/.gitignore
 /nbproject/

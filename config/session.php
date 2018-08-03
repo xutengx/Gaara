@@ -9,7 +9,7 @@ return [
 	  | 将会使用 session.cookie_lifetime 以及 session.gc_maxlifetime 设置此值
 	  |
 	 */
-	'lifetime'	 => 3600 * 24 * 7,
+	'lifetime'  => 3600 * 24 * 7,
 	/*
 	  |--------------------------------------------------------------------------
 	  | session js不获取cookie
@@ -18,13 +18,13 @@ return [
 	  | 将会使用 session.cookie_httponly 设置此值
 	  |
 	 */
-	'httponly'	 => true,
+	'httponly'  => true,
 	/*
 	  |--------------------------------------------------------------------------
 	  | session 自动开启
 	  |--------------------------------------------------------------------------
 	 */
-	'autostart'	 => true,
+	'autostart' => true,
 	/*
 	  |--------------------------------------------------------------------------
 	  | session 驱动类型(建议redis)
@@ -33,7 +33,7 @@ return [
 	  | 使用 redis/file 设置此值
 	  |
 	 */
-	'driver'	 => env('SESSION_DIRVER', 'redis'),
+	'driver'    => env('SESSION_DRIVER', 'redis'),
 	/*
 	  |--------------------------------------------------------------------------
 	  | 当session使用redis驱动时的redis连接
@@ -42,7 +42,7 @@ return [
 	  | redis 对象的依赖数组
 	  |
 	 */
-	'redis'		 => [
+	'redis'     => [
 		'connection' => env('REDIS_CONNECTION'),
 	],
 	/*
@@ -53,7 +53,7 @@ return [
 	  | file 对象的依赖数组
 	  |
 	 */
-	'file'		 => [
+	'file'      => [
 		'dir' => 'data/Session'
 	]
 ];

@@ -9,7 +9,7 @@ return [
 	  | file/redis
 	  |
 	 */
-	'driver' => env('CACHE_DIRVER', 'redis'),
+	'driver' => env('CACHE_DRIVER', 'redis'),
 	/*
 	  |--------------------------------------------------------------------------
 	  | 缓存过期时间缺省值
@@ -26,7 +26,7 @@ return [
 	  | redis 对象的依赖数组
 	  |
 	 */
-	'redis' => [
+	'redis'  => [
 		'connection' => env('REDIS_CONNECTION'),
 	],
 	/*
@@ -37,7 +37,7 @@ return [
 	  | file 对象的依赖数组
 	  |
 	 */
-	'file' => [
+	'file'   => [
 		'dir' => 'data/Cache/'
 	]
 ];

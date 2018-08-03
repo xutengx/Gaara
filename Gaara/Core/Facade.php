@@ -27,6 +27,8 @@ abstract class Facade implements Single {
 	/**
 	 * 返回自快捷类对应的实体类的实例
 	 * @return object
+	 * @throws \Gaara\Exception\BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	final public static function getInstance() {
 		return obj(static::getInstanceName());

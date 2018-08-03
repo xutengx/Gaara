@@ -3,8 +3,8 @@
 declare(strict_types = 1);
 
 $GLOBALS['statistic'] = [
-	'时间初始量'	 => microtime(true),
-	'内存初始量'	 => memory_get_usage()
+	'时间初始量' => microtime(true),
+	'内存初始量' => memory_get_usage()
 ];
 /*
   |--------------------------------------------------------------------------
@@ -14,7 +14,7 @@ $GLOBALS['statistic'] = [
   | eg:/mnt/hgfs/www/git/php_/project/
   |
  */
-define('ROOT', str_replace('\\', '/', __DIR__) . '/');
+define('ROOT', __DIR__ . '/');
 
 /*
   |--------------------------------------------------------------------------
@@ -41,9 +41,6 @@ require ROOT . 'bootstrap/define.php';
   | 注册业务的服务
   |
  */
-/**
- * @var \App\Kernel
- */
 $app = require ROOT . 'bootstrap/app.php';
 
 /*
@@ -54,5 +51,4 @@ $app = require ROOT . 'bootstrap/app.php';
   | 有问题请联系 QQ 68822684
   |
  */
-
 $app->init()->start();

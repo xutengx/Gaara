@@ -38,6 +38,8 @@
 		"ext-json": "*",
 		"ext-PDO": "*",
 		"ext-redis": "*",
+		"ext-mbstring": "*",
+		"ext-gd": "*",
 		"ext-SimpleXML": "*",
 		"chillerlan/php-qrcode": "^2.0",
 		"ezyang/htmlpurifier": "^4.9",

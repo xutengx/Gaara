@@ -50,7 +50,7 @@ trait CharacterTrait {
 			$charset = 'utf8';
 		if (strlen($string) <= $length)
 			return $string;
-		if (function_exists('mb_strcut'))
+		if (function_exists('mb_substr'))
 			$string = mb_substr($string, 0, $length, $charset);
 		else {
 			$pre    = '{%';

@@ -6,5 +6,5 @@ return [
 	  | 谷歌浏览器查看调试信息的密码
 	  |--------------------------------------------------------------------------
 	 */
-	'passwd' => env('PHP_CONSOLE_PASSWD'),
+	'password' => env('PHP_CONSOLE_PASSWORD'),
 ];

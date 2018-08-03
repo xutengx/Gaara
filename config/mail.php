@@ -16,7 +16,7 @@ return [
 	  | connection. You may also set the "password" value below this one.
 	  |
 	 */
-	'Username'    => env('MAIL_USERNAMAE'),
+	'Username'    => env('MAIL_USERNAME'),
 	'Password'    => env('MAIL_PASSWORD'),
 	/*
 	  |--------------------------------------------------------------------------

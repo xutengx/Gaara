@@ -2,7 +2,7 @@
 
 namespace App\Dev\mysql\Model;
 
-use Gaara\Core\Model\QueryBuiler;
+use Gaara\Core\Model\QueryBuilder;
 
 class test extends \Gaara\Core\Model {
 
@@ -33,12 +33,12 @@ SQL;
 
 class visitorInfoDev extends test{
 
-    public function registerMethodForQueryBuiler():array{
+    public function registerMethodForQueryBuilder():array{
         return [
-            'ID_is_bigger_than_1770' => function(QueryBuiler $queryBuiler): QueryBuiler{
+            'ID_is_bigger_than_1770' => function(QueryBuilder $queryBuiler): QueryBuilder{
                 return $queryBuiler->where('id','>','1770');
             },
-            'ID_rule' => function(QueryBuiler $queryBuiler, $id = 1800): QueryBuiler{
+            'ID_rule' => function(QueryBuilder $queryBuiler, $id = 1800): QueryBuilder{
                 return $queryBuiler->ID_is_bigger_than_1770()->where('id','<',$id);
             },
         ];

@@ -1,18 +1,18 @@
 <?php
 
 declare(strict_types = 1);
-namespace Gaara\Core\Model\QueryBuiler;
+namespace Gaara\Core\Model\QueryBuilder;
 
-use Gaara\Core\Model\QueryBuiler;
+use Gaara\Core\Model\QueryBuilder;
 
 trait Join {
 
 	/**
 	 * 加入不做处理的join段
 	 * @param string $sql
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function joinRaw(string $sql): QueryBuiler {
+	public function joinRaw(string $sql): QueryBuilder {
 		return $this->joinPush($sql);
 	}
 
@@ -23,9 +23,9 @@ trait Join {
 	 * @param string $symbol
 	 * @param string $fieldTwo
 	 * @param string $joinType
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function joinString(string $table, string $fieldOne, string $symbol, string $fieldTwo, string $joinType = 'inner join'): QueryBuiler {
+	public function joinString(string $table, string $fieldOne, string $symbol, string $fieldTwo, string $joinType = 'inner join'): QueryBuilder {
 		$sql = $joinType . ' ' . $this->fieldFormat($table) . ' on ' . $this->fieldFormat($fieldOne) . $symbol . $this->fieldFormat($fieldTwo);
 		return $this->joinPush($sql);
 	}
@@ -33,9 +33,9 @@ trait Join {
 	/**
 	 * 将Join片段加入Join, 返回当前对象
 	 * @param string $part
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	protected function joinPush(string $part): QueryBuiler {
+	protected function joinPush(string $part): QueryBuilder {
 		if (is_null($this->join)) {
 			$this->join = $part;
 		} else

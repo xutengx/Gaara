@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types = 1);
-namespace Gaara\Core\Model\QueryBuiler;
+namespace Gaara\Core\Model\QueryBuilder;
 
 /**
  * 聚合函数
@@ -18,17 +18,18 @@ trait Aggregates {
 		if (!is_null($this->group)) {
 			$obj = $this->getSelf();
 			$sql = $this->select($field)->getAllToSql($this->bindings);
-			$obj->fromRaw($this->bracketFormat($sql) . 'as gaara' . md5((string) time()));
+			$obj->fromRaw($this->bracketFormat($sql) . 'as gaara' . md5((string)time()));
 			$obj->selectString('count(' . $field . ')');
 			$res = $obj->getRow();
-		} else {
+		}
+		else {
 			if (is_null($field) || $field === '*')
 				$this->selectRaw('count(*)');
 			else
 				$this->selectString('count(' . $field . ')');
-			$res = $this->getRow($this->bindings);
+			$res = $this->getRow();
 		}
-		return (int) reset($res);
+		return (int)reset($res);
 	}
 
 	/**
@@ -37,10 +38,10 @@ trait Aggregates {
 	 * @return int
 	 */
 	public function max(string $field): int {
-		$this->sqlType	 = 'select';
+		$this->sqlType = 'select';
 		$this->selectString('max(' . $field . ')');
-		$res			 = $this->getRow($this->bindings);
-		return (int) reset($res);
+		$res = $this->getRow();
+		return (int)reset($res);
 	}
 
 	/**
@@ -49,10 +50,10 @@ trait Aggregates {
 	 * @return int
 	 */
 	public function min(string $field): int {
-		$this->sqlType	 = 'select';
+		$this->sqlType = 'select';
 		$this->selectString('min(' . $field . ')');
-		$res			 = $this->getRow($this->bindings);
-		return (int) reset($res);
+		$res = $this->getRow();
+		return (int)reset($res);
 	}
 
 	/**
@@ -61,10 +62,10 @@ trait Aggregates {
 	 * @return int
 	 */
 	public function avg(string $field): int {
-		$this->sqlType	 = 'select';
+		$this->sqlType = 'select';
 		$this->selectString('avg(' . $field . ')');
-		$res			 = $this->getRow($this->bindings);
-		return (int) reset($res);
+		$res = $this->getRow();
+		return (int)reset($res);
 	}
 
 	/**
@@ -73,10 +74,10 @@ trait Aggregates {
 	 * @return int
 	 */
 	public function sum(string $field): int {
-		$this->sqlType	 = 'select';
+		$this->sqlType = 'select';
 		$this->selectString('sum(' . $field . ')');
-		$res			 = $this->getRow($this->bindings);
-		return (int) reset($res);
+		$res = $this->getRow();
+		return (int)reset($res);
 	}
 
 }

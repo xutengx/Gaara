@@ -14,19 +14,22 @@ trait FileTrait {
 	 * 路径 转 绝对路径
 	 * @param string $dirOld
 	 * @return string
+	 * @throws Exception
 	 */
-	public function absoluteDir(string $dirOld): string {
-		$system	 = php_uname('s');
-		$dir	 = str_replace('\\', '/', trim($dirOld));
+	public static function absoluteDir(string $dirOld): string {
+		$system = php_uname('s');
+		$dir    = str_replace('\\', '/', trim($dirOld));
 		if (substr($system, 0, 5) === 'Linux') {
 			$pos = strpos($dir, '/');
 			if ($pos === false || $pos !== 0)
 				$dir = ROOT . ltrim($dir, './');
-		}else if (substr($system, 0, 7) === 'Windows') {
+		}
+		elseif (substr($system, 0, 7) === 'Windows') {
 			$pos = strpos($dir, ':');
 			if ($pos === false || $pos !== 1)
 				$dir = ROOT . ltrim($dir, './');
-		} else
+		}
+		else
 			throw new Exception('Incompatible operating system');
 		return $dir;
 	}
@@ -36,16 +39,18 @@ trait FileTrait {
 	 * @param string $dirName 目录(绝对)
 	 * @return void
 	 */
-	public function delDirAndFile(string $dirName = ''): void {
+	public static function delDirAndFile(string $dirName = ''): void {
 		if (is_dir($dirName) && $dir_arr = scandir($dirName)) {
 			foreach ($dir_arr as $k => $v) {
 				if ($v === '.' || $v === '..') {
 
-				} else {
+				}
+				else {
 					if (is_dir($dirName . '/' . $v)) {
-						$this->delDirAndFile($dirName . '/' . $v);
+						static::delDirAndFile($dirName . '/' . $v);
 						rmdir($dirName . '/' . $v);
-					} else
+					}
+					else
 						unlink($dirName . '/' . $v);
 				}
 			}
@@ -58,12 +63,22 @@ trait FileTrait {
 	 * @param string $text 内容
 	 * @return bool
 	 */
-	public function printInFile(string $filename, string $text): bool {
+	public static function printInFile(string $filename, string $text): bool {
 		if (!is_file($filename)) {
-			if (is_dir(dirname($filename)) || $this->__mkdir(dirname($filename)))
+			if (is_dir(dirname($filename)) || static::__mkdir(dirname($filename)))
 				touch($filename);
 		}
 		return file_put_contents($filename, $text, LOCK_EX) === false ? false : true;
+	}
+
+	/**
+	 * 递归创建目录
+	 * @param string $dir 目录名(绝对路径)
+	 * @param int $mode 目录权限
+	 * @return bool
+	 */
+	public static function __mkdir(string $dir, int $mode = 0777): bool {
+		return (is_dir(dirname($dir)) || static::__mkdir(dirname($dir))) ? mkdir($dir, $mode) : true;
 	}
 
 	/**
@@ -72,23 +87,26 @@ trait FileTrait {
 	 * @return array 一维数组
 	 * @throws Exception
 	 */
-	public function getFiles(string $dirName = ''): array {
+	public static function getFiles(string $dirName = ''): array {
 		$dirName = rtrim($dirName, '/');
-		$arr	 = array();
+		$arr     = [];
 		if (is_dir($dirName) && $dir_arr = scandir($dirName)) {
 			foreach ($dir_arr as $k => $v) {
 				if ($v === '.' || $v === '..') {
 
-				} else {
+				}
+				else {
 					if (is_dir($dirName . '/' . $v)) {
-						$arr = array_merge($arr, $this->getFiles($dirName . '/' . $v));
-					} else {
+						$arr = array_merge($arr, static::getFiles($dirName . '/' . $v));
+					}
+					else {
 						$arr[] = $dirName . '/' . $v;
 					}
 				}
 			}
 			return $arr;
-		} else
+		}
+		else
 			throw new Exception($dirName . 'is not readable path!');
 	}
 
@@ -99,23 +117,12 @@ trait FileTrait {
 	 * @param string $uni 唯一标识
 	 * @return string
 	 */
-	final public function makeFilename(string $dir, string $ext, string $uni = 'def'): string {
+	public static function makeFilename(string $dir, string $ext, string $uni = 'def'): string {
 		$ext = trim($ext, '.');
 		$dir = rtrim($dir, '/') . '/';
 		$dir .= uniqid($uni);
 		$dir .= '.' . $ext;
 		return $dir;
-	}
-
-	/**
-	 * 递归创建目录
-	 * @param string $dir 目录名(绝对路径)
-	 * @param int $mode 目录权限
-	 * @return bool
-	 */
-	final public function __mkdir(string $dir, $mode = 0777): bool {
-		if (is_dir(dirname($dir)) || $this->__mkdir(dirname($dir)))
-			return mkdir($dir, $mode);
 	}
 
 }

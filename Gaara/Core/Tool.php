@@ -3,23 +3,21 @@
 declare(strict_types = 1);
 namespace Gaara\Core;
 
-use \Gaara\Core\Tool\Traits\{
-	RequestTrait, FileTrait, CharacterTrait
-};
 use Gaara\Contracts\ServiceProvider\Single;
+use Gaara\Core\Tool\Traits\{CharacterTrait, FileTrait, RequestTrait};
 
 /**
  * 工具类
  */
 class Tool implements Single {
 
-// 请求相关
+	// 请求相关
 	use RequestTrait;
 
-// 文件操作
+	// 文件操作
 	use FileTrait;
 
-// 字符处理
+	// 字符处理
 	use CharacterTrait;
 
 	/**
@@ -28,15 +26,15 @@ class Tool implements Single {
 	 * @param array $Ips 默认规则是内网ip
 	 * @return bool
 	 */
-	public function checkIp(string $ip, array $Ips = null): bool {
+	public static function checkIp(string $ip, array $Ips = null): bool {
 		// 内网ip列表
 		$ruleIps = $Ips ?? [
-			['10.0.0.0', '10.255.255.255'],
-			['172.16.0.0', '172.31.255.255'],
-			['192.168.0.0', '192.168.255.255'],
-			['127.0.0.0', '127.255.255.255']
-		];
-		$ipInt	 = ip2long(trim($ip));
+				['10.0.0.0', '10.255.255.255'],
+				['172.16.0.0', '172.31.255.255'],
+				['192.168.0.0', '192.168.255.255'],
+				['127.0.0.0', '127.255.255.255']
+			];
+		$ipInt   = ip2long(trim($ip));
 		foreach ($ruleIps as $rule) {
 			if ($ipInt >= ip2long(reset($rule)) && $ipInt <= ip2long(end($rule))) {
 				return true;
@@ -52,10 +50,10 @@ class Tool implements Single {
 	 * @return string
 	 */
 	public static function uuid(string $prefix = ''): string {
-		$chars	 = md5(uniqid($prefix, true));
-		$uuid	 = '';
+		$chars = md5(uniqid($prefix, true));
+		$uuid  = '';
 		for ($i = 0; $i < 36; $i++)
-			$uuid	 .= ($i === 8 || $i === 15 || $i === 20 || $i === 25) ? '-' : $chars[mt_rand(0, 31)];
+			$uuid .= ($i === 8 || $i === 15 || $i === 20 || $i === 25) ? '-' : $chars[mt_rand(0, 31)];
 		return $uuid;
 	}
 

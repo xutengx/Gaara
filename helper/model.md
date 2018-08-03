@@ -96,7 +96,7 @@ return [
             ]
         ]
     ]
-]
+];
 ```
 ## 一个模型
 
@@ -226,7 +226,7 @@ $row = $yourModel::data(['name','bob'])->where('id',12)->update();
 
 <?php
 // 返回 int 受影响的行数
-$row = $yourModel::->where('id',12)->delete();
+$row = $yourModel::where('id',12)->delete();
 
 ```
 
@@ -610,7 +610,7 @@ $sql = Model\visitorInfoDev::getLastSql();
 
 ```php
 <?php
-sql = Model\visitorInfoDev::select(['id', 'name', 'phone'])
+$sql = Model\visitorInfoDev::select(['id', 'name', 'phone'])
     ->where( 'scene', '&', '1')
     ->where( 'phone', '13849494949')
     ->whereIn('id',['100','101','102','103'])
@@ -733,19 +733,19 @@ $res = ($PDOStatement->rowCount());
 $sql = 'insert into visitor_info set name=:name';
 $PDOStatement = $visitorInfo->prepare($sql, 'insert');
 // 手动执行
-PDOStatement->execute([':name' => '手动执行']);
+$PDOStatement->execute([':name' => '手动执行']);
 $res = ($PDOStatement->rowCount());
 ```
 ## 注册查询方法
 
 `gaara`提供可拓展的接口, 以便增加制定的查询方法
 
-首先, 重载`Model`中的`registerMethodForQueryBuiler()`,以下的例子将注册`ID_is_bigger_than_1770()`以及`ID_rule()`两个方法.
+首先, 重载`Model`中的`registerMethodForQueryBuilder()`,以下的例子将注册`ID_is_bigger_than_1770()`以及`ID_rule()`两个方法.
 ```php
 <?php
 class visitorInfoDev extends \Gaara\Core\Model{
 
-    public function registerMethodForQueryBuiler():array{
+    public function registerMethodForQueryBuilder():array{
         return [
             'ID_is_bigger_than_1770' => function(QueryBuiler $queryBuiler): QueryBuiler{
                 return $queryBuiler->where('id','>','1770');

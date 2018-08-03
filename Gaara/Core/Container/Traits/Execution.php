@@ -18,6 +18,7 @@ trait Execution {
 	 * @param string $method
 	 * @param array $parameters
 	 * @return mixed
+	 * @throws \ReflectionException
 	 */
 	public function execute($object, string $method, array $parameters = []) {
 		// 统一转化为对象
@@ -51,6 +52,9 @@ trait Execution {
 	/**
 	 * 执行某个闭包, 自动解决依赖
 	 * @param Closure $Closure
+	 * @param array $parameters
+	 * @return mixed
+	 * @throws \ReflectionException
 	 */
 	public function executeClosure(Closure $Closure, array $parameters = []) {
 		// 加入参数

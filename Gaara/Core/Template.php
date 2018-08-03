@@ -3,34 +3,33 @@
 declare(strict_types = 1);
 namespace Gaara\Core;
 
-use Gaara\Expand\JavaScriptPacker;
 use Gaara\Contracts\ServiceProvider\Single;
+use Gaara\Expand\JavaScriptPacker;
 
 class Template implements Single {
 
 	// 跳转中间页面
-	protected $jumpTo = 'jumpTo';
-
+	const jqueryDir = 'Gaara/Views/include/jquery/';
 	// jquery 引入
-	const jqueryDir		 = 'Gaara/Views/include/jquery/';
+	const jsDir = 'Gaara/Views/include/js/';
 	// js 引入
-	const jsDir			 = 'Gaara/Views/include/js/';
+	const pluginsDir = 'Gaara/Views/include/plugins/';
 	// js_plugins 引入
-	const pluginsDir		 = 'Gaara/Views/include/plugins/';
+	const pluginsCssDir = 'Gaara/Views/include/css/';
 	// js_plugins 所需的css 引入
-	const pluginsCssDir	 = 'Gaara/Views/include/css/';
+	const dataDir = 'open/minStatic/';
 	// 自动压缩后js 存放的目录, public 下
-	const dataDir			 = 'open/minStatic/';
+	protected $jumpTo = 'jumpTo';
 
 	/**
 	 * 插入页面内容
 	 * @param string $file
 	 * @return bool
 	 */
-	public function show(string $file): bool {
-		include ROOT . 'App/' . APP . '/View/template/' . $file . '.html';
-		return true;
-	}
+//	public function show(string $file): bool {
+//		include ROOT . 'App/' . APP . '/View/template/' . $file . '.html';
+//		return true;
+//	}
 
 	/**
 	 * 返回页面内容
@@ -43,8 +42,9 @@ class Template implements Single {
 
 	/**
 	 * 跳转中间页
+	 * @param string $url
 	 * @param string $message
-	 * @param string $jumpUrl
+	 * @param int $waitSecond
 	 */
 	public function jumpTo(string $url, string $message, int $waitSecond = 3) {
 		include ROOT . 'Gaara/Views/tpl/' . $this->jumpTo . '.html';
@@ -67,30 +67,32 @@ class Template implements Single {
 
 	/**
 	 * 生成压缩文件
-	 * @param string $originaDir 需要压缩的js所在目录
+	 * @param string $originalDir 需要压缩的js所在目录
 	 * @param string $newDir 压缩后的js存放目录
 	 * @return string JS引入语句 (直接echo即可使用)
 	 */
-	protected function createMin(string $originaDir, $newDir = null): string {
-		$newDir	 = is_null($newDir) ? self::dataDir : $newDir;
-		$files	 = obj(Tool::class)->getFiles($originaDir);
-		$str	 = '';
+	protected function createMin(string $originalDir, $newDir = null): string {
+		$newDir = is_null($newDir) ? self::dataDir : $newDir;
+		$files  = obj(Tool::class)->getFiles($originalDir);
+		$str    = '';
 		foreach ($files as $v) {
 			$ext = strrchr($v, '.');
 			if ($ext === '.js') {
-				$jsname = $newDir . str_replace($originaDir, '', $v);
-				if (!is_file($jsname) || filemtime($v) > filectime($jsname)) {
+				$jsName = $newDir . str_replace($originalDir, '', $v);
+				if (!is_file($jsName) || filemtime($v) > filectime($jsName)) {
 					$content = $this->AutomaticPacking(file_get_contents($v));
-					obj(Tool::class)->printInFile($jsname, $content);
+					obj(Tool::class)->printInFile($jsName, $content);
 				}
-				$str .= '<script src="' . obj(Request::class)->hostStaticInfo . $jsname . '"></script>';
-			} elseif ($ext === '.css') {
-				$jsname = $newDir . str_replace($originaDir, '', $v);
-				if (!is_file($jsname) || filemtime($v) > filectime($jsname)) {
+				$str .= '<script src="' . obj(Request::class)->hostStaticInfo . $jsName . '"></script>';
+			}
+			elseif ($ext === '.css') {
+				$jsName = $newDir . str_replace($originalDir, '', $v);
+				if (!is_file($jsName) || filemtime($v) > filectime($jsName)) {
 					$content = $this->compressCss(file_get_contents($v));
-					obj(Tool::class)->printInFile($jsname, $content);
+					obj(Tool::class)->printInFile($jsName, $content);
 				}
-				$str .= '<link rel="stylesheet" type="text/css" href="' . obj(Request::class)->hostStaticInfo . $jsname . '" />';
+				$str .= '<link rel="stylesheet" type="text/css" href="' . obj(Request::class)->hostStaticInfo .
+				        $jsName . '" />';
 			}
 		}
 		return $str;
@@ -102,8 +104,8 @@ class Template implements Single {
 	 * @return string 压缩后js
 	 */
 	protected function AutomaticPacking(string $content): string {
-		$packerNormal	 = (new JavaScriptPacker($content, 'Normal', false, false))->pack();
-		$packerNone		 = (new JavaScriptPacker($content, 'None', false, false))->pack();
+		$packerNormal = (new JavaScriptPacker($content, 'Normal', false, false))->pack();
+		$packerNone   = (new JavaScriptPacker($content, 'None', false, false))->pack();
 		return strlen($packerNormal) > strlen($packerNone) ? $packerNone : $packerNormal;
 	}
 
@@ -116,8 +118,16 @@ class Template implements Single {
 		/* remove comments */
 		$content = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $content);
 		/* remove tabs, spaces, newlines, etc. */
-		$content = str_replace(array("
-", "\r", "\n", "\t", '  ', '    ', '    '), '', $content);
+		$content = str_replace([
+			"
+",
+			"\r",
+			"\n",
+			"\t",
+			'  ',
+			'    ',
+			'    '
+		], '', $content);
 		return $content;
 	}
 

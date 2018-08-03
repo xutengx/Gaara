@@ -65,9 +65,8 @@ trait Bind {
 
 	/**
 	 * Alias a type to a different name.
-	 *
-	 * @param  string  $abstract
-	 * @param  string  $alias
+	 * @param string $abstract
+	 * @param string $alias
 	 * @return void
 	 */
 	public function alias($abstract, $alias) {

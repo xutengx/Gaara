@@ -4,19 +4,15 @@ declare(strict_types = 1);
 namespace Gaara\Core;
 
 use Closure;
-use PDOException;
 use Exception;
-use Gaara\Core\Controller\Traits\{
-	RequestTrait, ViewTrait
-};
 use Gaara\Contracts\ServiceProvider\Single;
+use Gaara\Core\Controller\Traits\{RequestTrait, ViewTrait};
+use PDOException;
 
 abstract class Controller implements Single {
 
-	// 可以使用 $this->post('id', '/^1[3|4|5|7|8][0-9]\d{8}$/', 'id不合法!'); 过滤参数
-	use RequestTrait,
-	// 可以使用 $this->display(); 展示视图
-	 ViewTrait;
+	use RequestTrait, // 可以使用 $this->post('id', '/^1[3|4|5|7|8][0-9]\d{8}$/', 'id不合法!'); 过滤参数
+		ViewTrait; // 可以使用 $this->display(); 展示视图
 
 	/**
 	 * 返回一个data响应,当接收的参数是Closure时,会捕获PDOException异常,一旦捕获成功,将返回msg响应

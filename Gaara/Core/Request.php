@@ -4,29 +4,26 @@ declare(strict_types = 1);
 namespace Gaara\Core;
 
 use Exception;
-use Gaara\Core\Request\UploadFile;
-use Gaara\Core\Request\Traits\{
-	RequestInfo, Filter
-};
-use Gaara\Core\Route\Component\MatchedRouting;
 use Gaara\Contracts\ServiceProvider\Single;
+use Gaara\Core\Request\Traits\{Filter, RequestInfo};
+use Gaara\Core\Request\UploadFile;
+use Gaara\Core\Route\Component\MatchedRouting;
 
 class Request implements Single {
 
-	use RequestInfo,
-	 Filter;
+	use RequestInfo, Filter;
 
-	protected $domain	 = [];
-	protected $get		 = [];
-	protected $post		 = [];
-	protected $put		 = [];
-	protected $delete	 = [];
-	protected $options	 = [];
-	protected $head		 = [];
-	protected $patch	 = [];
-	protected $input	 = [];
-	protected $cookie	 = [];
-	protected $file		 = null;
+	protected $domain  = [];
+	protected $get     = [];
+	protected $post    = [];
+	protected $put     = [];
+	protected $delete  = [];
+	protected $options = [];
+	protected $head    = [];
+	protected $patch   = [];
+	protected $input   = [];
+	protected $cookie  = [];
+	protected $file    = null;
 
 	/**
 	 * 初始化参数
@@ -44,155 +41,61 @@ class Request implements Single {
 		// 存储路由匹配对象
 		$this->MatchedRouting = $MR;
 
-		$this->alias	 = $MR->alias;
-		$this->methods	 = $MR->methods;
+		$this->alias   = $MR->alias;
+		$this->methods = $MR->methods;
 
 		// 设定参数
-		$this->setDomainParamters($MR->domainParamter)
-		->setStaticParamters($MR->staticParamter)
-		->setRequestParamters();
-	}
-
-	/**
-	 * 设置来自路由的`域名`参数
-	 * @param array $domainParamters
-	 * @return Request
-	 */
-	protected function setDomainParamters(array $domainParamters = []): Request {
-		$this->domain = $this->filter($domainParamters);
-		return $this;
-	}
-
-	/**
-	 * 设置来自url静态参数(pathInfo参数)
-	 * @param array $staticParamters
-	 * @return Request
-	 */
-	protected function setStaticParamters(array $staticParamters = []): Request {
-		$this->get = $this->filter($staticParamters);
-		return $this;
+		$this->setDomainParameters($MR->domainParamter)->setStaticParameters($MR->staticParamter)->setRequestParameters();
 	}
 
 	/**
 	 * 获取参数到当前类的属性
 	 * @return Request
 	 */
-	protected function setRequestParamters(): Request {
+	protected function setRequestParameters(): Request {
 		$this->cookie = $this->_htmlspecialchars($_COOKIE);
 
 		if (($argc = $this->method) !== 'get') {
-			$temp			 = file_get_contents('php://input');
-			$content_type	 = $this->contentType;
+			$temp         = file_get_contents('php://input');
+			$content_type = $this->contentType;
 
 			if (stripos($content_type, 'application/x-www-form-urlencoded') !== false) {
 				parse_str($temp, $this->{$argc});
 				$this->{$argc} = $this->filter($this->{$argc});
-			} elseif (stripos($content_type, 'application/json') !== false) {
+			}
+			elseif (stripos($content_type, 'application/json') !== false) {
 				$this->{$argc} = json_decode($temp, true);
-			} elseif (stripos($content_type, 'application/xml') !== false) {
+			}
+			elseif (stripos($content_type, 'application/xml') !== false) {
 				$this->{$argc} = obj(Tool::class)->xml_decode($temp);
-			} else {
-				$this->{$argc} = !empty($_POST) ? $this->_htmlspecialchars($_POST) : $this->filter($this->getStream($temp));
+			}
+			else {
+				$this->{$argc} = !empty($_POST) ? $this->_htmlspecialchars($_POST) :
+					$this->filter($this->getStream($temp));
 			}
 		}
-		$this->get	 = array_merge($this->get, $this->_htmlspecialchars($_GET));
+		$this->get = array_merge($this->get, $this->_htmlspecialchars($_GET));
 		$this->consistentFile();
 		$this->input = $this->{$argc};
 		return $this;
 	}
 
 	/**
-	 * 设置cookie, 即时生效
-	 * @param string $name
-	 * @param type $value
-	 * @param int $expire
-	 * @param string $path
-	 * @param string $domain
-	 * @param bool $secure
-	 * @param bool $httponly
-	 * @return void
-	 */
-	public function setcookie(string $name, $value = '', int $expire = 0, string $path = '', string $domain = '', bool $secure = false, bool $httponly = true): void {
-		$expire				 += time();
-		$this->cookie[$name] = $_COOKIE[$name]		 = $value;
-		if (is_array($value))
-			foreach ($value as $k => $v)
-				setcookie($name . '[' . $k . ']', $v, $expire, $path, $domain, $secure, $httponly);
-		else
-			setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
-	}
-
-	/**
-	 * 分析stream获得数据, put文件上传时,php不会帮忙解析信息,只有手动了
-	 * @param string $input
+	 * 预定义的字符转换为 HTML 实体, 预定义的字符是：& （和号）, " （双引号）, ' （单引号）,> （大于）,< （小于）
+	 * @param array $arr
 	 * @return array
 	 */
-	protected function getStream(string $input): array {
-		$a_data = array();
-		// grab multipart boundary from content type header
-		preg_match('/boundary=(.*)$/', $this->contentType, $matches);
-
-		// content type is probably regular form-encoded
-		if (!count($matches)) {
-			// we expect regular puts to containt a query string containing data
-			parse_str(urldecode($input), $a_data);
-			return $a_data;
-		}
-
-		// split content by boundary and get rid of last -- element
-		$a_blocks = preg_split("/-+$matches[1]/", $input);
-		array_pop($a_blocks);
-
-		// loop data blocks
-		foreach ($a_blocks as $block) {
-			if (empty($block))
-				continue;
-			// you'll have to var_dump $block to understand this and maybe replace \n or \r with a visibile char
-			// parse uploaded files
-			if (strpos($block, 'filename=') !== FALSE) {
-				// match "name", then everything after "stream" (optional) except for prepending newlines
-				preg_match("/name=\"([^\"]*)\".*filename=\"([^\"].*?)\".*Content-Type:\s+(.*?)[\n|\r|\r\n]+([^\n\r].*)?$/s", $block, $matches);
-				// 兼容无文件上传的情况
-				if (empty($matches))
-					continue;
-				$content_blob	 = $matches[4];
-				$content_blob	 = substr($content_blob, 0, strlen($content_blob) - strlen(PHP_EOL) * 2);  // 移除尾部多余换行符
-				$this->file->addFile([
-					'key_name'	 => $matches[1],
-					'name'		 => $matches[2],
-					'type'		 => $matches[3],
-					'size'		 => strlen($content_blob),
-					'content'	 => $content_blob
-				]);
+	protected function _htmlspecialchars(array $arr): array {
+		$q = [];
+		foreach ($arr as $k => $v) {
+			if (is_string($v)) {
+				$q[$k] = htmlspecialchars($v);
 			}
-			// parse all other fields
-			else {
-				// match "name" and optional value in between newline sequences
-				preg_match('/name=\"([^\"]*)\"[\n|\r]+([^\n\r].*)?\r$/s', $block, $matches);
-				$a_data[$matches[1]] = $matches[2] ?? '';
+			elseif (is_array($v)) {
+				$q[$k] = $this->_htmlspecialchars($v);
 			}
 		}
-		return $a_data;
-	}
-
-	/**
-	 * 将$_FILES 放入 $this->file
-	 * @return void
-	 */
-	protected function consistentFile(): void {
-		if (!empty($_FILES)) {
-			foreach ($_FILES as $k => $v) {
-				if ($v['error'] === 0) {
-					$this->file->addFile([
-						'key_name'	 => $k,
-						'name'		 => $v['name'],
-						'type'		 => $v['type'],
-						'tmp_name'	 => $v['tmp_name'],
-						'size'		 => $v['size']
-					]);
-				}
-			}
-		}
+		return $q;
 	}
 
 	/**
@@ -217,7 +120,8 @@ class Request implements Single {
 		foreach ($arr as $k => $v) {
 			if (is_string($v)) {
 				$q[addslashes($k)] = addslashes($v);
-			} elseif (is_array($v)) {
+			}
+			elseif (is_array($v)) {
 				$q[addslashes($k)] = $this->_addslashes($v);
 			}
 		}
@@ -225,20 +129,118 @@ class Request implements Single {
 	}
 
 	/**
-	 * 预定义的字符转换为 HTML 实体, 预定义的字符是：& （和号）, " （双引号）, ' （单引号）,> （大于）,< （小于）
-	 * @param array $arr
+	 * 分析stream获得数据, put文件上传时,php不会帮忙解析信息,只有手动了
+	 * @param string $input
 	 * @return array
 	 */
-	protected function _htmlspecialchars(array $arr): array {
-		$q = [];
-		foreach ($arr as $k => $v) {
-			if (is_string($v)) {
-				$q[$k] = htmlspecialchars($v);
-			} else if (is_array($v)) {
-				$q[$k] = $this->_htmlspecialchars($v);
+	protected function getStream(string $input): array {
+		$a_data = [];
+		// grab multipart boundary from content type header
+		preg_match('/boundary=(.*)$/', $this->contentType, $matches);
+
+		// content type is probably regular form-encoded
+		if (!count($matches)) {
+			// we expect regular puts to containt a query string containing data
+			parse_str(urldecode($input), $a_data);
+			return $a_data;
+		}
+
+		// split content by boundary and get rid of last -- element
+		$a_blocks = preg_split("/-+$matches[1]/", $input);
+		array_pop($a_blocks);
+
+		// loop data blocks
+		foreach ($a_blocks as $block) {
+			if (empty($block))
+				continue;
+			// you'll have to var_dump $block to understand this and maybe replace \n or \r with a visibile char
+			// parse uploaded files
+			if (strpos($block, 'filename=') !== false) {
+				// match "name", then everything after "stream" (optional) except for prepending newlines
+				preg_match("/name=\"([^\"]*)\".*filename=\"([^\"].*?)\".*Content-Type:\s+(.*?)[\n|\r|\r\n]+([^\n\r].*)?$/s",
+					$block, $matches);
+				// 兼容无文件上传的情况
+				if (empty($matches))
+					continue;
+				$content_blob = $matches[4];
+				$content_blob = substr($content_blob, 0, strlen($content_blob) - strlen(PHP_EOL) * 2);  // 移除尾部多余换行符
+				$this->file->addFile([
+					'key_name' => $matches[1],
+					'name'     => $matches[2],
+					'type'     => $matches[3],
+					'size'     => strlen($content_blob),
+					'content'  => $content_blob
+				]);
+			}
+			// parse all other fields
+			else {
+				// match "name" and optional value in between newline sequences
+				preg_match('/name=\"([^\"]*)\"[\n|\r]+([^\n\r].*)?\r$/s', $block, $matches);
+				$a_data[$matches[1]] = $matches[2] ?? '';
 			}
 		}
-		return $q;
+		return $a_data;
+	}
+
+	/**
+	 * 将$_FILES 放入 $this->file
+	 * @return void
+	 */
+	protected function consistentFile(): void {
+		if (!empty($_FILES)) {
+			foreach ($_FILES as $k => $v) {
+				if ($v['error'] === 0) {
+					$this->file->addFile([
+						'key_name' => $k,
+						'name'     => $v['name'],
+						'type'     => $v['type'],
+						'tmp_name' => $v['tmp_name'],
+						'size'     => $v['size']
+					]);
+				}
+			}
+		}
+	}
+
+	/**
+	 * 设置来自url静态参数(pathInfo参数)
+	 * @param array $staticParameters
+	 * @return Request
+	 */
+	protected function setStaticParameters(array $staticParameters = []): Request {
+		$this->get = $this->filter($staticParameters);
+		return $this;
+	}
+
+	/**
+	 * 设置来自路由的`域名`参数
+	 * @param array $domainParameters
+	 * @return Request
+	 */
+	protected function setDomainParameters(array $domainParameters = []): Request {
+		$this->domain = $this->filter($domainParameters);
+		return $this;
+	}
+
+	/**
+	 * 设置cookie, 即时生效
+	 * @param string $name
+	 * @param array|string $value
+	 * @param int $expire
+	 * @param string $path
+	 * @param string $domain
+	 * @param bool $secure
+	 * @param bool $httpOnly
+	 * @return void
+	 */
+	public function setcookie(string $name, $value = '', int $expire = 0, string $path = '', string $domain = '', bool $secure = false, bool $httpOnly = true): void {
+		$expire              += time();
+		$this->cookie[$name] = $_COOKIE[$name] = $value;
+		if (is_array($value))
+			foreach ($value as $k => $v)
+				setcookie($name . '[' . $k . ']', $v, $expire, $path, $domain, $secure, $httpOnly);
+		else
+			setcookie($name, $value, $expire, $path, $domain, $secure, $httpOnly);
 	}
 
 	/**
@@ -266,11 +268,13 @@ class Request implements Single {
 	 * @param string $property_name
 	 * @param mixed $value
 	 * @return void
+	 * @throws Exception
 	 */
 	public function __set(string $property_name, $value): void {
 		if (in_array(strtolower($property_name), ['input', 'post', 'get', 'put', 'cookie', 'delete', 'file'], true)) {
 			throw new Exception($property_name . ' should not be modified.');
-		} else {
+		}
+		else {
 			$this->{$property_name} = $value;
 		}
 	}

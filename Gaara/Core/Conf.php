@@ -5,17 +5,15 @@ namespace Gaara\Core;
 
 use Exception;
 use Gaara\Contracts\ServiceProvider\Single;
-use Gaara\Exception\Conf\{
-	UndefinedConnectionException, NotFoundConfFileException, NotFoundServerIniFileException,
-	NoConnectionException
-};
+use Gaara\Exception\Conf\{NoConnectionException, NotFoundConfFileException, NotFoundServerIniFileException,
+	UndefinedConnectionException};
 
 class Conf implements Single {
 
 	// 配置信息
-	protected static $data	 = [];
+	protected static $data = [];
 	// 环境变量
-	protected static $env	 = [];
+	protected static $env = [];
 
 	final public function __construct() {
 		$this->setEnv();
@@ -27,15 +25,15 @@ class Conf implements Single {
 	 * @return void
 	 */
 	protected function setEnv(): void {
-		$data		 = parse_ini_file(ROOT . ".env", true);
-		$env		 = $data['ENV'];
-		self::$env	 = array_merge($data, $data[$env]);
+		$data      = parse_ini_file(ROOT . ".env", true);
+		$env       = $data['ENV'];
+		self::$env = array_merge($data, $data[$env]);
 	}
 
 	/**
 	 * 获取环境变量, function env 指向此
 	 * @param string $name
-	 * @param mixed $default  当此变量不存在时的默认值
+	 * @param mixed $default 当此变量不存在时的默认值
 	 * @return mixed
 	 */
 	public function getEnv(string $name, $default = null) {
@@ -60,11 +58,13 @@ class Conf implements Single {
 	 * 惰性读取配置文件
 	 * @param string $configName
 	 * @return mixed
+	 * @throws NotFoundConfFileException
 	 */
 	public function __get(string $configName) {
 		if (array_key_exists($configName, self::$data)) {
 			return self::$data[$configName];
-		} elseif (is_file($filename = CONFIG . $configName . '.php')) {
+		}
+		elseif (is_file($filename = CONFIG . $configName . '.php')) {
 			return self::$data[$configName] = require($filename);
 		}
 		throw new NotFoundConfFileException("[$filename]");

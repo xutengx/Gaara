@@ -4,8 +4,8 @@ declare(strict_types = 1);
 namespace Gaara\Core;
 
 use Closure;
-use Gaara\Core\Pipeline\Traits\SetPipes;
 use Gaara\Contracts\ServiceProvider\Single;
+use Gaara\Core\Pipeline\Traits\SetPipes;
 
 /**
  * 管道模式
@@ -16,11 +16,11 @@ class Pipeline implements Single {
 	use SetPipes;
 
 	// 流程 类名以@分割构造参数
-	protected $pipes			 = [];
+	protected $pipes = [];
 	// 默认闭包
-	protected $defaultClosure	 = null;
+	protected $defaultClosure = null;
 	// 管道执行的方法
-	protected $func				 = 'implement';
+	protected $func = 'implement';
 
 	/**
 	 * 置匿名回调函数
@@ -40,22 +40,12 @@ class Pipeline implements Single {
 	}
 
 	/**
-	 * 匿名回调函数 ( 控制器执行 )
-	 * @return Closure
-	 */
-	protected function defaultClosure(): Closure {
-		return function () {
-			return call_user_func($this->defaultClosure);
-		};
-	}
-
-	/**
 	 * 管道堆
 	 * @return Closure
 	 */
 	protected function getSlice(): Closure {
-		return function ($stack, $pipe) {
-			return function () use ($stack, $pipe) {
+		return function($stack, $pipe) {
+			return function() use ($stack, $pipe) {
 				return $this->getObj($pipe)->{$this->func}($stack);
 			};
 		};
@@ -68,9 +58,19 @@ class Pipeline implements Single {
 	 * @return Middleware
 	 */
 	protected function getObj(string $class): Middleware {
-		$arr			 = explode('@', $class);
-		$middlewareObj	 = array_shift($arr);
+		$arr           = explode('@', $class);
+		$middlewareObj = array_shift($arr);
 		return new $middlewareObj(...$arr);
+	}
+
+	/**
+	 * 匿名回调函数 ( 控制器执行 )
+	 * @return Closure
+	 */
+	protected function defaultClosure(): Closure {
+		return function() {
+			return call_user_func($this->defaultClosure);
+		};
 	}
 
 }

@@ -3,9 +3,7 @@
 declare(strict_types = 1);
 namespace Gaara\Core\Middleware;
 
-use Gaara\Core\{
-	Middleware, Request, Response
-};
+use Gaara\Core\{Middleware, Request, Response};
 
 /**
  * 允许跨域访问
@@ -17,12 +15,15 @@ class CrossDomainAccess extends Middleware {
 		if (isset($_SERVER['HTTP_REFERER'])) {
 			$response->header()->set('Access-Control-Allow-Credentials', 'true');
 			$response->header()->set('Access-Control-Allow-Origin', $this->allowDomain());
-		} else {
+		}
+		else {
 			$response->header()->set('Access-Control-Allow-Credentials', 'false');
 			$response->header()->set('Access-Control-Allow-Origin', '*');
 		}
-		$response->header()->set('Access-Control-Allow-Headers', 'X-Requested-With,scrftoken,Origin, Content-Type, Cookie, Accept, multipart/form-data, application/json');
-		$response->header()->set('Access-Control-Allow-Methods', $this->allowMothods($request));
+		$response->header()
+		         ->set('Access-Control-Allow-Headers',
+			         'X-Requested-With,scrftoken,Origin, Content-Type, Cookie, Accept, multipart/form-data, application/json');
+		$response->header()->set('Access-Control-Allow-Methods', $this->allowMethods($request));
 		if ($request->method === 'options') {
 			$response->status(200)->sendExit();
 		}
@@ -34,7 +35,7 @@ class CrossDomainAccess extends Middleware {
 	 */
 	protected function allowDomain(): string {
 		// 返回$str中第$num次出现$find的位置
-		$getI = function (string $str, int $num, string $find = '/'): int {
+		$getI = function(string $str, int $num, string $find = '/'): int {
 			$n = 0;
 			for ($i = 1; $i <= $num; $i++) {
 				$n = strpos($str, $find, $n);
@@ -51,7 +52,7 @@ class CrossDomainAccess extends Middleware {
 	 * @param Request $request
 	 * @return string
 	 */
-	protected function allowMothods(Request $request): string {
+	protected function allowMethods(Request $request): string {
 		return strtoupper(implode(',', $request->methods));
 	}
 

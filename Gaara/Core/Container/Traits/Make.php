@@ -4,10 +4,10 @@ declare(strict_types = 1);
 namespace Gaara\Core\Container\Traits;
 
 use Closure;
+use Gaara\Contracts\ServiceProvider\Single;
+use Gaara\Exception\BindingResolutionException;
 use ReflectionClass;
 use ReflectionParameter;
-use Gaara\Exception\BindingResolutionException;
-use Gaara\Contracts\ServiceProvider\Single;
 
 trait Make {
 
@@ -16,6 +16,8 @@ trait Make {
 	 * @param string $abstract
 	 * @param array $parameters
 	 * @return mixed
+	 * @throws BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	public function make(string $abstract, array $parameters = []) {
 		return $this->resolve($abstract, $parameters);
@@ -26,6 +28,8 @@ trait Make {
 	 * @param string $abstract
 	 * @param array $parameters
 	 * @return mixed
+	 * @throws BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	protected function resolve(string $abstract, array $parameters = []) {
 		// 存在接口的实现的结果, 则直接返回
@@ -76,6 +80,8 @@ trait Make {
 	 * @param string|Closure $concrete
 	 * @param bool $isSingleServiceProvider
 	 * @return mixed
+	 * @throws BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	public function build($concrete, bool &$isSingleServiceProvider = false) {
 		// 是闭包, 则直接执行
@@ -88,7 +94,7 @@ trait Make {
 
 		// 不可实例化
 		if (!$reflector->isInstantiable()) {
-			return $this->notInstantiable($concrete);
+			$this->notInstantiable($concrete);
 		}
 
 		$this->buildStack[] = $concrete;
@@ -124,9 +130,10 @@ trait Make {
 	 */
 	protected function notInstantiable(string $concrete): void {
 		if (!empty($this->buildStack)) {
-			$previous	 = implode(', ', $this->buildStack);
-			$message	 = "Target [$concrete] is not instantiable while building [$previous].";
-		} else {
+			$previous = implode(', ', $this->buildStack);
+			$message  = "Target [$concrete] is not instantiable while building [$previous].";
+		}
+		else {
 			$message = "Target [$concrete] is not instantiable.";
 		}
 		throw new BindingResolutionException($message);
@@ -136,6 +143,8 @@ trait Make {
 	 * 解决依赖
 	 * @param array $dependencies 依赖( ReflectionParameter )组成的数组
 	 * @return array 构造函数的依赖参数
+	 * @throws BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	protected function resolveDependencies(array $dependencies): array {
 		$results = [];
@@ -147,14 +156,15 @@ trait Make {
 				continue;
 			}
 			// 分别解决`基本类型的依赖`与`对象类型依赖`
-			$results[] = is_null($dependency->getClass()) ? $this->resolvePrimitive($dependency) : $this->resolveClass($dependency);
+			$results[] = is_null($dependency->getClass()) ? $this->resolvePrimitive($dependency) :
+				$this->resolveClass($dependency);
 		}
 		return $results;
 	}
 
 	/**
 	 * 基本类型的依赖解决
-	 * @param ReflectionParameter  $parameter
+	 * @param ReflectionParameter $parameter
 	 * @return mixed
 	 */
 	protected function resolvePrimitive(ReflectionParameter $parameter) {
@@ -164,8 +174,10 @@ trait Make {
 
 	/**
 	 * 对象类型的依赖解决
-	 * @param ReflectionParameter  $parameter
+	 * @param ReflectionParameter $parameter
 	 * @return mixed
+	 * @throws BindingResolutionException
+	 * @throws \ReflectionException
 	 */
 	protected function resolveClass(ReflectionParameter $parameter) {
 		try {

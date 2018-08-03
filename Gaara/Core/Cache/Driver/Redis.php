@@ -16,9 +16,9 @@ class Redis implements DriverInterface {
 	 * @param string $connection redis连接名
 	 */
 	public function __construct(string $connection) {
-		$this->connection	 = $connection;
+		$this->connection = $connection;
 		// 取连接
-		$options			 = obj(Conf::class)->getDriverConnection('redis', $connection);
+		$options = obj(Conf::class)->getDriverConnection('redis', $connection);
 
 		// 连接对象
 		$this->handler = new php_redis();
@@ -27,14 +27,14 @@ class Redis implements DriverInterface {
 		$connect = (app()->cli === true) ? 'pconnect' : 'connect';
 
 		// ip 端口
-		$this->handler->$connect($options['host'] ?? '127.0.0.1', (int) (($options['port'] ?? 6379)));
+		$this->handler->$connect($options['host'] ?? '127.0.0.1', (int)(($options['port'] ?? 6379)));
 
 		// 密码
 		if (isset($options['passwd']) && !empty($options['passwd']))
 			$this->handler->auth($options['passwd']);
 
 		// 数据库
-		$this->handler->select((int) ($options['database'] ?? 0));
+		$this->handler->select((int)($options['database'] ?? 0));
 	}
 
 	/**
@@ -73,9 +73,9 @@ class Redis implements DriverInterface {
 	 * @return bool
 	 */
 	public function clear(string $key): bool {
-		$it			 = \null; /* Initialize our iterator to NULL */
-		$type		 = 1;
-		while ($arr_keys	 = $this->handler->scan($it, $key . '*', 10000)) {
+		$it   = \null; /* Initialize our iterator to NULL */
+		$type = 1;
+		while ($arr_keys = $this->handler->scan($it, $key . '*', 10000)) {
 			foreach ($arr_keys as $str_key) {
 				$type &= $this->handler->delete($str_key);
 			}

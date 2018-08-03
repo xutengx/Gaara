@@ -1,9 +1,9 @@
 <?php
 
 declare(strict_types = 1);
-namespace Gaara\Core\Model\QueryBuiler;
+namespace Gaara\Core\Model\QueryBuilder;
 
-use Gaara\Core\Model\QueryBuiler;
+use Gaara\Core\Model\QueryBuilder;
 
 trait From {
 
@@ -13,9 +13,9 @@ trait From {
 	 * 将一个from加入查询
 	 * @param string $str
 	 * @param string $delimiter
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function fromString(string $str): QueryBuiler {
+	public function fromString(string $str): QueryBuilder {
 		$this->from = '`' . $str . '`';
 		return $this;
 	}
@@ -24,9 +24,9 @@ trait From {
 	 * 将一个from加入查询
 	 * @param string $str
 	 * @param string $delimiter
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function fromRaw(string $str): QueryBuiler {
+	public function fromRaw(string $str): QueryBuilder {
 		$this->from = $str;
 		return $this;
 	}
@@ -34,9 +34,9 @@ trait From {
 	/**
 	 * 设置不需要from片段
 	 * 仅对 select 生效
-	 * @return QueryBuiler
+	 * @return QueryBuilder
 	 */
-	public function noFrom(): QueryBuiler {
+	public function noFrom(): QueryBuilder {
 		$this->noFrom = true;
 		return $this;
 	}

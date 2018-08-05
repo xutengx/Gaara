@@ -3,7 +3,7 @@
 declare(strict_types = 1);
 namespace Gaara\Core\Cache\Driver;
 
-use Gaara\Core\Cache\DriverInterface;
+use Gaara\Contracts\Cache\DriverInterface;
 use Gaara\Core\Conf;
 use redis as php_redis;
 
@@ -12,7 +12,7 @@ class Redis implements DriverInterface {
 	// 当前redis连接名
 	public $connection;
 	// php拓展的redis对象
-	protected $handler;
+	protected $driver;
 
 	/**
 	 * Redis constructor.
@@ -26,20 +26,20 @@ class Redis implements DriverInterface {
 		$options = obj(Conf::class)->getDriverConnection('redis', $connection);
 
 		// 连接对象
-		$this->handler = new php_redis();
+		$this->driver = new php_redis();
 
 		// 连接类型
 		$connect = (app()->cli === true) ? 'pconnect' : 'connect';
 
 		// ip 端口
-		$this->handler->$connect($options['host'] ?? '127.0.0.1', (int)(($options['port'] ?? 6379)));
+		$this->driver->$connect($options['host'] ?? '127.0.0.1', (int)(($options['port'] ?? 6379)));
 
 		// 密码
 		if (isset($options['password']) && !empty($options['password']))
-			$this->handler->auth($options['passwd']);
+			$this->driver->auth($options['passwd']);
 
 		// 数据库
-		$this->handler->select((int)($options['database'] ?? 0));
+		$this->driver->select((int)($options['database'] ?? 0));
 	}
 
 	/**
@@ -48,7 +48,7 @@ class Redis implements DriverInterface {
 	 * @return string|false
 	 */
 	public function get(string $key) {
-		return $this->handler->get($key);
+		return $this->driver->get($key);
 	}
 
 	/**
@@ -59,7 +59,7 @@ class Redis implements DriverInterface {
 	 * @return bool
 	 */
 	public function set(string $key, string $value, int $expire): bool {
-		return ($expire === -1) ? $this->handler->set($key, $value) : $this->handler->setex($key, $expire, $value);
+		return ($expire === -1) ? $this->driver->set($key, $value) : $this->driver->setex($key, $expire, $value);
 	}
 
 	/**
@@ -68,7 +68,7 @@ class Redis implements DriverInterface {
 	 * @return bool
 	 */
 	public function rm(string $key): bool {
-		return $this->handler->del($key) === 0 ? false : true;
+		return $this->driver->del($key) === 0 ? false : true;
 	}
 
 	/**
@@ -78,14 +78,14 @@ class Redis implements DriverInterface {
 	 * @return bool
 	 */
 	public function clear(string $key): bool {
-		$it   = \null; /* Initialize our iterator to NULL */
+		$it   = null; /* Initialize our iterator to NULL */
 		$type = 1;
-		while ($arr_keys = $this->handler->scan($it, $key . '*', 10000)) {
+		while ($arr_keys = $this->driver->scan($it, $key . '*', 10000)) {
 			foreach ($arr_keys as $str_key) {
-				$type &= $this->handler->delete($str_key);
+				$type &= $this->driver->delete($str_key);
 			}
 		}
-		return $type === 1 ? true : false;
+		return $type === 1;
 	}
 
 	/**
@@ -94,7 +94,7 @@ class Redis implements DriverInterface {
 	 * @return int 0表示过期, -1表示无过期时间, -2表示未找到key
 	 */
 	public function ttl(string $key): int {
-		return $this->handler->ttl($key);
+		return $this->driver->ttl($key);
 	}
 
 	/**
@@ -104,7 +104,7 @@ class Redis implements DriverInterface {
 	 * @return int 自增后的值
 	 */
 	public function increment(string $key, int $step = 1): int {
-		return $this->handler->incrby($key, $step);
+		return $this->driver->incrby($key, $step);
 	}
 
 	/**
@@ -114,11 +114,11 @@ class Redis implements DriverInterface {
 	 * @return int 自减后的值
 	 */
 	public function decrement(string $key, int $step = 1): int {
-		return $this->handler->decrby($key, $step);
+		return $this->driver->decrby($key, $step);
 	}
 
 	public function __call(string $func, array $pars = []) {
-		return call_user_func_array([$this->handler, $func], $pars);
+		return call_user_func_array([$this->driver, $func], $pars);
 	}
 
 }

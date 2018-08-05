@@ -63,7 +63,7 @@ class Cache implements Single {
 	/**
 	 * 获取一个缓存
 	 * @param string $key
-	 * @return mixed|null
+	 * @return mixed
 	 */
 	public function get(string $key) {
 		return ($content = $this->driver->get($key)) ? $this->unserialize($content) : null;

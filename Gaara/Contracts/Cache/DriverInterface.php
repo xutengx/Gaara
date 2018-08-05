@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types = 1);
-namespace Gaara\Core\Cache;
+namespace Gaara\Contracts\Cache;
 
 interface DriverInterface {
 

@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Gaara\Core\Cache\Driver;
 
 use Closure;
-use Gaara\Core\Cache\DriverInterface;
+use Gaara\Contracts\Cache\DriverInterface;
 
 class File implements DriverInterface {
 

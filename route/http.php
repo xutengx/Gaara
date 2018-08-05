@@ -81,6 +81,8 @@ return [
 		});
 	}),
 	Route::group(['middleware' => ['web', 'api'], 'namespace' => 'App\Dev'], function() {
+		// idehelp 页面
+		Route::get('/ide', ['namespace' => '', 'uses' => 'development\Contr\idehelp@index']);
 		// uuid 页面
 		Route::get('/uuid', ['namespace' => '', 'uses' => 'readfile\index@uuid']);
 		// readfile 页面

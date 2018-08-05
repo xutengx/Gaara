@@ -13,7 +13,7 @@ class Template implements Single {
 	const pluginsDir    = 'Gaara/Views/include/plugins/'; // js_plugins 引入
 	const pluginsCssDir = 'Gaara/Views/include/css/'; // js_plugins 所需的css 引入
 	protected $jumpTo        = 'jumpTo'; // 跳转中间页面
-	protected $openMinStatic = 'open/minStatic'; // 自动压缩后js 存放的目录, public 下
+	protected $openMinStatic = 'open/minStatic/'; // 自动压缩后js 存放的目录, public 下
 
 	/**
 	 * 插入页面内容

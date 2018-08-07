@@ -7,13 +7,37 @@ use ReflectionClass;
 
 class ClassInfo {
 
+	/**
+	 * 类名
+	 * @var string
+	 */
 	public $name;
+	/**
+	 * 属性信息
+	 * @var array
+	 */
 	public $propertyInfo;
+	/**
+	 * 方法信息
+	 * @var array
+	 */
 	public $methodInfo;
+	/**
+	 * 接口信息
+	 * @var array
+	 */
 	public $interfaceArray;
 
+	/**
+	 * @var ReflectionClass
+	 */
 	protected $reflector;
 
+	/**
+	 * ClassInfo constructor.
+	 * @param string|object $class
+	 * @throws \ReflectionException
+	 */
 	public function __construct($class) {
 		$this->reflector      = new ReflectionClass($class);
 		$this->name           = $this->setName();
@@ -22,6 +46,9 @@ class ClassInfo {
 		$this->methodInfo     = $this->setMethodInfo();
 	}
 
+	/**
+	 * @return string
+	 */
 	public function export(): string {
 		$property       = $this->exportProperty();
 		$method         = $this->exportMethod();
@@ -35,14 +62,23 @@ EEE;
 
 	}
 
+	/**
+	 * @return string
+	 */
 	protected function setName(): string {
 		return $this->reflector->getName();
 	}
 
+	/**
+	 * @return array
+	 */
 	protected function setInterfaceArray(): array {
 		return $this->reflector->getInterfaceNames();
 	}
 
+	/**
+	 * @return array
+	 */
 	protected function setPropertyInfo(): array {
 		$propertyInfo = [];
 		foreach ($this->reflector->getProperties() as $property)
@@ -50,6 +86,9 @@ EEE;
 		return $propertyInfo;
 	}
 
+	/**
+	 * @return array
+	 */
 	protected function setMethodInfo(): array {
 		$methodInfo = [];
 		foreach ($this->reflector->getMethods() as $method)
@@ -57,6 +96,9 @@ EEE;
 		return $methodInfo;
 	}
 
+	/**
+	 * @return string
+	 */
 	protected function exportProperty(): string {
 		$code = '';
 		foreach ($this->propertyInfo as $property)
@@ -64,6 +106,9 @@ EEE;
 		return $code;
 	}
 
+	/**
+	 * @return string
+	 */
 	protected function exportMethod(): string {
 		$code = '';
 		foreach ($this->methodInfo as $method)

@@ -7,17 +7,56 @@ use ReflectionMethod;
 
 class MethodInfo {
 
+	/**
+	 * 方法名
+	 * @var string
+	 */
 	public $name;
+	/**
+	 * 是否静态方法
+	 * @var bool
+	 */
 	public $isStatic;
+	/**
+	 * 是否抽象方法
+	 * @var bool
+	 */
 	public $isAbstract;
+	/**
+	 * 是否最终方法
+	 * @var bool
+	 */
 	public $isFinal;
-	public $visibility;     // public protected private
+	/**
+	 * 方法可见性 public protected private
+	 * @var string
+	 */
+	public $visibility;
+	/**
+	 * 是否存在返回值类型声明
+	 * @var bool
+	 */
 	public $hasReturnType;
+	/**
+	 * 返回值类型声明
+	 * @var NULL|\ReflectionType
+	 */
 	public $returnType;
 
-	protected $reflector;
+	/**
+	 * 参数信息
+	 * @var array
+	 */
 	protected $parameterInfo;
+	/**
+	 * @var ReflectionMethod
+	 */
+	protected $reflector;
 
+	/**
+	 * MethodInfo constructor.
+	 * @param ReflectionMethod $method
+	 */
 	public function __construct(ReflectionMethod $method) {
 		$this->reflector = $method;
 
@@ -31,6 +70,9 @@ class MethodInfo {
 		$this->parameterInfo = $this->setParameterInfo();
 	}
 
+	/**
+	 * @return string
+	 */
 	public function export(): string {
 		$final      = $this->isFinal ? 'final ' : '';
 		$static     = $this->isStatic ? 'static ' : '';
@@ -42,34 +84,58 @@ EOF;
 
 	}
 
+	/**
+	 * @return string
+	 */
 	protected function setName(): string {
 		return $this->reflector->getName();
 	}
 
+	/**
+	 * @return bool
+	 */
 	protected function setIsStatic(): bool {
 		return $this->reflector->isStatic();
 	}
 
+	/**
+	 * @return bool
+	 */
 	protected function setIsAbstract(): bool {
 		return $this->reflector->isAbstract();
 	}
 
+	/**
+	 * @return bool
+	 */
 	protected function setIsFinal(): bool {
 		return $this->reflector->isFinal();
 	}
 
+	/**
+	 * @return string
+	 */
 	protected function setVisibility(): string {
 		return $this->reflector->isPrivate() ? 'private' : ($this->reflector->isProtected() ? 'protected' : 'public');
 	}
 
+	/**
+	 * @return bool
+	 */
 	protected function setHasReturnType(): bool {
 		return $this->reflector->hasReturnType();
 	}
 
+	/**
+	 * @return NULL|\ReflectionType
+	 */
 	protected function setReturnType() {
 		return $this->reflector->getReturnType();
 	}
 
+	/**
+	 * @return array
+	 */
 	protected function setParameterInfo(): array {
 		$parameterInfo = [];
 		foreach ($this->reflector->getParameters() as $parameter)
@@ -77,6 +143,9 @@ EOF;
 		return $parameterInfo;
 	}
 
+	/**
+	 * @return string
+	 */
 	protected function exportParameter(): string {
 		$code = '';
 		foreach ($this->parameterInfo as $parameter)

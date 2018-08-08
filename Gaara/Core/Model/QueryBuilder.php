@@ -7,6 +7,8 @@ use Closure;
 use Exception;
 use Gaara\Core\DbConnection;
 use Gaara\Core\Model;
+use Gaara\Core\Model\QueryBuilder\{Aggregates, Data, Debug, Execute, From, Group, Having, Index, Join, Limit, Lock,
+	Order, Prepare, Select, Special, Support, Union, Where};
 use InvalidArgumentException;
 
 /**
@@ -14,38 +16,21 @@ use InvalidArgumentException;
  */
 class QueryBuilder {
 
-	use QueryBuilder\Support;
-	use QueryBuilder\Where;
-	use QueryBuilder\Select;
-	use QueryBuilder\Data;
-	use QueryBuilder\From;
-	use QueryBuilder\Join;
-	use QueryBuilder\Group;
-	use QueryBuilder\Order;
-	use QueryBuilder\Limit;
-	use QueryBuilder\Lock;
-	use QueryBuilder\Having;
-	use QueryBuilder\Index;
-	use QueryBuilder\Union;
-	use QueryBuilder\Prepare;
+	use Support, Where, Select, Data, From, Join, Group, Order, Limit, Lock, Having, Index, Union, Prepare, Execute, Debug, Aggregates, Special;
 
-	use QueryBuilder\Execute;
-	use QueryBuilder\Debug;
-	use QueryBuilder\Aggregates;
-	use QueryBuilder\Special;
-
-	// 绑定的表名
+	// 自动绑定计数器
 	protected static $bindingCounter = 0;
-	// 主键
+	// 绑定的表名
 	protected $table;
-	// 当前语句类别
+	// 主键
 	protected $primaryKey;
-	// 数据库链接
+	// 当前语句类别
 	protected $sqlType;
-	// 所属模型
+	// 数据库链接
 	protected $db;
-	// 最近次执行的sql
+	// 所属模型
 	protected $model;
+	// 最近次执行的sql
 	protected $lastSql = null;
 	protected $select  = null;
 	protected $data    = null;
@@ -57,8 +42,7 @@ class QueryBuilder {
 	protected $order   = null;
 	protected $limit   = null;
 	protected $lock    = null;
-	// 自动绑定计数器
-	protected $union = [];
+	protected $union   = [];
 	// 自动绑定数组
 	protected $bindings = [];
 	// 预期的查询2维数组的索引
@@ -73,25 +57,6 @@ class QueryBuilder {
 		$this->model      = $model;
 
 		$this->registerMethod();
-	}
-
-	/**
-	 * 在 Model 中为 QueryBuilder 注册自定义链式方法
-	 * @throws InvalidArgumentException
-	 */
-	protected function registerMethod() {
-		foreach ($this->model->registerMethodForQueryBuilder() as $methodName => $func) {
-			if (isset($this->$methodName) || isset($this->registerMethodFromModel[$methodName]) ||
-			    method_exists($this, $methodName))
-				throw new InvalidArgumentException('The method name [ ' . $methodName . ' ] is already used .');
-			elseif ($func instanceof Closure) {
-				$this->registerMethodFromModel[$methodName] = function(...$params) use ($func) {
-					return $func($this, ...$params);
-				};
-			}
-			else
-				throw new InvalidArgumentException('The method [ ' . $methodName . ' ] mast instanceof Closure .');
-		}
 	}
 
 	/**
@@ -547,6 +512,25 @@ class QueryBuilder {
 		}
 		else
 			throw new Exception('Undefined method [ ' . $method . ' ].');
+	}
+
+	/**
+	 * 在 Model 中为 QueryBuilder 注册自定义链式方法
+	 * @throws InvalidArgumentException
+	 */
+	protected function registerMethod() {
+		foreach ($this->model->registerMethodForQueryBuilder() as $methodName => $func) {
+			if (isset($this->$methodName) || isset($this->registerMethodFromModel[$methodName]) ||
+			    method_exists($this, $methodName))
+				throw new InvalidArgumentException('The method name [ ' . $methodName . ' ] is already used .');
+			elseif ($func instanceof Closure) {
+				$this->registerMethodFromModel[$methodName] = function(...$params) use ($func) {
+					return $func($this, ...$params);
+				};
+			}
+			else
+				throw new InvalidArgumentException('The method [ ' . $methodName . ' ] mast instanceof Closure .');
+		}
 	}
 
 }

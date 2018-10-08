@@ -147,12 +147,11 @@ class Request implements Single {
 
 		// split content by boundary and get rid of last -- element
 		$a_blocks = preg_split("/-+$matches[1]/", $input);
+		array_shift($a_blocks);
 		array_pop($a_blocks);
 
 		// loop data blocks
 		foreach ($a_blocks as $block) {
-			if (empty($block))
-				continue;
 			// you'll have to var_dump $block to understand this and maybe replace \n or \r with a visibile char
 			// parse uploaded files
 			if (strpos($block, 'filename=') !== false) {

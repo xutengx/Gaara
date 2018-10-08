@@ -93,8 +93,8 @@ class index extends Controller {
 
 		}
 		$arr = array_unique($ids);
-		return $this->success(count($arr));
-//		return $this->success($ids);
+//		return $this->success(count($arr));
+		return $this->success($ids);
 	}
 
 }

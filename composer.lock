@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "30a9623f1c3fc338943a80e2fd177856",
+    "content-hash": "c75c723690418a179001acd44abe4ed3",
     "packages": [
         {
             "name": "chillerlan/php-qrcode",
@@ -816,7 +816,14 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.1.0"
+        "php": ">=7.1.0",
+        "ext-pdo": "*",
+        "ext-simplexml": "*",
+        "ext-gd": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-redis": "*",
+        "ext-xml": "*"
     },
     "platform-dev": []
 }

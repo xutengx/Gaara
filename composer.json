@@ -17,7 +17,7 @@
 	"repositories": {
 		"packagist": {
 			"type": "composer",
-			"url": "https://packagist.phpcomposer.com"
+			"url": "https://packagist.laravel-china.org"
 		}
 	},
 	"autoload": {
@@ -34,13 +34,13 @@
 	},
 	"require": {
 		"php": ">=7.1.0",
-		"ext-xml": "*",
-		"ext-json": "*",
 		"ext-PDO": "*",
-		"ext-redis": "*",
-		"ext-mbstring": "*",
-		"ext-gd": "*",
 		"ext-SimpleXML": "*",
+		"ext-gd": "*",
+		"ext-json": "*",
+		"ext-mbstring": "*",
+		"ext-redis": "*",
+		"ext-xml": "*",
 		"chillerlan/php-qrcode": "^2.0",
 		"ezyang/htmlpurifier": "^4.9",
 		"filp/whoops": "^2.1",

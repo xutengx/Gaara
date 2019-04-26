@@ -4,11 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c75c723690418a179001acd44abe4ed3",
+    "content-hash": "867ad165b2b7ddd84e9574c2ea3325f0",
     "packages": [
         {
             "name": "chillerlan/php-qrcode",
-            "version": "2.0.6",
+            "version": "v2.0.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/chillerlan/php-qrcode.git",
@@ -49,7 +49,7 @@
                     "homepage": "https://github.com/kazuhikoarase"
                 },
                 {
-                    "name": "Smiley",
+                    "name": "smiley",
                     "email": "smiley@chillerlan.net",
                     "homepage": "https://github.com/codemasher"
                 }
@@ -158,16 +158,16 @@
         },
         {
             "name": "filp/whoops",
-            "version": "2.2.0",
+            "version": "2.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filp/whoops.git",
-                "reference": "181c4502d8f34db7aed7bfe88d4f87875b8e947a"
+                "reference": "bc0fd11bc455cc20ee4b5edabc63ebbf859324c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filp/whoops/zipball/181c4502d8f34db7aed7bfe88d4f87875b8e947a",
-                "reference": "181c4502d8f34db7aed7bfe88d4f87875b8e947a",
+                "url": "https://api.github.com/repos/filp/whoops/zipball/bc0fd11bc455cc20ee4b5edabc63ebbf859324c7",
+                "reference": "bc0fd11bc455cc20ee4b5edabc63ebbf859324c7",
                 "shasum": ""
             },
             "require": {
@@ -186,7 +186,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1-dev"
+                    "dev-master": "2.2-dev"
                 }
             },
             "autoload": {
@@ -215,23 +215,24 @@
                 "throwable",
                 "whoops"
             ],
-            "time": "2018-03-03T17:56:25+00:00"
+            "time": "2018-10-23T09:00:00+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "6.3.3",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "407b0cb880ace85c9b63c5f9551db498cb2d50ba"
+                "reference": "c5da4c3128db9f892f0911043cfffb6c559bd6da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/407b0cb880ace85c9b63c5f9551db498cb2d50ba",
-                "reference": "407b0cb880ace85c9b63c5f9551db498cb2d50ba",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/c5da4c3128db9f892f0911043cfffb6c559bd6da",
+                "reference": "c5da4c3128db9f892f0911043cfffb6c559bd6da",
                 "shasum": ""
             },
             "require": {
+                "ext-json": "*",
                 "guzzlehttp/promises": "^1.0",
                 "guzzlehttp/psr7": "^1.4",
                 "php": ">=5.5"
@@ -239,7 +240,7 @@
             "require-dev": {
                 "ext-curl": "*",
                 "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.4 || ^7.0",
-                "psr/log": "^1.0"
+                "psr/log": "^1.1"
             },
             "suggest": {
                 "psr/log": "Required for using the Log middleware"
@@ -251,12 +252,12 @@
                 }
             },
             "autoload": {
-                "files": [
-                    "src/functions_include.php"
-                ],
                 "psr-4": {
                     "GuzzleHttp\\": "src/"
-                }
+                },
+                "files": [
+                    "src/functions_include.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -280,27 +281,27 @@
                 "rest",
                 "web service"
             ],
-            "time": "2018-04-22T15:46:56+00:00"
+            "time": "2018-12-21T16:46:01+00:00"
         },
         {
             "name": "guzzlehttp/promises",
-            "version": "v1.3.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "a59da6cf61d80060647ff4d3eb2c03a2bc694646"
+                "reference": "926eaa3ff73cde2becf652b785831bcb7618568a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/a59da6cf61d80060647ff4d3eb2c03a2bc694646",
-                "reference": "a59da6cf61d80060647ff4d3eb2c03a2bc694646",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/926eaa3ff73cde2becf652b785831bcb7618568a",
+                "reference": "926eaa3ff73cde2becf652b785831bcb7618568a",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.5.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.0"
+                "phpunit/phpunit": "^4.8.36"
             },
             "type": "library",
             "extra": {
@@ -331,36 +332,40 @@
             "keywords": [
                 "promise"
             ],
-            "time": "2016-12-20T10:07:11+00:00"
+            "time": "2018-10-30T00:20:04+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.4.2",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "f5b8a8512e2b58b0071a7280e39f14f72e05d87c"
+                "reference": "ae7949ee7b865f0eb8b191c438cda63cad59d437"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/f5b8a8512e2b58b0071a7280e39f14f72e05d87c",
-                "reference": "f5b8a8512e2b58b0071a7280e39f14f72e05d87c",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/ae7949ee7b865f0eb8b191c438cda63cad59d437",
+                "reference": "ae7949ee7b865f0eb8b191c438cda63cad59d437",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.4.0",
-                "psr/http-message": "~1.0"
+                "psr/http-message": "~1.0",
+                "ralouphie/getallheaders": "^2.0.5 || ^3.0.0"
             },
             "provide": {
                 "psr/http-message-implementation": "1.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.0"
+                "phpunit/phpunit": "~4.8.36 || ^5.7.27 || ^6.5.8"
+            },
+            "suggest": {
+                "zendframework/zend-httphandlerrunner": "Emit PSR-7 responses"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.4-dev"
+                    "dev-master": "1.5-dev"
                 }
             },
             "autoload": {
@@ -390,26 +395,27 @@
             "keywords": [
                 "http",
                 "message",
+                "psr-7",
                 "request",
                 "response",
                 "stream",
                 "uri",
                 "url"
             ],
-            "time": "2017-03-20T17:10:46+00:00"
+            "time": "2018-12-28T01:59:01+00:00"
         },
         {
             "name": "monolog/monolog",
-            "version": "1.23.0",
+            "version": "1.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "fd8c787753b3a2ad11bc60c063cff1358a32a3b4"
+                "reference": "4d5b7e6ba1127789c7ff59d6f762298eaa29787f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/fd8c787753b3a2ad11bc60c063cff1358a32a3b4",
-                "reference": "fd8c787753b3a2ad11bc60c063cff1358a32a3b4",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/4d5b7e6ba1127789c7ff59d6f762298eaa29787f",
+                "reference": "4d5b7e6ba1127789c7ff59d6f762298eaa29787f",
                 "shasum": ""
             },
             "require": {
@@ -474,39 +480,42 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2017-06-19T01:22:40+00:00"
+            "time": "2018-12-26T14:24:03+00:00"
         },
         {
             "name": "php-console/php-console",
-            "version": "3.1.7",
+            "version": "3.1.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/barbushin/php-console.git",
-                "reference": "c171ec62669d5c616cfa62de7a30df3c6237e831"
+                "reference": "22221317ab3b20bead5ab423170c5ecf24f4c8d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barbushin/php-console/zipball/c171ec62669d5c616cfa62de7a30df3c6237e831",
-                "reference": "c171ec62669d5c616cfa62de7a30df3c6237e831",
+                "url": "https://api.github.com/repos/barbushin/php-console/zipball/22221317ab3b20bead5ab423170c5ecf24f4c8d0",
+                "reference": "22221317ab3b20bead5ab423170c5ecf24f4c8d0",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
             },
-            "require-dev": {
-                "ext-mbstring": "*",
-                "phpunit/phpunit": "^4.8",
-                "psr/log": "^1.0"
+            "suggest": {
+                "php-console/laravel-service-provider": "*"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                }
+            },
             "autoload": {
-                "psr-4": {
-                    "PhpConsole\\": "src/PhpConsole"
+                "psr-0": {
+                    "PhpConsole": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "MIT"
+                "BSD 3-Clause"
             ],
             "authors": [
                 {
@@ -515,7 +524,7 @@
                     "homepage": "http://linkedin.com/in/barbushin"
                 }
             ],
-            "description": "PHP library for Google Chrome extension \"PHP Console\".",
+            "description": "Server side PHP library for Google Chrome extension \"PHP Console\".",
             "homepage": "https://github.com/barbushin/php-console",
             "keywords": [
                 "chrome",
@@ -525,146 +534,11 @@
                 "google chrome",
                 "php"
             ],
-            "time": "2018-02-25T12:43:21+00:00"
-        },
-        {
-            "name": "phpmailer/phpmailer",
-            "version": "v5.2.26",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/PHPMailer/PHPMailer.git",
-                "reference": "70362997bda4376378be7d92d81e2200550923f7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/70362997bda4376378be7d92d81e2200550923f7",
-                "reference": "70362997bda4376378be7d92d81e2200550923f7",
-                "shasum": ""
-            },
-            "require": {
-                "ext-ctype": "*",
-                "php": ">=5.0.0"
-            },
-            "require-dev": {
-                "doctrine/annotations": "1.2.*",
-                "jms/serializer": "0.16.*",
-                "phpdocumentor/phpdocumentor": "2.*",
-                "phpunit/phpunit": "4.8.*",
-                "symfony/debug": "2.8.*",
-                "symfony/filesystem": "2.8.*",
-                "symfony/translation": "2.8.*",
-                "symfony/yaml": "2.8.*",
-                "zendframework/zend-cache": "2.5.1",
-                "zendframework/zend-config": "2.5.1",
-                "zendframework/zend-eventmanager": "2.5.1",
-                "zendframework/zend-filter": "2.5.1",
-                "zendframework/zend-i18n": "2.5.1",
-                "zendframework/zend-json": "2.5.1",
-                "zendframework/zend-math": "2.5.1",
-                "zendframework/zend-serializer": "2.5.*",
-                "zendframework/zend-servicemanager": "2.5.*",
-                "zendframework/zend-stdlib": "2.5.1"
-            },
-            "suggest": {
-                "league/oauth2-google": "Needed for Google XOAUTH2 authentication"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "class.phpmailer.php",
-                    "class.phpmaileroauth.php",
-                    "class.phpmaileroauthgoogle.php",
-                    "class.smtp.php",
-                    "class.pop3.php",
-                    "extras/EasyPeasyICS.php",
-                    "extras/ntlm_sasl_client.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL-2.1"
-            ],
-            "authors": [
-                {
-                    "name": "Jim Jagielski",
-                    "email": "jimjag@gmail.com"
-                },
-                {
-                    "name": "Marcus Bointon",
-                    "email": "phpmailer@synchromedia.co.uk"
-                },
-                {
-                    "name": "Andy Prevost",
-                    "email": "codeworxtech@users.sourceforge.net"
-                },
-                {
-                    "name": "Brent R. Matzelle"
-                }
-            ],
-            "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
-            "time": "2017-11-04T09:26:05+00:00"
-        },
-        {
-            "name": "phpoffice/phpexcel",
-            "version": "1.8.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/PHPOffice/PHPExcel.git",
-                "reference": "372c7cbb695a6f6f1e62649381aeaa37e7e70b32"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/PHPOffice/PHPExcel/zipball/372c7cbb695a6f6f1e62649381aeaa37e7e70b32",
-                "reference": "372c7cbb695a6f6f1e62649381aeaa37e7e70b32",
-                "shasum": ""
-            },
-            "require": {
-                "ext-xml": "*",
-                "ext-xmlwriter": "*",
-                "php": ">=5.2.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "PHPExcel": "Classes/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL"
-            ],
-            "authors": [
-                {
-                    "name": "Maarten Balliauw",
-                    "homepage": "http://blog.maartenballiauw.be"
-                },
-                {
-                    "name": "Mark Baker"
-                },
-                {
-                    "name": "Franck Lefevre",
-                    "homepage": "http://blog.rootslabs.net"
-                },
-                {
-                    "name": "Erik Tilt"
-                }
-            ],
-            "description": "PHPExcel - OpenXML - Read, Create and Write Spreadsheet documents in PHP - Spreadsheet engine",
-            "homepage": "http://phpexcel.codeplex.com",
-            "keywords": [
-                "OpenXML",
-                "excel",
-                "php",
-                "spreadsheet",
-                "xls",
-                "xlsx"
-            ],
-            "abandoned": "phpoffice/phpspreadsheet",
-            "time": "2015-05-01T07:00:55+00:00"
+            "time": "2014-01-28T14:39:34+00:00"
         },
         {
             "name": "psr/http-message",
-            "version": "1.0.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/http-message.git",
@@ -714,16 +588,16 @@
         },
         {
             "name": "psr/log",
-            "version": "1.0.2",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/log.git",
-                "reference": "4ebe3a8bf773a19edfe0a84b6585ba3d401b724d"
+                "reference": "c4421fcac1edd5a324fda73e589a5cf96e52ffd0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/4ebe3a8bf773a19edfe0a84b6585ba3d401b724d",
-                "reference": "4ebe3a8bf773a19edfe0a84b6585ba3d401b724d",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/c4421fcac1edd5a324fda73e589a5cf96e52ffd0",
+                "reference": "c4421fcac1edd5a324fda73e589a5cf96e52ffd0",
                 "shasum": ""
             },
             "require": {
@@ -732,7 +606,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev"
+                    "dev-master": "1.1.x-dev"
                 }
             },
             "autoload": {
@@ -757,37 +631,76 @@
                 "psr",
                 "psr-3"
             ],
-            "time": "2016-10-10T12:19:37+00:00"
+            "time": "2018-11-21T13:42:00+00:00"
         },
         {
-            "name": "xutengx/excel",
-            "version": "v1.0.0",
+            "name": "ralouphie/getallheaders",
+            "version": "3.0.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/xutengx/excel.git",
-                "reference": "63d71adaea97c71dfb3795b78ce5c775650ebd39"
+                "url": "https://github.com/ralouphie/getallheaders.git",
+                "reference": "beb49b96960f0cbf17e7fbcaaddc8eb434e126eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/xutengx/excel/zipball/63d71adaea97c71dfb3795b78ce5c775650ebd39",
-                "reference": "63d71adaea97c71dfb3795b78ce5c775650ebd39",
+                "url": "https://api.github.com/repos/ralouphie/getallheaders/zipball/beb49b96960f0cbf17e7fbcaaddc8eb434e126eb",
+                "reference": "beb49b96960f0cbf17e7fbcaaddc8eb434e126eb",
                 "shasum": ""
             },
             "require": {
-                "ext-xml": "*",
-                "ext-xmlwriter": "*",
-                "php": ">=7.1.0",
-                "phpoffice/phpexcel": "*"
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5",
+                "satooshi/php-coveralls": ">=1.0"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.4-dev"
-                }
+            "autoload": {
+                "files": [
+                    "src/getallheaders.php"
+                ]
             },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ralph Khattar",
+                    "email": "ralph.khattar@gmail.com"
+                }
+            ],
+            "description": "A polyfill for getallheaders.",
+            "time": "2018-12-11T21:53:24+00:00"
+        },
+        {
+            "name": "xutengx/cache",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/xutengx/cache.git",
+                "reference": "2a44a644a9f91a6b33beb52b75ca57e1c12ca8d4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/xutengx/cache/zipball/2a44a644a9f91a6b33beb52b75ca57e1c12ca8d4",
+                "reference": "2a44a644a9f91a6b33beb52b75ca57e1c12ca8d4",
+                "shasum": ""
+            },
+            "require": {
+                "ext-redis": "*",
+                "php": ">=7.1.0",
+                "xutengx/contracts": "dev-master"
+            },
+            "require-dev": {
+                "phpunit/dbunit": "^4.0",
+                "phpunit/php-invoker": "^2.0",
+                "phpunit/phpunit": "^7"
+            },
+            "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Xutengx\\Excel\\": "src/"
+                    "Xutengx\\Cache\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -800,23 +713,656 @@
                     "email": "68822684@qq.com"
                 }
             ],
-            "description": "An eloquent way of importing and exporting Excel and CSV files with the power of PHPOffice's PHPExcel.",
+            "description": "cache",
             "keywords": [
-                "excel",
+                "cache",
+                "file",
+                "gaara",
+                "redis",
+                "xuteng"
+            ],
+            "time": "2018-11-12T09:14:18+00:00"
+        },
+        {
+            "name": "xutengx/conf",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/xutengx/conf.git",
+                "reference": "daa08f030da4420e64c7ba185b0719a75ccd6a45"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/xutengx/conf/zipball/daa08f030da4420e64c7ba185b0719a75ccd6a45",
+                "reference": "daa08f030da4420e64c7ba185b0719a75ccd6a45",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.0",
+                "xutengx/exception": "dev-master"
+            },
+            "require-dev": {
+                "phpunit/dbunit": "^4.0",
+                "phpunit/php-invoker": "^2.0",
+                "phpunit/phpunit": "^7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Xutengx\\Conf\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "xuteng",
+                    "email": "68822684@qq.com"
+                }
+            ],
+            "description": "conf",
+            "keywords": [
+                "conf",
                 "gaara",
                 "xuteng"
             ],
-            "time": "2018-01-23T08:29:42+00:00"
+            "time": "2018-08-31T10:08:02+00:00"
+        },
+        {
+            "name": "xutengx/container",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/xutengx/container.git",
+                "reference": "3396fe04cf11a37f26c5062419da73a19f25275e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/xutengx/container/zipball/3396fe04cf11a37f26c5062419da73a19f25275e",
+                "reference": "3396fe04cf11a37f26c5062419da73a19f25275e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.0"
+            },
+            "require-dev": {
+                "phpunit/dbunit": "^4.0",
+                "phpunit/php-invoker": "^2.0",
+                "phpunit/phpunit": "^7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Xutengx\\Container\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "xuteng",
+                    "email": "68822684@qq.com"
+                }
+            ],
+            "description": "container",
+            "keywords": [
+                "container",
+                "gaara",
+                "xuteng"
+            ],
+            "time": "2019-01-03T08:49:24+00:00"
+        },
+        {
+            "name": "xutengx/contracts",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/xutengx/contracts.git",
+                "reference": "84977dc2abba5106c73116bc8e9cdbabc093adfa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/xutengx/contracts/zipball/84977dc2abba5106c73116bc8e9cdbabc093adfa",
+                "reference": "84977dc2abba5106c73116bc8e9cdbabc093adfa",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Xutengx\\Contracts\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "xuteng",
+                    "email": "68822684@qq.com"
+                }
+            ],
+            "description": "contracts",
+            "keywords": [
+                "contracts",
+                "gaara",
+                "xuteng"
+            ],
+            "time": "2018-09-05T08:27:41+00:00"
+        },
+        {
+            "name": "xutengx/exception",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/xutengx/exception.git",
+                "reference": "1e8635f7ea6bcfa62676dcaa42b7358fa65d26a6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/xutengx/exception/zipball/1e8635f7ea6bcfa62676dcaa42b7358fa65d26a6",
+                "reference": "1e8635f7ea6bcfa62676dcaa42b7358fa65d26a6",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.0"
+            },
+            "require-dev": {
+                "phpunit/dbunit": "^4.0",
+                "phpunit/php-invoker": "^2.0",
+                "phpunit/phpunit": "^7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Xutengx\\Exception\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "xuteng",
+                    "email": "68822684@qq.com"
+                }
+            ],
+            "description": "exception",
+            "keywords": [
+                "exception",
+                "gaara",
+                "xuteng"
+            ],
+            "time": "2018-08-31T03:07:54+00:00"
+        },
+        {
+            "name": "xutengx/framework",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/xutengx/framework.git",
+                "reference": "165a341ab11dd24226f385a3111b1093587b5c03"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/xutengx/framework/zipball/165a341ab11dd24226f385a3111b1093587b5c03",
+                "reference": "165a341ab11dd24226f385a3111b1093587b5c03",
+                "shasum": ""
+            },
+            "require": {
+                "chillerlan/php-qrcode": "^2.0",
+                "ext-pdo": "*",
+                "filp/whoops": "^2.2",
+                "monolog/monolog": "^1.23",
+                "php": ">=7.2.0",
+                "php-console/php-console": "^3.1",
+                "xutengx/cache": "dev-master",
+                "xutengx/conf": "dev-master",
+                "xutengx/container": "dev-master",
+                "xutengx/contracts": "dev-master",
+                "xutengx/exception": "dev-master",
+                "xutengx/model": "dev-master",
+                "xutengx/pipeline": "dev-master",
+                "xutengx/request": "dev-master",
+                "xutengx/response": "dev-master",
+                "xutengx/route": "dev-master",
+                "xutengx/secure": "dev-master",
+                "xutengx/session": "dev-master",
+                "xutengx/tool": "dev-master"
+            },
+            "require-dev": {
+                "phpunit/dbunit": "^4.0",
+                "phpunit/php-invoker": "^2.0",
+                "phpunit/phpunit": "^7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Apptest\\": "dev/app/",
+                    "Gaara\\": "src/"
+                },
+                "files": [
+                    "src/Quick/Function.php",
+                    "src/Quick/ClassAlias.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "xuteng",
+                    "email": "68822684@qq.com"
+                }
+            ],
+            "description": "Framework For PHPer.",
+            "keywords": [
+                "framework",
+                "gaara",
+                "xuteng"
+            ],
+            "time": "2019-01-03T07:03:51+00:00"
+        },
+        {
+            "name": "xutengx/model",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/xutengx/model.git",
+                "reference": "f0a48eb99a8f1f815eb400934ad5a83edb0cee7d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/xutengx/model/zipball/f0a48eb99a8f1f815eb400934ad5a83edb0cee7d",
+                "reference": "f0a48eb99a8f1f815eb400934ad5a83edb0cee7d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-pdo": "*",
+                "php": ">=7.1.0",
+                "xutengx/cache": "dev-master",
+                "xutengx/contracts": "dev-master"
+            },
+            "require-dev": {
+                "phpunit/php-invoker": "^2.0",
+                "phpunit/phpunit": "^7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Xutengx\\Model\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "xuteng",
+                    "email": "68822684@qq.com"
+                }
+            ],
+            "description": "model",
+            "keywords": [
+                "gaara",
+                "model",
+                "xuteng"
+            ],
+            "time": "2018-12-29T10:09:33+00:00"
+        },
+        {
+            "name": "xutengx/pipeline",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/xutengx/pipeline.git",
+                "reference": "f4355268d6cf634996f023d10662bd3f667bdbab"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/xutengx/pipeline/zipball/f4355268d6cf634996f023d10662bd3f667bdbab",
+                "reference": "f4355268d6cf634996f023d10662bd3f667bdbab",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.0"
+            },
+            "require-dev": {
+                "phpunit/dbunit": "^4.0",
+                "phpunit/php-invoker": "^2.0",
+                "phpunit/phpunit": "^7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Xutengx\\Pipeline\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "xuteng",
+                    "email": "68822684@qq.com"
+                }
+            ],
+            "description": "pipeline",
+            "keywords": [
+                "gaara",
+                "pipeline",
+                "xuteng"
+            ],
+            "time": "2018-09-03T08:37:46+00:00"
+        },
+        {
+            "name": "xutengx/request",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/xutengx/request.git",
+                "reference": "96e4f32f6b2f6e6eb2eb020f230476a5a5faa7d5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/xutengx/request/zipball/96e4f32f6b2f6e6eb2eb020f230476a5a5faa7d5",
+                "reference": "96e4f32f6b2f6e6eb2eb020f230476a5a5faa7d5",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=7.1.0",
+                "xutengx/exception": "dev-master",
+                "xutengx/tool": "dev-master"
+            },
+            "require-dev": {
+                "phpunit/dbunit": "^4.0",
+                "phpunit/php-invoker": "^2.0",
+                "phpunit/phpunit": "^7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Xutengx\\Request\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "xuteng",
+                    "email": "68822684@qq.com"
+                }
+            ],
+            "description": "request",
+            "keywords": [
+                "gaara",
+                "request",
+                "xuteng"
+            ],
+            "time": "2018-12-19T15:51:00+00:00"
+        },
+        {
+            "name": "xutengx/response",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/xutengx/response.git",
+                "reference": "b7ae140691542de617d3395904a0afddc6eed1ca"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/xutengx/response/zipball/b7ae140691542de617d3395904a0afddc6eed1ca",
+                "reference": "b7ae140691542de617d3395904a0afddc6eed1ca",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.0",
+                "xutengx/exception": "dev-master",
+                "xutengx/tool": "dev-master"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Xutengx\\Response\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "xuteng",
+                    "email": "68822684@qq.com"
+                }
+            ],
+            "description": "response",
+            "keywords": [
+                "gaara",
+                "response",
+                "xuteng"
+            ],
+            "time": "2019-01-03T07:09:57+00:00"
+        },
+        {
+            "name": "xutengx/route",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/xutengx/route.git",
+                "reference": "38639715f3c11fec352540c7b9c9152bd38346a2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/xutengx/route/zipball/38639715f3c11fec352540c7b9c9152bd38346a2",
+                "reference": "38639715f3c11fec352540c7b9c9152bd38346a2",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.0",
+                "xutengx/exception": "dev-master",
+                "xutengx/request": "dev-master",
+                "xutengx/tool": "dev-master"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Xutengx\\Route\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "xuteng",
+                    "email": "68822684@qq.com"
+                }
+            ],
+            "description": "route",
+            "keywords": [
+                "gaara",
+                "route",
+                "xuteng"
+            ],
+            "time": "2019-01-03T07:09:29+00:00"
+        },
+        {
+            "name": "xutengx/secure",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/xutengx/secure.git",
+                "reference": "5bc297e63190d0b4384e3b09fe77da3a6ac25050"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/xutengx/secure/zipball/5bc297e63190d0b4384e3b09fe77da3a6ac25050",
+                "reference": "5bc297e63190d0b4384e3b09fe77da3a6ac25050",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.0",
+                "xutengx/cache": "dev-master",
+                "xutengx/contracts": "dev-master"
+            },
+            "require-dev": {
+                "phpunit/dbunit": "^4.0",
+                "phpunit/php-invoker": "^2.0",
+                "phpunit/phpunit": "^7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Xutengx\\Secure\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "xuteng",
+                    "email": "68822684@qq.com"
+                }
+            ],
+            "description": "secure",
+            "keywords": [
+                "gaara",
+                "secure",
+                "xuteng"
+            ],
+            "time": "2018-09-05T07:28:46+00:00"
+        },
+        {
+            "name": "xutengx/session",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/xutengx/session.git",
+                "reference": "713a29fc57309f3d48116a959e172f643dc1d448"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/xutengx/session/zipball/713a29fc57309f3d48116a959e172f643dc1d448",
+                "reference": "713a29fc57309f3d48116a959e172f643dc1d448",
+                "shasum": ""
+            },
+            "require": {
+                "ext-redis": "*",
+                "php": ">=7.1.0",
+                "xutengx/contracts": "dev-master",
+                "xutengx/tool": "dev-master"
+            },
+            "require-dev": {
+                "phpunit/dbunit": "^4.0",
+                "phpunit/php-invoker": "^2.0",
+                "phpunit/phpunit": "^7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Xutengx\\Session\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "xuteng",
+                    "email": "68822684@qq.com"
+                }
+            ],
+            "description": "session",
+            "keywords": [
+                "gaara",
+                "session",
+                "xuteng"
+            ],
+            "time": "2018-09-05T08:38:43+00:00"
+        },
+        {
+            "name": "xutengx/tool",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/xutengx/tool.git",
+                "reference": "8ceb994665df05e4ac55e30303e3161d6433d275"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/xutengx/tool/zipball/8ceb994665df05e4ac55e30303e3161d6433d275",
+                "reference": "8ceb994665df05e4ac55e30303e3161d6433d275",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=7.1.0"
+            },
+            "require-dev": {
+                "phpunit/dbunit": "^4.0",
+                "phpunit/php-invoker": "^2.0",
+                "phpunit/phpunit": "^7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Xutengx\\Tool\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "xuteng",
+                    "email": "68822684@qq.com"
+                }
+            ],
+            "description": "tool",
+            "keywords": [
+                "gaara",
+                "tool",
+                "xuteng"
+            ],
+            "time": "2018-08-30T08:30:16+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "stable",
-    "stability-flags": [],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "xutengx/framework": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.1.0",
+        "php": ">=7.2.0",
         "ext-pdo": "*",
         "ext-simplexml": "*",
         "ext-gd": "*",

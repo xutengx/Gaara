@@ -8,8 +8,23 @@ declare(strict_types = 1);
   |--------------------------------------------------------------------------
   |
  */
-$app = \App\Kernel::getInstance();
+$app = \Gaara\Core\Kernel::getIns();
+ini_set('display_errors', '1');
+error_reporting(E_ALL);
 
+/*
+  |--------------------------------------------------------------------------
+  | 获取配置信息
+  |--------------------------------------------------------------------------
+  |
+ */
+$app->singleton(\Gaara\Core\Conf::class, function() {
+	$envFile          = dirname(__DIR__) . '/.env';
+	$configFolderPath = dirname(__DIR__) . '/config';
+	return new \Gaara\Core\Conf($envFile, $configFolderPath);
+});
+
+$app->setConf($app->make(\Gaara\Core\Conf::class));
 /*
   |--------------------------------------------------------------------------
   | 注册绑定
@@ -20,7 +35,6 @@ $app = \App\Kernel::getInstance();
   | $app->singleton(string, string)		单例绑定
   |
  */
-
 /*
   |--------------------------------------------------------------------------
   | 获取对象

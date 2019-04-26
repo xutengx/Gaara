@@ -7,33 +7,15 @@
 		"gaara"
 	],
 	"license": "MIT",
-	"type": "project",
 	"authors": [
 		{
 			"name": "xuteng",
 			"email": "68822684@qq.com"
 		}
 	],
-	"repositories": {
-		"packagist": {
-			"type": "composer",
-			"url": "https://packagist.laravel-china.org"
-		}
-	},
-	"autoload": {
-		"psr-4": {
-			"App\\": "App/",
-			"Gaara\\": "Gaara/"
-		},
-		"classmap": [
-		],
-		"files": [
-			"Gaara/Quick/Function.php",
-			"Gaara/Quick/ClassAilas.php"
-		]
-	},
+	"minimum-stability": "dev",
 	"require": {
-		"php": ">=7.1.0",
+		"php": ">=7.2.0",
 		"ext-PDO": "*",
 		"ext-SimpleXML": "*",
 		"ext-gd": "*",
@@ -41,18 +23,22 @@
 		"ext-mbstring": "*",
 		"ext-redis": "*",
 		"ext-xml": "*",
-		"chillerlan/php-qrcode": "^2.0",
+		"xutengx/framework": "dev-master",
 		"ezyang/htmlpurifier": "^4.9",
-		"filp/whoops": "^2.1",
-		"guzzlehttp/guzzle": "^6.3",
-		"monolog/monolog": "^1.23",
-		"php-console/php-console": "^3.1",
-		"phpmailer/phpmailer": "^5.2",
-		"xutengx/excel": "^1.0"
+		"guzzlehttp/guzzle": "^6.3"
 	},
 	"scripts": {
 		"post-install-cmd": [
 			"php -r \"is_file('.env') || copy('.env.example', '.env');\""
+		]
+	},
+	"autoload": {
+		"psr-4": {
+			"App\\": "App/"
+		},
+		"classmap": [
+		],
+		"files": [
 		]
 	},
 	"config": {

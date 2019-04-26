@@ -6,6 +6,8 @@ $GLOBALS['statistic'] = [
 	'时间初始量' => microtime(true),
 	'内存初始量' => memory_get_usage()
 ];
+ini_set('display_errors', '1');
+error_reporting(E_ALL);
 /*
   |--------------------------------------------------------------------------
   | 入口文件目录在服务器的绝对路径

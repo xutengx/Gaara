@@ -6,5 +6,5 @@ return [
 	  | 载入的路由文件
 	  |--------------------------------------------------------------------------
 	 */
-	'file' => env('route_file', 'http.php')
+	'file' => ROUTE. env('route_file', 'http.php')
 ];
